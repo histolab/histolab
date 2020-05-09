@@ -6,6 +6,7 @@ docs/_site
 **/tiles*.html
 *.ipynb
 .ipynb_checkpoints
+coverage_html_report
 
 # IDE + OS
 .DS_Store
