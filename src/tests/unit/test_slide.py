@@ -1,14 +1,15 @@
 # encoding: utf-8
 
 import os
-import pytest
-import PIL
-import openslide
-import numpy as np
-import sys
 
-from .unitutil import property_mock, initializer_mock, PILImageMock, method_mock, ANY
+import numpy as np
+import openslide
+import PIL
+import pytest
+
 from histolab.slide import Slide
+
+from .unitutil import ANY, PILImageMock, initializer_mock, method_mock, property_mock
 
 
 class DescribeSlide(object):
@@ -16,10 +17,12 @@ class DescribeSlide(object):
         _init_ = initializer_mock(request, Slide)
         _wsi_path = "/foo/bar/myslide.svs"
         _processed_path = "/foo/bar/myslide/processed"
-        
+
         slide = Slide(_wsi_path, _processed_path)
 
-        _init_.assert_called_once_with(ANY, _wsi_path, _processed_path,)
+        _init_.assert_called_once_with(
+            ANY, _wsi_path, _processed_path,
+        )
         assert isinstance(slide, Slide)
 
     def but_it_has_wrong_wsi_path_type(self):
@@ -43,16 +46,20 @@ class DescribeSlide(object):
             slide = Slide("wsipath", None)
             im_path = slide.scaled_image_path(32)
 
-
         assert isinstance(err.value, TypeError)
         assert (
             str(err.value) == "expected str, bytes or os.PathLike object, not NoneType"
         )
 
     def it_generates_the_correct_breadcumb(self, request, breadcumb_fixture):
-        resampled_dims, dir_path, wsi_path, proc_path, scale_factor, expected_path = (
-            breadcumb_fixture
-        )
+        (
+            resampled_dims,
+            dir_path,
+            wsi_path,
+            proc_path,
+            scale_factor,
+            expected_path,
+        ) = breadcumb_fixture
         _resampled_dimensions = method_mock(request, Slide, "_resampled_dimensions")
         _resampled_dimensions.return_value = resampled_dims
         slide = Slide(wsi_path, proc_path)
@@ -74,15 +81,17 @@ class DescribeSlide(object):
         resampled_dims_.return_value = wsi_dims
         slide = Slide(wsi_path, proc_path)
 
-        scaled_img_path = slide.scaled_image_path(22)
+        scaled_img_path = slide.scaled_image_path(scale_factor=22)
 
         assert scaled_img_path == expected_value
 
     def it_knows_its_thumbnails_path(self, resampled_dims_):
-        wsi_path, proc_path, wsi_dims, expected_value = ("/foo/bar/myslide.svs",
-                "/foo/bar/myslide/processed",
-                (345, 111, 333, 444),
-                "/foo/bar/myslide/processed/thumbnails/myslide.png")
+        wsi_path, proc_path, wsi_dims, expected_value = (
+            "/foo/bar/myslide.svs",
+            "/foo/bar/myslide/processed",
+            (345, 111, 333, 444),
+            "/foo/bar/myslide/processed/thumbnails/myslide.png",
+        )
         resampled_dims_.return_value = wsi_dims
         slide = Slide(wsi_path, proc_path)
 
@@ -145,7 +154,7 @@ class DescribeSlide(object):
         slide = Slide(wsi_path, "processed")
         resampled_dims_.return_value = (100, 200, 300, 400)
 
-        resampled_array = slide.resampled_array(32)
+        resampled_array = slide.resampled_array(scale_factor=32)
 
         assert type(resampled_array) == np.ndarray
         assert resampled_array.shape == (400, 300, 3)
@@ -170,8 +179,6 @@ class DescribeSlide(object):
         assert str(err.value) == "The wsi path resource doesn't exist"
 
     def or_it_raises_an_PIL_exception(self, tmpdir):
-        print(sys.version_info)
-        print(PIL.__version__)
         wsi_path_ = tmpdir.mkdir("sub").join("hello.txt")
         wsi_path_.write("content")
         with pytest.raises(PIL.UnidentifiedImageError) as err:
@@ -281,7 +288,6 @@ class DescribeSlide(object):
         wsi_path, proc_path, wsi_dims, expected_value = request.param
         return wsi_path, proc_path, wsi_dims, expected_value
 
-
     @pytest.fixture(
         params=[
             (
@@ -335,9 +341,14 @@ class DescribeSlide(object):
         ]
     )
     def breadcumb_fixture(self, request):
-        resampled_dims, dir_path, wsi_path, proc_path, scale_factor, expected_path = (
-            request.param
-        )
+        (
+            resampled_dims,
+            dir_path,
+            wsi_path,
+            proc_path,
+            scale_factor,
+            expected_path,
+        ) = request.param
         return (
             resampled_dims,
             dir_path,
