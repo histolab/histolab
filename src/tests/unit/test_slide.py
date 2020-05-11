@@ -78,8 +78,11 @@ class DescribeSlide(object):
 
         assert scaled_img_path == expected_value
 
-    def it_knows_its_thumbnails_path(self, thumb_path_fixture, resampled_dims_):
-        wsi_path, proc_path, wsi_dims, expected_value = thumb_path_fixture
+    def it_knows_its_thumbnails_path(self, resampled_dims_):
+        wsi_path, proc_path, wsi_dims, expected_value = ("/foo/bar/myslide.svs",
+                "/foo/bar/myslide/processed",
+                (345, 111, 333, 444),
+                "/foo/bar/myslide/processed/thumbnails/myslide.png")
         resampled_dims_.return_value = wsi_dims
         slide = Slide(wsi_path, proc_path)
 
@@ -278,19 +281,6 @@ class DescribeSlide(object):
         wsi_path, proc_path, wsi_dims, expected_value = request.param
         return wsi_path, proc_path, wsi_dims, expected_value
 
-    @pytest.fixture(
-        params=[
-            (
-                "/foo/bar/myslide.svs",
-                "/foo/bar/myslide/processed",
-                (345, 111, 333, 444),
-                "/foo/bar/myslide/processed/thumbnails/myslide.png",
-            )
-        ]
-    )
-    def thumb_path_fixture(self, request):
-        wsi_path, proc_path, wsi_dims, expected_value = request.param
-        return wsi_path, proc_path, wsi_dims, expected_value
 
     @pytest.fixture(
         params=[
