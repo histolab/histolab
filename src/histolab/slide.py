@@ -22,15 +22,17 @@ Slide is the main API class for manipulating WSI slides images.
 """
 
 import math
+import os
+import pathlib
+from typing import Tuple, Union
+
+import matplotlib.pyplot as plt
 import ntpath
 import numpy as np
-import openslide
-import os
 import PIL
-import pathlib
-import matplotlib.pyplot as plt
 
-from typing import Tuple, Union
+import openslide
+
 from .util import Time
 
 IMG_EXT = "png"
@@ -43,46 +45,52 @@ class Slide(object):
     HERE-> expand the docstring
     """
 
-    def __init__(
-        self, wsi_path: str, processed_path: str, scale_factor: int = 32
-    ) -> None:
+    def __init__(self, wsi_path: str, processed_path: str) -> None:
         self._wsi_path = wsi_path
         self._processed_path = processed_path
-        self._scale_factor = scale_factor
 
     # ---public interface methods and properties---
 
-    @property
-    def resampled_array(self) -> np.array:
-        return self._resample[1]
+    def resampled_array(self, scale_factor=32) -> np.array:
+        return self._resample(scale_factor)[1]
 
-    def save_scaled_image(self) -> None:
-        """Save a scaled image in the correct path"""
+    def save_scaled_image(self, scale_factor=32) -> None:
+        """Save a scaled image in the correct path
+        
+        Parameters
+        ----------
+        scale_factor : int, default is 32
+            Image scaling factor
+        
+        """
         os.makedirs(self._processed_path, exist_ok=True)
-        img = self._resample[0]
-        img.save(self.scaled_image_path)
+        img = self._resample(scale_factor)[0]
+        img.save(self.scaled_image_path(scale_factor))
 
     def save_thumbnail(self) -> None:
         """Save a thumbnail in the correct path"""
         os.makedirs(self._processed_path, exist_ok=True)
-        img = self._resample[0]
-        max_size = tuple(
-            round(THUMBNAIL_SIZE * size / max(img.size)) for size in img.size
-        )
-        resized_img = img.resize(max_size, PIL.Image.BILINEAR)
+
+        img = self._wsi.get_thumbnail((THUMBNAIL_SIZE, THUMBNAIL_SIZE))
+
         folder = os.path.dirname(self.thumbnail_path)
         pathlib.Path(folder).mkdir(exist_ok=True)
-        resized_img.save(self.thumbnail_path)
+        img.save(self.thumbnail_path)
 
-    @property
-    def scaled_image_path(self) -> str:
+    def scaled_image_path(self, scale_factor=32) -> str:
         """Returns slide image path.
+
+        Parameters
+        ----------
+        scale_factor : int, default is 32
+            Image scaling factor
 
         Returns
         -------
         img_path : str
+        
         """
-        img_path = self._breadcumb(self._processed_path)
+        img_path = self._breadcumb(self._processed_path, scale_factor)
         return img_path
 
     @property
@@ -93,9 +101,10 @@ class Slide(object):
         -------
         thumb_path : str
         """
-        thumb_path = self._breadcumb(
-            os.path.join(self._processed_path, f"thumbnails_{IMG_EXT}")
+        thumb_path = os.path.join(
+            self._processed_path, "thumbnails", f"{self.wsi_name}.{IMG_EXT}"
         )
+
         return thumb_path
 
     @property
@@ -120,12 +129,14 @@ class Slide(object):
 
     # ---private interface methods and properties---
 
-    def _breadcumb(self, directory_path) -> str:
+    def _breadcumb(self, directory_path, scale_factor=32) -> str:
         """Returns a complete path according to the give directory path
 
         Parameters
         ----------
         directory_path: str
+        scale_factor : int, default is 32
+            Image scaling factor
 
         Returns
         -------
@@ -133,19 +144,18 @@ class Slide(object):
                     e.g. /processed_path/my-image-name-x32/
                          /thumb_path/my-image-name-x32/thumbs
         """
-        large_w, large_h, new_w, new_h = self._resampled_dimensions
+        large_w, large_h, new_w, new_h = self._resampled_dimensions(scale_factor)
         if {large_w, large_h, new_w, new_h} == {None}:
             final_path = os.path.join(directory_path, f"{self.wsi_name}*.{IMG_EXT}")
         else:
             final_path = os.path.join(
                 directory_path,
-                f"{self.wsi_name}-{self._scale_factor}x-{large_w}x{large_h}-{new_w}x"
+                f"{self.wsi_name}-{scale_factor}x-{large_w}x{large_h}-{new_w}x"
                 f"{new_h}.{IMG_EXT}",
             )
         return final_path
 
-    @property
-    def _resample(self) -> Tuple[PIL.Image.Image, np.array]:
+    def _resample(self, scale_factor=32) -> Tuple[PIL.Image.Image, np.array]:
         """Converts a WSI slide to a scaled-down PIL image.
 
         The PIL image is also converted to array.
@@ -153,14 +163,19 @@ class Slide(object):
         are the width and height of the WSI, new width and new height are the
         dimensions of the PIL image.
 
+        Parameters
+        ----------
+        scale_factor : int, default is 32
+            Image scaling factor
+
         Returns
         -------
         img, arr_img, large_w, large_h, new_w, new_h: tuple
         """
         # TODO: use logger instead of print(f"Opening Slide {slide_filepath}")
 
-        large_w, large_h, new_w, new_h = self._resampled_dimensions
-        level = self._wsi.get_best_level_for_downsample(self._scale_factor)
+        large_w, large_h, new_w, new_h = self._resampled_dimensions(scale_factor)
+        level = self._wsi.get_best_level_for_downsample(scale_factor)
         whole_slide_image = self._wsi.read_region(
             (0, 0), level, self._wsi.level_dimensions[level]
         )
@@ -170,11 +185,10 @@ class Slide(object):
         arr_img = np.asarray(img)
         return img, arr_img
 
-    @property
-    def _resampled_dimensions(self) -> Tuple[int, int, int, int]:
+    def _resampled_dimensions(self, scale_factor=32) -> Tuple[int, int, int, int]:
         large_w, large_h = self.wsi_dimensions
-        new_w = math.floor(large_w / self._scale_factor)
-        new_h = math.floor(large_h / self._scale_factor)
+        new_w = math.floor(large_w / scale_factor)
+        new_h = math.floor(large_h / scale_factor)
         return large_w, large_h, new_w, new_h
 
     @property
