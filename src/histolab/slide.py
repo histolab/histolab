@@ -236,19 +236,22 @@ class SlideSet(object):
         for slide in self.slides[:n]:
             slide.save_scaled_image()
 
-    def save_thumbnails(self, n=0):
+    def save_thumbnails(self, scale_factor=32, n=0):
         """Save thumbnails
 
         Parameters
         ----------
         n: int
             first n slides in dataset folder
+        scale_factor : int, default is 32
+            Image scaling factor
+            
         """
         # TODO: add logger n>total_slide and log thumbnails names
         os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
         for slide in self.slides[:n]:
-            slide.save_thumbnail()
+            slide.save_thumbnail(scale_factor)
 
     @property
     def slides(self):
