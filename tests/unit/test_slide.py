@@ -6,10 +6,12 @@ import numpy as np
 import openslide
 import PIL
 import pytest
+import unittest
 
 from src.histolab.slide import Slide, SlideSet
 
 from .unitutil import (
+    dict_list_eq,
     property_mock,
     initializer_mock,
     class_mock,
@@ -429,10 +431,11 @@ class DescribeSlideset(object):
 
         slides_dimensions = slideset._slides_dimensions
 
-        assert slides_dimensions == [
+        expected_value = [
             {"wsi": "mywsi", "width": 500, "height": 500, "size": 250000},
             {"wsi": "mywsi2", "width": 50, "height": 50, "size": 2500},
         ]
+        assert dict_list_eq(slides_dimensions, expected_value) is True
 
     def it_knows_its_slides_dimensions_list(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
@@ -444,7 +447,7 @@ class DescribeSlideset(object):
 
         _wsi_dimensions_list = slideset._wsi_dimensions_list
 
-        assert _wsi_dimensions_list == [(500, 500), (50, 50)]
+        assert sorted(_wsi_dimensions_list) == sorted([(500, 500), (50, 50)])
 
     def it_knows_its_total_slides(self, request):
         slides = property_mock(request, SlideSet, "slides")

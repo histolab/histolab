@@ -7,6 +7,12 @@ from unittest.mock import ANY, call  # noqa
 from unittest.mock import create_autospec, patch, PropertyMock
 
 
+def dict_list_eq(l1, l2):
+    sorted_l1 = sorted(sorted(d.items()) for d in l1)
+    sorted_l2 = sorted(sorted(d.items()) for d in l2)
+    return sorted_l1 == sorted_l2
+
+
 def class_mock(request, q_class_name, autospec=True, **kwargs):
     """Return mock patching class with qualified name *q_class_name*.
 
