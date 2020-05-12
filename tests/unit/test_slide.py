@@ -6,9 +6,7 @@ import numpy as np
 import openslide
 import PIL
 import pytest
-import matplotlib.pyplot as plt
 from matplotlib.figure import Figure as matplotlib_figure
-from matplotlib.testing.decorators import image_comparison
 
 
 from src.histolab.slide import Slide, SlideSet

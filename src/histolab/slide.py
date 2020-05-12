@@ -30,9 +30,8 @@ import matplotlib.pyplot as plt
 from matplotlib.figure import Figure as matplotlib_figure
 import ntpath
 import numpy as np
-import PIL
-
 import openslide
+import PIL
 
 IMG_EXT = "png"
 THUMBNAIL_SIZE = 300
@@ -48,8 +47,8 @@ class Slide(object):
     HERE-> expand the docstring
     """
 
-    def __init__(self, slide_path: str, processed_path: str) -> None:
-        self._slide_path = slide_path
+    def __init__(self, path: str, processed_path: str) -> None:
+        self._path = path
         self._processed_path = processed_path
 
     # ---public interface methods and properties---
@@ -64,7 +63,6 @@ class Slide(object):
         ----------
         scale_factor : int, default is 32
             Image scaling factor
-
         """
         os.makedirs(self._processed_path, exist_ok=True)
         img = self._resample(scale_factor)[0]
@@ -126,7 +124,7 @@ class Slide(object):
         -------
         name : str
         """
-        return ntpath.basename(self._slide_path).split(".")[0]
+        return ntpath.basename(self._path).split(".")[0]
 
     # ---private interface methods and properties---
 
@@ -204,7 +202,7 @@ class Slide(object):
                 An OpenSlide object representing a whole-slide image.
         """
         try:
-            slide = openslide.open_slide(self._slide_path)
+            slide = openslide.open_slide(self._path)
         except openslide.OpenSlideError:
             raise openslide.OpenSlideError(
                 "Your wsi has something broken inside, a doctor is needed"
@@ -215,7 +213,7 @@ class Slide(object):
 
     @property
     def _extension(self) -> str:
-        return os.path.splitext(self._slide_path)[1]
+        return os.path.splitext(self._path)[1]
 
 
 class SlideSet(object):
