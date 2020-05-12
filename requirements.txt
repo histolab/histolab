@@ -6,7 +6,6 @@ click==7.1.2
 cycler==0.10.0
 decorator==4.4.2
 entrypoints==0.3
-flake8==3.7.9
 imageio==2.8.0
 importlib-metadata==1.6.0
 ipython==7.14.0
