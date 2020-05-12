@@ -24,19 +24,22 @@ Slide is the main API class for manipulating WSI slides images.
 import math
 import os
 import pathlib
-from typing import Tuple, Union
+from typing import Tuple, Union, List
 
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure as matplotlib_figure
 import ntpath
 import numpy as np
 import PIL
 
 import openslide
 
-from .util import Time
-
 IMG_EXT = "png"
 THUMBNAIL_SIZE = 300
+
+# needed for matplotlib
+# TODO: can we get rid of this shit?
+plt.ioff()
 
 
 class Slide(object):
@@ -51,17 +54,17 @@ class Slide(object):
 
     # ---public interface methods and properties---
 
-    def resampled_array(self, scale_factor=32) -> np.array:
+    def resampled_array(self, scale_factor: int = 32) -> np.array:
         return self._resample(scale_factor)[1]
 
-    def save_scaled_image(self, scale_factor=32) -> None:
+    def save_scaled_image(self, scale_factor: int = 32) -> None:
         """Save a scaled image in the correct path
-        
+
         Parameters
         ----------
         scale_factor : int, default is 32
             Image scaling factor
-        
+
         """
         os.makedirs(self._processed_path, exist_ok=True)
         img = self._resample(scale_factor)[0]
@@ -77,7 +80,7 @@ class Slide(object):
         pathlib.Path(folder).mkdir(exist_ok=True)
         img.save(self.thumbnail_path)
 
-    def scaled_image_path(self, scale_factor=32) -> str:
+    def scaled_image_path(self, scale_factor: int = 32) -> str:
         """Returns slide image path.
 
         Parameters
@@ -88,7 +91,6 @@ class Slide(object):
         Returns
         -------
         img_path : str
-        
         """
         img_path = self._breadcumb(self._processed_path, scale_factor)
         return img_path
@@ -104,7 +106,6 @@ class Slide(object):
         thumb_path = os.path.join(
             self._processed_path, "thumbnails", f"{self.wsi_name}.{IMG_EXT}"
         )
-
         return thumb_path
 
     @property
@@ -129,7 +130,7 @@ class Slide(object):
 
     # ---private interface methods and properties---
 
-    def _breadcumb(self, directory_path, scale_factor=32) -> str:
+    def _breadcumb(self, directory_path: str, scale_factor: int = 32) -> str:
         """Returns a complete path according to the give directory path
 
         Parameters
@@ -155,7 +156,7 @@ class Slide(object):
             )
         return final_path
 
-    def _resample(self, scale_factor=32) -> Tuple[PIL.Image.Image, np.array]:
+    def _resample(self, scale_factor: int = 32) -> Tuple[PIL.Image.Image, np.array]:
         """Converts a WSI slide to a scaled-down PIL image.
 
         The PIL image is also converted to array.
@@ -185,7 +186,9 @@ class Slide(object):
         arr_img = np.asarray(img)
         return img, arr_img
 
-    def _resampled_dimensions(self, scale_factor=32) -> Tuple[int, int, int, int]:
+    def _resampled_dimensions(
+        self, scale_factor: int = 32
+    ) -> Tuple[int, int, int, int]:
         large_w, large_h = self.wsi_dimensions
         new_w = math.floor(large_w / scale_factor)
         new_h = math.floor(large_h / scale_factor)
@@ -216,12 +219,14 @@ class Slide(object):
 
 
 class SlideSet(object):
-    def __init__(self, slides_path, processed_path, valid_wsi_extensions):
+    def __init__(
+        self, slides_path: str, processed_path: str, valid_wsi_extensions: list
+    ) -> None:
         self._slides_path = slides_path
         self._processed_path = processed_path
         self._valid_wsi_extensions = valid_wsi_extensions
 
-    def save_rescaled_slides(self, n=0):
+    def save_scaled_slides(self, n: int = 0) -> None:
         """Save rescaled images
 
         Parameters
@@ -232,11 +237,10 @@ class SlideSet(object):
         # TODO: add logger if n>total_slide and log saved images names
         os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
-
         for slide in self.slides[:n]:
             slide.save_scaled_image()
 
-    def save_thumbnails(self, scale_factor=32, n=0):
+    def save_thumbnails(self, scale_factor: int = 32, n: int = 0) -> None:
         """Save thumbnails
 
         Parameters
@@ -245,16 +249,15 @@ class SlideSet(object):
             first n slides in dataset folder
         scale_factor : int, default is 32
             Image scaling factor
-            
         """
         # TODO: add logger n>total_slide and log thumbnails names
         os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
         for slide in self.slides[:n]:
-            slide.save_thumbnail(scale_factor)
+            slide.save_thumbnail()
 
     @property
-    def slides(self):
+    def slides(self) -> List[Slide]:
         return [
             Slide(os.path.join(self._slides_path, wsi_path), self._processed_path)
             for wsi_path in os.listdir(self._slides_path)
@@ -262,7 +265,7 @@ class SlideSet(object):
         ]
 
     @property
-    def slides_dimensions(self):
+    def _slides_dimensions(self) -> List[dict]:
         return [
             {
                 "wsi": slide.wsi_name,
@@ -274,11 +277,67 @@ class SlideSet(object):
         ]
 
     @property
-    def slides_stats(self):
-        """Retrieve statistic/graphs of wsi files contained in the dataset"""
-        t = Time()
+    def _wsi_dimensions_list(self) -> List[tuple]:
+        return [slide.wsi_dimensions for slide in self.slides]
 
-        basic_stats = {
+    @property
+    def slides_stats(self) -> Tuple[dict, matplotlib_figure]:
+        """Retrieve statistic/graphs of wsi files contained in the dataset"""
+
+        basic_stats = self._dimensions_stats
+
+        x, y = zip(*[slide.wsi_dimensions for slide in self.slides])
+        colors = np.random.rand(self.total_slides)
+        sizes = 8 * self.total_slides
+
+        figure, axs = plt.subplots(ncols=2, nrows=2, constrained_layout=True)
+
+        axs[0, 0].scatter(x, y, s=sizes, c=colors, alpha=0.7, cmap="prism")
+        axs[0, 0].set_title("SVS Image Sizes (Labeled with slide name)")
+        axs[0, 0].set_xlabel("width (pixels)")
+        axs[0, 0].set_ylabel("height (pixels)")
+        for i, s in enumerate(self.slides):
+            axs[0, 1].annotate(s.wsi_name, (x[i], y[i]))
+
+        area = [w * h / 1e6 for (w, h) in self._wsi_dimensions_list]
+        axs[0, 1].hist(area, bins=64)
+        axs[0, 1].set_title("Distribution of image sizes in millions of pixels")
+        axs[0, 1].set_xlabel("width x height (M of pixels)")
+        axs[0, 1].set_ylabel("# images")
+
+        whratio = [w / h for (w, h) in self._wsi_dimensions_list]
+        axs[1, 0].hist(whratio, bins=64)
+        axs[1, 0].set_title("Image shapes (width to height)")
+        axs[1, 0].set_xlabel("width to height ratio")
+        axs[1, 0].set_ylabel("# images")
+
+        hwratio = [h / w for (w, h) in self._wsi_dimensions_list]
+        axs[1, 1].hist(hwratio, bins=64)
+        axs[1, 1].set_title("Image shapes (height to width)")
+        axs[1, 1].set_xlabel("height to width ratio")
+        axs[1, 1].set_ylabel("# images")
+
+        return basic_stats, figure
+
+    @property
+    def total_slides(self) -> int:
+        return len(self.slides)
+
+    @property
+    def _avg_width_slide(self) -> float:
+        return sum(d["width"] for d in self._slides_dimensions) / self.total_slides
+
+    @property
+    def _avg_height_slide(self) -> float:
+        return sum(d["height"] for d in self._slides_dimensions) / self.total_slides
+
+    @property
+    def _avg_size_slide(self) -> float:
+        return sum(d["size"] for d in self._slides_dimensions) / self.total_slides
+
+    @property
+    def _dimensions_stats(self) -> dict:
+        return {
             "no_of_slides": self.total_slides,
             "max_width": self._max_width_slide,
             "max_height": self._max_height_slide,
@@ -291,96 +350,32 @@ class SlideSet(object):
             "avg_size": self._avg_size_slide,
         }
 
-        t.elapsed_display()
-
-        x, y = zip(*[slide.wsi_dimensions for slide in self.slides])
-        colors = np.random.rand(self.total_slides)
-        sizes = 8 * self.total_slides
-
-        plt.ioff()
-
-        fig, ax = plt.subplots()
-        ax.scatter(x, y, s=sizes, c=colors, alpha=0.7)
-        plt.xlabel("width (pixels)")
-        plt.ylabel("height (pixels)")
-        plt.title("WSI sizes")
-        plt.set_cmap("prism")
-
-        # plt.scatter(x, y, s=sizes, c=colors, alpha=0.7)
-        # plt.xlabel("width (pixels)")
-        # plt.ylabel("height (pixels)")
-        # plt.title("SVS Image Sizes (Labeled with slide numbers)")
-        # plt.set_cmap("prism")
-        # for i in range(num_images):
-        #     snum = i + 1
-        #     plt.annotate(str(snum), (x[i], y[i]))
-        # plt.tight_layout()
-
-        # area = [w * h / 1e6 for (w, h) in slide_stats]
-        # plt.hist(area, bins=64)
-        # plt.xlabel("width x height (M of pixels)")
-        # plt.ylabel("# images")
-        # plt.title("Distribution of image sizes in millions of pixels")
-        # plt.tight_layout()
-
-        # whratio = [w / h for (w, h) in slide_stats]
-        # plt.hist(whratio, bins=64)
-        # plt.xlabel("width to height ratio")
-        # plt.ylabel("# images")
-        # plt.title("Image shapes (width to height)")
-        # plt.tight_layout()
-
-        # hwratio = [h / w for (w, h) in slide_stats]
-        # plt.hist(hwratio, bins=64)
-        # plt.xlabel("height to width ratio")
-        # plt.ylabel("# images")
-        # plt.title("Image shapes (height to width)")
-        # plt.tight_layout()
-        # t.elapsed_display()
-        return basic_stats, fig
-
     @property
-    def total_slides(self):
-        return len(self.slides)
-
-    @property
-    def _avg_width_slide(self):
-        return sum(d["width"] for d in self.slides_dimensions) / self.total_slides
-
-    @property
-    def _avg_height_slide(self):
-        return sum(d["height"] for d in self.slides_dimensions) / self.total_slides
-
-    @property
-    def _avg_size_slide(self):
-        return sum(d["size"] for d in self.slides_dimensions) / self.total_slides
-
-    @property
-    def _max_height_slide(self):
-        max_height = max(self.slides_dimensions, key=lambda x: x["height"])
+    def _max_height_slide(self) -> dict:
+        max_height = max(self._slides_dimensions, key=lambda x: x["height"])
         return {"slide": max_height["wsi"], "height": max_height["height"]}
 
     @property
-    def _max_size_slide(self):
-        max_size = max(self.slides_dimensions, key=lambda x: x["size"])
+    def _max_size_slide(self) -> dict:
+        max_size = max(self._slides_dimensions, key=lambda x: x["size"])
         return {"slide": max_size["wsi"], "size": max_size["size"]}
 
     @property
-    def _max_width_slide(self):
-        max_width = max(self.slides_dimensions, key=lambda x: x["width"])
+    def _max_width_slide(self) -> dict:
+        max_width = max(self._slides_dimensions, key=lambda x: x["width"])
         return {"slide": max_width["wsi"], "width": max_width["width"]}
 
     @property
-    def _min_width_slide(self):
-        min_width = min(self.slides_dimensions, key=lambda x: x["width"])
+    def _min_width_slide(self) -> dict:
+        min_width = min(self._slides_dimensions, key=lambda x: x["width"])
         return {"slide": min_width["wsi"], "width": min_width["width"]}
 
     @property
-    def _min_height_slide(self):
-        min_height = min(self.slides_dimensions, key=lambda x: x["height"])
+    def _min_height_slide(self) -> dict:
+        min_height = min(self._slides_dimensions, key=lambda x: x["height"])
         return {"slide": min_height["wsi"], "height": min_height["height"]}
 
     @property
-    def _min_size_slide(self):
-        min_size = min(self.slides_dimensions, key=lambda x: x["size"])
-        return {"slide": min_size["wsi"], "height": min_size["size"]}
+    def _min_size_slide(self) -> dict:
+        min_size = min(self._slides_dimensions, key=lambda x: x["size"])
+        return {"slide": min_size["wsi"], "size": min_size["size"]}
