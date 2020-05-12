@@ -11,7 +11,7 @@ from matplotlib.figure import Figure as matplotlib_figure
 
 from src.histolab.slide import Slide, SlideSet
 
-from .unitutil import (
+from ..unitutil import (
     dict_list_eq,
     property_mock,
     initializer_mock,
@@ -23,7 +23,7 @@ from .unitutil import (
 )
 
 
-class DescribeSlide(object):
+class Describe_Slide(object):
     def it_constructs_from_args(self, request):
         _init_ = initializer_mock(request, Slide)
         _slide_path = "/foo/bar/myslide.svs"
@@ -385,7 +385,7 @@ class DescribeSlide(object):
         return property_mock(request, Slide, "dimensions")
 
 
-class DescribeSlideset(object):
+class Describe_Slideset(object):
     def it_constructs_from_args(self, request):
         _init_ = initializer_mock(request, SlideSet)
         _slides_path = "/foo/bar/"
@@ -616,10 +616,10 @@ class DescribeSlideset(object):
         slide1 = instance_mock(request, Slide)
         slide2 = instance_mock(request, Slide)
 
-        dd = SlideSet(tmp_path_, os.path.join(tmp_path_, "processed"), [])
+        slideset = SlideSet(tmp_path_, os.path.join(tmp_path_, "processed"), [])
         slides = property_mock(request, SlideSet, "slides")
         slides.return_value = [slide1, slide2]
-        dd.save_scaled_slides(32, 2)
+        slideset.save_scaled_slides(32, 2)
 
         slide1.save_scaled_image.assert_called_once_with(32)
         slide2.save_scaled_image.assert_called_once_with(32)
@@ -629,10 +629,10 @@ class DescribeSlideset(object):
         slide1 = instance_mock(request, Slide)
         slide2 = instance_mock(request, Slide)
 
-        dd = SlideSet(tmp_path_, os.path.join(tmp_path_, "processed"), [])
+        slideset = SlideSet(tmp_path_, os.path.join(tmp_path_, "processed"), [])
         slides = property_mock(request, SlideSet, "slides")
         slides.return_value = [slide1, slide2]
-        dd.save_thumbnails(2)
+        slideset.save_thumbnails(2)
 
         slide1.save_thumbnail.assert_called_once_with()
         slide2.save_thumbnail.assert_called_once_with()
@@ -651,7 +651,7 @@ class DescribeSlideset(object):
         assert slides_stats[0] == slideset._dimensions_stats
         assert type(slides_stats[1]) == matplotlib_figure
 
-    @pytest.mark.mpl_image_compare(baseline_dir="../mpl-baseline-fixtures")
+    @pytest.mark.mpl_image_compare(baseline_dir="../fixtures/mpl-baseline-images")
     def test_generates_a_correct_plot_figure(
         self, request, total_slides_prop, _slides_dimensions_list_prop
     ):
