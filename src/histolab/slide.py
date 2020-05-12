@@ -18,7 +18,7 @@
 
 """Provides the Slide class.
 
-Slide is the main API class for manipulating WSI slides images.
+Slide is the main API class for manipulating slide objects.
 """
 
 import math
@@ -48,8 +48,8 @@ class Slide(object):
     HERE-> expand the docstring
     """
 
-    def __init__(self, wsi_path: str, processed_path: str) -> None:
-        self._wsi_path = wsi_path
+    def __init__(self, slide_path: str, processed_path: str) -> None:
+        self._slide_path = slide_path
         self._processed_path = processed_path
 
     # ---public interface methods and properties---
@@ -104,29 +104,29 @@ class Slide(object):
         thumb_path : str
         """
         thumb_path = os.path.join(
-            self._processed_path, "thumbnails", f"{self.wsi_name}.{IMG_EXT}"
+            self._processed_path, "thumbnails", f"{self.name}.{IMG_EXT}"
         )
         return thumb_path
 
     @property
-    def wsi_dimensions(self) -> Tuple[int, int]:
-        """Returns the wsi dimensions (w,h)
+    def dimensions(self) -> Tuple[int, int]:
+        """Returns the slide dimensions (w,h)
 
         Returns
         -------
-        wsi_dimensions : tuple(width, height)
+        dimensions : tuple(width, height)
         """
         return self._wsi.dimensions
 
     @property
-    def wsi_name(self) -> str:
-        """Retrieves the WSI name without extension.
+    def name(self) -> str:
+        """Retrieves the slide name without extension.
 
         Returns
         -------
-        wsi_name : str
+        name : str
         """
-        return ntpath.basename(self._wsi_path).split(".")[0]
+        return ntpath.basename(self._slide_path).split(".")[0]
 
     # ---private interface methods and properties---
 
@@ -147,21 +147,21 @@ class Slide(object):
         """
         large_w, large_h, new_w, new_h = self._resampled_dimensions(scale_factor)
         if {large_w, large_h, new_w, new_h} == {None}:
-            final_path = os.path.join(directory_path, f"{self.wsi_name}*.{IMG_EXT}")
+            final_path = os.path.join(directory_path, f"{self.name}*.{IMG_EXT}")
         else:
             final_path = os.path.join(
                 directory_path,
-                f"{self.wsi_name}-{scale_factor}x-{large_w}x{large_h}-{new_w}x"
+                f"{self.name}-{scale_factor}x-{large_w}x{large_h}-{new_w}x"
                 f"{new_h}.{IMG_EXT}",
             )
         return final_path
 
     def _resample(self, scale_factor: int = 32) -> Tuple[PIL.Image.Image, np.array]:
-        """Converts a WSI slide to a scaled-down PIL image.
+        """Converts a slide to a scaled-down PIL image.
 
         The PIL image is also converted to array.
         image is the scaled-down PIL image, original width and original height
-        are the width and height of the WSI, new width and new height are the
+        are the width and height of the slide, new width and new height are the
         dimensions of the PIL image.
 
         Parameters
@@ -189,7 +189,7 @@ class Slide(object):
     def _resampled_dimensions(
         self, scale_factor: int = 32
     ) -> Tuple[int, int, int, int]:
-        large_w, large_h = self.wsi_dimensions
+        large_w, large_h = self.dimensions
         new_w = math.floor(large_w / scale_factor)
         new_h = math.floor(large_h / scale_factor)
         return large_w, large_h, new_w, new_h
@@ -204,7 +204,7 @@ class Slide(object):
                 An OpenSlide object representing a whole-slide image.
         """
         try:
-            slide = openslide.open_slide(self._wsi_path)
+            slide = openslide.open_slide(self._slide_path)
         except openslide.OpenSlideError:
             raise openslide.OpenSlideError(
                 "Your wsi has something broken inside, a doctor is needed"
@@ -214,17 +214,17 @@ class Slide(object):
         return slide
 
     @property
-    def _wsi_extension(self) -> str:
-        return os.path.splitext(self._wsi_path)[1]
+    def _extension(self) -> str:
+        return os.path.splitext(self._slide_path)[1]
 
 
 class SlideSet(object):
     def __init__(
-        self, slides_path: str, processed_path: str, valid_wsi_extensions: list
+        self, slides_path: str, processed_path: str, valid_extensions: list
     ) -> None:
         self._slides_path = slides_path
         self._processed_path = processed_path
-        self._valid_wsi_extensions = valid_wsi_extensions
+        self._valid_extensions = valid_extensions
 
     # ---public interface methods and properties---
 
@@ -261,18 +261,18 @@ class SlideSet(object):
     @property
     def slides(self) -> List[Slide]:
         return [
-            Slide(os.path.join(self._slides_path, wsi_path), self._processed_path)
-            for wsi_path in os.listdir(self._slides_path)
-            if os.path.splitext(wsi_path)[1] in self._valid_wsi_extensions
+            Slide(os.path.join(self._slides_path, _path), self._processed_path)
+            for _path in os.listdir(self._slides_path)
+            if os.path.splitext(_path)[1] in self._valid_extensions
         ]
 
     @property
     def slides_stats(self) -> Tuple[dict, matplotlib_figure]:
-        """Retrieve statistic/graphs of wsi files contained in the dataset"""
+        """Retrieve statistic/graphs of slides files contained in the dataset"""
 
         basic_stats = self._dimensions_stats
 
-        x, y = zip(*self._wsi_dimensions_list)
+        x, y = zip(*self._slides_dimensions_list)
         colors = np.random.rand(self.total_slides)
         sizes = 8 * self.total_slides
 
@@ -283,21 +283,21 @@ class SlideSet(object):
         axs[0, 0].set_xlabel("width (pixels)")
         axs[0, 0].set_ylabel("height (pixels)")
         for i, s in enumerate(self.slides):
-            axs[0, 1].annotate(s.wsi_name, (x[i], y[i]))
+            axs[0, 1].annotate(s.name, (x[i], y[i]))
 
-        area = [w * h / 1e6 for (w, h) in self._wsi_dimensions_list]
+        area = [w * h / 1e6 for (w, h) in self._slides_dimensions_list]
         axs[0, 1].hist(area, bins=64)
         axs[0, 1].set_title("Distribution of image sizes in millions of pixels")
         axs[0, 1].set_xlabel("width x height (M of pixels)")
         axs[0, 1].set_ylabel("# images")
 
-        whratio = [w / h for (w, h) in self._wsi_dimensions_list]
+        whratio = [w / h for (w, h) in self._slides_dimensions_list]
         axs[1, 0].hist(whratio, bins=64)
         axs[1, 0].set_title("Image shapes (width to height)")
         axs[1, 0].set_xlabel("width to height ratio")
         axs[1, 0].set_ylabel("# images")
 
-        hwratio = [h / w for (w, h) in self._wsi_dimensions_list]
+        hwratio = [h / w for (w, h) in self._slides_dimensions_list]
         axs[1, 1].hist(hwratio, bins=64)
         axs[1, 1].set_title("Image shapes (height to width)")
         axs[1, 1].set_xlabel("height to width ratio")
@@ -341,45 +341,45 @@ class SlideSet(object):
     @property
     def _max_height_slide(self) -> dict:
         max_height = max(self._slides_dimensions, key=lambda x: x["height"])
-        return {"slide": max_height["wsi"], "height": max_height["height"]}
+        return {"slide": max_height["slide"], "height": max_height["height"]}
 
     @property
     def _max_size_slide(self) -> dict:
         max_size = max(self._slides_dimensions, key=lambda x: x["size"])
-        return {"slide": max_size["wsi"], "size": max_size["size"]}
+        return {"slide": max_size["slide"], "size": max_size["size"]}
 
     @property
     def _max_width_slide(self) -> dict:
         max_width = max(self._slides_dimensions, key=lambda x: x["width"])
-        return {"slide": max_width["wsi"], "width": max_width["width"]}
+        return {"slide": max_width["slide"], "width": max_width["width"]}
 
     @property
     def _min_width_slide(self) -> dict:
         min_width = min(self._slides_dimensions, key=lambda x: x["width"])
-        return {"slide": min_width["wsi"], "width": min_width["width"]}
+        return {"slide": min_width["slide"], "width": min_width["width"]}
 
     @property
     def _min_height_slide(self) -> dict:
         min_height = min(self._slides_dimensions, key=lambda x: x["height"])
-        return {"slide": min_height["wsi"], "height": min_height["height"]}
+        return {"slide": min_height["slide"], "height": min_height["height"]}
 
     @property
     def _min_size_slide(self) -> dict:
         min_size = min(self._slides_dimensions, key=lambda x: x["size"])
-        return {"slide": min_size["wsi"], "size": min_size["size"]}
+        return {"slide": min_size["slide"], "size": min_size["size"]}
 
     @property
     def _slides_dimensions(self) -> List[dict]:
         return [
             {
-                "wsi": slide.wsi_name,
-                "width": slide.wsi_dimensions[0],
-                "height": slide.wsi_dimensions[1],
-                "size": slide.wsi_dimensions[0] * slide.wsi_dimensions[1],
+                "slide": slide.name,
+                "width": slide.dimensions[0],
+                "height": slide.dimensions[1],
+                "size": slide.dimensions[0] * slide.dimensions[1],
             }
             for slide in self.slides
         ]
 
     @property
-    def _wsi_dimensions_list(self) -> List[tuple]:
-        return [slide.wsi_dimensions for slide in self.slides]
+    def _slides_dimensions_list(self):
+        return [slide.dimensions for slide in self.slides]
