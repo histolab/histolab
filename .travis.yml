@@ -16,7 +16,7 @@ install:
 
 # command to run tests
 script:
-  - pytest --cov=histolab
+  - pytest --cov=src.histolab
 
 after_success:
   - coveralls
