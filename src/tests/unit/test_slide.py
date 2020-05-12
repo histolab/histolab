@@ -1,13 +1,15 @@
 # encoding: utf-8
 
 import os
-import pytest
-import PIL
-import openslide
-import numpy as np
 
-from .unitutil import property_mock, initializer_mock, PILImageMock, ANY
+import numpy as np
+import openslide
+import PIL
+import pytest
+
 from histolab.slide import Slide
+
+from .unitutil import ANY, PILImageMock, initializer_mock, method_mock, property_mock
 
 
 class DescribeSlide(object):
@@ -15,18 +17,19 @@ class DescribeSlide(object):
         _init_ = initializer_mock(request, Slide)
         _wsi_path = "/foo/bar/myslide.svs"
         _processed_path = "/foo/bar/myslide/processed"
-        _scale_factor = 22
 
-        slide = Slide(_wsi_path, _processed_path, _scale_factor)
+        slide = Slide(_wsi_path, _processed_path)
 
-        _init_.assert_called_once_with(ANY, _wsi_path, _processed_path, _scale_factor)
+        _init_.assert_called_once_with(
+            ANY, _wsi_path, _processed_path,
+        )
         assert isinstance(slide, Slide)
 
     def but_it_has_wrong_wsi_path_type(self):
         """This test simulates a wrong user behaviour, using a None object instead of a
         str, or a path as wsi_path param"""
         with pytest.raises(TypeError) as err:
-            slide = Slide(None, "prc", scale_factor=33)
+            slide = Slide(None, "prc")
             wsiname = slide.wsi_name
 
         assert isinstance(err.value, TypeError)
@@ -37,11 +40,11 @@ class DescribeSlide(object):
     def or_it_has_wrong_processed_path(self, request):
         """This test simulates a wrong user behaviour, using a None object instead of a
         str, or a path as processed_path param"""
-        _resampled_dimensions = property_mock(request, Slide, "_resampled_dimensions")
+        _resampled_dimensions = method_mock(request, Slide, "_resampled_dimensions")
         _resampled_dimensions.return_value = (1, 2, 3, 4)
         with pytest.raises(TypeError) as err:
-            slide = Slide("wsipath", None, scale_factor=33)
-            im_path = slide.scaled_image_path
+            slide = Slide("wsipath", None)
+            im_path = slide.scaled_image_path(32)
 
         assert isinstance(err.value, TypeError)
         assert (
@@ -49,20 +52,25 @@ class DescribeSlide(object):
         )
 
     def it_generates_the_correct_breadcumb(self, request, breadcumb_fixture):
-        resampled_dims, dir_path, wsi_path, proc_path, scale_factor, expected_path = (
-            breadcumb_fixture
-        )
-        _resampled_dimensions = property_mock(request, Slide, "_resampled_dimensions")
+        (
+            resampled_dims,
+            dir_path,
+            wsi_path,
+            proc_path,
+            scale_factor,
+            expected_path,
+        ) = breadcumb_fixture
+        _resampled_dimensions = method_mock(request, Slide, "_resampled_dimensions")
         _resampled_dimensions.return_value = resampled_dims
-        slide = Slide(wsi_path, proc_path, scale_factor)
+        slide = Slide(wsi_path, proc_path)
 
-        _breadcumb = slide._breadcumb(dir_path)
+        _breadcumb = slide._breadcumb(dir_path, scale_factor)
 
         assert _breadcumb == expected_path
 
     def it_knows_its_wsi_name(self, wsi_name_fixture):
         _wsi_path, expected_value = wsi_name_fixture
-        slide = Slide(_wsi_path, "processed/", scale_factor=32)
+        slide = Slide(_wsi_path, "processed/")
 
         wsi_name = slide.wsi_name
 
@@ -71,16 +79,21 @@ class DescribeSlide(object):
     def it_knows_its_scaled_image_path(self, scaled_img_path_fixture, resampled_dims_):
         wsi_path, proc_path, wsi_dims, expected_value = scaled_img_path_fixture
         resampled_dims_.return_value = wsi_dims
-        slide = Slide(wsi_path, proc_path, scale_factor=22)
+        slide = Slide(wsi_path, proc_path)
 
-        scaled_img_path = slide.scaled_image_path
+        scaled_img_path = slide.scaled_image_path(scale_factor=22)
 
         assert scaled_img_path == expected_value
 
-    def it_knows_its_thumbnails_path(self, thumb_path_fixture, resampled_dims_):
-        wsi_path, proc_path, wsi_dims, expected_value = thumb_path_fixture
+    def it_knows_its_thumbnails_path(self, resampled_dims_):
+        wsi_path, proc_path, wsi_dims, expected_value = (
+            "/foo/bar/myslide.svs",
+            "/foo/bar/myslide/processed",
+            (345, 111, 333, 444),
+            "/foo/bar/myslide/processed/thumbnails/myslide.png",
+        )
         resampled_dims_.return_value = wsi_dims
-        slide = Slide(wsi_path, proc_path, scale_factor=22)
+        slide = Slide(wsi_path, proc_path)
 
         thumbnail_path = slide.thumbnail_path
 
@@ -88,7 +101,7 @@ class DescribeSlide(object):
 
     def it_knows_its_wsi_extension(self, wsi_ext_fixture):
         wsi_path, expected_value = wsi_ext_fixture
-        slide = Slide(wsi_path, "processed", scale_factor=32)
+        slide = Slide(wsi_path, "processed")
 
         _wsi_ext = slide._wsi_extension
 
@@ -99,7 +112,7 @@ class DescribeSlide(object):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         wsi_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(wsi_path, "processed", 32)
+        slide = Slide(wsi_path, "processed")
 
         wsi_dims = slide.wsi_dimensions
 
@@ -114,9 +127,9 @@ class DescribeSlide(object):
             `return large_w, large_h, new_w, new_h`
         """
         wsi_dimensions_.return_value = (300, 500)
-        slide = Slide("/a/b/foo", "processed", scale_factor=32)
+        slide = Slide("/a/b/foo", "processed")
 
-        _resampled_dims = slide._resampled_dimensions
+        _resampled_dims = slide._resampled_dimensions(scale_factor=32)
 
         assert _resampled_dims == (300, 500, 9, 15)
 
@@ -126,9 +139,9 @@ class DescribeSlide(object):
         the ZeroDivision Exception
         """
         wsi_dimensions_.return_value = (300, 500)
-        slide = Slide("/a/b/foo", "processed", scale_factor=0)
+        slide = Slide("/a/b/foo", "processed")
         with pytest.raises(ZeroDivisionError) as err:
-            _resampled_dims = slide._resampled_dimensions
+            _resampled_dims = slide._resampled_dimensions(scale_factor=0)
 
         assert isinstance(err.value, ZeroDivisionError)
         assert str(err.value) == "division by zero"
@@ -138,10 +151,10 @@ class DescribeSlide(object):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         wsi_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(wsi_path, "processed", 32)
+        slide = Slide(wsi_path, "processed")
         resampled_dims_.return_value = (100, 200, 300, 400)
 
-        resampled_array = slide.resampled_array
+        resampled_array = slide.resampled_array(scale_factor=32)
 
         assert type(resampled_array) == np.ndarray
         assert resampled_array.shape == (400, 300, 3)
@@ -151,7 +164,7 @@ class DescribeSlide(object):
         image = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         wsi_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(wsi_path, "processed", 32)
+        slide = Slide(wsi_path, "processed")
 
         _wsi = slide._wsi
 
@@ -159,7 +172,7 @@ class DescribeSlide(object):
 
     def but_it_raises_an_exception_if_file_not_found(self):
         with pytest.raises(FileNotFoundError) as err:
-            slide = Slide("wrong/path/fake.wsi", "processed", 32)
+            slide = Slide("wrong/path/fake.wsi", "processed")
             wsi = slide._wsi
 
         assert isinstance(err.value, FileNotFoundError)
@@ -169,7 +182,7 @@ class DescribeSlide(object):
         wsi_path_ = tmpdir.mkdir("sub").join("hello.txt")
         wsi_path_.write("content")
         with pytest.raises(PIL.UnidentifiedImageError) as err:
-            slide = Slide(os.path.join(wsi_path_), "processed", 32)
+            slide = Slide(os.path.join(wsi_path_), "processed")
             wsi = slide._wsi
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
@@ -182,10 +195,10 @@ class DescribeSlide(object):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         wsi_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(wsi_path, "processed", 32)
+        slide = Slide(wsi_path, "processed")
         resampled_dims_.return_value = (100, 200, 300, 400)
 
-        _resample = slide._resample
+        _resample = slide._resample(32)
 
         # image array assertions
         assert type(_resample[1]) == np.ndarray
@@ -211,28 +224,28 @@ class DescribeSlide(object):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         wsi_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(wsi_path, os.path.join(tmp_path_, "processed"), 32)
+        slide = Slide(wsi_path, os.path.join(tmp_path_, "processed"))
         resampled_dims_.return_value = (100, 200, 300, 400)
 
-        slide.save_scaled_image()
+        slide.save_scaled_image(32)
 
-        assert slide.scaled_image_path == os.path.join(
+        assert slide.scaled_image_path(32) == os.path.join(
             tmp_path_, "processed", "mywsi-32x-100x200-300x400.png"
         )
-        assert os.path.exists(os.path.join(tmp_path_, slide.scaled_image_path))
+        assert os.path.exists(os.path.join(tmp_path_, slide.scaled_image_path(32)))
 
     def it_can_save_thumbnail(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         wsi_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(wsi_path, os.path.join(tmp_path_, "processed"), 32)
+        slide = Slide(wsi_path, os.path.join(tmp_path_, "processed"))
         resampled_dims_.return_value = (100, 200, 300, 400)
 
         slide.save_thumbnail()
 
         assert slide.thumbnail_path == os.path.join(
-            tmp_path_, "processed", "thumbnails_png", "mywsi-32x-100x200-300x400.png"
+            tmp_path_, "processed", "thumbnails", "mywsi.png"
         )
         assert os.path.exists(os.path.join(tmp_path_, slide.thumbnail_path))
 
@@ -272,41 +285,6 @@ class DescribeSlide(object):
         ]
     )
     def scaled_img_path_fixture(self, request):
-        wsi_path, proc_path, wsi_dims, expected_value = request.param
-        return wsi_path, proc_path, wsi_dims, expected_value
-
-    @pytest.fixture(
-        params=[
-            (
-                "/foo/bar/myslide.svs",
-                "/foo/bar/myslide/processed",
-                (345, 111, 333, 444),
-                "/foo/bar/myslide/processed/thumbnails_png/myslide-22x-345x111-"
-                "333x444.png",
-            ),
-            (
-                "/foo/bar/myslide2.svs",
-                "/foo/bar/myslide/processed",
-                (345, 111, None, None),
-                "/foo/bar/myslide/processed/thumbnails_png/myslide2-22x-345x111-"
-                "NonexNone.png",
-            ),
-            (
-                "/foo/bar/myslide2.svs",
-                "/foo/bar/myslide/processed",
-                (345, 111, 123, 123),
-                "/foo/bar/myslide/processed/thumbnails_png/"
-                "myslide2-22x-345x111-123x123.png",
-            ),
-            (
-                "/foo/bar/myslide2.svs",
-                "/foo/bar/myslide/processed",
-                (None, None, None, None),
-                "/foo/bar/myslide/processed/thumbnails_png/myslide2*.png",
-            ),
-        ]
-    )
-    def thumb_path_fixture(self, request):
         wsi_path, proc_path, wsi_dims, expected_value = request.param
         return wsi_path, proc_path, wsi_dims, expected_value
 
@@ -363,9 +341,14 @@ class DescribeSlide(object):
         ]
     )
     def breadcumb_fixture(self, request):
-        resampled_dims, dir_path, wsi_path, proc_path, scale_factor, expected_path = (
-            request.param
-        )
+        (
+            resampled_dims,
+            dir_path,
+            wsi_path,
+            proc_path,
+            scale_factor,
+            expected_path,
+        ) = request.param
         return (
             resampled_dims,
             dir_path,
@@ -386,7 +369,7 @@ class DescribeSlide(object):
 
     @pytest.fixture
     def resampled_dims_(self, request):
-        return property_mock(request, Slide, "_resampled_dimensions")
+        return method_mock(request, Slide, "_resampled_dimensions")
 
     @pytest.fixture
     def wsi_dimensions_(self, request):
