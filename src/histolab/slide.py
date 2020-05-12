@@ -29,9 +29,8 @@ from typing import Tuple, Union
 import matplotlib.pyplot as plt
 import ntpath
 import numpy as np
-import PIL
-
 import openslide
+import PIL
 
 from .util import Time
 
@@ -45,8 +44,8 @@ class Slide(object):
     HERE-> expand the docstring
     """
 
-    def __init__(self, wsi_path: str, processed_path: str) -> None:
-        self._wsi_path = wsi_path
+    def __init__(self, path: str, processed_path: str) -> None:
+        self._path = path
         self._processed_path = processed_path
 
     # ---public interface methods and properties---
@@ -102,30 +101,30 @@ class Slide(object):
         thumb_path : str
         """
         thumb_path = os.path.join(
-            self._processed_path, "thumbnails", f"{self.wsi_name}.{IMG_EXT}"
+            self._processed_path, "thumbnails", f"{self.name}.{IMG_EXT}"
         )
 
         return thumb_path
 
     @property
-    def wsi_dimensions(self) -> Tuple[int, int]:
-        """Returns the wsi dimensions (w,h)
+    def dimensions(self) -> Tuple[int, int]:
+        """Returns the slide dimensions (w,h)
 
         Returns
         -------
-        wsi_dimensions : tuple(width, height)
+        dimensions : tuple (width, height)
         """
         return self._wsi.dimensions
 
     @property
-    def wsi_name(self) -> str:
-        """Retrieves the WSI name without extension.
+    def name(self) -> str:
+        """Retrieves the slide name without extension.
 
         Returns
         -------
-        wsi_name : str
+        name : str
         """
-        return ntpath.basename(self._wsi_path).split(".")[0]
+        return ntpath.basename(self._path).split(".")[0]
 
     # ---private interface methods and properties---
 
@@ -146,17 +145,17 @@ class Slide(object):
         """
         large_w, large_h, new_w, new_h = self._resampled_dimensions(scale_factor)
         if {large_w, large_h, new_w, new_h} == {None}:
-            final_path = os.path.join(directory_path, f"{self.wsi_name}*.{IMG_EXT}")
+            final_path = os.path.join(directory_path, f"{self.name}*.{IMG_EXT}")
         else:
             final_path = os.path.join(
                 directory_path,
-                f"{self.wsi_name}-{scale_factor}x-{large_w}x{large_h}-{new_w}x"
+                f"{self.name}-{scale_factor}x-{large_w}x{large_h}-{new_w}x"
                 f"{new_h}.{IMG_EXT}",
             )
         return final_path
 
     def _resample(self, scale_factor=32) -> Tuple[PIL.Image.Image, np.array]:
-        """Converts a WSI slide to a scaled-down PIL image.
+        """Converts a slide to a scaled-down PIL image.
 
         The PIL image is also converted to array.
         image is the scaled-down PIL image, original width and original height
@@ -186,7 +185,7 @@ class Slide(object):
         return img, arr_img
 
     def _resampled_dimensions(self, scale_factor=32) -> Tuple[int, int, int, int]:
-        large_w, large_h = self.wsi_dimensions
+        large_w, large_h = self.dimensions
         new_w = math.floor(large_w / scale_factor)
         new_h = math.floor(large_h / scale_factor)
         return large_w, large_h, new_w, new_h
@@ -201,7 +200,7 @@ class Slide(object):
                 An OpenSlide object representing a whole-slide image.
         """
         try:
-            slide = openslide.open_slide(self._wsi_path)
+            slide = openslide.open_slide(self._path)
         except openslide.OpenSlideError:
             raise openslide.OpenSlideError(
                 "Your wsi has something broken inside, a doctor is needed"
@@ -211,8 +210,8 @@ class Slide(object):
         return slide
 
     @property
-    def _wsi_extension(self) -> str:
-        return os.path.splitext(self._wsi_path)[1]
+    def _extension(self) -> str:
+        return os.path.splitext(self._path)[1]
 
 
 class SlideSet(object):
@@ -265,10 +264,10 @@ class SlideSet(object):
     def slides_dimensions(self):
         return [
             {
-                "wsi": slide.wsi_name,
-                "width": slide.wsi_dimensions[0],
-                "height": slide.wsi_dimensions[1],
-                "size": slide.wsi_dimensions[0] * slide.wsi_dimensions[1],
+                "wsi": slide.name,
+                "width": slide.dimensions[0],
+                "height": slide.dimensions[1],
+                "size": slide.dimensions[0] * slide.dimensions[1],
             }
             for slide in self.slides
         ]
@@ -293,7 +292,7 @@ class SlideSet(object):
 
         t.elapsed_display()
 
-        x, y = zip(*[slide.wsi_dimensions for slide in self.slides])
+        x, y = zip(*[slide.dimensions for slide in self.slides])
         colors = np.random.rand(self.total_slides)
         sizes = 8 * self.total_slides
 
