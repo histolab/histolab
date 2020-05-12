@@ -6,7 +6,10 @@ import numpy as np
 import openslide
 import PIL
 import pytest
-import unittest
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure as matplotlib_figure
+from matplotlib.testing.decorators import image_comparison
+
 
 from src.histolab.slide import Slide, SlideSet
 
@@ -398,6 +401,18 @@ class DescribeSlideset(object):
         )
         assert isinstance(slideset, SlideSet)
 
+    def it_can_constructs_slides(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        slides_ = tuple(instance_mock(request, Slide) for _ in range(10))
+        _slides_ = property_mock(request, SlideSet, "slides")
+        _slides_.return_value = slides_
+        slideset = SlideSet(tmp_path_, os.path.join(tmp_path_, "b"), [".svs"])
+
+        slides = slideset.slides
+
+        _slides_.assert_called_once_with()
+        assert len(slides) == 10
+
     def it_knows_its_slides(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
@@ -606,10 +621,10 @@ class DescribeSlideset(object):
         dd = SlideSet(tmp_path_, os.path.join(tmp_path_, "processed"), [])
         slides = property_mock(request, SlideSet, "slides")
         slides.return_value = [slide1, slide2]
-        dd.save_scaled_slides(2)
+        dd.save_scaled_slides(32, 2)
 
-        slide1.save_scaled_image.assert_called_once_with()
-        slide2.save_scaled_image.assert_called_once_with()
+        slide1.save_scaled_image.assert_called_once_with(32)
+        slide2.save_scaled_image.assert_called_once_with(32)
 
     def it_can_save_thumbnails(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
@@ -624,6 +639,35 @@ class DescribeSlideset(object):
         slide1.save_thumbnail.assert_called_once_with()
         slide2.save_thumbnail.assert_called_once_with()
 
+    def it_generates_slides_stats(self, total_slides_prop, tmpdir):
+        total_slides_prop.return_value = 2
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.svs"), "TIFF")
+        image2 = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0
+        image2.save(os.path.join(tmp_path_, "mywsi2.svs"), "TIFF")
+        slideset = SlideSet(tmp_path_, os.path.join("proc"), [".svs"])
+
+        slides_stats = slideset.slides_stats
+
+        assert slides_stats[0] == slideset._dimensions_stats
+        assert type(slides_stats[1]) == matplotlib_figure
+
+    @pytest.mark.mpl_image_compare(baseline_dir="../mpl-baseline-fixtures")
+    def test_generates_a_correct_plot_figure(
+        self, request, total_slides_prop, _wsi_dimensions_list_prop
+    ):
+        dimensions_stats = property_mock(request, SlideSet, "_dimensions_stats")
+        dimensions_stats.return_vaulue = {"a": 1}
+        total_slides_prop.return_value = 2
+        _wsi_dimensions_list_prop.return_value = ((100, 200), (200, 300))
+
+        slideset = SlideSet(None, None, [".svs"])
+
+        slides_stats_chart = slideset.slides_stats[1]
+
+        return slides_stats_chart
+
     # fixture components ---------------------------------------------
 
     @pytest.fixture
@@ -633,3 +677,7 @@ class DescribeSlideset(object):
     @pytest.fixture
     def total_slides_prop(self, request):
         return property_mock(request, SlideSet, "total_slides")
+
+    @pytest.fixture
+    def _wsi_dimensions_list_prop(self, request):
+        return property_mock(request, SlideSet, "_wsi_dimensions_list")

@@ -226,7 +226,9 @@ class SlideSet(object):
         self._processed_path = processed_path
         self._valid_wsi_extensions = valid_wsi_extensions
 
-    def save_scaled_slides(self, n: int = 0) -> None:
+    # ---public interface methods and properties---
+
+    def save_scaled_slides(self, scale_factor: int = 32, n: int = 0) -> None:
         """Save rescaled images
 
         Parameters
@@ -238,9 +240,9 @@ class SlideSet(object):
         os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
         for slide in self.slides[:n]:
-            slide.save_scaled_image()
+            slide.save_scaled_image(scale_factor)
 
-    def save_thumbnails(self, scale_factor: int = 32, n: int = 0) -> None:
+    def save_thumbnails(self, n: int = 0) -> None:
         """Save thumbnails
 
         Parameters
@@ -265,28 +267,12 @@ class SlideSet(object):
         ]
 
     @property
-    def _slides_dimensions(self) -> List[dict]:
-        return [
-            {
-                "wsi": slide.wsi_name,
-                "width": slide.wsi_dimensions[0],
-                "height": slide.wsi_dimensions[1],
-                "size": slide.wsi_dimensions[0] * slide.wsi_dimensions[1],
-            }
-            for slide in self.slides
-        ]
-
-    @property
-    def _wsi_dimensions_list(self) -> List[tuple]:
-        return [slide.wsi_dimensions for slide in self.slides]
-
-    @property
     def slides_stats(self) -> Tuple[dict, matplotlib_figure]:
         """Retrieve statistic/graphs of wsi files contained in the dataset"""
 
         basic_stats = self._dimensions_stats
 
-        x, y = zip(*[slide.wsi_dimensions for slide in self.slides])
+        x, y = zip(*self._wsi_dimensions_list)
         colors = np.random.rand(self.total_slides)
         sizes = 8 * self.total_slides
 
@@ -322,6 +308,8 @@ class SlideSet(object):
     @property
     def total_slides(self) -> int:
         return len(self.slides)
+
+    # ---private interface methods and properties---
 
     @property
     def _avg_width_slide(self) -> float:
@@ -379,3 +367,19 @@ class SlideSet(object):
     def _min_size_slide(self) -> dict:
         min_size = min(self._slides_dimensions, key=lambda x: x["size"])
         return {"slide": min_size["wsi"], "size": min_size["size"]}
+
+    @property
+    def _slides_dimensions(self) -> List[dict]:
+        return [
+            {
+                "wsi": slide.wsi_name,
+                "width": slide.wsi_dimensions[0],
+                "height": slide.wsi_dimensions[1],
+                "size": slide.wsi_dimensions[0] * slide.wsi_dimensions[1],
+            }
+            for slide in self.slides
+        ]
+
+    @property
+    def _wsi_dimensions_list(self) -> List[tuple]:
+        return [slide.wsi_dimensions for slide in self.slides]
