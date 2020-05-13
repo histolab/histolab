@@ -39,7 +39,7 @@ class Describe_Slide(object):
         str, or a path as slide_path param"""
         with pytest.raises(TypeError) as err:
             slide = Slide(None, "prc")
-            name = slide.name
+            slide.name
 
         assert isinstance(err.value, TypeError)
         assert (
@@ -53,7 +53,7 @@ class Describe_Slide(object):
         _resampled_dimensions.return_value = (1, 2, 3, 4)
         with pytest.raises(TypeError) as err:
             slide = Slide("path", None)
-            im_path = slide.scaled_image_path(32)
+            slide.scaled_image_path(32)
 
         assert isinstance(err.value, TypeError)
         assert (
@@ -150,7 +150,7 @@ class Describe_Slide(object):
         dimensions_.return_value = (300, 500)
         slide = Slide("/a/b/foo", "processed")
         with pytest.raises(ZeroDivisionError) as err:
-            _resampled_dims = slide._resampled_dimensions(scale_factor=0)
+            slide._resampled_dimensions(scale_factor=0)
 
         assert isinstance(err.value, ZeroDivisionError)
         assert str(err.value) == "division by zero"
@@ -182,7 +182,7 @@ class Describe_Slide(object):
     def but_it_raises_an_exception_if_file_not_found(self):
         with pytest.raises(FileNotFoundError) as err:
             slide = Slide("wrong/path/fake.wsi", "processed")
-            wsi = slide._wsi
+            slide._wsi
 
         assert isinstance(err.value, FileNotFoundError)
         assert str(err.value) == "The wsi path resource doesn't exist"
@@ -192,7 +192,7 @@ class Describe_Slide(object):
         slide_path.write("content")
         with pytest.raises(PIL.UnidentifiedImageError) as err:
             slide = Slide(os.path.join(slide_path), "processed")
-            wsi = slide._wsi
+            slide._wsi
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert (
