@@ -22,3 +22,6 @@ script:
 
 after_success:
   - coveralls
+
+notifications:
+  slack: mpba:fBrjUWlUSa3XKeCA8zFsTFu2
