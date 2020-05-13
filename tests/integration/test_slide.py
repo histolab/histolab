@@ -3,14 +3,10 @@
 import os
 
 import numpy as np
-import openslide
 import PIL
-import pytest
 import ntpath
 
-from matplotlib.figure import Figure as matplotlib_figure
-
-from src.histolab.slide import Slide, SlideSet
+from src.histolab.slide import Slide
 
 from ..fixtures import SVS
 from ..util import load_expectation
