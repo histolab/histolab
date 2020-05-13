@@ -13,6 +13,7 @@ before_install:
 install:
   - pip install -r requirements.txt
   - pip install -r requirements-tests.txt
+  - pip install flake8
 
 # command to run tests
 script:
