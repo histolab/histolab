@@ -230,7 +230,7 @@ class Filter(object):
         ):
             new_min_size = min_size / 2
             rem_sm = self.filter_remove_small_objects(
-                np_array, new_min_size, avoid_overmask, overmask_thresh, output_type,
+                np_array, new_min_size, avoid_overmask, overmask_thresh, output_type
             )
         return self._type_dispatcher(rem_sm, output_type)
 
@@ -728,8 +728,14 @@ class Filter(object):
 
         return self._type_dispatcher(result, output_type)
 
-    def filter_green(self, red_upper_thresh, green_lower_thresh, blue_lower_thresh, output_type="bool",
-                 display_np_info=False):
+    def filter_green(
+        self,
+        red_upper_thresh,
+        green_lower_thresh,
+        blue_lower_thresh,
+        output_type="bool",
+        display_np_info=False,
+    ):
         """
         Create a mask to filter out greenish colors, where the mask is based on a pixel being below a
         red channel threshold value, above a green channel threshold value, and above a blue channel threshold value.
@@ -766,25 +772,108 @@ class Filter(object):
         Returns:
             NumPy array representing the mask.
         """
-        result = filter_green(self._slide.resampled_array, red_upper_thresh=150, green_lower_thresh=160, blue_lower_thresh=140) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=70, green_lower_thresh=110, blue_lower_thresh=110) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=45, green_lower_thresh=115, blue_lower_thresh=100) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=30, green_lower_thresh=75, blue_lower_thresh=60) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=195, green_lower_thresh=220, blue_lower_thresh=210) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=225, green_lower_thresh=230, blue_lower_thresh=225) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=170, green_lower_thresh=210, blue_lower_thresh=200) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=20, green_lower_thresh=30, blue_lower_thresh=20) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=50, green_lower_thresh=60, blue_lower_thresh=40) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=30, green_lower_thresh=50, blue_lower_thresh=35) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=65, green_lower_thresh=70, blue_lower_thresh=60) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=100, green_lower_thresh=110, blue_lower_thresh=105) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=165, green_lower_thresh=180, blue_lower_thresh=180) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=140, green_lower_thresh=140, blue_lower_thresh=150) & \
-                filter_green(self._slide.resampled_array, red_upper_thresh=185, green_lower_thresh=195, blue_lower_thresh=195)
-        return self._type_dispatcher(result, output_type)    
+        result = (
+            filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=150,
+                green_lower_thresh=160,
+                blue_lower_thresh=140,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=70,
+                green_lower_thresh=110,
+                blue_lower_thresh=110,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=45,
+                green_lower_thresh=115,
+                blue_lower_thresh=100,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=30,
+                green_lower_thresh=75,
+                blue_lower_thresh=60,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=195,
+                green_lower_thresh=220,
+                blue_lower_thresh=210,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=225,
+                green_lower_thresh=230,
+                blue_lower_thresh=225,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=170,
+                green_lower_thresh=210,
+                blue_lower_thresh=200,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=20,
+                green_lower_thresh=30,
+                blue_lower_thresh=20,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=50,
+                green_lower_thresh=60,
+                blue_lower_thresh=40,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=30,
+                green_lower_thresh=50,
+                blue_lower_thresh=35,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=65,
+                green_lower_thresh=70,
+                blue_lower_thresh=60,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=100,
+                green_lower_thresh=110,
+                blue_lower_thresh=105,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=165,
+                green_lower_thresh=180,
+                blue_lower_thresh=180,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=140,
+                green_lower_thresh=140,
+                blue_lower_thresh=150,
+            )
+            & filter_green(
+                self._slide.resampled_array,
+                red_upper_thresh=185,
+                green_lower_thresh=195,
+                blue_lower_thresh=195,
+            )
+        )
+        return self._type_dispatcher(result, output_type)
 
-    def filter_blue(self, red_upper_thresh, green_upper_thresh, blue_lower_thresh, output_type="bool",
-                display_np_info=False):
+    def filter_blue(
+        self,
+        red_upper_thresh,
+        green_upper_thresh,
+        blue_lower_thresh,
+        output_type="bool",
+        display_np_info=False,
+    ):
         """
         Create a mask to filter out blueish colors, where the mask is based on a pixel being below a
         red channel threshold value, below a green channel threshold value, and above a blue channel threshold value.
@@ -806,7 +895,7 @@ class Filter(object):
         g = self._slide.resampled_array[:, :, 1] < green_upper_thresh
         b = self._slide.resampled_array[:, :, 2] > blue_lower_thresh
         result = ~(r & g & b)
-        return self._type_dispatcher(result, output_type=)
+        return self._type_dispatcher(result, output_type)
 
     def filter_blue_pen(self, output_type="bool"):
         """
@@ -819,18 +908,80 @@ class Filter(object):
         Returns:
             NumPy array representing the mask.
         """
-        result = filter_blue(self._slide.resampled_array, red_upper_thresh=60, green_upper_thresh=120, blue_lower_thresh=190) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=120, green_upper_thresh=170, blue_lower_thresh=200) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=175, green_upper_thresh=210, blue_lower_thresh=230) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=145, green_upper_thresh=180, blue_lower_thresh=210) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=37, green_upper_thresh=95, blue_lower_thresh=160) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=30, green_upper_thresh=65, blue_lower_thresh=130) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=130, green_upper_thresh=155, blue_lower_thresh=180) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=40, green_upper_thresh=35, blue_lower_thresh=85) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=30, green_upper_thresh=20, blue_lower_thresh=65) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=90, green_upper_thresh=90, blue_lower_thresh=140) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=60, green_upper_thresh=60, blue_lower_thresh=120) & \
-                filter_blue(self._slide.resampled_array, red_upper_thresh=110, green_upper_thresh=110, blue_lower_thresh=175)
+        result = (
+            filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=60,
+                green_upper_thresh=120,
+                blue_lower_thresh=190,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=120,
+                green_upper_thresh=170,
+                blue_lower_thresh=200,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=175,
+                green_upper_thresh=210,
+                blue_lower_thresh=230,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=145,
+                green_upper_thresh=180,
+                blue_lower_thresh=210,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=37,
+                green_upper_thresh=95,
+                blue_lower_thresh=160,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=30,
+                green_upper_thresh=65,
+                blue_lower_thresh=130,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=130,
+                green_upper_thresh=155,
+                blue_lower_thresh=180,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=40,
+                green_upper_thresh=35,
+                blue_lower_thresh=85,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=30,
+                green_upper_thresh=20,
+                blue_lower_thresh=65,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=90,
+                green_upper_thresh=90,
+                blue_lower_thresh=140,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=60,
+                green_upper_thresh=60,
+                blue_lower_thresh=120,
+            )
+            & filter_blue(
+                self._slide.resampled_array,
+                red_upper_thresh=110,
+                green_upper_thresh=110,
+                blue_lower_thresh=175,
+            )
+        )
         return self._type_dispatcher(result, output_type)
 
     def filter_grays(self, tolerance=15, output_type="bool"):
@@ -848,9 +999,27 @@ class Filter(object):
         (h, w, c) = rself._slide.resampled_arrayb.shape
 
         self._slide.resampled_array = self._slide.resampled_array.astype(np.int)
-        rg_diff = abs(self._slide.resampled_array[:, :, 0] - self._slide.resampled_array[:, :, 1]) <= tolerance
-        rb_diff = abs(self._slide.resampled_array[:, :, 0] - self._slide.resampled_array[:, :, 2]) <= tolerance
-        gb_diff = abs(self._slide.resampled_array[:, :, 1] - self._slide.resampled_array[:, :, 2]) <= tolerance
+        rg_diff = (
+            abs(
+                self._slide.resampled_array[:, :, 0]
+                - self._slide.resampled_array[:, :, 1]
+            )
+            <= tolerance
+        )
+        rb_diff = (
+            abs(
+                self._slide.resampled_array[:, :, 0]
+                - self._slide.resampled_array[:, :, 2]
+            )
+            <= tolerance
+        )
+        gb_diff = (
+            abs(
+                self._slide.resampled_array[:, :, 1]
+                - self._slide.resampled_array[:, :, 2]
+            )
+            <= tolerance
+        )
         result = ~(rg_diff & rb_diff & gb_diff)
 
         return self._type_dispatcher(result, output_type)
@@ -868,7 +1037,7 @@ class Filter(object):
         result = (np_array / 255).astype(bool)
         return result
 
-#------------------- improve with amore 
+    # ------------------- improve with amore
 
     def apply_image_filters(np_img, slide_num=None, info=None):
         """
@@ -889,44 +1058,98 @@ class Filter(object):
 
         mask_not_green = filter_green_channel(rgb)
         rgb_not_green = util.mask_rgb(rgb, mask_not_green)
-        save_display(save, display, info, rgb_not_green, slide_num, 2, "Not Green", "rgb-not-green")
+        save_display(
+            save,
+            display,
+            info,
+            rgb_not_green,
+            slide_num,
+            2,
+            "Not Green",
+            "rgb-not-green",
+        )
 
         mask_not_gray = filter_grays(rgb)
         rgb_not_gray = util.mask_rgb(rgb, mask_not_gray)
-        save_display(save, display, info, rgb_not_gray, slide_num, 3, "Not Gray", "rgb-not-gray")
+        save_display(
+            save, display, info, rgb_not_gray, slide_num, 3, "Not Gray", "rgb-not-gray"
+        )
 
         mask_no_red_pen = filter_red_pen(rgb)
         rgb_no_red_pen = util.mask_rgb(rgb, mask_no_red_pen)
-        save_display(save, display, info, rgb_no_red_pen, slide_num, 4, "No Red Pen", "rgb-no-red-pen")
+        save_display(
+            save,
+            display,
+            info,
+            rgb_no_red_pen,
+            slide_num,
+            4,
+            "No Red Pen",
+            "rgb-no-red-pen",
+        )
 
         mask_no_green_pen = filter_green_pen(rgb)
         rgb_no_green_pen = util.mask_rgb(rgb, mask_no_green_pen)
-        save_display(save, display, info, rgb_no_green_pen, slide_num, 5, "No Green Pen", "rgb-no-green-pen")
+        save_display(
+            save,
+            display,
+            info,
+            rgb_no_green_pen,
+            slide_num,
+            5,
+            "No Green Pen",
+            "rgb-no-green-pen",
+        )
 
         mask_no_blue_pen = filter_blue_pen(rgb)
         rgb_no_blue_pen = util.mask_rgb(rgb, mask_no_blue_pen)
-        save_display(save, display, info, rgb_no_blue_pen, slide_num, 6, "No Blue Pen", "rgb-no-blue-pen")
+        save_display(
+            save,
+            display,
+            info,
+            rgb_no_blue_pen,
+            slide_num,
+            6,
+            "No Blue Pen",
+            "rgb-no-blue-pen",
+        )
 
-        mask_gray_green_pens = mask_not_gray & mask_not_green & mask_no_red_pen & mask_no_green_pen & mask_no_blue_pen
+        mask_gray_green_pens = (
+            mask_not_gray
+            & mask_not_green
+            & mask_no_red_pen
+            & mask_no_green_pen
+            & mask_no_blue_pen
+        )
         rgb_gray_green_pens = util.mask_rgb(rgb, mask_gray_green_pens)
-        save_display(save, display, info, rgb_gray_green_pens, slide_num, 7, "Not Gray, Not Green, No Pens",
-                    "rgb-no-gray-no-green-no-pens")
+        save_display(
+            save,
+            display,
+            info,
+            rgb_gray_green_pens,
+            slide_num,
+            7,
+            "Not Gray, Not Green, No Pens",
+            "rgb-no-gray-no-green-no-pens",
+        )
 
-        mask_remove_small = filter_remove_small_objects(mask_gray_green_pens, min_size=500, output_type="bool")
+        mask_remove_small = filter_remove_small_objects(
+            mask_gray_green_pens, min_size=500, output_type="bool"
+        )
         rgb_remove_small = util.mask_rgb(rgb, mask_remove_small)
-        save_display(save, display, info, rgb_remove_small, slide_num, 8,
-                    "Not Gray, Not Green, No Pens,\nRemove Small Objects",
-                    "rgb-not-green-not-gray-no-pens-remove-small")
+        save_display(
+            save,
+            display,
+            info,
+            rgb_remove_small,
+            slide_num,
+            8,
+            "Not Gray, Not Green, No Pens,\nRemove Small Objects",
+            "rgb-not-green-not-gray-no-pens-remove-small",
+        )
 
         img = rgb_remove_small
         return img
-
-
-
-
-
-
-
 
     # ---private interface methods and properties---
 
@@ -940,7 +1163,7 @@ class Filter(object):
         _map = {"bool": np_array.astype("bool"), "float": np_array.astype("float")}
         return _map.get(output_type, (255 * np_array).astype("uint8"))
 
-# ---------------------
+    # ---------------------
 
     def apply_filters_to_image(slide_num, save=True, display=False):
         """
@@ -964,19 +1187,27 @@ class Filter(object):
             os.makedirs(slide.FILTER_DIR)
         img_path = slide.get_training_image_path(slide_num)
         np_orig = slide.open_image_np(img_path)
-        filtered_np_img = apply_image_filters(np_orig, slide_num, info, save=save, display=display)
+        filtered_np_img = apply_image_filters(
+            np_orig, slide_num, info, save=save, display=display
+        )
 
         if save:
             t1 = Time()
             result_path = slide.get_filter_image_result(slide_num)
             pil_img = util.np_to_pil(filtered_np_img)
             pil_img.save(result_path)
-            print("%-20s | Time: %-14s  Name: %s" % ("Save Image", str(t1.elapsed()), result_path))
+            print(
+                "%-20s | Time: %-14s  Name: %s"
+                % ("Save Image", str(t1.elapsed()), result_path)
+            )
 
             t1 = Time()
             thumbnail_path = slide.get_filter_thumbnail_result(slide_num)
             slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_path)
-            print("%-20s | Time: %-14s  Name: %s" % ("Save Thumbnail", str(t1.elapsed()), thumbnail_path))
+            print(
+                "%-20s | Time: %-14s  Name: %s"
+                % ("Save Thumbnail", str(t1.elapsed()), thumbnail_path)
+            )
 
         print("Slide #%03d processing time: %s\n" % (slide_num, str(t.elapsed())))
 
