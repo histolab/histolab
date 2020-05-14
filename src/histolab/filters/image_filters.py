@@ -1,4 +1,4 @@
-from . import filter_functional as F
+from src.histolab.filters import image_filters_functional as F
 
 
 class Compose(object):
