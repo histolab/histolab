@@ -1,8 +1,5 @@
-import os
-
 import numpy as np
 import PIL
-import scipy.ndimage.morphology as sc_morph
 import skimage.color as sk_color
 import skimage.exposure as sk_exposure
 import skimage.feature as sk_feature
@@ -11,8 +8,13 @@ import skimage.future as sk_future
 import skimage.morphology as sk_morphology
 import skimage.segmentation as sk_segmentation
 from PIL import Image, ImageOps
+from functools import reduce
 
-from src.histolab import util
+
+import math
+
+from .util import mask_percent
+from ..util import np_to_pil
 
 
 def invert(img: PIL.Image.Image) -> PIL.Image.Image:
@@ -35,745 +37,632 @@ def invert(img: PIL.Image.Image) -> PIL.Image.Image:
         r, g, b, a = img.split()
         rgb_img = Image.merge("RGB", (r, g, b))
 
-        inverted_img = ImageOps.invert(rgb_img)
+        inverted_img_rgb = ImageOps.invert(rgb_img)
 
-        r2, g2, b2 = inverted_img.split()
-        final_inverted_img = Image.merge("RGBA", (r2, g2, b2, a))
+        r2, g2, b2 = inverted_img_rgb.split()
+        inverted_img = Image.merge("RGBA", (r2, g2, b2, a))
 
     else:
-        final_inverted_img = ImageOps.invert(img)
+        inverted_img = ImageOps.invert(img)
 
-    return final_inverted_img
+    return inverted_img
 
 
-def filter_rgb_to_grayscale(img, output_type="uint8"):
+def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
+    """Convert RGB channels to
+    HED (Hematoxylin - Eosin - Diaminobenzidine) channels.
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image in HED space
     """
-    Convert an RGB NumPy array to a grayscale NumPy array.
-
-    Shape (h, w, c) to (h, w).
-
-    Returns:
-        Grayscale image as NumPy array with shape (h, w).
-    """
-    # Another common RGB ratio possibility: [0.299, 0.587, 0.114]
-    grayscale = np.dot(img._slide.resampled_array[..., :3], [0.2125, 0.7154, 0.0721])
-    grayscale = (
-        grayscale.astype(output_type)
-        if output_type == "float"
-        else grayscale.astype("uint8")
-    )
-    return grayscale
-
-
-def filter_rgb_to_hed(img, np_array, output_type="uint8"):
-    """
-    Filter RGB channels to HED (Hematoxylin - Eosin - Diaminobenzidine) channels.
-
-    Args:
-        np_img: RGB image as a NumPy array.
-        output_type: Type of array to return (float or uint8).
-
-    Returns:
-        NumPy array (float or uint8) with HED channels.
-    """
-    hed = sk_color.rgb2hed(np_array)
-    if output_type == "float":
-        hed = sk_exposure.rescale_intensity(hed, out_range=(0.0, 1.0))
-    else:
-        hed = (sk_exposure.rescale_intensity(hed, out_range=(0, 255))).astype("uint8")
+    img_arr = np.array(img)
+    hed_arr = sk_color.rgb2hed(img_arr)
+    hed = np_to_pil(hed_arr)
 
     return hed
 
 
-def filter_rgb_to_hsv(img, np_array):
-    """
-    Filter RGB channels to HSV (Hue, Saturation, Value).
+def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
+    """Convert RGB channels to
+    HSV (Hue - Saturation - Value) channels.
 
-    Args:
-        np_img: RGB image as a NumPy array.
-        display_np_info: If True, display NumPy array info and filter time.
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
 
-    Returns:
-        Image as NumPy array in HSV representation.
+    Returns
+    -------
+    PIL.Image.Image
+        Image in HSV space
     """
-    hsv = sk_color.rgb2hsv(np_array)
+    img_arr = np.array(img)
+    hsv_arr = sk_color.rgb2hsv(img_arr)
+    hsv = np_to_pil(hsv_arr)
     return hsv
 
 
-def filter_contrast_stretch(img, np_array, low=40, high=60):
+# ------ greyscale --> invert ---> contrast stretch
+# TODO setup logger warning
+
+
+def stretch_contrast(
+    img: PIL.Image.Image, low: int = 40, high: int = 60
+) -> PIL.Image.Image:
+    """Increase contrast in image based on intensities in a specified range
+
+    Parameters
+    ----------
+    img: PIL.Image.Image
+        Input image
+    low: int
+        Range low value (0 to 255).
+    high: int
+        Range high value (0 to 255).
+
+    Returns
+    -------
+        PIL.Image.Image
+            Image with contrast enhanced.
     """
-    Filter image (gray or RGB) using contrast stretching to increase contrast in image based on the intensities in
-    a specified range.
-
-    Args:
-        np_img: Image as a NumPy array (gray or RGB).
-        low: Range low value (0 to 255).
-        high: Range high value (0 to 255).
-
-    Returns:
-        Image as NumPy array with contrast enhanced.
-    """
-    low_p, high_p = np.percentile(np_array, (low * 100 / 255, high * 100 / 255))
-    contrast_stretch = sk_exposure.rescale_intensity(np_array, in_range=(low_p, high_p))
-    return contrast_stretch
+    img_arr = np.array(img)
+    low_p, high_p = np.percentile(img_arr, (low * 100 / 255, high * 100 / 255))
+    stretch_contrast = sk_exposure.rescale_intensity(img_arr, in_range=(low_p, high_p))
+    return Image.fromarray(stretch_contrast)
 
 
-def filter_histogram_equalization(img, np_array, nbins=256, output_type="uint8"):
-    """
-    Filter image (gray or RGB) using histogram equalization to increase contrast in image.
+def histogram_equalization(img: PIL.Image.Image, nbins: int = 256) -> PIL.Image.Image:
+    """Filter image (gray or RGB) using histogram equalization to increase contrast in image.
 
-    Args:
-        np_img: Image as a NumPy array (gray or RGB).
-        nbins: Number of histogram bins.
-        output_type: Type of array to return (float or uint8).
+    Parameters
+        img:PIL.Image.Image
+            Input image.
+        nbins: iny. optional (default is 256)
+         Number of histogram bins.
 
     Returns:
         NumPy array (float or uint8) with contrast enhanced by histogram equalization.
     """
-    # if uint8 type and nbins is specified, convert to float so that nbins can be a value besides 256
-    if np_img.dtype == "uint8" and nbins != 256:
-        np_img = np_img / 255
-    hist_equ = sk_exposure.equalize_hist(np_img, nbins=nbins)
-    if output_type == "float":
-        pass
-    else:
-        hist_equ = (hist_equ * 255).astype("uint8")
-    util.np_info(hist_equ, "Hist Equalization", t.elapsed())
+    img_arr = np.array(img)
+    hist_equ = sk_exposure.equalize_hist(img_arr, nbins=nbins)
+    hist_equ = np_to_pil(hist_equ)
     return hist_equ
 
 
-def filter_adaptive_equalization(
-    img, np_array, nbins=256, clip_limit=0.01, output_type="uint8"
-):
-    """
-    Filter image (gray or RGB) using adaptive equalization to increase contrast in image, where contrast in local regions
+def adaptive_equalization(
+    img: PIL.Image.Image, nbins: int = 256, clip_limit: float = 0.01
+) -> PIL.Image.Image:
+    """Filter image (gray or RGB) using adaptive equalization to increase contrast in image, where contrast in local regions
     is enhanced.
 
-    Args:
-        np_img: Image as a NumPy array (gray or RGB).
-        nbins: Number of histogram bins.
-        clip_limit: Clipping limit where higher value increases contrast.
-        output_type: Type of array to return (float or uint8).
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image (gray or RGB)
+    nbins : int
+        Number of histogram bins.
+    clip_limit : float, optional (default is 0.01)
+        Clipping limit where higher value increases contrast.
 
-    Returns:
-        NumPy array (float or uint8) with contrast enhanced by adaptive equalization.
+    Returns
+    -------
+    PIL.Image.Image
+        image with contrast enhanced by adaptive equalization.
     """
+    img_arr = np.array(img)
     adapt_equ = sk_exposure.equalize_adapthist(
-        np_img, nbins=nbins, clip_limit=clip_limit
+        img_arr, nbins=nbins, clip_limit=clip_limit
     )
-    if output_type == "float":
-        pass
-    else:
-        adapt_equ = (adapt_equ * 255).astype("uint8")
-    util.np_info(adapt_equ, "Adapt Equalization", t.elapsed())
+    adapt_equ = np_to_pil(adapt_equ)
     return adapt_equ
 
 
-def filter_local_equalization(img, disk_size=50):
+def local_equalization(img: PIL.Image.Image, disk_size: int = 50) -> PIL.Image.Image:
+    """Filter gray image using local equalization, which uses local
+     histograms based on the disk structuring element.
+
+    Parameters
+    ---------
+    img: PIL.Image.Image
+        Input image. Notice that it must be 2D
+    disk_size: int, optional (default is 50)
+        Radius of the disk structuring element used for the local histograms
+
+    Returns
+    -------
+        PIL.Image.Image
+            2D image with contrast enhanced using local equalization.
     """
-    Filter image (gray) using local equalization, which uses local histograms based on the disk structuring element.
-
-    Args:
-        np_img: Image as a NumPy array.
-        disk_size: Radius of the disk structuring element used for the local histograms
-
-    Returns:
-        NumPy array with contrast enhanced using local equalization.
-    """
-    local_equ = sk_filters.rank.equalize(img, selem=sk_morphology.disk(disk_size))
-    return local_equ
+    if img.size != 2:
+        raise ValueError("Input must be 2D.")
+    return sk_filters.rank.equalize(img, selem=sk_morphology.disk(disk_size))
 
 
-def filter_kmeans_segmentation(img, np_array, compactness=10, n_segments=800):
-    """
-    Use K-means segmentation (color/space proximity) to segment RGB image where each segment is
+def kmeans_segmentation(
+    img: PIL.Image.Image, compactness: int = 10, n_segments: int = 800
+) -> PIL.Image.Image:
+    """Use K-means segmentation (color/space proximity) to segment RGB image, where each segment is
     colored based on the average color for that segment.
 
-    Args:
-        np_img: Binary image as a NumPy array.
-        compactness: Color proximity versus space proximity factor.
-        n_segments: The number of segments.
+    Parameters
+    ---------
+    img : PIL.Image.Image
+        Input image
+    compactness : int, optional (default is 10)
+        Color proximity versus space proximity factor.
+    n_segments : int, optional (default is 800)
+        The number of segments.
 
-    Returns:
-        NumPy array (uint8) representing 3-channel RGB image where each segment has been colored based on the average
+    Returns
+    -------
+    PIL.Image.Image
+        Image where each segment has been colored based on the average
         color for that segment.
     """
+    img_arr = np.array(img)
     labels = sk_segmentation.slic(
-        np_array, compactness=compactness, n_segments=n_segments
+        img_arr, compactness=compactness, n_segments=n_segments
     )
-    result = sk_color.label2rgb(labels, np_array, kind="avg")
-    return result
+    kmeans_segmentation = sk_color.label2rgb(labels, img_arr, kind="avg")
+    return Image.fromarray(kmeans_segmentation)
 
 
-def filter_rag_threshold(img, np_array, compactness=10, n_segments=800, threshold=9):
+def rag_threshold(
+    img: PIL.Image.Image,
+    compactness: int = 10,
+    n_segments: int = 800,
+    threshold: int = 9,
+) -> PIL.Image.Image:
     """
-    Use K-means segmentation to segment RGB image, build region adjacency graph based on the segments, combine
-    similar regions based on threshold value, and then output these resulting region segments.
+    Segment an image with K-means, build region adjacency graph based on
+    the segments, combine similar regions based on threshold value,
+    and then output these resulting region segments.
 
-    Args:
-        np_img: Binary image as a NumPy array.
-        compactness: Color proximity versus space proximity factor.
-        n_segments: The number of segments.
-        threshold: Threshold value for combining regions.
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
+    compactness : int, optional (default is 10)
+        Color proximity versus space proximity factor.
+    n_segments :  int, optional (default is 800)
+        The number of segments.
+    threshold : int, optional (default is 9)
+        Threshold value for combining regions.
 
-    Returns:
-        NumPy array (uint8) representing 3-channel RGB image where each segment has been colored based on the average
-        color for that segment (and similar segments have been combined).
+    Returns
+    -------
+    PIL.Image.Image where each segment has been colored based on the average
+    color for that segment (and similar segments have been combined).
     """
+    img_arr = np.array(img)
     labels = sk_segmentation.slic(
-        np_array, compactness=compactness, n_segments=n_segments
+        img_arr, compactness=compactness, n_segments=n_segments
     )
-    g = sk_future.graph.rag_mean_color(np_array, labels)
+    g = sk_future.graph.rag_mean_color(img_arr, labels)
     labels2 = sk_future.graph.cut_threshold(labels, g, threshold)
-    result = sk_color.label2rgb(labels2, np_array, kind="avg")
-    return result
+    rag = sk_color.label2rgb(labels2, img_arr, kind="avg")
+    return Image.fromarray(rag)
 
 
 # -------- Branching function
-def filter_hysteresis_threshold(img, low=50, high=100, output_type="uint8"):
+
+
+def otsu_threshold(img: PIL.Image.Image) -> np.ndarray:
     """
-    Apply two-level (hysteresis) threshold to an image as a NumPy array, returning a binary image.
+    Compute Otsu threshold on image as a NumPy array and return boolean mask
+    based on pixels above this threshold.
 
-    Args:
-        low: Low threshold.
-        high: High threshold.
-        output_type: Type of array to return (bool, float, or uint8).
+    Note that Otsu threshold is expected to work correctly only for grayscale images
 
-    Returns:
-        NumPy array (bool, float, or uint8) where True, 1.0, and 255 represent a pixel above hysteresis threshold.
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image.
+
+    Returns
+    -------
+    np.ndarray
+     Boolean NumPy array where True represents a pixel above Otsu threshold.
     """
-    hyst = sk_filters.apply_hysteresis_threshold(img._slide.resampled_array, low, high)
-    return img._type_dispatcher(hyst, output_type)
+    img_arr = np.array(img)
+    otsu_thresh = sk_filters.threshold_otsu(img_arr)
+    # TODO UserWarning: threshold_otsu is expected to work correctly only for grayscale images
+    return _filter_threshold(img_arr, otsu_thresh)
 
 
-def filter_otsu_threshold(img, output_type="uint8"):
+def local_otsu_threshold(img: PIL.Image.Image, disk_size: int = 3) -> np.ndarray:
+    """Compute local Otsu threshold for each pixel and boolean mask
+    based on pixels being less than the local Otsu threshold.
+
+    Note that the input image must be 2D.
+
+    Parameters
+    ----------
+    img: PIL.Image.Image
+        Input 2-dimensional image
+    disk_size :int, optional (default is 3)
+        Radius of the disk structuring element used to compute
+        the Otsu threshold for each pixel.
+
+    Returns
+    -------
+    np.ndarray
+        NumPy boolean array representing the mask based on local Otsu threshold
     """
-    Compute Otsu threshold on image as a NumPy array and return binary image based on pixels above threshold.
+    if img.size != 2:
+        raise ValueError("Input must be 2D.")
+    img_arr = np.array(img)
+    local_otsu = sk_filters.rank.otsu(img_arr, sk_morphology.disk(disk_size))
+    return local_otsu
 
-    Args:
-        np_img: Image as a NumPy array.
-        output_type: Type of array to return (bool, float, or uint8).
 
-    Returns:
-        NumPy array (bool, float, or uint8) where True, 1.0, and 255 represent a pixel above Otsu threshold.
+def filter_entropy(
+    img: PIL.Image.Image, neighborhood: int = 9, threshold: int = 5
+) -> np.ndarray:
+    """Filter image based on entropy (complexity).
+
+    Note that input must be 2D.
+
+    Parameters:
+    ----------
+    img: PIL.Image.Image
+        input 2-dimensional image
+    neighborhood : int, optionale (default is 9)
+        Neighborhood size (defines height and width of 2D array of 1's).
+    threshold: Threshold value.
+
+    Returns
+    -------
+    np.ndarray
+        NumPy boolean array where True represent a measure of complexity.
     """
-    otsu_thresh_value = sk_filters.threshold_otsu(img._slide.resampled_array)
-    return img.filter_threshold(
-        img._slide.resampled_array, otsu_thresh_value, output_type
-    )
-
-
-def filter_local_otsu_threshold(img, disk_size=3, output_type="uint8"):
-    """
-    Compute local Otsu threshold for each pixel and return binary image based on pixels being less than the
-    local Otsu threshold.
-
-    Args:
-        disk_size: Radius of the disk structuring element used to compute the Otsu threshold for each pixel.
-        output_type: Type of array to return (bool, float, or uint8).
-
-    Returns:
-        NumPy array (bool, float, or uint8) where local Otsu threshold values have been applied to original image.
-    """
-    local_otsu = sk_filters.rank.otsu(
-        img._slide.resampled_array, sk_morphology.disk(disk_size)
-    )
-    return img._type_dispatcher(local_otsu, output_type)
-
-
-def filter_entropy(img, neighborhood=9, threshold=5, output_type="uint8"):
-    """
-    Filter image based on entropy (complexity).
-
-    Args:
-        neighborhood: Neighborhood size (defines height and width of 2D array of 1's).
-        threshold: Threshold value.
-        output_type: Type of array to return (bool, float, or uint8).
-
-    Returns:
-        NumPy array (bool, float, or uint8) where True, 1.0, and 255 represent a measure of complexity.
-    """
-    entropy = (
-        sk_filters.rank.entropy(
-            img._slide.resampled_array, np.ones((neighborhood, neighborhood))
-        )
-        > threshold
-    )
-    return img._type_dispatcher(entropy, output_type)
+    if img.size != 2:
+        raise ValueError("Input must be 2D.")
+    img_arr = np.array(img)
+    entropy = sk_filters.rank.entropy(img_arr, np.ones((neighborhood, neighborhood)))
+    return _filter_threshold(entropy, threshold)
 
 
 # input of canny filter is a greyscale
-def filter_canny(img, sigma=1, low_threshold=0, high_threshold=25, output_type="uint8"):
-    """
-    Filter image based on Canny algorithm edges.
+def canny_edges(
+    img: PIL.Image.Image,
+    sigma: float = 1.0,
+    low_threshold: float = 0.0,
+    high_threshold: float = 25.0,
+) -> np.ndarray:
+    """Filter image based on Canny algorithm edges.
 
-    Args:
-        sigma: Width (std dev) of Gaussian.
-        low_threshold: Low hysteresis threshold value.
-        high_threshold: High hysteresis threshold value.
-        output_type: Type of array to return (bool, float, or uint8).
+    Note that input image must be 2D
 
-    Returns:
-        NumPy array (bool, float, or uint8) representing Canny edge map (binary image).
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input 2-dimensional image
+    sigma : float, optional (default is 1.0)
+        Width (std dev) of Gaussian.
+    low_threshold : float, optional (default is 0.0)
+        Low hysteresis threshold value.
+    high_threshold : float, optional (default is 25.0)
+        High hysteresis threshold value.
+
+    Returns
+    -------
+    np.ndarray
+        Boolean NumPy array representing Canny edge map.
     """
-    filter_canny = sk_feature.canny(
-        img._slide.resampled_array,
+    if img.size != 2:
+        raise ValueError("Input must be 2D.")
+    img_arr = np.array(img)
+    canny_edges = sk_feature.canny(
+        img_arr,
         sigma=sigma,
         low_threshold=low_threshold,
         high_threshold=high_threshold,
     )
-    return img._type_dispatcher(filter_canny, output_type)
+    return canny_edges
 
 
-def filter_grays(img: PIL.Image.Image, tolerance: int = 15) -> PIL.Image.Image:
-    """Filter out pixels where the red, green, and blue channel values are similar, i.e. under
-    a specified tolerance.
+def grays(img: PIL.Image.Image, tolerance: int = 15) -> np.ndarray:
+    """Filter out gray pixels, that is  pixels where the red, green,
+    and blue channel values are similar, i.e. under a specified tolerance.
 
     Parameters
     ----------
     img : PIL.Image.Image
           Input image
-    tolerance: int
+    tolerance: int, optional (default is 15)
                if difference between values is below this threshold,
                values are considered similar and thus filtered out
 
     Returns
     -------
     PIL.Image.Image
-         Mask image where the similar values are masked out
+         Boolean image where the grays values are masked out
+    """
+    if img.size != 3:
+        raise ValueError("Input must be 3D")
+    # TODO: class image mode exception: raise exception if not RGB
+    img_arr = np.array(img)
+    img_arr = img_arr.astype(np.int)
+    rg_diff = abs(img_arr[:, :, 0] - img_arr[:, :, 1]) > tolerance
+    rb_diff = abs(img_arr[:, :, 0] - img_arr[:, :, 2]) > tolerance
+    gb_diff = abs(img_arr[:, :, 1] - img_arr[:, :, 2]) > tolerance
+    filter_grays = rg_diff | rb_diff | gb_diff
+    return filter_grays
+
+
+def _filter_threshold(img: PIL.Image.Image, threshold: float) -> np.ndarray:
+    """
+    Return boolean mask where True corresponds to pixel exceeding the threshold value.
+
+    Parameters
+    ----------
+    img: PIL.Image.Image
+        input image
+    threshold: float
+        The threshold value to exceed.
+
+    Returns
+    -------
+    np.ndarray
+        Boolean NumPy array representing a mask where a pixel has a value True
+        if the corresponding input array pixel exceeds the threshold value.
     """
     img_arr = np.array(img)
-    (h, w, c) = img_arr.shape
-
-    img_arr = img_arr.astype(np.int)
-    rg_diff = abs(img_arr[:, :, 0] - img_arr[:, :, 1]) <= tolerance
-    rb_diff = abs(img_arr[:, :, 0] - img_arr[:, :, 2]) <= tolerance
-    gb_diff = abs(img_arr[:, :, 1] - img_arr[:, :, 2]) <= tolerance
-    result = ~(rg_diff & rb_diff & gb_diff)
-
-    return PIL.Image.fromarray(result)
+    return img_arr > threshold
 
 
-def filter_threshold(img, np_array, threshold, output_type="bool"):
+def green_channel_filter(
+    img: PIL.Image.Image,
+    green_thresh: float = 200.0,
+    avoid_overmask: bool = True,
+    overmask_thresh: float = 90.0,
+) -> np.ndarray:
+    """Create a mask to filter out pixels with a green channel value greater than
+    a particular threshold, since hematoxylin and eosin are purplish and pinkish,
+    which do not have much green to them.
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input RGB image
+    green_thresh : float, optional (default is 200.0)
+        Green channel threshold value (0 to 255).
+        If value is greater than green_thresh, mask out pixel.
+    avoid_overmask : bool, optional (default is True)
+        If True, avoid masking above the overmask_thresh percentage.
+    overmask_thresh : float, optional (default is 90.0)
+        If avoid_overmask is True, avoid masking above this percentage value.
+
+    Returns
+    -------
+    np.ndarray
+        Boolean mask where pixels above a particular green channel
+        threshold have been masked out.
     """
-    Return mask where a pixel has a value if it exceeds the threshold value.
-
-    Args:
-        np_img: Binary image as a NumPy array.
-        threshold: The threshold value to exceed.
-        output_type: Type of array to return (bool, float, or uint8).
-
-    Returns:
-        NumPy array representing a mask where a pixel has a value (T, 1.0, or 255) if the corresponding input array
-        pixel exceeds the threshold value.
-    """
-    result = np_array > threshold
-    return img._type_dispatcher(result, output_type)
-
-
-def filter_green_channel(
-    np_img,
-    green_thresh=200,
-    avoid_overmask=True,
-    overmask_thresh=90,
-    output_type="bool",
-):
-    """
-  Create a mask to filter out pixels with a green channel value greater than a particular threshold, since hematoxylin
-  and eosin are purplish and pinkish, which do not have much green to them.
-
-  Args:
-    np_img: RGB image as a NumPy array.
-    green_thresh: Green channel threshold value (0 to 255). If value is greater than green_thresh, mask out pixel.
-    avoid_overmask: If True, avoid masking above the overmask_thresh percentage.
-    overmask_thresh: If avoid_overmask is True, avoid masking above this threshold percentage value.
-    output_type: Type of array to return (bool, float, or uint8).
-
-  Returns:
-    NumPy array representing a mask where pixels above a particular green channel threshold have been masked out.
-  """
-    t = Time()
-
-    g = np_img[:, :, 1]
-    gr_ch_mask = (g < green_thresh) & (g > 0)
-    mask_percentage = mask_percent(gr_ch_mask)
-    if (
-        (mask_percentage >= overmask_thresh)
-        and (green_thresh < 255)
-        and (avoid_overmask is True)
-    ):
-        new_green_thresh = math.ceil((255 - green_thresh) / 2 + green_thresh)
+    # TODO: warning RGB and change print and discuss raise error thresh
+    if green_thresh > 255.0 or green_thresh < 0.0:
+        raise ValueError("threshold must be in range [0, 255]")
+    g = np.array(img)[:, :, 1]
+    g_mask = g <= green_thresh
+    mask_percentage = mask_percent(g_mask)
+    if avoid_overmask and (mask_percentage >= overmask_thresh) and (green_thresh < 255):
+        new_green_thresh = math.ceil((255 + green_thresh) / 2)
         print(
-            "Mask percentage %3.2f%% >= overmask threshold %3.2f%% for Remove Green Channel green_thresh=%d, so try %d"
+            "Mask percentage %3.2f%% >= overmask threshold %3.2f%% for Remove Green"
+            " Channel green_thresh=%d, so try %d"
             % (mask_percentage, overmask_thresh, green_thresh, new_green_thresh)
         )
-        gr_ch_mask = filter_green_channel(
-            np_img, new_green_thresh, avoid_overmask, overmask_thresh, output_type
+        g_mask = filter_green_channel(
+            np.array(img), new_green_thresh, avoid_overmask, overmask_thresh,
         )
-    np_img = gr_ch_mask
-
-    if output_type == "bool":
-        pass
-    elif output_type == "float":
-        np_img = np_img.astype(float)
-    else:
-        np_img = np_img.astype("uint8") * 255
-
-    util.np_info(np_img, "Filter Green Channel", t.elapsed())
-    return np_img
+    return g_mask
 
 
-def filter_red(
-    img, red_lower_thresh, green_upper_thresh, blue_upper_thresh, output_type="bool",
-):
+def red_filter(
+    img: PIL.Image.Image, red_thresh: float, green_thresh: float, blue_thresh: float,
+) -> np.ndarray:
+    """Create a mask to filter out reddish colors, where the mask is based on a pixel
+    being below a red channel threshold value, above a green channel threshold value,
+    and above a blue channel threshold value.
+
+    Parameters
+    ----------
+    img : PIl.Image.Image
+        Input RGB image
+    red_thresh : float
+        Red channel lower threshold value.
+    green_thresh : float
+        Green channel upper threshold value.
+    blue_thresh : float
+        Blue channel upper threshold value.
+
+    Returns
+    -------
+    np.ndarray
+        Boolean NumPy array representing the mask.
     """
-    Create a mask to filter out reddish colors, where the mask is based on a pixel being above a
-    red channel threshold value, below a green channel threshold value, and below a blue channel threshold value.
+    img_arr = np.array(img)
+    r = img_arr[:, :, 0] < red_thresh
+    g = img_arr[:, :, 1] > green_thresh
+    b = img_arr[:, :, 2] > blue_thresh
+    red_filter = r | g | b
+    return red_filter
 
-    Args:
-        rgb: RGB image as a NumPy array.
-        red_lower_thresh: Red channel lower threshold value.
-        green_upper_thresh: Green channel upper threshold value.
-        blue_upper_thresh: Blue channel upper threshold value.
-        output_type: Type of array to return (bool, float, or uint8).
-        display_np_info: If True, display NumPy array info and filter time.
 
-    Returns:
-        NumPy array representing the mask.
+def red_pen_filter(img: PIL.Imaage.Image) -> np.ndarray:
+    """Filter out red pen marks.
+    The resulting mask is a composition of red filters with different thresholds
+    for the RGB channels.
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input RGB image.
+
+    Returns
+    -------
+    np.ndarray
+        Boolean NumPy array representing the mask with the pen marks filtered out.
     """
-    r = img._slide.resampled_array[:, :, 0] > red_lower_thresh
-    g = img._slide.resampled_array[:, :, 1] < green_upper_thresh
-    b = img._slide.resampled_array[:, :, 2] < blue_upper_thresh
-    result = ~(r & g & b)
-    return img._type_dispatcher(result, output_type)
-
-
-def filter_red_pen(img, output_type="bool"):
-    """
-    Create a mask to filter out red pen marks from a slide.
-
-    Args:
-        rgb: RGB image as a NumPy array.
-        output_type: Type of array to return (bool, float, or uint8).
-
-    Returns:
-        NumPy array representing the mask.
-    """
-    result = (
-        filter_red(
-            img._slide.resampled_array,
-            red_lower_thresh=150,
-            green_upper_thresh=80,
-            blue_upper_thresh=90,
-        )
-        & filter_red(
-            img._slide.resampled_array,
-            red_lower_thresh=110,
-            green_upper_thresh=20,
-            blue_upper_thresh=30,
-        )
-        & filter_red(
-            img._slide.resampled_array,
-            red_lower_thresh=185,
-            green_upper_thresh=65,
-            blue_upper_thresh=105,
-        )
-        & filter_red(
-            img._slide.resampled_array,
-            red_lower_thresh=195,
-            green_upper_thresh=85,
-            blue_upper_thresh=125,
-        )
-        & filter_red(
-            img._slide.resampled_array,
-            red_lower_thresh=220,
-            green_upper_thresh=115,
-            blue_upper_thresh=145,
-        )
-        & filter_red(
-            img._slide.resampled_array,
-            red_lower_thresh=125,
-            green_upper_thresh=40,
-            blue_upper_thresh=70,
-        )
-        & filter_red(
-            img._slide.resampled_array,
-            red_lower_thresh=200,
-            green_upper_thresh=120,
-            blue_upper_thresh=150,
-        )
-        & filter_red(
-            img._slide.resampled_array,
-            red_lower_thresh=100,
-            green_upper_thresh=50,
-            blue_upper_thresh=65,
-        )
-        & filter_red(
-            img._slide.resampled_array,
-            red_lower_thresh=85,
-            green_upper_thresh=25,
-            blue_upper_thresh=45,
-        )
+    parameters = [
+        {"red_thresh": 150, "green_thresh": 80, "blue_thresh": 90},
+        {"red_thresh": 110, "green_thresh": 20, "blue_thresh": 30},
+        {"red_thresh": 185, "green_thresh": 65, "blue_thresh": 105},
+        {"red_thresh": 195, "green_thresh": 85, "blue_thresh": 125},
+        {"red_thresh": 220, "green_thresh": 115, "blue_thresh": 145},
+        {"red_thresh": 125, "green_thresh": 40, "blue_thresh": 70},
+        {"red_thresh": 100, "green_thresh": 50, "blue_thresh": 65},
+        {"red_thresh": 85, "green_thresh": 25, "blue_thresh": 45},
+    ]
+    red_pen_filter = reduce(
+        (lambda x, y: x & y), [red_filter(img, **param) for param in parameters]
     )
+    return red_pen_filter
 
-    return img._type_dispatcher(result, output_type)
 
+def green_filter(
+    img: PIL.Image.Image, red_thresh: float, green_thresh: float, blue_thresh: float,
+) -> np.ndarray:
+    """Filter out greenish colors. The mask is based on a pixel being above a
+    red channel threshold value, below a green channel threshold value, and below a
+    blue channel threshold value.
 
-def filter_green(
-    img,
-    red_upper_thresh,
-    green_lower_thresh,
-    blue_lower_thresh,
-    output_type="bool",
-    display_np_info=False,
-):
+    Note that for the green ink, the green and blue channels tend to track together, so
+    for blue channel we use a lower threshold rather than an upper threshold value.
+
+    Parameters
+    ----------
+    img : PIL.image.Image
+        RGB input image.
+    red_thresh : float
+        Red channel upper threshold value.
+    green_thresh : float
+        Green channel lower threshold value.
+    blue_thresh : float
+        Blue channel lower threshold value.
+
+    Returns
+    -------
+    np.ndarray
+       Boolean  NumPy array representing the mask.
     """
-    Create a mask to filter out greenish colors, where the mask is based on a pixel being below a
-    red channel threshold value, above a green channel threshold value, and above a blue channel threshold value.
-    Note that for the green ink, the green and blue channels tend to track together, so we use a blue channel
-    lower threshold value rather than a blue channel upper threshold value.
+    img_arr = np.array(img)
+    r = img_arr[:, :, 0] > red_thresh
+    g = img_arr[:, :, 1] < green_thresh
+    b = img_arr[:, :, 2] < blue_thresh
+    green_filter = r | g | b
+    return green_filter
 
-    Args:
-        rgb: RGB image as a NumPy array.
-        red_upper_thresh: Red channel upper threshold value.
-        green_lower_thresh: Green channel lower threshold value.
-        blue_lower_thresh: Blue channel lower threshold value.
-        output_type: Type of array to return (bool, float, or uint8).
-        display_np_info: If True, display NumPy array info and filter time.
 
-    Returns:
-        NumPy array representing the mask.
+def green_pen_filter(img: PIL.Image.Image) -> np.ndarray:
+    """Filter out green pen marks from a slide.
+    The resulting mask is a composition of green filters with different thresholds
+    for the RGB channels.
+
+    Parameters
+    ---------
+    img : PIL.Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    np.ndarray
+        NumPy array representing the mask with the green pen marks filtered out.
     """
-    if display_np_info:
-        t = Time()
-    r = img._slide.resampled_array[:, :, 0] < red_upper_thresh
-    g = img._slide.resampled_array[:, :, 1] > green_lower_thresh
-    b = img._slide.resampled_array[:, :, 2] > blue_lower_thresh
-    result = ~(r & g & b)
-    return img._type_dispatcher(result, output_type)
+    parameters = [
+        {"red_thresh": 150, "green_thresh": 160, "blue_thresh": 140},
+        {"red_thresh": 70, "green_thresh": 110, "blue_thresh": 110},
+        {"red_thresh": 45, "green_thresh": 115, "blue_thresh": 100},
+        {"red_thresh": 30, "green_thresh": 75, "blue_thresh": 60},
+        {"red_thresh": 195, "green_thresh": 220, "blue_thresh": 210},
+        {"red_thresh": 225, "green_thresh": 230, "blue_thresh": 225},
+        {"red_thresh": 170, "green_thresh": 210, "blue_thresh": 200},
+        {"red_thresh": 20, "green_thresh": 30, "blue_thresh": 20},
+        {"red_thresh": 50, "green_thresh": 60, "blue_thresh": 40},
+        {"red_thresh": 30, "green_thresh": 50, "blue_thresh": 35},
+        {"red_thresh": 65, "green_thresh": 70, "blue_thresh": 60},
+        {"red_thresh": 100, "green_thresh": 110, "blue_thresh": 105},
+        {"red_thresh": 165, "green_thresh": 180, "blue_thresh": 180},
+        {"red_thresh": 140, "green_thresh": 140, "blue_thresh": 150},
+        {"red_thresh": 185, "green_thresh": 195, "blue_thresh": 195},
+    ]
 
-
-def filter_green_pen(img, output_type="bool"):
-    """
-    Create a mask to filter out green pen marks from a slide.
-
-    Args:
-        rgb: RGB image as a NumPy array.
-        output_type: Type of array to return (bool, float, or uint8).
-
-    Returns:
-        NumPy array representing the mask.
-    """
-    result = (
-        filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=150,
-            green_lower_thresh=160,
-            blue_lower_thresh=140,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=70,
-            green_lower_thresh=110,
-            blue_lower_thresh=110,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=45,
-            green_lower_thresh=115,
-            blue_lower_thresh=100,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=30,
-            green_lower_thresh=75,
-            blue_lower_thresh=60,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=195,
-            green_lower_thresh=220,
-            blue_lower_thresh=210,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=225,
-            green_lower_thresh=230,
-            blue_lower_thresh=225,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=170,
-            green_lower_thresh=210,
-            blue_lower_thresh=200,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=20,
-            green_lower_thresh=30,
-            blue_lower_thresh=20,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=50,
-            green_lower_thresh=60,
-            blue_lower_thresh=40,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=30,
-            green_lower_thresh=50,
-            blue_lower_thresh=35,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=65,
-            green_lower_thresh=70,
-            blue_lower_thresh=60,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=100,
-            green_lower_thresh=110,
-            blue_lower_thresh=105,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=165,
-            green_lower_thresh=180,
-            blue_lower_thresh=180,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=140,
-            green_lower_thresh=140,
-            blue_lower_thresh=150,
-        )
-        & filter_green(
-            img._slide.resampled_array,
-            red_upper_thresh=185,
-            green_lower_thresh=195,
-            blue_lower_thresh=195,
-        )
+    green_pen_filter = reduce(
+        (lambda x, y: x & y), [green_filter(img, **param) for param in parameters]
     )
-    return img._type_dispatcher(result, output_type)
+    return green_pen_filter
 
 
-def filter_blue(
-    img,
-    red_upper_thresh,
-    green_upper_thresh,
-    blue_lower_thresh,
-    output_type="bool",
-    display_np_info=False,
-):
+def blue_filter(
+    img: PIL.Image.Image, red_thresh: float, green_thresh: float, blue_thresh: float
+) -> np.ndarray:
+    """Create a mask to filter out blueish colors, where the mask is based on a pixel
+        being above a red channel threshold value, above a green channel threshold value,
+        and below a blue channel threshold value.
+
+        Parameters
+        ----------
+        img : PIl.Image.Image
+            Input RGB image
+        red_thresh : float
+            Red channel lower threshold value.
+        green_thresh : float
+            Green channel lower threshold value.
+        blue_thresh : float
+            Blue channel upper threshold value.
+
+        Returns
+        -------
+        np.ndarray
+            Boolean NumPy array representing the mask.
+        """
+    img_arr = np.array(img)
+    r = img_arr[:, :, 0] > red_thresh
+    g = img_arr[:, :, 1] > green_thresh
+    b = img_arr[:, :, 2] < blue_thresh
+    blue_filter = r | g | b
+    return blue_filter
+
+
+def blue_pen_filter(img: PIL.Image.Image) -> np.ndarray:
+    """Filter out blue pen marks from a slide.
+    The resulting mask is a composition of blue filters with different thresholds
+    for the RGB channels.
+
+    Parameters
+    ---------
+    img : PIL.Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    np.ndarray
+        NumPy array representing the mask with the blue pen marks filtered out.
     """
-    Create a mask to filter out blueish colors, where the mask is based on a pixel being below a
-    red channel threshold value, below a green channel threshold value, and above a blue channel threshold value.
+    parameters = [
+        {"red_thresh": 60, "green_thresh": 120, "blue_thresh": 190},
+        {"red_thresh": 120, "green_thresh": 170, "blue_thresh": 200},
+        {"red_thresh": 175, "green_thresh": 210, "blue_thresh": 230},
+        {"red_thresh": 145, "green_thresh": 180, "blue_thresh": 210},
+        {"red_thresh": 37, "green_thresh": 95, "blue_thresh": 160},
+        {"red_thresh": 30, "green_thresh": 65, "blue_thresh": 130},
+        {"red_thresh": 130, "green_thresh": 155, "blue_thresh": 180},
+        {"red_thresh": 40, "green_thresh": 35, "blue_thresh": 85},
+        {"red_thresh": 30, "green_thresh": 20, "blue_thresh": 65},
+        {"red_thresh": 90, "green_thresh": 90, "blue_thresh": 140},
+        {"red_thresh": 60, "green_thresh": 60, "blue_thresh": 120},
+        {"red_thresh": 110, "green_thresh": 110, "blue_thresh": 175},
+    ]
 
-    Args:
-        rgb: RGB image as a NumPy array.
-        red_upper_thresh: Red channel upper threshold value.
-        green_upper_thresh: Green channel upper threshold value.
-        blue_lower_thresh: Blue channel lower threshold value.
-        output_type: Type of array to return (bool, float, or uint8).
-        display_np_info: If True, display NumPy array info and filter time.
-
-    Returns:
-        NumPy array representing the mask.
-    """
-    if display_np_info:
-        t = Time()
-    r = img._slide.resampled_array[:, :, 0] < red_upper_thresh
-    g = img._slide.resampled_array[:, :, 1] < green_upper_thresh
-    b = img._slide.resampled_array[:, :, 2] > blue_lower_thresh
-    result = ~(r & g & b)
-    return img._type_dispatcher(result)
-
-
-def filter_blue_pen(img, output_type="bool"):
-    """
-    Create a mask to filter out blue pen marks from a slide.
-
-    Args:
-        rgb: RGB image as a NumPy array.
-        output_type: Type of array to return (bool, float, or uint8).
-
-    Returns:
-        NumPy array representing the mask.
-    """
-    result = (
-        filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=60,
-            green_upper_thresh=120,
-            blue_lower_thresh=190,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=120,
-            green_upper_thresh=170,
-            blue_lower_thresh=200,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=175,
-            green_upper_thresh=210,
-            blue_lower_thresh=230,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=145,
-            green_upper_thresh=180,
-            blue_lower_thresh=210,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=37,
-            green_upper_thresh=95,
-            blue_lower_thresh=160,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=30,
-            green_upper_thresh=65,
-            blue_lower_thresh=130,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=130,
-            green_upper_thresh=155,
-            blue_lower_thresh=180,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=40,
-            green_upper_thresh=35,
-            blue_lower_thresh=85,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=30,
-            green_upper_thresh=20,
-            blue_lower_thresh=65,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=90,
-            green_upper_thresh=90,
-            blue_lower_thresh=140,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=60,
-            green_upper_thresh=60,
-            blue_lower_thresh=120,
-        )
-        & filter_blue(
-            img._slide.resampled_array,
-            red_upper_thresh=110,
-            green_upper_thresh=110,
-            blue_lower_thresh=175,
-        )
+    blue_pen_filter = reduce(
+        (lambda x, y: x & y), [blue_filter(img, **param) for param in parameters]
     )
-    return img._type_dispatcher(result, output_type)
+    return blue_pen_filter
