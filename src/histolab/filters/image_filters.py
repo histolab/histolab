@@ -1,4 +1,4 @@
-from src.histolab.filters import image_filters_functional as F
+from . import image_filters_functional as F
 import skimage.filters as sk_filters
 
 from PIL import Image, ImageOps
