@@ -647,3 +647,26 @@ class BluePenFilter(object):
 
     def __repr__(self):
         return self.__class__.__name__ + "()"
+
+
+class PenMarks(object):
+    """Filter out pen marks from a slide."""
+
+    def __call__(self, img):
+        """Filter out pen marks from a slide.
+        Apply Otsu threshold on the H channel of the image converted to the HSV space
+
+        Parameters
+        ---------
+        img : PIL.Image.Image
+            Input RGB image
+
+        Returns
+        -------
+        np.ndarray
+            Boolean NumPy array representing the mask with the pen marks filtered out.
+        """
+        return F.pen_marks(img)
+
+    def __repr__(self):
+        return self.__class__.__name__ + "()"
