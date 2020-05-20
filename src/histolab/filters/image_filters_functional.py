@@ -666,3 +666,24 @@ def blue_pen_filter(img: PIL.Image.Image) -> np.ndarray:
         (lambda x, y: x & y), [blue_filter(img, **param) for param in parameters]
     )
     return blue_pen_filter
+
+
+def pen_filter(img: PIL.Image.Image) -> np.ndarray:
+    """Filter out pen marks from a slide.
+    Apply Otsu threshold on the H channel of the image converted to the HSV space
+
+    Parameters
+    ---------
+    img : PIL.Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    np.ndarray
+        Boolean NumPy array representing the mask with the pen marks filtered out.
+    """
+    np_img = np.array(img)
+    np_hsv = sk_color.convert_colorspace(np_img, "RGB", "HSV")
+    saturation = np_hsv[:, :, 1]
+    threshold = sk_filters.threshold_otsu(saturation)
+    return saturation > threshold
