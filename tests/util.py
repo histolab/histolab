@@ -5,6 +5,8 @@
 import os
 import numpy as np
 
+from PIL import Image
+
 
 def load_expectation(expectation_file_name, type_=None):  # pragma: no cover
     """Returns np.ndarray related to the *expectation_file_name*.
@@ -17,10 +19,8 @@ def load_expectation(expectation_file_name, type_=None):  # pragma: no cover
     )
     if type_ == "npy":
         expectation_data = np.load(expectation_file_path)
-    elif type_ == "txt":
-        with open(expectation_file_path, "rb") as f:
-            expectation_byte = f.read()
-        expectation_data = expectation_byte.decode("utf-8")
+    elif type_ == "png":
+        expectation_data = Image.open(expectation_file_path)
     else:
         raise Exception("Type format not recognized")
     return expectation_data

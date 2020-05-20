@@ -33,6 +33,7 @@ def invert(img: PIL.Image.Image) -> PIL.Image.Image:
     PIL.Image.Image
         Inverted image
     """
+
     if img.mode == "RGBA":
         r, g, b, a = img.split()
         rgb_img = Image.merge("RGB", (r, g, b))
@@ -497,7 +498,7 @@ def red_filter(
     return red_filter
 
 
-def red_pen_filter(img: PIL.Imaage.Image) -> np.ndarray:
+def red_pen_filter(img: PIL.Image.Image) -> np.ndarray:
     """Filter out red pen marks.
     The resulting mask is a composition of red filters with different thresholds
     for the RGB channels.
@@ -684,6 +685,6 @@ def pen_marks(img: PIL.Image.Image) -> np.ndarray:
     """
     np_img = np.array(img)
     np_hsv = sk_color.convert_colorspace(np_img, "RGB", "HSV")
-    saturation = np_hsv[:, :, 1]
-    threshold = sk_filters.threshold_otsu(saturation)
-    return saturation > threshold
+    hue = np_hsv[:, :, 0]
+    threshold = sk_filters.threshold_otsu(hue)
+    return hue > threshold
