@@ -668,7 +668,7 @@ def blue_pen_filter(img: PIL.Image.Image) -> np.ndarray:
     return blue_pen_filter
 
 
-def pen_filter(img: PIL.Image.Image) -> np.ndarray:
+def pen_marks(img: PIL.Image.Image) -> np.ndarray:
     """Filter out pen marks from a slide.
     Apply Otsu threshold on the H channel of the image converted to the HSV space
 
