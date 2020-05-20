@@ -1,5 +1,3 @@
-import os
-
 import numpy as np
 import PIL
 import skimage.color as sk_color
@@ -13,7 +11,6 @@ from PIL import Image, ImageOps
 from functools import reduce
 
 
-from src.histolab import util
 import math
 
 from .util import mask_percent
