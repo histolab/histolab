@@ -252,7 +252,61 @@ def rag_threshold(
     return Image.fromarray(rag)
 
 
+def hysteresis_threshold(
+    img: PIL.Image.Image, low: int = 50, high: int = 100
+) -> PIL.Image.Image:
+    """Apply two-level (hysteresis) threshold to an image.
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
+    low : int, optional (default is 50)
+        low threshold
+    high : int, optional (default is 100)
+        high threshold
+
+    Returns
+    -------
+    PIL.Image.Image
+        Boolean mask where True represents pixel above
+        the hysteresis threshold
+    """
+    # TODO: warning grayscale input image (skimage doc)
+    hyst = sk_filters.apply_hysteresis_threshold(np.array(img), low, high)
+    import ipdb
+
+    ipdb.set_trace()
+    return Image.fromarray(hyst.astype("uint8") * 255)
+
+
 # -------- Branching function
+
+
+def hysteresis_threshold_mask(
+    img: PIL.Image.Image, low: int = 50, high: int = 100
+) -> np.ndarray:
+    """Compute the Hysteresis threshold on the complement of an image in greyscale and
+    return boolean mask based on pixels above this threshold.
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image.
+    low : int, optional (default is 50)
+        low threshold
+    high : int, optional (default is 100)
+         high threshold
+
+    Returns
+    -------
+    np.ndarray
+     Boolean NumPy array where True represents a pixel above Otsu threshold.
+    """
+    gs = ImageOps.grayscale(img)
+    comp = invert(gs)
+    hyst_mask = sk_filters.apply_hysteresis_threshold(np.array(comp), low, high)
+    return hyst_mask
 
 
 def otsu_threshold(img: PIL.Image.Image) -> np.ndarray:
@@ -422,7 +476,7 @@ def _filter_threshold(img: PIL.Image.Image, threshold: float) -> np.ndarray:
 
 def green_channel_filter(
     img: PIL.Image.Image,
-    green_thresh: float = 200.0,
+    green_thresh: int = 200,
     avoid_overmask: bool = True,
     overmask_thresh: float = 90.0,
 ) -> np.ndarray:
@@ -434,7 +488,7 @@ def green_channel_filter(
     ----------
     img : PIL.Image.Image
         Input RGB image
-    green_thresh : float, optional (default is 200.0)
+    green_thresh : int, optional (default is 200)
         Green channel threshold value (0 to 255).
         If value is greater than green_thresh, mask out pixel.
     avoid_overmask : bool, optional (default is True)
@@ -461,14 +515,14 @@ def green_channel_filter(
             " Channel green_thresh=%d, so try %d"
             % (mask_percentage, overmask_thresh, green_thresh, new_green_thresh)
         )
-        g_mask = filter_green_channel(
+        g_mask = green_channel_filter(
             np.array(img), new_green_thresh, avoid_overmask, overmask_thresh,
         )
     return g_mask
 
 
 def red_filter(
-    img: PIL.Image.Image, red_thresh: float, green_thresh: float, blue_thresh: float,
+    img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int,
 ) -> np.ndarray:
     """Create a mask to filter out reddish colors, where the mask is based on a pixel
     being below a red channel threshold value, above a green channel threshold value,
@@ -478,11 +532,11 @@ def red_filter(
     ----------
     img : PIl.Image.Image
         Input RGB image
-    red_thresh : float
+    red_thresh : int
         Red channel lower threshold value.
-    green_thresh : float
+    green_thresh : int
         Green channel upper threshold value.
-    blue_thresh : float
+    blue_thresh : int
         Blue channel upper threshold value.
 
     Returns
@@ -530,7 +584,7 @@ def red_pen_filter(img: PIL.Image.Image) -> np.ndarray:
 
 
 def green_filter(
-    img: PIL.Image.Image, red_thresh: float, green_thresh: float, blue_thresh: float,
+    img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int,
 ) -> np.ndarray:
     """Filter out greenish colors. The mask is based on a pixel being above a
     red channel threshold value, below a green channel threshold value, and below a
@@ -543,11 +597,11 @@ def green_filter(
     ----------
     img : PIL.image.Image
         RGB input image.
-    red_thresh : float
+    red_thresh : int
         Red channel upper threshold value.
-    green_thresh : float
+    green_thresh : int
         Green channel lower threshold value.
-    blue_thresh : float
+    blue_thresh : int
         Blue channel lower threshold value.
 
     Returns
@@ -603,11 +657,11 @@ def green_pen_filter(img: PIL.Image.Image) -> np.ndarray:
 
 
 def blue_filter(
-    img: PIL.Image.Image, red_thresh: float, green_thresh: float, blue_thresh: float
+    img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
 ) -> np.ndarray:
     """Create a mask to filter out blueish colors, where the mask is based on a pixel
-        being above a red channel threshold value, above a green channel threshold value,
-        and below a blue channel threshold value.
+        being above a red channel threshold value, above a green channel threshold
+        value, and below a blue channel threshold value.
 
         Parameters
         ----------

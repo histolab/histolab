@@ -44,7 +44,7 @@ class Invert(object):
         return self.__class__.__name__ + "()"
 
 
-class RgbToGreyscale(object):
+class RgbToGrayscale(object):
     """Convert an RGB image to a grayscale image."""
 
     def __call__(self, img):
@@ -58,7 +58,7 @@ class RgbToGreyscale(object):
         Returns
         -------
         PIL.Image.Image
-            Greyscale image
+            Grayscale image
         """
         return ImageOps.grayscale(img)
 
@@ -195,7 +195,7 @@ class AdaptiveEqualization(object):
         return self.__class__.__name__ + "()"
 
 
-# ------- LocalEqualization input must be 2D (greyscale)
+# ------- LocalEqualization input must be 2D (grayscale)
 
 
 class LocalEqualization(object):
@@ -288,9 +288,6 @@ class RagThreshold(object):
         return self.__class__.__name__ + "()"
 
 
-# ----------- Branching functions (greyscale/invert input)
-
-
 class HysteresisThreshold(object):
     """Apply two-level (hysteresis) threshold to an image."""
 
@@ -301,7 +298,7 @@ class HysteresisThreshold(object):
         ----------
         img : PIL.Image.Image
             Input image
-        low : int, optional (default is 50)
+        low : int, optional (default is 50)c
             low threshold
         high : int, optional (default is 100)
             high threshold
@@ -312,8 +309,39 @@ class HysteresisThreshold(object):
             Boolean mask where True represents pixel above
             the hysteresis threshold
         """
-        hyst = sk_filters.apply_hysteresis_threshold(img, low, high)
-        return Image.fromarray(hyst)
+        return F.hysteresis_threshold(img, low, high)
+
+    def __repr__(self):
+        return self.__class__.__name__ + "()"
+
+
+# ----------- Branching functions (grayscale/invert input)
+
+# invert --> grayscale ..> hysteresis
+class HysteresisThresholdMask(object):
+    """Compute the Hysteresis threshold on the complement of an image in
+    and return boolean mask based on pixels above this threshold."""
+
+    def __call__(self, img, low, high):
+        """Compute the Hysteresis threshold on the complement of an image in
+        and return boolean mask based on pixels above this threshold.
+
+        Parameters
+        ----------
+        img : PIL.Image.Image
+            Input image.
+        low : int, optional (default is 50)
+            low threshold
+        high : int, optional (default is 100)
+             high threshold
+
+        Returns
+        -------
+        np.ndarray
+         Boolean NumPy array where True represents a pixel above Otsu threshold.
+        """
+        hysteresis_threshold_mask = F.hysteresis_threshold_mask(img, low, high)
+        return hysteresis_threshold_mask
 
     def __repr__(self):
         return self.__class__.__name__ + "()"
@@ -486,7 +514,9 @@ class GreenChannelFilter(object):
             Boolean mask where pixels above a particular green channel
             threshold have been masked out.
         """
-        return F.green_filter(img, green_thresh, avoid_overmask, overmask_thresh)
+        return F.green_channel_filter(
+            img, green_thresh, avoid_overmask, overmask_thresh
+        )
 
     def __repr__(self):
         return self.__class__.__name__ + "()"
@@ -553,11 +583,11 @@ class GreenFilter(object):
         ----------
         img : PIL.image.Image
             RGB input image.
-        red_thresh : float
+        red_thresh : int
             Red channel upper threshold value.
-        green_thresh : float
+        green_thresh : int
             Green channel lower threshold value.
-        blue_thresh : float
+        blue_thresh : int
             Blue channel lower threshold value.
 
         Returns
@@ -607,11 +637,11 @@ class BlueFilter(object):
         ----------
         img : PIl.Image.Image
              Input RGB image
-        red_thresh : float
+        red_thresh : int
              Red channel lower threshold value.
-        green_thresh : float
+        green_thresh : int
              Green channel lower threshold value.
-        blue_thresh : float
+        blue_thresh : int
              Blue channel upper threshold value.
 
         Returns
