@@ -15,6 +15,7 @@ import skimage.segmentation as sk_segmentation
 from PIL import Image, ImageOps
 from ..util import np_to_pil
 
+
 def mask_percent(mask: np.ndarray) -> float:
     """Compute mask percentage of pixels different from zero.
 
