@@ -62,9 +62,7 @@ class RemoveSmallHoles(object):
         np.ndarray
             Mask with small holes filtered out
         """
-        return skimage.morphology.remove_small_holes(
-            np_img, area_threshold=area_threshold
-        )
+        return skimage.morphology.remove_small_holes(np_img, area_threshold)
 
     def __repr__(self):
         return self.__class__.__name__ + "()"
@@ -94,7 +92,7 @@ class BinaryErosion(object):
         Mask after the erosion
     """
         return scipy.ndimage.morphology.binary_erosion(
-            np_img, skimage.morphology.disk(disk_size), iterations=iterations
+            np_img, skimage.morphology.disk(disk_size), iterations
         )
 
     def __repr__(self):
@@ -126,7 +124,7 @@ class BinaryDilation(object):
             Mask after the dilation
         """
         return scipy.ndimage.morphology.binary_dilation(
-            np_img, skimage.morphology.disk(disk_size), iterations=iterations
+            np_img, skimage.morphology.disk(disk_size), iterations
         )
 
     def __repr__(self):
@@ -156,7 +154,7 @@ class BinaryOpening(object):
             Mask after the opening
         """
         return scipy.ndimage.morphology.binary_opening(
-            np_img, skimage.morphology.disk(disk_size), iterations=iterations
+            np_img, skimage.morphology.disk(disk_size), iterations
         )
 
     def __repr__(self):
@@ -186,7 +184,7 @@ class BinaryClosing(object):
             Mask after the closing
         """
         return scipy.ndimage.morphology.binary_closing(
-            np_img, skimage.morphology.disk(disk_size), iterations=iterations
+            np_img, skimage.morphology.disk(disk_size), iterations
         )
 
     def __repr__(self):

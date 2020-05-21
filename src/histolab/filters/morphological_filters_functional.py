@@ -1,5 +1,4 @@
 import numpy as np
-
 import skimage.morphology as sk_morphology
 
 from .util import mask_percent
@@ -32,7 +31,7 @@ def remove_small_objects(
     np.ndarray
             Mask with small objects filtered out
     """
-    mask_no_small_object = sk_morphology.remove_small_objects(np_img, min_size=min_size)
+    mask_no_small_object = sk_morphology.remove_small_objects(np_img, min_size)
     if (
         avoid_overmask
         and mask_percent(mask_no_small_object) >= overmask_thresh
