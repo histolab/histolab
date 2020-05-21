@@ -1,19 +1,5 @@
-import math
-import multiprocessing
-import os
-
 import numpy as np
 import PIL
-import scipy.ndimage.morphology as sc_morph
-import skimage.color as sk_color
-import skimage.exposure as sk_exposure
-import skimage.feature as sk_feature
-import skimage.filters as sk_filters
-import skimage.future as sk_future
-import skimage.morphology as sk_morphology
-import skimage.segmentation as sk_segmentation
-from PIL import Image, ImageOps
-from ..util import np_to_pil
 
 
 def mask_percent(mask: np.ndarray) -> float:

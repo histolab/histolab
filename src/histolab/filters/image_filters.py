@@ -1,8 +1,6 @@
-from src.histolab.filters import image_filters_functional as F
-import skimage.filters as sk_filters
+from PIL import ImageOps
 
-from PIL import Image, ImageOps
-import numpy as np
+from src.histolab.filters import image_filters_functional as F
 
 
 class Compose(object):

@@ -1,10 +1,8 @@
-import scipy.ndimage.morphology as sc_morph
-import skimage.morphology as sk_morphology
 import numpy as np
 
-from .util import mask_percent
+import skimage.morphology as sk_morphology
 
-# This is (usually) applied after grey filters
+from .util import mask_percent
 
 
 def remove_small_objects(
