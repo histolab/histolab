@@ -83,6 +83,8 @@ def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
      PIL.Image.Image
          Image in HED space
      """
+    if img.mode != "RGB":
+        raise Exception("Input image must be RGB")
     img_arr = np.array(img)
     hsv_arr = sk_color.rgb2hsv(img_arr)
     hsv = np_to_pil(hsv_arr)
@@ -106,13 +108,15 @@ def stretch_contrast(
     low: int
          Range low value (0 to 255).
     high: int
-          Range high value (0 to 255).
+        Range high value (0 to 255).
 
     Returns
     -------
     PIL.Image.Image
             Image with contrast enhanced.
     """
+    if low not in range(256) or high not in range(256):
+        raise Exception("low and high values must be in range [0, 255]")
     img_arr = np.array(img)
     low_p, high_p = np.percentile(img_arr, (low * 100 / 255, high * 100 / 255))
     stretch_contrast = sk_exposure.rescale_intensity(img_arr, in_range=(low_p, high_p))
