@@ -29,7 +29,6 @@ def invert(img: PIL.Image.Image) -> PIL.Image.Image:
     PIL.Image.Image
         Inverted image
     """
-
     if img.mode == "RGBA":
         r, g, b, a = img.split()
         rgb_img = Image.merge("RGB", (r, g, b))
@@ -88,8 +87,7 @@ def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
     return hsv
 
 
-# ------ greyscale --> invert ---> contrast stretch
-# TODO setup logger warning
+# TODO setup logger warning + greyscale --> invert ---> contrast stretch
 
 
 def stretch_contrast(
@@ -113,7 +111,6 @@ def stretch_contrast(
     PIL.Image.Image
             Image with contrast enhanced.
     """
-
     img_arr = np.array(img)
     low_p, high_p = np.percentile(img_arr, (low * 100 / 255, high * 100 / 255))
     stretch_contrast = sk_exposure.rescale_intensity(img_arr, in_range=(low_p, high_p))
@@ -165,11 +162,8 @@ def adaptive_equalization(
      PIL.Image.Image
           image with contrast enhanced by adaptive equalization.
      """
-
     img_arr = np.array(img)
-    adapt_equ = sk_exposure.equalize_adapthist(
-        img_arr, nbins=nbins, clip_limit=clip_limit
-    )
+    adapt_equ = sk_exposure.equalize_adapthist(img_arr, nbins, clip_limit)
     adapt_equ = np_to_pil(adapt_equ)
     return adapt_equ
 
@@ -220,9 +214,7 @@ def kmeans_segmentation(
         color for that segment.
     """
     img_arr = np.array(img)
-    labels = sk_segmentation.slic(
-        img_arr, compactness=compactness, n_segments=n_segments
-    )
+    labels = sk_segmentation.slic(img_arr, compactness, n_segments)
     kmeans_segmentation = sk_color.label2rgb(labels, img_arr, kind="avg")
     return Image.fromarray(kmeans_segmentation)
 
@@ -257,9 +249,7 @@ def rag_threshold(
         color for that segment (and similar segments have been combined).
     """
     img_arr = np.array(img)
-    labels = sk_segmentation.slic(
-        img_arr, compactness=compactness, n_segments=n_segments
-    )
+    labels = sk_segmentation.slic(img_arr, compactness, n_segments)
     g = sk_future.graph.rag_mean_color(img_arr, labels)
     labels2 = sk_future.graph.cut_threshold(labels, g, threshold)
     rag = sk_color.label2rgb(labels2, img_arr, kind="avg")
@@ -288,13 +278,10 @@ def hysteresis_threshold(
     """
     # TODO: warning grayscale input image (skimage doc)
     hyst = sk_filters.apply_hysteresis_threshold(np.array(img), low, high)
-    import ipdb
-
-    ipdb.set_trace()
     return Image.fromarray(hyst.astype("uint8") * 255)
 
 
-# -------- Branching function
+# -------- Branching function --------
 
 
 def hysteresis_threshold_mask(
@@ -460,7 +447,6 @@ def grays(img: PIL.Image.Image, tolerance: int = 15) -> np.ndarray:
      -------
      PIL.Image.Image
          Mask image where the grays values are masked out"""
-
     if img.size != 3:
         raise ValueError("Input must be 3D")
     # TODO: class image mode exception: raise exception if not RGB
@@ -584,7 +570,6 @@ def red_pen_filter(img: PIL.Image.Image) -> np.ndarray:
     -------
         Boolean NumPy array representing the mask with the pen marks filtered out.
     """
-
     parameters = [
         {"red_thresh": 150, "green_thresh": 80, "blue_thresh": 90},
         {"red_thresh": 110, "green_thresh": 20, "blue_thresh": 30},

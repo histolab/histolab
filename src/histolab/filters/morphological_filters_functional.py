@@ -10,8 +10,9 @@ def remove_small_objects(
     avoid_overmask: bool = True,
     overmask_thresh: int = 95,
 ) -> np.ndarray:
-    """Remove connected components which size is less than min_size. If avoid_overmask
-    is True, this function can recursively call itself with progressively halved minimum size objects
+    """Remove connected components which size is less than min_size.
+
+    is True, this function can recursively call itself with progressively
     to avoid removing too many objects in the mask.
 
     Parameters
@@ -20,16 +21,15 @@ def remove_small_objects(
         Input mask
     min_size : int, optional
         Minimum size of small object to remove. Default is 3000
-    avoid_overmask : bool, optional
-        If True, avoid masking above the overmask_thresh percentage. Default is True
-    overmask_thresh : int, optional
+    avoid_overmask : bool, optional (default is True)
+        If True, avoid masking above the overmask_thresh percentage.
+    overmask_thresh : int, optional (default is 95)
         If avoid_overmask is True, avoid masking above this threshold percentage value.
-        Default is 95
 
     Returns
     -------
     np.ndarray
-            Mask with small objects filtered out
+        Mask with small objects filtered out
     """
     mask_no_small_object = sk_morphology.remove_small_objects(np_img, min_size)
     if (
