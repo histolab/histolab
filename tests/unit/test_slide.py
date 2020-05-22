@@ -7,7 +7,7 @@ import openslide
 import PIL
 import pytest
 from matplotlib.figure import Figure as matplotlib_figure
-
+from unittest.mock import call
 
 from src.histolab.slide import Slide, SlideSet
 
@@ -434,6 +434,30 @@ class Describe_Slideset(object):
         assert isinstance(err.value, FileNotFoundError)
         assert str(err.value) == "[Errno 2] No such file or directory: 'fake/path'"
 
+    def it_constructs_its_sequence_of_slides_to_help(self, request, Slide_, tmpdir):
+        slides_path = tmpdir.mkdir("mypath")
+        for i in range(4):
+            open(os.path.join(slides_path, f"myfile{i}.svs"), "a")
+        slides_ = tuple(instance_mock(request, Slide) for _ in range(4))
+        Slide_.side_effect = iter(slides_)
+        slide_set = SlideSet(
+            slides_path=slides_path,
+            processed_path=os.path.join(slides_path, "processed"),
+            valid_extensions=[".svs"],
+        )
+        slides = tuple(slide_set.slides)
+
+        assert sorted(Slide_.call_args_list) == sorted(
+            [
+                call(
+                    os.path.join(slides_path, f"myfile{i}.svs"),
+                    os.path.join(slides_path, "processed"),
+                )
+                for i in range(4)
+            ]
+        )
+        assert slides == slides_
+
     def it_knows_the_slides_dimensions(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
@@ -462,10 +486,9 @@ class Describe_Slideset(object):
 
         assert sorted(_slides_dimensions_list) == sorted([(500, 500), (50, 50)])
 
-    def it_knows_its_total_slides(self, request):
+    def it_knows_its_total_slides(self, request, Slide_):
         slides = property_mock(request, SlideSet, "slides")
-        slide_mock = class_mock(request, "src.histolab.slide.Slide")
-        slides.return_value = [slide_mock for _ in range(4)]
+        slides.return_value = [Slide_ for _ in range(4)]
         slideset = SlideSet("the/path", "proc", [".svs"])
 
         total_slides = slideset.total_slides
@@ -679,3 +702,7 @@ class Describe_Slideset(object):
     @pytest.fixture
     def _slides_dimensions_list_prop(self, request):
         return property_mock(request, SlideSet, "_slides_dimensions_list")
+
+    @pytest.fixture
+    def Slide_(selfs, request):
+        return class_mock(request, "src.histolab.slide.Slide")
