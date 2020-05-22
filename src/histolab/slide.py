@@ -259,9 +259,9 @@ class SlideSet(object):
     @property
     def slides(self) -> List[Slide]:
         return [
-            Slide(os.path.join(self._slides_path, wsi_path), self._processed_path)
-            for wsi_path in os.listdir(self._slides_path)
-            if os.path.splitext(wsi_path)[1] in self._valid_extensions
+            Slide(os.path.join(self._slides_path, _path), self._processed_path)
+            for _path in os.listdir(self._slides_path)
+            if os.path.splitext(_path)[1] in self._valid_extensions
         ]
 
     @property
