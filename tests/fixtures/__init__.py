@@ -87,3 +87,5 @@ class LazyPILResponseLoader(object):
 
 SVS = LazySVSResponseLoader("./svs-images")
 RGBA = LazyPILResponseLoader("./pil-images-rgba")
+RGB = LazyPILResponseLoader("./pil-images-rgb")
+GS = LazyPILResponseLoader("./pil-images-gs")

@@ -59,6 +59,8 @@ def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
     PIL.Image.Image
         Image in HED space
     """
+    if img.mode not in ["RGB", "RGBA"]:
+        raise Exception("Input image must be RGB or RGBA")
     img_arr = np.array(img)
     hed_arr = sk_color.rgb2hed(img_arr)
     hed = np_to_pil(hed_arr)
@@ -81,6 +83,8 @@ def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
      PIL.Image.Image
          Image in HED space
      """
+    if img.mode != "RGB":
+        raise Exception("Input image must be RGB")
     img_arr = np.array(img)
     hsv_arr = sk_color.rgb2hsv(img_arr)
     hsv = np_to_pil(hsv_arr)
@@ -104,13 +108,15 @@ def stretch_contrast(
     low: int
          Range low value (0 to 255).
     high: int
-          Range high value (0 to 255).
+        Range high value (0 to 255).
 
     Returns
     -------
     PIL.Image.Image
             Image with contrast enhanced.
     """
+    if low not in range(256) or high not in range(256):
+        raise Exception("low and high values must be in range [0, 255]")
     img_arr = np.array(img)
     low_p, high_p = np.percentile(img_arr, (low * 100 / 255, high * 100 / 255))
     stretch_contrast = sk_exposure.rescale_intensity(img_arr, in_range=(low_p, high_p))
@@ -136,8 +142,7 @@ def histogram_equalization(img: PIL.Image.Image, nbins: int = 256) -> PIL.Image.
     """
     img_arr = np.array(img)
     hist_equ = sk_exposure.equalize_hist(img_arr, nbins=nbins)
-    hist_equ = np_to_pil(hist_equ)
-    return hist_equ
+    return np_to_pil(hist_equ)
 
 
 def adaptive_equalization(
@@ -162,6 +167,8 @@ def adaptive_equalization(
      PIL.Image.Image
           image with contrast enhanced by adaptive equalization.
      """
+    if not (isinstance(nbins, int) and nbins > 0):
+        raise ValueError("Number of histogram bins must be positive integer")
     img_arr = np.array(img)
     adapt_equ = sk_exposure.equalize_adapthist(img_arr, nbins, clip_limit)
     adapt_equ = np_to_pil(adapt_equ)
@@ -185,13 +192,17 @@ def local_equalization(img: PIL.Image.Image, disk_size: int = 50) -> PIL.Image.I
     PIL.Image.Image
         2D image with contrast enhanced using local equalization.
     """
-    if img.size != 2:
+
+    if len(np.array(img).shape) != 2:
         raise ValueError("Input must be 2D.")
-    return sk_filters.rank.equalize(img, selem=sk_morphology.disk(disk_size))
+    local_equ = sk_filters.rank.equalize(
+        np.array(img), selem=sk_morphology.disk(disk_size)
+    )
+    return np_to_pil(local_equ)
 
 
 def kmeans_segmentation(
-    img: PIL.Image.Image, compactness: int = 10, n_segments: int = 800
+    img: PIL.Image.Image, compactness: float = 10.0, n_segments: int = 800
 ) -> PIL.Image.Image:
     """Segment an RGB image with K-means segmentation
 
@@ -202,7 +213,7 @@ def kmeans_segmentation(
     ---------
     img : PIL.Image.Image
         Input image
-    compactness : int, optional (default is 10)
+    compactness : float, optional (default is 10.0)
         Color proximity versus space proximity factor.
     n_segments : int, optional (default is 800)
         The number of segments.
@@ -216,12 +227,12 @@ def kmeans_segmentation(
     img_arr = np.array(img)
     labels = sk_segmentation.slic(img_arr, compactness, n_segments)
     kmeans_segmentation = sk_color.label2rgb(labels, img_arr, kind="avg")
-    return Image.fromarray(kmeans_segmentation)
+    return np_to_pil(kmeans_segmentation)
 
 
 def rag_threshold(
     img: PIL.Image.Image,
-    compactness: int = 10,
+    compactness: float = 10.0,
     n_segments: int = 800,
     threshold: int = 9,
 ) -> PIL.Image.Image:
@@ -235,7 +246,7 @@ def rag_threshold(
     ----------
     img : PIL.Image.Image
         Input image
-    compactness : int, optional (default is 10)
+    compactness : float, optional (default is 10.0)
         Color proximity versus space proximity factor.
     n_segments :  int, optional (default is 800)
         The number of segments.
@@ -248,12 +259,14 @@ def rag_threshold(
         Each segment has been colored based on the average
         color for that segment (and similar segments have been combined).
     """
+    if img.mode == "RGBA":
+        raise ValueError("Input image cannot be RGBA")
     img_arr = np.array(img)
     labels = sk_segmentation.slic(img_arr, compactness, n_segments)
     g = sk_future.graph.rag_mean_color(img_arr, labels)
     labels2 = sk_future.graph.cut_threshold(labels, g, threshold)
     rag = sk_color.label2rgb(labels2, img_arr, kind="avg")
-    return Image.fromarray(rag)
+    return np_to_pil(rag)
 
 
 def hysteresis_threshold(
@@ -277,8 +290,10 @@ def hysteresis_threshold(
         the hysteresis threshold
     """
     # TODO: warning grayscale input image (skimage doc)
+    if low is None or high is None:
+        raise ValueError("thresholds cannot be None")
     hyst = sk_filters.apply_hysteresis_threshold(np.array(img), low, high)
-    return Image.fromarray(hyst.astype("uint8") * 255)
+    return np_to_pil(hyst)
 
 
 # -------- Branching function --------
