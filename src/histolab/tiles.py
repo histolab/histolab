@@ -27,7 +27,7 @@ from enum import Enum
 from deephistopath.wsi import util
 from deephistopath.wsi import filter
 from deephistopath.wsi import slide
-from deephistopath.wsi.util import Time
+
 
 matplotlib.use("Agg")
 
@@ -546,20 +546,10 @@ def save_tile_summary_image(pil_img, slide_num):
       pil_img: Image as a PIL Image.
       slide_num: The slide number.
     """
-    t = Time()
     filepath = slide.get_tile_summary_image_path(slide_num)
     pil_img.save(filepath)
-    print(
-        "%-20s | Time: %-14s  Name: %s" % ("Save Tile Sum", str(t.elapsed()), filepath)
-    )
-
-    t = Time()
     thumbnail_filepath = slide.get_tile_summary_thumbnail_path(slide_num)
     slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_filepath)
-    print(
-        "%-20s | Time: %-14s  Name: %s"
-        % ("Save Tile Sum Thumb", str(t.elapsed()), thumbnail_filepath)
-    )
 
 
 def save_top_tiles_image(pil_img, slide_num):
@@ -570,21 +560,11 @@ def save_top_tiles_image(pil_img, slide_num):
       pil_img: Image as a PIL Image.
       slide_num: The slide number.
     """
-    t = Time()
     filepath = slide.get_top_tiles_image_path(slide_num)
     pil_img.save(filepath)
-    print(
-        "%-20s | Time: %-14s  Name: %s"
-        % ("Save Top Tiles Image", str(t.elapsed()), filepath)
-    )
 
-    t = Time()
     thumbnail_filepath = slide.get_top_tiles_thumbnail_path(slide_num)
     slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_filepath)
-    print(
-        "%-20s | Time: %-14s  Name: %s"
-        % ("Save Top Tiles Thumb", str(t.elapsed()), thumbnail_filepath)
-    )
 
 
 def save_tile_summary_on_original_image(pil_img, slide_num):
@@ -595,21 +575,11 @@ def save_tile_summary_on_original_image(pil_img, slide_num):
       pil_img: Image as a PIL Image.
       slide_num: The slide number.
     """
-    t = Time()
     filepath = slide.get_tile_summary_on_original_image_path(slide_num)
     pil_img.save(filepath)
-    print(
-        "%-20s | Time: %-14s  Name: %s"
-        % ("Save Tile Sum Orig", str(t.elapsed()), filepath)
-    )
 
-    t = Time()
     thumbnail_filepath = slide.get_tile_summary_on_original_thumbnail_path(slide_num)
     slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_filepath)
-    print(
-        "%-20s | Time: %-14s  Name: %s"
-        % ("Save Tile Sum Orig T", str(t.elapsed()), thumbnail_filepath)
-    )
 
 
 def save_top_tiles_on_original_image(pil_img, slide_num):
@@ -620,20 +590,11 @@ def save_top_tiles_on_original_image(pil_img, slide_num):
       pil_img: Image as a PIL Image.
       slide_num: The slide number.
     """
-    t = Time()
     filepath = slide.get_top_tiles_on_original_image_path(slide_num)
     pil_img.save(filepath)
-    print(
-        "%-20s | Time: %-14s  Name: %s" % ("Save Top Orig", str(t.elapsed()), filepath)
-    )
 
-    t = Time()
     thumbnail_filepath = slide.get_top_tiles_on_original_thumbnail_path(slide_num)
     slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_filepath)
-    print(
-        "%-20s | Time: %-14s  Name: %s"
-        % ("Save Top Orig Thumb", str(t.elapsed()), thumbnail_filepath)
-    )
 
 
 def summary_and_tiles(
@@ -675,9 +636,6 @@ def save_tile_data(tile_summary):
     Args
       tile_summary: TimeSummary object.
     """
-
-    time = Time()
-
     csv = summary_title(tile_summary) + "\n" + summary_stats(tile_summary)
 
     csv += (
@@ -719,11 +677,6 @@ def save_tile_data(tile_summary):
     csv_file = open(data_path, "w")
     csv_file.write(csv)
     csv_file.close()
-
-    print(
-        "%-20s | Time: %-14s  Name: %s"
-        % ("Save Tile Data", str(time.elapsed()), data_path)
-    )
 
 
 def tile_to_pil_tile(tile):
@@ -775,15 +728,11 @@ def save_display_tile(tile, save=True, display=False):
     tile_pil_img = tile_to_pil_tile(tile)
 
     if save:
-        t = Time()
         img_path = slide.get_tile_image_path(tile)
         dir = os.path.dirname(img_path)
         if not os.path.exists(dir):
             os.makedirs(dir)
         tile_pil_img.save(img_path)
-        print(
-            "%-20s | Time: %-14s  Name: %s" % ("Save Tile", str(t.elapsed()), img_path)
-        )
 
     if display:
         tile_pil_img.show()
@@ -1046,7 +995,6 @@ def singleprocess_filtered_images_to_tiles(
       html: If True, generate HTML page to display tiled images
       image_num_list: Optionally specify a list of image slide numbers.
     """
-    t = Time()
     print("Generating tile summaries\n")
 
     if image_num_list is not None:
@@ -1058,8 +1006,6 @@ def singleprocess_filtered_images_to_tiles(
         image_num_list, tile_summaries_dict = image_range_to_tiles(
             1, num_training_slides, display, save_summary, save_data, save_top_tiles
         )
-
-    print("Time to generate tile summaries: %s\n" % str(t.elapsed()))
 
     if html:
         generate_tiled_html_result(image_num_list, tile_summaries_dict, save_data)
@@ -1084,8 +1030,6 @@ def multiprocess_filtered_images_to_tiles(
       html: If True, generate HTML page to display tiled images.
       image_num_list: Optionally specify a list of image slide numbers.
     """
-    timer = Time()
-    print("Generating tile summaries (multiprocess)\n")
 
     if save_summary and not os.path.exists(slide.TILE_SUMMARY_DIR):
         os.makedirs(slide.TILE_SUMMARY_DIR)
@@ -1158,8 +1102,6 @@ def multiprocess_filtered_images_to_tiles(
 
     if html:
         generate_tiled_html_result(slide_nums, tile_summaries_dict, save_data)
-
-    print("Time to generate tile previews (multiprocess): %s\n" % str(timer.elapsed()))
 
 
 def image_row(slide_num, tile_summary, data_link):

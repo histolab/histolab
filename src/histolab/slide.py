@@ -24,14 +24,16 @@ Slide is the main API class for manipulating slide objects.
 import math
 import os
 import pathlib
+import ntpath
 from typing import Tuple, Union, List
 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure as matplotlib_figure
-import ntpath
 import numpy as np
 import openslide
 import PIL
+
+from src.histolab.util import lazyproperty
 
 IMG_EXT = "png"
 THUMBNAIL_SIZE = 300
@@ -93,7 +95,7 @@ class Slide(object):
         img_path = self._breadcumb(self._processed_path, scale_factor)
         return img_path
 
-    @property
+    @lazyproperty
     def thumbnail_path(self) -> str:
         """Returns thumbnail image path.
 
@@ -106,7 +108,7 @@ class Slide(object):
         )
         return thumb_path
 
-    @property
+    @lazyproperty
     def dimensions(self) -> Tuple[int, int]:
         """Returns the slide dimensions (w,h)
 
@@ -116,7 +118,7 @@ class Slide(object):
         """
         return self._wsi.dimensions
 
-    @property
+    @lazyproperty
     def name(self) -> str:
         """Retrieves the slide name without extension.
 
@@ -192,7 +194,7 @@ class Slide(object):
         new_h = math.floor(large_h / scale_factor)
         return large_w, large_h, new_w, new_h
 
-    @property
+    @lazyproperty
     def _wsi(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
         """Open the slide and returns an openslide object
 
@@ -211,7 +213,7 @@ class Slide(object):
             raise FileNotFoundError("The wsi path resource doesn't exist")
         return slide
 
-    @property
+    @lazyproperty
     def _extension(self) -> str:
         return os.path.splitext(self._path)[1]
 
@@ -256,7 +258,7 @@ class SlideSet(object):
         for slide in self.slides[:n]:
             slide.save_thumbnail()
 
-    @property
+    @lazyproperty
     def slides(self) -> List[Slide]:
         return [
             Slide(os.path.join(self._slides_path, _path), self._processed_path)
@@ -264,7 +266,7 @@ class SlideSet(object):
             if os.path.splitext(_path)[1] in self._valid_extensions
         ]
 
-    @property
+    @lazyproperty
     def slides_stats(self) -> Tuple[dict, matplotlib_figure]:
         """Retrieve statistic/graphs of slides files contained in the dataset"""
 
@@ -303,25 +305,25 @@ class SlideSet(object):
 
         return basic_stats, figure
 
-    @property
+    @lazyproperty
     def total_slides(self) -> int:
         return len(self.slides)
 
     # ---private interface methods and properties---
 
-    @property
+    @lazyproperty
     def _avg_width_slide(self) -> float:
         return sum(d["width"] for d in self._slides_dimensions) / self.total_slides
 
-    @property
+    @lazyproperty
     def _avg_height_slide(self) -> float:
         return sum(d["height"] for d in self._slides_dimensions) / self.total_slides
 
-    @property
+    @lazyproperty
     def _avg_size_slide(self) -> float:
         return sum(d["size"] for d in self._slides_dimensions) / self.total_slides
 
-    @property
+    @lazyproperty
     def _dimensions_stats(self) -> dict:
         return {
             "no_of_slides": self.total_slides,
@@ -336,37 +338,37 @@ class SlideSet(object):
             "avg_size": self._avg_size_slide,
         }
 
-    @property
+    @lazyproperty
     def _max_height_slide(self) -> dict:
         max_height = max(self._slides_dimensions, key=lambda x: x["height"])
         return {"slide": max_height["slide"], "height": max_height["height"]}
 
-    @property
+    @lazyproperty
     def _max_size_slide(self) -> dict:
         max_size = max(self._slides_dimensions, key=lambda x: x["size"])
         return {"slide": max_size["slide"], "size": max_size["size"]}
 
-    @property
+    @lazyproperty
     def _max_width_slide(self) -> dict:
         max_width = max(self._slides_dimensions, key=lambda x: x["width"])
         return {"slide": max_width["slide"], "width": max_width["width"]}
 
-    @property
+    @lazyproperty
     def _min_width_slide(self) -> dict:
         min_width = min(self._slides_dimensions, key=lambda x: x["width"])
         return {"slide": min_width["slide"], "width": min_width["width"]}
 
-    @property
+    @lazyproperty
     def _min_height_slide(self) -> dict:
         min_height = min(self._slides_dimensions, key=lambda x: x["height"])
         return {"slide": min_height["slide"], "height": min_height["height"]}
 
-    @property
+    @lazyproperty
     def _min_size_slide(self) -> dict:
         min_size = min(self._slides_dimensions, key=lambda x: x["size"])
         return {"slide": min_size["slide"], "size": min_size["size"]}
 
-    @property
+    @lazyproperty
     def _slides_dimensions(self) -> List[dict]:
         return [
             {
@@ -378,6 +380,6 @@ class SlideSet(object):
             for slide in self.slides
         ]
 
-    @property
+    @lazyproperty
     def _slides_dimensions_list(self):
         return [slide.dimensions for slide in self.slides]
