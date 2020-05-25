@@ -168,6 +168,8 @@ def adaptive_equalization(
      PIL.Image.Image
           image with contrast enhanced by adaptive equalization.
      """
+    if not (isinstance(nbins, int) and nbins > 0):
+        raise ValueError("Number of histogram bins must be positive integer")
     img_arr = np.array(img)
     adapt_equ = sk_exposure.equalize_adapthist(img_arr, nbins, clip_limit)
     adapt_equ = np_to_pil(adapt_equ)
