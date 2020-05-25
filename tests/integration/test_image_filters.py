@@ -361,3 +361,242 @@ def test_adaptive_equalization_raises_exception_on_params(nbins, clip_limit):
 
     assert isinstance(err.value, Exception)
     assert str(err.value) == "Number of histogram bins must be positive integer"
+
+
+def test_local_equalization_filter_on_gs_image():
+    greyscale_img = imf.local_equalization(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 80)
+    expected_value = load_expectation(
+        "pil-images-gs/diagnostic-slide-thumb-gs-local-equalization", type_="png"
+    )
+
+    np.testing.assert_array_almost_equal(
+        np.array(greyscale_img), np.array(expected_value)
+    )
+
+    assert (
+        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
+        == 0
+    )
+
+
+@pytest.mark.parametrize(
+    "pil_rgb_image",
+    (
+        RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+        RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+        RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+        RGBA.DIAGNOSTIC_SLIDE_THUMB,
+    ),
+)
+def test_local_equalization_raises_exception_on_rgb_images(pil_rgb_image):
+    with pytest.raises(Exception) as err:
+        imf.local_equalization(pil_rgb_image, 80)
+
+    assert isinstance(err.value, Exception)
+    assert str(err.value) == "Input must be 2D."
+
+
+def test_kmeans_segmentation_filter_on_rgba_image():
+    kmeans_segmentation_img = imf.kmeans_segmentation(
+        RGBA.DIAGNOSTIC_SLIDE_THUMB, 20.6, 300
+    )
+    expected_value = load_expectation(
+        "pil-images-rgba/diagnostic-slide-thumb-kmeans-segmentation", type_="png"
+    )
+
+    np.testing.assert_array_almost_equal(
+        np.array(kmeans_segmentation_img), np.array(expected_value)
+    )
+
+    assert (
+        np.unique(
+            np.array(ImageChops.difference(kmeans_segmentation_img, expected_value))
+        )[0]
+        == 0
+    )
+
+
+@pytest.mark.parametrize(
+    "pil_image, expected_image",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "pil-images-rgb/diagnostic-slide-thumb-rgb-kmeans-segmentation",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-kmeans-segmentation",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "pil-images-rgb/diagnostic-slide-thumb-hsv-kmeans-segmentation",
+        ),
+    ),
+)
+def test_kmeans_segmentation_filter_on_rgb_image(pil_image, expected_image):
+    kmeans_segmentation_img = imf.kmeans_segmentation(pil_image, 20.6, 300)
+    expected_value = load_expectation(expected_image, type_="png")
+
+    np.testing.assert_array_almost_equal(
+        np.array(kmeans_segmentation_img), np.array(expected_value)
+    )
+
+    assert (
+        np.unique(
+            np.array(ImageChops.difference(kmeans_segmentation_img, expected_value))
+        )[0]
+        == 0
+    )
+
+
+def test_kmeans_segmentation_filter_on_gs_image():
+    greyscale_img = imf.kmeans_segmentation(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 20.6,)
+    expected_value = load_expectation(
+        "pil-images-gs/diagnostic-slide-thumb-gs-kmeans-segmentation", type_="png"
+    )
+
+    np.testing.assert_array_almost_equal(
+        np.array(greyscale_img), np.array(expected_value)
+    )
+
+    assert (
+        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
+        == 0
+    )
+
+
+@pytest.mark.parametrize(
+    "pil_image, expected_image",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "pil-images-rgb/diagnostic-slide-thumb-rgb-rag-threshold",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-rag-threshold",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "pil-images-rgb/diagnostic-slide-thumb-hsv-rag-threshold",
+        ),
+    ),
+)
+def test_rag_threshold_filter_on_rgb_image(pil_image, expected_image):
+    rag_threshold_img = imf.rag_threshold(pil_image, 20.6, 650, 15)
+    expected_value = load_expectation(expected_image, type_="png")
+
+    np.testing.assert_array_almost_equal(
+        np.array(rag_threshold_img), np.array(expected_value)
+    )
+
+    assert (
+        np.unique(np.array(ImageChops.difference(rag_threshold_img, expected_value)))[0]
+        == 0
+    )
+
+
+def test_rag_threshold_filter_on_gs_image():
+    greyscale_img = imf.rag_threshold(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 20.6, 650, 15)
+    expected_value = load_expectation(
+        "pil-images-gs/diagnostic-slide-thumb-gs-rag-threshold", type_="png"
+    )
+
+    np.testing.assert_array_almost_equal(
+        np.array(greyscale_img), np.array(expected_value)
+    )
+
+    assert (
+        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
+        == 0
+    )
+
+
+def test_rag_threshold_raises_exception_on_rgba_images():
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    with pytest.raises(Exception) as err:
+        imf.rag_threshold(rgba_img, 20, 50, 3.5)
+
+    assert isinstance(err.value, Exception)
+    assert str(err.value) == "Input image cannot be RGBA"
+
+
+def test_hysteresis_threshold_filter_on_rgba_image():
+    hysteresis_threshold_img = imf.hysteresis_threshold(
+        RGBA.DIAGNOSTIC_SLIDE_THUMB, 10.6, 200
+    )
+    expected_value = load_expectation(
+        "pil-images-rgba/diagnostic-slide-thumb-hysteresis-threshold", type_="png"
+    )
+
+    np.testing.assert_array_almost_equal(
+        np.array(hysteresis_threshold_img), np.array(expected_value)
+    )
+
+    assert (
+        np.unique(
+            np.array(ImageChops.difference(hysteresis_threshold_img, expected_value))
+        )[0]
+        == 0
+    )
+
+
+@pytest.mark.parametrize(
+    "pil_image, expected_image",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "pil-images-rgb/diagnostic-slide-thumb-rgb-hysteresis-threshold",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-hysteresis-threshold",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "pil-images-rgb/diagnostic-slide-thumb-hsv-hysteresis-threshold",
+        ),
+    ),
+)
+def test_hysteresis_threshold_filter_on_rgb_image(pil_image, expected_image):
+    hysteresis_threshold_img = imf.hysteresis_threshold(pil_image, 10.6, 200)
+    expected_value = load_expectation(expected_image, type_="png")
+
+    np.testing.assert_array_almost_equal(
+        np.array(hysteresis_threshold_img), np.array(expected_value)
+    )
+
+    assert (
+        np.unique(
+            np.array(ImageChops.difference(hysteresis_threshold_img, expected_value))
+        )[0]
+        == 0
+    )
+
+
+def test_hysteresis_threshold_filter_on_gs_image():
+    greyscale_img = imf.hysteresis_threshold(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 10.6, 200)
+    expected_value = load_expectation(
+        "pil-images-gs/diagnostic-slide-thumb-gs-hysteresis-threshold", type_="png"
+    )
+
+    np.testing.assert_array_almost_equal(
+        np.array(greyscale_img), np.array(expected_value)
+    )
+
+    assert (
+        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
+        == 0
+    )
+
+
+@pytest.mark.parametrize(
+    "low, high", ((None, 50), (-250, None), (None, None),),
+)
+def test_hysteresis_threshold_raises_exception_on_thresholds(low, high):
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    with pytest.raises(Exception) as err:
+        imf.hysteresis_threshold(rgba_img, low, high)
+
+    assert isinstance(err.value, Exception)
+    assert str(err.value) == "thresholds cannot be None"
