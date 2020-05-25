@@ -7,9 +7,8 @@ import os
 from PIL import Image
 
 
-class LazySVSResponseLoader(object):
-    """Loads and caches svs by name from fixture directory.
-
+class LazyResponder(object):
+    """Loads and caches fixtures files by name from fixture directory.
     Provides access to all the svs fixtures in a directory by
     a standardized mapping of the file name, e.g. ca-1-c.svs is available
     as the `.CA_1_C` attribute of the loader.
@@ -32,6 +31,10 @@ class LazySVSResponseLoader(object):
         thisdir = os.path.dirname(os.path.abspath(__file__))
         return os.path.abspath(os.path.join(thisdir, self._relpath))
 
+
+class LazySVSResponseLoader(LazyResponder):
+    """Specific class for SVS fixtures loader"""
+
     def _svs_path(self, fixture_name):
         return "%s/%s.svs" % (self._dirpath, fixture_name.replace("_", "-").lower())
 
@@ -47,30 +50,8 @@ class LazySVSResponseLoader(object):
         self._cache[fixture_name] = self._load_svs(svs_path)
 
 
-class LazyPILResponseLoader(object):
-    """Loads and caches png by name from fixture directory.
-
-    Provides access to all the png fixtures in a directory by
-    a standardized mapping of the file name, e.g. ca-1-c.png is available
-    as the `.CA_1_C` attribute of the loader.
-
-    The fixture directory is specified relative to this (fixture root)
-    directory.
-    """
-
-    def __init__(self, relpath):
-        self._relpath = relpath
-        self._cache = {}
-
-    def __getattr__(self, fixture_name):
-        if fixture_name not in self._cache:
-            self._load_to_cache(fixture_name)
-        return self._cache[fixture_name]
-
-    @property
-    def _dirpath(self):
-        thisdir = os.path.dirname(os.path.abspath(__file__))
-        return os.path.abspath(os.path.join(thisdir, self._relpath))
+class LazyPILResponseLoader(LazyResponder):
+    """Specific class for PIL fixtures loader"""
 
     def _pil_path(self, fixture_name):
         return "%s/%s.png" % (self._dirpath, fixture_name.replace("_", "-").lower())
