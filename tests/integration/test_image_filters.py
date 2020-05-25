@@ -1,9 +1,12 @@
+import pytest
+import numpy as np
+
 import src.histolab.filters.image_filters_functional as imf
+
+from PIL import ImageChops
+
 from ..fixtures import RGBA, RGB, GS
 from ..util import load_expectation
-import numpy as np
-from PIL import ImageChops
-import pytest
 
 
 @pytest.mark.parametrize(
@@ -24,8 +27,9 @@ import pytest
     ),
 )
 def test_invert_filter_with_rgb_image(pil_image, expected_image):
-    inverted_img = imf.invert(pil_image)
     expected_value = load_expectation(expected_image, type_="png")
+
+    inverted_img = imf.invert(pil_image)
 
     np.testing.assert_array_almost_equal(
         np.array(inverted_img), np.array(expected_value)
@@ -36,30 +40,32 @@ def test_invert_filter_with_rgb_image(pil_image, expected_image):
 
 
 def test_invert_filter_with_rgba_image():
-    inverted_img = imf.invert(RGBA.DIAGNOSTIC_SLIDE_THUMB)
+    rgba_image = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
         "pil-images-rgba/diagnostic-slide-thumb-inverted", type_="png"
     )
 
+    inverted_img = imf.invert(rgba_image)
+
     np.testing.assert_array_almost_equal(
         np.array(inverted_img), np.array(expected_value)
     )
-
     assert (
         np.unique(np.array(ImageChops.difference(inverted_img, expected_value)))[0] == 0
     )
 
 
 def test_invert_filter_with_gs_image():
-    inverted_img = imf.invert(GS.DIAGNOSTIC_SLIDE_THUMB_GS)
+    gs_image = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(
         "pil-images-gs/diagnostic-slide-thumb-gs-inverted", type_="png"
     )
 
+    inverted_img = imf.invert(gs_image)
+
     np.testing.assert_array_almost_equal(
         np.array(inverted_img), np.array(expected_value)
     )
-
     assert (
         np.unique(np.array(ImageChops.difference(inverted_img, expected_value)))[0] == 0
     )
@@ -83,29 +89,31 @@ def test_invert_filter_with_gs_image():
     ),
 )
 def test_rgb_to_hed_filter_with_rgb_image(pil_image, expected_image):
-    hed_img = imf.rgb_to_hed(pil_image)
     expected_value = load_expectation(expected_image, type_="png")
 
-    np.testing.assert_array_almost_equal(np.array(hed_img), np.array(expected_value))
+    hed_img = imf.rgb_to_hed(pil_image)
 
+    np.testing.assert_array_almost_equal(np.array(hed_img), np.array(expected_value))
     assert np.unique(np.array(ImageChops.difference(hed_img, expected_value)))[0] == 0
 
 
 def test_rgb_to_hed_filter_with_rgba_image():
-    hed_img = imf.rgb_to_hed(RGBA.DIAGNOSTIC_SLIDE_THUMB)
+    img = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
         "pil-images-rgba/diagnostic-slide-thumb-rgba-to-hed", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(np.array(hed_img), np.array(expected_value))
+    hed_img = imf.rgb_to_hed(img)
 
+    np.testing.assert_array_almost_equal(np.array(hed_img), np.array(expected_value))
     assert np.unique(np.array(ImageChops.difference(hed_img, expected_value)))[0] == 0
 
 
 def test_rgb_to_hed_raises_exception_on_gs_image():
-    grayscale_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+
     with pytest.raises(Exception) as err:
-        imf.rgb_to_hed(grayscale_img)
+        imf.rgb_to_hed(gs_img)
 
     assert isinstance(err.value, Exception)
     assert str(err.value) == "Input image must be RGB or RGBA"
@@ -125,41 +133,49 @@ def test_rgb_to_hed_raises_exception_on_gs_image():
     ),
 )
 def test_rgb_to_hsv_filter_with_rgb_image(pil_image, expected_image):
-    hsv_img = imf.rgb_to_hsv(pil_image)
     expected_value = load_expectation(expected_image, type_="png")
 
-    np.testing.assert_array_almost_equal(np.array(hsv_img), np.array(expected_value))
+    hsv_img = imf.rgb_to_hsv(pil_image)
 
+    np.testing.assert_array_almost_equal(np.array(hsv_img), np.array(expected_value))
     assert np.unique(np.array(ImageChops.difference(hsv_img, expected_value)))[0] == 0
 
 
 def test_rgb_to_hsv_raises_exception_on_rgba_image():
-    grayscale_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    gs_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+
     with pytest.raises(Exception) as err:
-        imf.rgb_to_hsv(grayscale_img)
+        imf.rgb_to_hsv(gs_img)
 
     assert isinstance(err.value, Exception)
     assert str(err.value) == "Input image must be RGB"
 
 
 def test_rgb_to_hsv_raises_exception_on_gs_image():
-    grayscale_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+
     with pytest.raises(Exception) as err:
-        imf.rgb_to_hsv(grayscale_img)
+        imf.rgb_to_hsv(gs_img)
 
     assert isinstance(err.value, Exception)
     assert str(err.value) == "Input image must be RGB"
 
 
 def test_stretch_contrast_filter_on_rgba_image():
-    rgba_img = imf.stretch_contrast(RGBA.DIAGNOSTIC_SLIDE_THUMB, 40, 60)
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
         "pil-images-rgba/diagnostic-slide-thumb-stretch-contrast", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(np.array(rgba_img), np.array(expected_value))
+    stretched_img = imf.stretch_contrast(rgba_img, 40, 60)
 
-    assert np.unique(np.array(ImageChops.difference(rgba_img, expected_value)))[0] == 0
+    np.testing.assert_array_almost_equal(
+        np.array(stretched_img), np.array(expected_value)
+    )
+    assert (
+        np.unique(np.array(ImageChops.difference(stretched_img, expected_value)))[0]
+        == 0
+    )
 
 
 @pytest.mark.parametrize(
@@ -180,30 +196,32 @@ def test_stretch_contrast_filter_on_rgba_image():
     ),
 )
 def test_stretch_contrast_filter_on_rgb_image(pil_image, expected_image):
-    stretch_img = imf.stretch_contrast(pil_image)
     expected_value = load_expectation(expected_image, type_="png")
 
-    np.testing.assert_array_almost_equal(
-        np.array(stretch_img), np.array(expected_value)
-    )
+    stretched_img = imf.stretch_contrast(pil_image)
 
+    np.testing.assert_array_almost_equal(
+        np.array(stretched_img), np.array(expected_value)
+    )
     assert (
-        np.unique(np.array(ImageChops.difference(stretch_img, expected_value)))[0] == 0
+        np.unique(np.array(ImageChops.difference(stretched_img, expected_value)))[0]
+        == 0
     )
 
 
 def test_stretch_contrast_filter_on_gs_image():
-    greyscale_img = imf.stretch_contrast(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 40, 60)
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(
         "pil-images-gs/diagnostic-slide-thumb-gs-stretch-contrast", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(
-        np.array(greyscale_img), np.array(expected_value)
-    )
+    stretched_img = imf.stretch_contrast(gs_img, 40, 60)
 
+    np.testing.assert_array_almost_equal(
+        np.array(stretched_img), np.array(expected_value)
+    )
     assert (
-        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
+        np.unique(np.array(ImageChops.difference(stretched_img, expected_value)))[0]
         == 0
     )
 
@@ -211,8 +229,8 @@ def test_stretch_contrast_filter_on_gs_image():
 @pytest.mark.parametrize(
     "low, high",
     (
-        (300, 40,),
-        (300, 600,),
+        (300, 40),
+        (300, 600),
         (40, 500,),
         (-10, 340),
         (-200, 300),
@@ -224,6 +242,7 @@ def test_stretch_contrast_filter_on_gs_image():
 )
 def test_stretch_contrast_raises_exception_on_ranges(low, high):
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+
     with pytest.raises(Exception) as err:
         imf.stretch_contrast(rgba_img, low, high)
 
@@ -232,14 +251,19 @@ def test_stretch_contrast_raises_exception_on_ranges(low, high):
 
 
 def test_histogram_equalization_filter_on_rgba_image():
-    rgba_img = imf.histogram_equalization(RGBA.DIAGNOSTIC_SLIDE_THUMB, 200)
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
         "pil-images-rgba/diagnostic-slide-thumb-histogram-equalization", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(np.array(rgba_img), np.array(expected_value))
+    hist_equ_img = imf.histogram_equalization(rgba_img, 200)
 
-    assert np.unique(np.array(ImageChops.difference(rgba_img, expected_value)))[0] == 0
+    np.testing.assert_array_almost_equal(
+        np.array(hist_equ_img), np.array(expected_value)
+    )
+    assert (
+        np.unique(np.array(ImageChops.difference(hist_equ_img, expected_value)))[0] == 0
+    )
 
 
 @pytest.mark.parametrize(
@@ -260,46 +284,48 @@ def test_histogram_equalization_filter_on_rgba_image():
     ),
 )
 def test_histogram_equalization_filter_on_rgb_image(pil_image, expected_image):
-    histogram_equalization_img = imf.histogram_equalization(pil_image, 200)
     expected_value = load_expectation(expected_image, type_="png")
 
-    np.testing.assert_array_almost_equal(
-        np.array(histogram_equalization_img), np.array(expected_value)
-    )
+    hist_equ_img = imf.histogram_equalization(pil_image, 200)
 
+    np.testing.assert_array_almost_equal(
+        np.array(hist_equ_img), np.array(expected_value)
+    )
     assert (
-        np.unique(
-            np.array(ImageChops.difference(histogram_equalization_img, expected_value))
-        )[0]
-        == 0
+        np.unique(np.array(ImageChops.difference(hist_equ_img, expected_value)))[0] == 0
     )
 
 
 def test_histogram_equalization_filter_on_gs_image():
-    greyscale_img = imf.histogram_equalization(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 200)
+    img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(
         "pil-images-gs/diagnostic-slide-thumb-gs-histogram-equalization", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(
-        np.array(greyscale_img), np.array(expected_value)
-    )
+    hist_equ_img = imf.histogram_equalization(img, 200)
 
+    np.testing.assert_array_almost_equal(
+        np.array(hist_equ_img), np.array(expected_value)
+    )
     assert (
-        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
-        == 0
+        np.unique(np.array(ImageChops.difference(hist_equ_img, expected_value)))[0] == 0
     )
 
 
 def test_adaptive_equalization_filter_on_rgba_image():
-    rgba_img = imf.adaptive_equalization(RGBA.DIAGNOSTIC_SLIDE_THUMB, 200, 0.2)
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
         "pil-images-rgba/diagnostic-slide-thumb-adaptive-equalization", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(np.array(rgba_img), np.array(expected_value))
+    adap_equ_img = imf.adaptive_equalization(rgba_img, 200, 0.2)
 
-    assert np.unique(np.array(ImageChops.difference(rgba_img, expected_value)))[0] == 0
+    np.testing.assert_array_almost_equal(
+        np.array(adap_equ_img), np.array(expected_value)
+    )
+    assert (
+        np.unique(np.array(ImageChops.difference(adap_equ_img, expected_value)))[0] == 0
+    )
 
 
 @pytest.mark.parametrize(
@@ -320,34 +346,31 @@ def test_adaptive_equalization_filter_on_rgba_image():
     ),
 )
 def test_adaptive_equalization_filter_on_rgb_image(pil_image, expected_image):
-    adaptive_equalization_img = imf.adaptive_equalization(pil_image, 200, 0.2)
     expected_value = load_expectation(expected_image, type_="png")
 
-    np.testing.assert_array_almost_equal(
-        np.array(adaptive_equalization_img), np.array(expected_value)
-    )
+    adap_equ_img = imf.adaptive_equalization(pil_image, 200, 0.2)
 
+    np.testing.assert_array_almost_equal(
+        np.array(adap_equ_img), np.array(expected_value)
+    )
     assert (
-        np.unique(
-            np.array(ImageChops.difference(adaptive_equalization_img, expected_value))
-        )[0]
-        == 0
+        np.unique(np.array(ImageChops.difference(adap_equ_img, expected_value)))[0] == 0
     )
 
 
 def test_adaptive_equalization_filter_on_gs_image():
-    greyscale_img = imf.adaptive_equalization(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 200, 0.2)
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(
         "pil-images-gs/diagnostic-slide-thumb-gs-adaptive-equalization", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(
-        np.array(greyscale_img), np.array(expected_value)
-    )
+    adap_equ_img = imf.adaptive_equalization(gs_img, 200, 0.2)
 
+    np.testing.assert_array_almost_equal(
+        np.array(adap_equ_img), np.array(expected_value)
+    )
     assert (
-        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
-        == 0
+        np.unique(np.array(ImageChops.difference(adap_equ_img, expected_value)))[0] == 0
     )
 
 
@@ -356,6 +379,7 @@ def test_adaptive_equalization_filter_on_gs_image():
 )
 def test_adaptive_equalization_raises_exception_on_params(nbins, clip_limit):
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+
     with pytest.raises(Exception) as err:
         imf.adaptive_equalization(rgba_img, nbins, clip_limit)
 
@@ -364,17 +388,18 @@ def test_adaptive_equalization_raises_exception_on_params(nbins, clip_limit):
 
 
 def test_local_equalization_filter_on_gs_image():
-    greyscale_img = imf.local_equalization(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 80)
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(
         "pil-images-gs/diagnostic-slide-thumb-gs-local-equalization", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(
-        np.array(greyscale_img), np.array(expected_value)
-    )
+    local_equ_img = imf.local_equalization(gs_img, 80)
 
+    np.testing.assert_array_almost_equal(
+        np.array(local_equ_img), np.array(expected_value)
+    )
     assert (
-        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
+        np.unique(np.array(ImageChops.difference(local_equ_img, expected_value)))[0]
         == 0
     )
 
@@ -389,6 +414,7 @@ def test_local_equalization_filter_on_gs_image():
     ),
 )
 def test_local_equalization_raises_exception_on_rgb_images(pil_rgb_image):
+
     with pytest.raises(Exception) as err:
         imf.local_equalization(pil_rgb_image, 80)
 
@@ -397,17 +423,16 @@ def test_local_equalization_raises_exception_on_rgb_images(pil_rgb_image):
 
 
 def test_kmeans_segmentation_filter_on_rgba_image():
-    kmeans_segmentation_img = imf.kmeans_segmentation(
-        RGBA.DIAGNOSTIC_SLIDE_THUMB, 20.6, 300
-    )
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
         "pil-images-rgba/diagnostic-slide-thumb-kmeans-segmentation", type_="png"
     )
 
+    kmeans_segmentation_img = imf.kmeans_segmentation(rgba_img, 20.6, 300)
+
     np.testing.assert_array_almost_equal(
         np.array(kmeans_segmentation_img), np.array(expected_value)
     )
-
     assert (
         np.unique(
             np.array(ImageChops.difference(kmeans_segmentation_img, expected_value))
@@ -434,13 +459,13 @@ def test_kmeans_segmentation_filter_on_rgba_image():
     ),
 )
 def test_kmeans_segmentation_filter_on_rgb_image(pil_image, expected_image):
-    kmeans_segmentation_img = imf.kmeans_segmentation(pil_image, 20.6, 300)
     expected_value = load_expectation(expected_image, type_="png")
+
+    kmeans_segmentation_img = imf.kmeans_segmentation(pil_image, 20.6, 300)
 
     np.testing.assert_array_almost_equal(
         np.array(kmeans_segmentation_img), np.array(expected_value)
     )
-
     assert (
         np.unique(
             np.array(ImageChops.difference(kmeans_segmentation_img, expected_value))
@@ -450,17 +475,20 @@ def test_kmeans_segmentation_filter_on_rgb_image(pil_image, expected_image):
 
 
 def test_kmeans_segmentation_filter_on_gs_image():
-    greyscale_img = imf.kmeans_segmentation(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 20.6,)
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(
         "pil-images-gs/diagnostic-slide-thumb-gs-kmeans-segmentation", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(
-        np.array(greyscale_img), np.array(expected_value)
-    )
+    kmeans_segmentation_img = imf.kmeans_segmentation(gs_img, 20.6, 300)
 
+    np.testing.assert_array_almost_equal(
+        np.array(kmeans_segmentation_img), np.array(expected_value)
+    )
     assert (
-        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
+        np.unique(
+            np.array(ImageChops.difference(kmeans_segmentation_img, expected_value))
+        )[0]
         == 0
     )
 
@@ -483,13 +511,13 @@ def test_kmeans_segmentation_filter_on_gs_image():
     ),
 )
 def test_rag_threshold_filter_on_rgb_image(pil_image, expected_image):
-    rag_threshold_img = imf.rag_threshold(pil_image, 20.6, 650, 15)
     expected_value = load_expectation(expected_image, type_="png")
+
+    rag_threshold_img = imf.rag_threshold(pil_image, 20.6, 650, 15)
 
     np.testing.assert_array_almost_equal(
         np.array(rag_threshold_img), np.array(expected_value)
     )
-
     assert (
         np.unique(np.array(ImageChops.difference(rag_threshold_img, expected_value)))[0]
         == 0
@@ -497,23 +525,25 @@ def test_rag_threshold_filter_on_rgb_image(pil_image, expected_image):
 
 
 def test_rag_threshold_filter_on_gs_image():
-    greyscale_img = imf.rag_threshold(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 20.6, 650, 15)
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(
         "pil-images-gs/diagnostic-slide-thumb-gs-rag-threshold", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(
-        np.array(greyscale_img), np.array(expected_value)
-    )
+    rag_threshold_img = imf.rag_threshold(gs_img, 20.6, 650, 15)
 
+    np.testing.assert_array_almost_equal(
+        np.array(rag_threshold_img), np.array(expected_value)
+    )
     assert (
-        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
+        np.unique(np.array(ImageChops.difference(rag_threshold_img, expected_value)))[0]
         == 0
     )
 
 
 def test_rag_threshold_raises_exception_on_rgba_images():
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+
     with pytest.raises(Exception) as err:
         imf.rag_threshold(rgba_img, 20, 50, 3.5)
 
@@ -522,17 +552,16 @@ def test_rag_threshold_raises_exception_on_rgba_images():
 
 
 def test_hysteresis_threshold_filter_on_rgba_image():
-    hysteresis_threshold_img = imf.hysteresis_threshold(
-        RGBA.DIAGNOSTIC_SLIDE_THUMB, 10.6, 200
-    )
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
         "pil-images-rgba/diagnostic-slide-thumb-hysteresis-threshold", type_="png"
     )
 
+    hysteresis_threshold_img = imf.hysteresis_threshold(rgba_img, 10.6, 200)
+
     np.testing.assert_array_almost_equal(
         np.array(hysteresis_threshold_img), np.array(expected_value)
     )
-
     assert (
         np.unique(
             np.array(ImageChops.difference(hysteresis_threshold_img, expected_value))
@@ -559,13 +588,13 @@ def test_hysteresis_threshold_filter_on_rgba_image():
     ),
 )
 def test_hysteresis_threshold_filter_on_rgb_image(pil_image, expected_image):
-    hysteresis_threshold_img = imf.hysteresis_threshold(pil_image, 10.6, 200)
     expected_value = load_expectation(expected_image, type_="png")
+
+    hysteresis_threshold_img = imf.hysteresis_threshold(pil_image, 10.6, 200)
 
     np.testing.assert_array_almost_equal(
         np.array(hysteresis_threshold_img), np.array(expected_value)
     )
-
     assert (
         np.unique(
             np.array(ImageChops.difference(hysteresis_threshold_img, expected_value))
@@ -575,17 +604,20 @@ def test_hysteresis_threshold_filter_on_rgb_image(pil_image, expected_image):
 
 
 def test_hysteresis_threshold_filter_on_gs_image():
-    greyscale_img = imf.hysteresis_threshold(GS.DIAGNOSTIC_SLIDE_THUMB_GS, 10.6, 200)
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(
         "pil-images-gs/diagnostic-slide-thumb-gs-hysteresis-threshold", type_="png"
     )
 
-    np.testing.assert_array_almost_equal(
-        np.array(greyscale_img), np.array(expected_value)
-    )
+    hysteresis_threshold_img = imf.hysteresis_threshold(gs_img, 10.6, 200)
 
+    np.testing.assert_array_almost_equal(
+        np.array(hysteresis_threshold_img), np.array(expected_value)
+    )
     assert (
-        np.unique(np.array(ImageChops.difference(greyscale_img, expected_value)))[0]
+        np.unique(
+            np.array(ImageChops.difference(hysteresis_threshold_img, expected_value))
+        )[0]
         == 0
     )
 
@@ -595,6 +627,7 @@ def test_hysteresis_threshold_filter_on_gs_image():
 )
 def test_hysteresis_threshold_raises_exception_on_thresholds(low, high):
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+
     with pytest.raises(Exception) as err:
         imf.hysteresis_threshold(rgba_img, low, high)
 
