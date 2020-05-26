@@ -26,12 +26,12 @@ readme = ascii_bytes_from(thisdir, "README.md")
 version = re.search('__version__ = "([^"]+)"', init_py).group(1)
 
 install_requires = [
-    "matplotlib",
-    "numpy",
+    "matplotlib==3.2.1",
+    "numpy==1.18.4",
     "openslide-python==1.1.1",
     "Pillow==7.1.2",
-    "scikit-image",
-    "scipy",
+    "scikit-image==0.16.2",
+    "scipy==1.4.1",
 ]
 
 test_requires = ["pytest", "coverage", "pytest-cov", "coveralls", "pytest-mpl"]
