@@ -3,8 +3,98 @@
 """Unit test suite for src.histolab.util module."""
 
 import pytest
+import numpy as np
 
-from src.histolab.util import lazyproperty
+from src.histolab.util import lazyproperty, np_to_pil
+
+
+@pytest.mark.parametrize(
+    "img_array, expected_mode, expected_size, expected_type, expected_array",
+    (
+        (
+            np.array([[True, False], [True, True]]),
+            "L",
+            (2, 2),
+            np.uint8,
+            [[255, 0], [255, 255]],
+        ),
+        (
+            np.array([[[27.0, 7.0], [66.0, 84.0]], [[77.0, 63.0], [98.0, 77.0]]]),
+            "LA",
+            (2, 2),
+            np.uint8,
+            [[[229, 249], [190, 172]], [[179, 193], [158, 179]]],
+        ),
+        (
+            np.array(
+                [
+                    [
+                        [87, 130, 227, 200],
+                        [67, 234, 45, 68],
+                        [244, 207, 19, 21],
+                        [216, 213, 220, 16],
+                    ],
+                    [
+                        [16, 245, 236, 78],
+                        [240, 202, 186, 24],
+                        [201, 78, 14, 243],
+                        [43, 78, 74, 83],
+                    ],
+                    [
+                        [16, 35, 219, 6],
+                        [97, 130, 251, 151],
+                        [184, 20, 109, 216],
+                        [200, 5, 179, 155],
+                    ],
+                    [
+                        [1, 39, 195, 204],
+                        [90, 179, 247, 35],
+                        [129, 95, 194, 116],
+                        [228, 120, 156, 170],
+                    ],
+                ]
+            ),
+            "RGBA",
+            (4, 4),
+            np.uint8,
+            [
+                [
+                    [87, 130, 227, 200],
+                    [67, 234, 45, 68],
+                    [244, 207, 19, 21],
+                    [216, 213, 220, 16],
+                ],
+                [
+                    [16, 245, 236, 78],
+                    [240, 202, 186, 24],
+                    [201, 78, 14, 243],
+                    [43, 78, 74, 83],
+                ],
+                [
+                    [16, 35, 219, 6],
+                    [97, 130, 251, 151],
+                    [184, 20, 109, 216],
+                    [200, 5, 179, 155],
+                ],
+                [
+                    [1, 39, 195, 204],
+                    [90, 179, 247, 35],
+                    [129, 95, 194, 116],
+                    [228, 120, 156, 170],
+                ],
+            ],
+        ),
+    ),
+)
+def test_util_np_to_pil(
+    img_array, expected_mode, expected_size, expected_type, expected_array
+):
+    pil_img = np_to_pil(img_array)
+
+    assert pil_img.mode == expected_mode
+    assert pil_img.size == expected_size
+    assert np.array(pil_img).dtype == expected_type
+    np.testing.assert_array_almost_equal(np.array(pil_img), expected_array)
 
 
 class DescribeLazyPropertyDecorator(object):

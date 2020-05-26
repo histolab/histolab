@@ -19,13 +19,13 @@ import functools
 
 import numpy as np
 
-from PIL import Image
-
 from itertools import filterfalse as ifilterfalse
+
+from PIL import Image
 
 
 def np_to_pil(np_img):
-    """ Convert a NumPy array to a Image.
+    """ Convert a NumPy array to a PIL Image.
 
     Args:
       np_img: The image represented as a NumPy array.
@@ -33,11 +33,19 @@ def np_to_pil(np_img):
     Returns:
        Image.
     """
-    if np_img.dtype == "bool":
-        np_img = np_img.astype("uint8") * 255
-    elif np_img.dtype == "float64":
-        np_img = (np_img * 255).astype("uint8")
-    return Image.fromarray(np_img)
+
+    def _transform_bool(image_array):
+        return image_array.astype(np.uint8) * 255
+
+    def _transform_float(image_array):
+        return (image_array * 255).astype(np.uint8)
+
+    types_factory = {
+        "bool": _transform_bool(np_img),
+        "float64": _transform_float(np_img),
+    }
+    image_array = types_factory.get(str(np_img.dtype), np_img.astype(np.uint8))
+    return Image.fromarray(image_array)
 
 
 def threshold_to_mask(img: Image.Image, threshold: float) -> np.ndarray:
@@ -143,40 +151,16 @@ class lazyproperty(object):
         *type* is the class hosting the decorated getter method (`fget`) on
         both class and instance attribute access.
         """
-        # ---when accessed on class, e.g. Obj.fget, just return this
-        # ---descriptor instance (patched above to look like fget).
         if obj is None:
             return self
 
-        # ---when accessed on instance, start by checking instance __dict__
         value = obj.__dict__.get(self.__name__)
         if value is None:
-            # ---on first access, __dict__ item will absent. Evaluate fget()
-            # ---and store that value in the (otherwise unused) host-object
-            # ---__dict__ value of same name ('fget' nominally)
             value = self._fget(obj)
             obj.__dict__[self.__name__] = value
         return value
 
     def __set__(self, obj, value):
-        """Raises unconditionally, to preserve read-only behavior.
-
-        This decorator is intended to implement immutable (and idempotent)
-        object attributes. For that reason, assignment to this property must
-        be explicitly prevented.
-
-        If this __set__ method was not present, this descriptor would become
-        a *non-data descriptor*. That would be nice because the cached value
-        would be accessed directly once set (__dict__ attrs have precedence
-        over non-data descriptors on instance attribute lookup). The problem
-        is, there would be nothing to stop assignment to the cached value,
-        which would overwrite the result of `fget()` and break both the
-        immutability and idempotence guarantees of this decorator.
-
-        The performance with this __set__() method in place was roughly 0.4
-        usec per access when measured on a 2.8GHz development machine; so
-        quite snappy and probably not a rich target for optimization efforts.
-        """
         raise AttributeError("can't set attribute")
 
 
