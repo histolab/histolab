@@ -88,11 +88,9 @@ Additional git and GitHub resources:
 Before starting contributing to Histolab, test that your local environment is up and running. Here some steps:
 
 - Create a python 3.6 - 3.7 `virtualenv`
-- Activate the env and install the 3 requrements file:
-
-  `pip install -r requirements.txt`
+- Activate the env and in the project root run:
   
-  `pip install -r requirements-test.txt`
+  `pip install -e .[testing]`
   
   `pip install -r requirements-dev.txt`
   
