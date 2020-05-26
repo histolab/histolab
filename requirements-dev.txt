@@ -1,2 +1,5 @@
 flake8
 pre-commit
+pyflakes
+pycodestyle
+toml
