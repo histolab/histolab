@@ -296,6 +296,40 @@ def hysteresis_threshold(
     return np_to_pil(hyst)
 
 
+def local_otsu_threshold(
+    img: PIL.Image.Image, disk_size: float = 3.0
+) -> PIL.Image.Image:
+    """Mask image based on local Otsu threshold.
+
+    Compute local Otsu threshold for each pixel and return boolean mask
+    based on pixels being less than the local Otsu threshold.
+
+    Note that the input image must be 2D.
+
+    Parameters
+    ----------
+    img: PIL.Image.Image
+        Input 2-dimensional image
+    disk_size : float, optional (default is 3.0)
+        Radius of the disk structuring element used to compute
+        the Otsu threshold for each pixel.
+
+    Returns
+    -------
+    PIL.Image.Image
+        Resulting image where local Otsu threshold values have been
+        applied to original image.
+    """
+    if np.array(img).ndim != 2:
+        raise ValueError("Input must be 2D.")
+    # TODO add function to check real finite number
+    if disk_size is None or disk_size < 0 or disk_size == np.inf:
+        raise ValueError("Disk size must be a positive number.")
+    img_arr = np.array(img)
+    local_otsu = sk_filters.rank.otsu(img_arr, sk_morphology.disk(disk_size))
+    return np_to_pil(local_otsu)
+
+
 # -------- Branching function --------
 
 
@@ -321,6 +355,8 @@ def hysteresis_threshold_mask(
     np.ndarray
      Boolean NumPy array where True represents a pixel above Otsu threshold.
     """
+    if low is None or high is None:
+        raise ValueError("thresholds cannot be None")
     gs = ImageOps.grayscale(img)
     comp = invert(gs)
     hyst_mask = sk_filters.apply_hysteresis_threshold(np.array(comp), low, high)
@@ -351,36 +387,8 @@ def otsu_threshold(img: PIL.Image.Image) -> np.ndarray:
     return _filter_threshold(img_arr, otsu_thresh)
 
 
-def local_otsu_threshold(img: PIL.Image.Image, disk_size: int = 3) -> np.ndarray:
-    """Mask image based on local Otsu threshold.
-
-    Compute local Otsu threshold for each pixel and return boolean mask
-    based on pixels being less than the local Otsu threshold.
-
-    Note that the input image must be 2D.
-
-    Parameters
-    ----------
-    img: PIL.Image.Image
-        Input 2-dimensional image
-    disk_size :int, optional (default is 3)
-        Radius of the disk structuring element used to compute
-        the Otsu threshold for each pixel.
-
-    Returns
-    -------
-    np.ndarray
-        NumPy boolean array representing the mask based on local Otsu threshold
-    """
-    if img.size != 2:
-        raise ValueError("Input must be 2D.")
-    img_arr = np.array(img)
-    local_otsu = sk_filters.rank.otsu(img_arr, sk_morphology.disk(disk_size))
-    return local_otsu
-
-
 def filter_entropy(
-    img: PIL.Image.Image, neighborhood: int = 9, threshold: int = 5
+    img: PIL.Image.Image, neighborhood: int = 9, threshold: float = 5.0
 ) -> np.ndarray:
     """Filter image based on entropy (complexity).
 
@@ -393,9 +401,9 @@ def filter_entropy(
     ----------
     img : PIL.Image.Image
         input 2-dimensional image
-    neighborhood : int, optional (default is 9)
+    neighborhood : float, optional (default is 9)
         Neighborhood size (defines height and width of 2D array of 1's).
-    threshold : int, optional (default is 9)
+    threshold : int, optional (default is 5.0)
         Threshold value.
 
     Returns
@@ -403,7 +411,7 @@ def filter_entropy(
     np.ndarray
         NumPy boolean array where True represent a measure of complexity.
     """
-    if img.size != 2:
+    if np.array(img).ndim != 2:
         raise ValueError("Input must be 2D.")
     img_arr = np.array(img)
     entropy = sk_filters.rank.entropy(img_arr, np.ones((neighborhood, neighborhood)))
@@ -437,10 +445,10 @@ def canny_edges(
     np.ndarray
         Boolean NumPy array representing Canny edge map.
     """
-    if img.size != 2:
+    if len(np.array(img).shape) != 2:
         raise ValueError("Input must be 2D.")
     img_arr = np.array(img)
-    canny_edges = sk_feature.canny(img_arr, sigma, low_threshold, high_threshold,)
+    canny_edges = sk_feature.canny(img_arr, sigma, low_threshold, high_threshold)
     return canny_edges
 
 
@@ -462,9 +470,9 @@ def grays(img: PIL.Image.Image, tolerance: int = 15) -> np.ndarray:
      -------
      PIL.Image.Image
          Mask image where the grays values are masked out"""
-    if img.size != 3:
-        raise ValueError("Input must be 3D")
-    # TODO: class image mode exception: raise exception if not RGB
+    if np.array(img).ndim != 3:
+        raise ValueError("Input must be 3D.")
+    # TODO: class image mode exception: raise exception if not RGB(A)
     img_arr = np.array(img).astype(np.int)
     rg_diff = abs(img_arr[:, :, 0] - img_arr[:, :, 1]) > tolerance
     rb_diff = abs(img_arr[:, :, 0] - img_arr[:, :, 2]) > tolerance
