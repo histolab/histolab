@@ -13,7 +13,7 @@ import skimage.segmentation as sk_segmentation
 from PIL import Image, ImageOps
 from functools import reduce
 from .util import mask_percent
-from ..util import np_to_pil
+from ..util import np_to_pil, filter_threshold
 
 
 def invert(img: PIL.Image.Image) -> PIL.Image.Image:
@@ -384,7 +384,7 @@ def otsu_threshold(img: PIL.Image.Image) -> np.ndarray:
     img_arr = np.array(img)
     otsu_thresh = sk_filters.threshold_otsu(img_arr)
     # TODO UserWarning: threshold_otsu is expected to work correctly only for grayscale images
-    return _filter_threshold(img_arr, otsu_thresh)
+    return filter_threshold(img_arr, otsu_thresh)
 
 
 def filter_entropy(
@@ -415,7 +415,7 @@ def filter_entropy(
         raise ValueError("Input must be 2D.")
     img_arr = np.array(img)
     entropy = sk_filters.rank.entropy(img_arr, np.ones((neighborhood, neighborhood)))
-    return _filter_threshold(entropy, threshold)
+    return filter_threshold(entropy, threshold)
 
 
 # input of canny filter is a greyscale
@@ -481,26 +481,6 @@ def grays(img: PIL.Image.Image, tolerance: int = 15) -> np.ndarray:
     return filter_grays
 
 
-def _filter_threshold(img: PIL.Image.Image, threshold: float) -> np.ndarray:
-    """Mask image with pixel below the threshold value.
-
-    Parameters
-    ----------
-    img: PIL.Image.Image
-        input image
-    threshold: float
-        The threshold value to exceed.
-
-    Returns
-    -------
-    np.ndarray
-        Boolean NumPy array representing a mask where a pixel has a value True
-        if the corresponding input array pixel exceeds the threshold value.
-    """
-    img_arr = np.array(img)
-    return img_arr > threshold
-
-
 def green_channel_filter(
     img: PIL.Image.Image,
     green_thresh: int = 200,
@@ -558,11 +538,11 @@ def red_filter(
     ----------
     img : PIl.Image.Image
         Input RGB image
-    red_lower_thresh : float
+    red_thresh : float
         Red channel lower threshold value.
-    green_upper_thresh : float
+    green_thresh : float
         Green channel upper threshold value.
-    blue_upper_thresh : float
+    blue_thresh : float
         Blue channel upper threshold value.
 
     Returns
@@ -570,12 +550,19 @@ def red_filter(
     np.ndarray
         Boolean NumPy array representing the mask.
     """
+    if np.array(img).ndim != 3:
+        raise ValueError("Input must be 3D.")
+    if not (
+        0 <= red_thresh <= 255 and 0 <= green_thresh <= 255 and 0 <= blue_thresh <= 255
+    ):
+        raise ValueError("RGB Thresholds must be in range [0, 255]")
+
     img_arr = np.array(img)
     r = img_arr[:, :, 0] < red_thresh
     g = img_arr[:, :, 1] > green_thresh
     b = img_arr[:, :, 2] > blue_thresh
-    red_filter = r | g | b
-    return red_filter
+    red_filter_mask = r | g | b
+    return red_filter_mask
 
 
 def red_pen_filter(img: PIL.Image.Image) -> np.ndarray:
@@ -603,10 +590,10 @@ def red_pen_filter(img: PIL.Image.Image) -> np.ndarray:
         {"red_thresh": 100, "green_thresh": 50, "blue_thresh": 65},
         {"red_thresh": 85, "green_thresh": 25, "blue_thresh": 45},
     ]
-    red_pen_filter = reduce(
+    red_pen_filter_mask = reduce(
         (lambda x, y: x & y), [red_filter(img, **param) for param in parameters]
     )
-    return red_pen_filter
+    return red_pen_filter_mask
 
 
 def green_filter(
@@ -635,6 +622,13 @@ def green_filter(
     np.ndarray
         Boolean  NumPy array representing the mask.
     """
+    if np.array(img).ndim != 3:
+        raise ValueError("Input must be 3D.")
+    if not (
+        0 <= red_thresh <= 255 and 0 <= green_thresh <= 255 and 0 <= blue_thresh <= 255
+    ):
+        raise ValueError("RGB Thresholds must be in range [0, 255]")
+
     img_arr = np.array(img)
     r = img_arr[:, :, 0] > red_thresh
     g = img_arr[:, :, 1] < green_thresh
@@ -708,12 +702,18 @@ def blue_filter(
     np.ndarray
         Boolean NumPy array representing the mask.
     """
+    if np.array(img).ndim != 3:
+        raise ValueError("Input must be 3D.")
+    if not (
+        0 <= red_thresh <= 255 and 0 <= green_thresh <= 255 and 0 <= blue_thresh <= 255
+    ):
+        raise ValueError("RGB Thresholds must be in range [0, 255]")
     img_arr = np.array(img)
     r = img_arr[:, :, 0] > red_thresh
     g = img_arr[:, :, 1] > green_thresh
     b = img_arr[:, :, 2] < blue_thresh
-    blue_filter = r | g | b
-    return blue_filter
+    blue_filter_mask = r | g | b
+    return blue_filter_mask
 
 
 def blue_pen_filter(img: PIL.Image.Image) -> np.ndarray:

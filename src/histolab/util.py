@@ -16,6 +16,9 @@
 
 import collections
 import functools
+import PIL
+
+import numpy as np
 
 from itertools import filterfalse as ifilterfalse
 
@@ -36,6 +39,26 @@ def np_to_pil(np_img):
     elif np_img.dtype == "float64":
         np_img = (np_img * 255).astype("uint8")
     return Image.fromarray(np_img)
+
+
+def filter_threshold(img: PIL.Image.Image, threshold: float) -> np.ndarray:
+    """Mask image with pixel below the threshold value.
+
+    Parameters
+    ----------
+    img: PIL.Image.Image
+        input image
+    threshold: float
+        The threshold value to exceed.
+
+    Returns
+    -------
+    np.ndarray
+        Boolean NumPy array representing a mask where a pixel has a value True
+        if the corresponding input array pixel exceeds the threshold value.
+    """
+    img_arr = np.array(img)
+    return img_arr > threshold
 
 
 class Counter(dict):
