@@ -17,7 +17,6 @@
 # ------------------------------------------------------------------------
 
 import math
-import PIL
 
 import numpy as np
 import skimage.color as sk_color
@@ -542,7 +541,7 @@ def green_channel_filter(
 
 
 def red_filter(
-    img: Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int,
+    img: Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
 ) -> np.ndarray:
     """Mask reddish colors in an RGB image.
 
@@ -613,7 +612,7 @@ def red_pen_filter(img: Image.Image) -> np.ndarray:
 
 
 def green_filter(
-    img: Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int,
+    img: Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
 ) -> np.ndarray:
     """Filter out greenish colors in an RGB image.
     The mask is based on a pixel being above a red channel threshold value, below a
