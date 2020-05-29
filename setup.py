@@ -40,7 +40,7 @@ setuptools.setup(
     name="histolab",
     version=version,
     maintainer="Histolab Developers",
-    mantainer_email="ernesto.arbitrio@gmail.com",
+    maintainer_email="ernesto.arbitrio@gmail.com",
     author="E. Arbitrio, N. Bussola, A. Marcolini",
     description="Python library for Digital Pathology Image Processing",
     long_description=readme,

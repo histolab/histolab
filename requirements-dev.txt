@@ -3,3 +3,4 @@ pre-commit
 pyflakes
 pycodestyle
 toml
+twine

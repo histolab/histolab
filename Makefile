@@ -2,7 +2,7 @@ MAKE   = make
 PYTHON = python
 SETUP  = $(PYTHON) ./setup.py
 
-.PHONY: clean cleandocs coverage dist docs opendocs unit-coverage upload
+#.PHONY: clean cleandocs coverage dist docs opendocs unit-coverage upload
 
 help:
 	@echo "Usage: \`make <target>' where <target> is one or more of"
@@ -21,7 +21,8 @@ clean:
 	rm -rf dist .coverage
 
 cleandocs:
-	$(MAKE) -C docs clean
+    echo "Features not implemented yet"
+	#$(MAKE) -C docs clean
 
 coverage:
 	pytest --cov-report term-missing --cov=src --cov=tests
@@ -31,10 +32,12 @@ dist:
 	$(SETUP) sdist bdist_wheel
 
 docs:
-	$(MAKE) -C docs html
+    echo "Features not implemented yet"
+#	$(MAKE) -C docs html
 
 opendocs:
-	open docs/build/html/index.html
+    echo "Features not implemented yet"
+#	open docs/build/html/index.html
 
 unit-coverage:
 	pytest --cov-report term-missing --cov=src tests/unit
