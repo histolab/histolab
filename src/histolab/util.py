@@ -16,23 +16,22 @@
 
 import collections
 import functools
-import PIL
 
 import numpy as np
 
-from itertools import filterfalse as ifilterfalse
-
 from PIL import Image
+
+from itertools import filterfalse as ifilterfalse
 
 
 def np_to_pil(np_img):
-    """ Convert a NumPy array to a PIL Image.
+    """ Convert a NumPy array to a Image.
 
     Args:
       np_img: The image represented as a NumPy array.
 
     Returns:
-       PIL Image.
+       Image.
     """
     if np_img.dtype == "bool":
         np_img = np_img.astype("uint8") * 255
@@ -41,12 +40,12 @@ def np_to_pil(np_img):
     return Image.fromarray(np_img)
 
 
-def filter_threshold(img: PIL.Image.Image, threshold: float) -> np.ndarray:
+def threshold_to_mask(img: Image.Image, threshold: float) -> np.ndarray:
     """Mask image with pixel below the threshold value.
 
     Parameters
     ----------
-    img: PIL.Image.Image
+    img: Image.Image
         input image
     threshold: float
         The threshold value to exceed.
