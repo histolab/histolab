@@ -1,0 +1,15 @@
+graft src
+graft tests
+
+include README.md
+include LICENSE.txt
+
+include .coveragerc
+include .travis.yml
+include *.md
+include *.txt
+include *.yaml
+include *.yml
+include Makefile
+
+recursive-exclude * __pycache__ *.py[cod]

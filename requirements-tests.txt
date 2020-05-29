@@ -1,7 +1,0 @@
-pytest
-ipdb==0.13.2
-ipython==7.14.0
-coverage
-pytest-cov
-coveralls
-pytest-mpl
