@@ -3,8 +3,9 @@
 import os
 
 import numpy as np
-import PIL
 import ntpath
+
+from PIL import Image
 
 from src.histolab.slide import Slide
 
@@ -38,7 +39,7 @@ class Describe_Slide(object):
         slide = Slide(
             SVS.CMU_1_SMALL_REGION, os.path.join(SVS.CMU_1_SMALL_REGION, "processed")
         )
-        image = PIL.Image.open(SVS.CMU_1_SMALL_REGION)
+        image = Image.open(SVS.CMU_1_SMALL_REGION)
 
         dimensions = slide.dimensions
 

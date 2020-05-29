@@ -633,3 +633,823 @@ def test_hysteresis_threshold_raises_exception_on_thresholds(low, high):
 
     assert isinstance(err.value, Exception)
     assert str(err.value) == "thresholds cannot be None"
+
+
+@pytest.mark.parametrize(
+    "pil_image, expected_image, disk_size",
+    (
+        (
+            GS.DIAGNOSTIC_SLIDE_THUMB_GS,
+            "pil-images-gs/diagnostic-slide-thumb-gs1-local-otsu",
+            10,
+        ),
+        (
+            GS.DIAGNOSTIC_SLIDE_THUMB_GS,
+            "pil-images-gs/diagnostic-slide-thumb-gs2-local-otsu",
+            3.8,
+        ),
+        (
+            GS.DIAGNOSTIC_SLIDE_THUMB_GS,
+            "pil-images-gs/diagnostic-slide-thumb-gs3-local-otsu",
+            0,
+        ),
+        (
+            GS.DIAGNOSTIC_SLIDE_THUMB_GS,
+            "pil-images-gs/diagnostic-slide-thumb-gs4-local-otsu",
+            np.sqrt(2),
+        ),
+    ),
+)
+def test_local_otsu_threshold_filter_on_gs_image(pil_image, expected_image, disk_size):
+    expected_value = load_expectation(expected_image, type_="png")
+
+    local_otsu_img = imf.local_otsu_threshold(pil_image, disk_size)
+
+    np.testing.assert_array_almost_equal(
+        np.array(local_otsu_img), np.array(expected_value)
+    )
+    assert (
+        np.unique(np.array(ImageChops.difference(local_otsu_img, expected_value)))[0]
+        == 0
+    )
+
+
+@pytest.mark.parametrize(
+    "pil_image, disk_size, expected_exception, expected_message",
+    (
+        (RGBA.DIAGNOSTIC_SLIDE_THUMB, 6, ValueError, "Input must be 2D."),
+        (RGBA.DIAGNOSTIC_SLIDE_THUMB, -10, ValueError, "Input must be 2D."),
+        (RGB.DIAGNOSTIC_SLIDE_THUMB_RGB, 10, ValueError, "Input must be 2D."),
+        (RGB.DIAGNOSTIC_SLIDE_THUMB_HSV, 0, ValueError, "Input must be 2D."),
+        (RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR, -3, ValueError, "Input must be 2D."),
+        (
+            GS.DIAGNOSTIC_SLIDE_THUMB_GS,
+            -10,
+            ValueError,
+            "Disk size must be a positive number.",
+        ),
+        (
+            GS.DIAGNOSTIC_SLIDE_THUMB_GS,
+            None,
+            ValueError,
+            "Disk size must be a positive number.",
+        ),
+        (
+            GS.DIAGNOSTIC_SLIDE_THUMB_GS,
+            np.inf,
+            ValueError,
+            "Disk size must be a positive number.",
+        ),
+    ),
+)
+def test_local_otsu_threshold_raises_right_exceptions(
+    pil_image, disk_size, expected_exception, expected_message
+):
+
+    with pytest.raises(expected_exception) as err:
+        imf.local_otsu_threshold(pil_image, disk_size)
+
+    assert isinstance(err.value, expected_exception)
+    assert str(err.value) == expected_message
+
+
+# -------- Branching function --------
+
+
+def test_hysteresis_threshold_mask_filter_on_rgba_image():
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-hysteresis-threshold-mask", type_="npy"
+    )
+
+    hysteresis_threshold_mask = imf.hysteresis_threshold_mask(rgba_img, 30, 200)
+
+    np.testing.assert_array_equal(hysteresis_threshold_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "low, high", ((None, 50), (-250, None), (None, None),),
+)
+def test_hysteresis_threshold_mask_raises_exception_on_thresholds(low, high):
+    rgb_img = RGB.DIAGNOSTIC_SLIDE_THUMB_RGB
+
+    with pytest.raises(Exception) as err:
+        imf.hysteresis_threshold_mask(rgb_img, low, high)
+
+    assert isinstance(err.value, Exception)
+    assert str(err.value) == "thresholds cannot be None"
+
+
+@pytest.mark.parametrize(
+    "pil_image, expected_array, low, high",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb1-hysteresis-threshold-mask",
+            50,
+            80,
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb2-hysteresis-threshold-mask",
+            -20,
+            -20,
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-hysteresis-threshold-mask",
+            -20,
+            100,
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "mask-arrays/diagnostic-slide-thumb-hsv-hysteresis-threshold-mask",
+            30,
+            -90,
+        ),
+    ),
+)
+def test_hysteresis_threshold_mask_filter_on_rgb_image(
+    pil_image, expected_array, low, high
+):
+    expected_value = load_expectation(expected_array, type_="npy")
+
+    hysteresis_threshold_mask = imf.hysteresis_threshold_mask(pil_image, low, high)
+
+    np.testing.assert_array_almost_equal(hysteresis_threshold_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "expected_array, low, high",
+    (
+        ("mask-arrays/diagnostic-slide-thumb-gs1-hysteresis-threshold-mask", 50, 100),
+        ("mask-arrays/diagnostic-slide-thumb-gs2-hysteresis-threshold-mask", -250, 10),
+        ("mask-arrays/diagnostic-slide-thumb-gs3-hysteresis-threshold-mask", 40, -20),
+        ("mask-arrays/diagnostic-slide-thumb-gs4-hysteresis-threshold-mask", -10, -10),
+    ),
+)
+def test_hysteresis_threshold_mask_filter_on_gs_image(expected_array, low, high):
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+    expected_value = load_expectation(expected_array, type_="npy")
+
+    hysteresis_threshold_mask = imf.hysteresis_threshold_mask(gs_img, low, high)
+
+    np.testing.assert_array_equal(hysteresis_threshold_mask, expected_value)
+
+
+def test_otsu_threshold_filter_on_rgba_image():
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-otsu-threshold-mask", type_="npy"
+    )
+
+    otsu_threshold_mask = imf.otsu_threshold(rgba_img)
+
+    np.testing.assert_array_equal(otsu_threshold_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_image, expected_array",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb-otsu-threshold-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-otsu-threshold-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "mask-arrays/diagnostic-slide-thumb-hsv-otsu-threshold-mask",
+        ),
+    ),
+)
+def test_otsu_threshold_filter_on_rgb_image(pil_image, expected_array):
+    expected_value = load_expectation(expected_array, type_="npy")
+
+    otsu_threshold_mask = imf.otsu_threshold(pil_image)
+
+    np.testing.assert_array_equal(otsu_threshold_mask, expected_value)
+
+
+def test_otsu_threshold_filter_on_gs_image():
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-gs-otsu-threshold-mask", type_="npy"
+    )
+
+    otsu_threshold_mask = imf.otsu_threshold(gs_img)
+
+    np.testing.assert_array_equal(otsu_threshold_mask, expected_value)
+
+
+def test_filter_entropy_filter_on_gs_image():
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-gs-filter-entropy-mask", type_="npy"
+    )
+
+    filter_entropy_mask = imf.filter_entropy(gs_img, 8, 4.5)
+
+    np.testing.assert_array_equal(filter_entropy_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_image",
+    (
+        RGBA.DIAGNOSTIC_SLIDE_THUMB,
+        RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+        RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+        RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+    ),
+)
+def test_filter_entropy_raises_exception_on_rgb_image(pil_image):
+
+    with pytest.raises(Exception) as err:
+        imf.filter_entropy(pil_image)
+
+    assert isinstance(err.value, Exception)
+    assert str(err.value) == "Input must be 2D."
+
+
+def test_canny_edges_filter_on_gs_image():
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-gs-canny-edges-mask", type_="npy"
+    )
+
+    canny_edges_mask = imf.canny_edges(gs_img, 0.7, 1, 15)
+
+    np.testing.assert_array_equal(canny_edges_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_image",
+    (
+        RGBA.DIAGNOSTIC_SLIDE_THUMB,
+        RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+        RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+        RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+    ),
+)
+def test_canny_edges_raises_exception_on_rgb_image(pil_image):
+
+    with pytest.raises(Exception) as err:
+        imf.canny_edges(pil_image)
+
+    assert isinstance(err.value, Exception)
+    assert str(err.value) == "Input must be 2D."
+
+
+def test_grays_filter_on_rgba_image():
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-grays-mask", type_="npy"
+    )
+
+    grays_mask = imf.grays(rgba_img, 8)
+
+    np.testing.assert_array_equal(grays_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_image, expected_value, threshold",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb-grays-mask",
+            20,
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "mask-arrays/diagnostic-slide-thumb-hsv-grays-mask",
+            0,
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-grays-mask",
+            -5,
+        ),
+    ),
+)
+def test_grays_filter_on_rgb_image(pil_image, expected_value, threshold):
+    expected_value = load_expectation(expected_value, type_="npy")
+
+    grays_mask = imf.grays(pil_image, threshold)
+
+    np.testing.assert_array_equal(grays_mask, expected_value)
+
+
+def test_grays_raises_exception_on_gs_image():
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+
+    with pytest.raises(Exception) as err:
+        imf.grays(gs_img, 9)
+
+    assert isinstance(err.value, Exception)
+    assert str(err.value) == "Input must be 3D."
+
+
+# TODO test recursive green channel filter
+
+
+@pytest.mark.parametrize(
+    "red_thresh, green_thresh, blue_thresh, expected_value",
+    (
+        (15, 200, 50, "mask-arrays/diagnostic-slide-thumb-rgba1-red-filter-mask"),
+        (0, 20, 230, "mask-arrays/diagnostic-slide-thumb-rgba2-red-filter-mask"),
+        (140, 160, 0, "mask-arrays/diagnostic-slide-thumb-rgba3-red-filter-mask"),
+    ),
+)
+def test_red_filter_on_rgba_image(
+    red_thresh, green_thresh, blue_thresh, expected_value
+):
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    expected_value = load_expectation(expected_value, type_="npy")
+
+    red_filter_mask = imf.red_filter(rgba_img, red_thresh, green_thresh, blue_thresh)
+
+    np.testing.assert_array_equal(red_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_img, red_thresh, green_thresh, blue_thresh, expected_value",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            15,
+            200,
+            50,
+            "mask-arrays/diagnostic-slide-thumb-rgb-red-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            0,
+            20,
+            230,
+            "mask-arrays/diagnostic-slide-thumb-hsv-red-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            140,
+            160,
+            0,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-red-filter-mask",
+        ),
+    ),
+)
+def test_red_filter_on_rgb_image(
+    pil_img, red_thresh, green_thresh, blue_thresh, expected_value
+):
+    expected_value = load_expectation(expected_value, type_="npy")
+
+    red_filter_mask = imf.red_filter(pil_img, red_thresh, green_thresh, blue_thresh)
+
+    np.testing.assert_array_equal(red_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_img, red_thresh, green_thresh, blue_thresh, expected_exception, "
+    "expected_message",
+    (
+        (GS.DIAGNOSTIC_SLIDE_THUMB_GS, 15, 200, 50, ValueError, "Input must be 3D."),
+        (GS.DIAGNOSTIC_SLIDE_THUMB_GS, -15, 0, 20, ValueError, "Input must be 3D."),
+        (
+            RGBA.DIAGNOSTIC_SLIDE_THUMB,
+            0,
+            -200,
+            50,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            0,
+            -200,
+            50,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            0,
+            260,
+            50,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            0,
+            200,
+            500,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            0,
+            200,
+            -500,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            -20,
+            -40,
+            -90,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            290,
+            30,
+            70,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+    ),
+)
+def test_red_filter_raises_right_exceptions(
+    pil_img, red_thresh, green_thresh, blue_thresh, expected_exception, expected_message
+):
+
+    with pytest.raises(expected_exception) as err:
+        imf.red_filter(pil_img, red_thresh, green_thresh, blue_thresh)
+
+    assert isinstance(err.value, expected_exception)
+    assert str(err.value) == expected_message
+
+
+def test_red_pen_filter_on_rgba_image():
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-red-pen-filter-mask", type_="npy"
+    )
+
+    red_pen_filter_mask = imf.red_pen_filter(rgba_img)
+
+    np.testing.assert_array_equal(red_pen_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_img, expected_value",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb-red-pen-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "mask-arrays/diagnostic-slide-thumb-hsv-red-pen-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-red-pen-filter-mask",
+        ),
+    ),
+)
+def test_red_pen_filter_on_rgb_image(pil_img, expected_value):
+    expected_value = load_expectation(expected_value, type_="npy")
+
+    red_pen_filter_mask = imf.red_pen_filter(pil_img)
+
+    np.testing.assert_array_equal(red_pen_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "red_thresh, green_thresh, blue_thresh, expected_value",
+    (
+        (20, 190, 50, "mask-arrays/diagnostic-slide-thumb-rgba1-green-filter-mask"),
+        (0, 40, 30, "mask-arrays/diagnostic-slide-thumb-rgba2-green-filter-mask"),
+        (0, 180, 90, "mask-arrays/diagnostic-slide-thumb-rgba3-green-filter-mask"),
+    ),
+)
+def test_green_filter_on_rgba_image(
+    red_thresh, green_thresh, blue_thresh, expected_value
+):
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    expected_value = load_expectation(expected_value, type_="npy")
+
+    red_filter_mask = imf.green_filter(rgba_img, red_thresh, green_thresh, blue_thresh)
+
+    np.testing.assert_array_equal(red_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_img, red_thresh, green_thresh, blue_thresh, expected_value",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            15,
+            200,
+            50,
+            "mask-arrays/diagnostic-slide-thumb-rgb-green-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            0,
+            20,
+            230,
+            "mask-arrays/diagnostic-slide-thumb-hsv-green-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            140,
+            160,
+            0,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-green-filter-mask",
+        ),
+    ),
+)
+def test_green_filter_on_rgb_image(
+    pil_img, red_thresh, green_thresh, blue_thresh, expected_value
+):
+    expected_value = load_expectation(expected_value, type_="npy")
+
+    red_filter_mask = imf.green_filter(pil_img, red_thresh, green_thresh, blue_thresh)
+
+    np.testing.assert_array_equal(red_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_img, red_thresh, green_thresh, blue_thresh, expected_exception, "
+    "expected_message",
+    (
+        (GS.DIAGNOSTIC_SLIDE_THUMB_GS, 15, 200, 50, ValueError, "Input must be 3D."),
+        (GS.DIAGNOSTIC_SLIDE_THUMB_GS, -15, 0, 20, ValueError, "Input must be 3D."),
+        (
+            RGBA.DIAGNOSTIC_SLIDE_THUMB,
+            0,
+            -200,
+            50,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            0,
+            -200,
+            50,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            0,
+            260,
+            50,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            0,
+            200,
+            500,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            0,
+            200,
+            -500,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            -20,
+            -40,
+            -90,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            290,
+            30,
+            70,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+    ),
+)
+def test_green_filter_raises_right_exceptions(
+    pil_img, red_thresh, green_thresh, blue_thresh, expected_exception, expected_message
+):
+
+    with pytest.raises(expected_exception) as err:
+        imf.green_filter(pil_img, red_thresh, green_thresh, blue_thresh)
+
+    assert isinstance(err.value, expected_exception)
+    assert str(err.value) == expected_message
+
+
+def test_green_pen_filter_on_rgba_image():
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-green-pen-filter-mask", type_="npy"
+    )
+
+    green_pen_filter_mask = imf.green_pen_filter(rgba_img)
+
+    np.testing.assert_array_equal(green_pen_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_img, expected_value",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb-green-pen-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "mask-arrays/diagnostic-slide-thumb-hsv-green-pen-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-green-pen-filter-mask",
+        ),
+    ),
+)
+def test_green_pen_filter_on_rgb_image(pil_img, expected_value):
+    expected_value = load_expectation(expected_value, type_="npy")
+
+    green_pen_filter_mask = imf.green_pen_filter(pil_img)
+
+    np.testing.assert_array_equal(green_pen_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "red_thresh, green_thresh, blue_thresh, expected_value",
+    (
+        (15, 200, 50, "mask-arrays/diagnostic-slide-thumb-rgba1-blue-filter-mask"),
+        (0, 20, 230, "mask-arrays/diagnostic-slide-thumb-rgba2-blue-filter-mask"),
+        (140, 160, 0, "mask-arrays/diagnostic-slide-thumb-rgba3-blue-filter-mask"),
+    ),
+)
+def test_blue_filter_on_rgba_image(
+    red_thresh, green_thresh, blue_thresh, expected_value
+):
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    expected_value = load_expectation(expected_value, type_="npy")
+
+    blue_filter_mask = imf.blue_filter(rgba_img, red_thresh, green_thresh, blue_thresh)
+
+    np.testing.assert_array_equal(blue_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_img, red_thresh, green_thresh, blue_thresh, expected_value",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            15,
+            200,
+            50,
+            "mask-arrays/diagnostic-slide-thumb-rgb-blue-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            0,
+            20,
+            230,
+            "mask-arrays/diagnostic-slide-thumb-hsv-blue-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            140,
+            160,
+            230,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-blue-filter-mask",
+        ),
+    ),
+)
+def test_blue_filter_on_rgb_image(
+    pil_img, red_thresh, green_thresh, blue_thresh, expected_value
+):
+    expected_value = load_expectation(expected_value, type_="npy")
+
+    blue_filter_mask = imf.blue_filter(pil_img, red_thresh, green_thresh, blue_thresh)
+
+    np.testing.assert_array_equal(blue_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_img, red_thresh, green_thresh, blue_thresh, expected_exception, "
+    "expected_message",
+    (
+        (GS.DIAGNOSTIC_SLIDE_THUMB_GS, 15, 200, 50, ValueError, "Input must be 3D."),
+        (GS.DIAGNOSTIC_SLIDE_THUMB_GS, -15, 0, 20, ValueError, "Input must be 3D."),
+        (
+            RGBA.DIAGNOSTIC_SLIDE_THUMB,
+            0,
+            -200,
+            50,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            0,
+            -200,
+            50,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            0,
+            260,
+            50,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            0,
+            200,
+            500,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            0,
+            200,
+            -500,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            -20,
+            -40,
+            -90,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            290,
+            30,
+            70,
+            ValueError,
+            "RGB Thresholds must be in range [0, 255]",
+        ),
+    ),
+)
+def test_blue_filter_raises_right_exceptions(
+    pil_img, red_thresh, green_thresh, blue_thresh, expected_exception, expected_message
+):
+
+    with pytest.raises(expected_exception) as err:
+        imf.blue_filter(pil_img, red_thresh, green_thresh, blue_thresh)
+
+    assert isinstance(err.value, expected_exception)
+    assert str(err.value) == expected_message
+
+
+def test_blue_pen_filter_on_rgba_image():
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-blue-pen-filter-mask", type_="npy"
+    )
+
+    blue_pen_filter_mask = imf.blue_pen_filter(rgba_img)
+
+    np.testing.assert_array_equal(blue_pen_filter_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_img, expected_value",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb-blue-pen-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "mask-arrays/diagnostic-slide-thumb-hsv-blue-pen-filter-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-blue-pen-filter-mask",
+        ),
+    ),
+)
+def test_blue_pen_filter_on_rgb_image(pil_img, expected_value):
+    expected_value = load_expectation(expected_value, type_="npy")
+
+    blue_pen_filter_mask = imf.blue_pen_filter(pil_img)
+
+    np.testing.assert_array_equal(blue_pen_filter_mask, expected_value)
+
+
+# TODO: manage general pen marks
