@@ -1,3 +1,4 @@
+import operator
 import pytest
 import numpy as np
 
@@ -803,7 +804,7 @@ def test_otsu_threshold_filter_on_rgba_image():
         "mask-arrays/diagnostic-slide-thumb-otsu-threshold-mask", type_="npy"
     )
 
-    otsu_threshold_mask = imf.otsu_threshold(rgba_img)
+    otsu_threshold_mask = imf.otsu_threshold(rgba_img, operator.gt)
 
     np.testing.assert_array_equal(otsu_threshold_mask, expected_value)
 
@@ -828,7 +829,7 @@ def test_otsu_threshold_filter_on_rgba_image():
 def test_otsu_threshold_filter_on_rgb_image(pil_image, expected_array):
     expected_value = load_expectation(expected_array, type_="npy")
 
-    otsu_threshold_mask = imf.otsu_threshold(pil_image)
+    otsu_threshold_mask = imf.otsu_threshold(pil_image, operator.gt)
 
     np.testing.assert_array_equal(otsu_threshold_mask, expected_value)
 
@@ -839,7 +840,7 @@ def test_otsu_threshold_filter_on_gs_image():
         "mask-arrays/diagnostic-slide-thumb-gs-otsu-threshold-mask", type_="npy"
     )
 
-    otsu_threshold_mask = imf.otsu_threshold(gs_img)
+    otsu_threshold_mask = imf.otsu_threshold(gs_img, operator.gt)
 
     np.testing.assert_array_equal(otsu_threshold_mask, expected_value)
 
