@@ -19,6 +19,7 @@
 import math
 from functools import reduce
 
+import operator
 import numpy as np
 import skimage.color as sk_color
 import skimage.exposure as sk_exposure
@@ -377,7 +378,7 @@ def hysteresis_threshold_mask(
     return hyst_mask
 
 
-def otsu_threshold(img: Image.Image) -> np.ndarray:
+def otsu_threshold(img: Image.Image, relate: operator = operator.lt) -> np.ndarray:
     """Mask image based on pixel above Otsu threshold.
 
     Compute Otsu threshold on image as a NumPy array and return boolean mask
@@ -398,16 +399,19 @@ def otsu_threshold(img: Image.Image) -> np.ndarray:
     img_arr = np.array(img)
     otsu_thresh = sk_filters.threshold_otsu(img_arr)
     # TODO UserWarning: threshold_otsu is expected to work correctly only for grayscale images
-    return threshold_to_mask(img_arr, otsu_thresh)
+    return threshold_to_mask(img_arr, otsu_thresh, relate)
 
 
 def filter_entropy(
-    img: Image.Image, neighborhood: int = 9, threshold: float = 5.0
+    img: Image.Image,
+    neighborhood: int = 9,
+    threshold: float = 5.0,
+    relate: operator = operator.gt,
 ) -> np.ndarray:
     """Filter image based on entropy (complexity).
 
     The area of the image included in the local neighborhood is defined by a square
-    neighborhoodxneighborhood
+    neighborhood x neighborhood
 
     Note that input must be 2D.
 
@@ -429,7 +433,7 @@ def filter_entropy(
         raise ValueError("Input must be 2D.")
     img_arr = np.array(img)
     entropy = sk_filters.rank.entropy(img_arr, np.ones((neighborhood, neighborhood)))
-    return threshold_to_mask(entropy, threshold)
+    return threshold_to_mask(entropy, threshold, relate)
 
 
 # input of canny filter is a greyscale

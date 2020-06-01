@@ -25,18 +25,23 @@ import math
 import os
 import pathlib
 import ntpath
+from collections import namedtuple
 from typing import Tuple, Union, List
 
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure as matplotlib_figure
 import numpy as np
 import openslide
 import PIL
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure as matplotlib_figure
+from skimage.measure import label, regionprops
+import skimage.morphology as morph
+from scipy import ndimage
 
-from .util import lazyproperty
+from .util import lazyproperty, scale_coordinates, polygon_to_mask_array
+from .filters.image_filters import RgbToGrayscale, OtsuThreshold
 
 IMG_EXT = "png"
-THUMBNAIL_SIZE = 300
+THUMBNAIL_SIZE = 1000
 
 # needed for matplotlib
 # TODO: can we get rid of this shit?
@@ -127,6 +132,59 @@ class Slide(object):
         name : str
         """
         return ntpath.basename(self._path).split(".")[0]
+
+    @property
+    def mask_biggest_tissue_box(self):
+        """Returns the coordinates of the box containing the tissue.
+
+        Returns
+        -------
+        box_coords: Coordinates
+            [x_ul, y_ul, x_br, y_br] coordinates of the box containing the tissue
+
+        """
+        Region = namedtuple("Region", ("index", "area", "bbox", "center"))
+
+        w_out, h_out = self.dimensions
+
+        thumb = self._wsi.get_thumbnail((1000, 1000))
+        h_in, w_in, ch = np.array(thumb).shape
+
+        rgb2greyscale = RgbToGrayscale()
+        grey_thumb = rgb2greyscale(thumb)
+
+        otsu_threshold = OtsuThreshold()
+        thumb_otsu_threshold = otsu_threshold(grey_thumb)
+        thumb_filter_dilated = morph.dilation(thumb_otsu_threshold, morph.disk(3))
+        thumb_filter_dilated_filled = ndimage.binary_fill_holes(
+            thumb_filter_dilated, structure=np.ones((5, 5))
+        ).astype(int)
+
+        # get biggest region
+        thumb_labeled_regions = label(thumb_filter_dilated_filled)
+        labeled_region_properties = regionprops(thumb_labeled_regions)
+
+        regions = [
+            Region(index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid)
+            for i, rp in enumerate(labeled_region_properties)
+        ]
+        biggest_region = max(regions, key=lambda r: r.area)
+        y_ul, x_ul, y_br, x_br = biggest_region.bbox
+        scaled_coords = scale_coordinates(
+            reference_coords=(x_ul, y_ul, x_br, y_br),
+            reference_size=(w_in, h_in),
+            target_size=(w_out, h_out),
+        )
+
+        return polygon_to_mask_array(
+            (w_out, h_out),
+            [
+                (scaled_coords.x_ul, scaled_coords.y_ul),
+                (scaled_coords.x_ul, scaled_coords.y_br),
+                (scaled_coords.x_br, scaled_coords.y_br),
+                (scaled_coords.x_br, scaled_coords.y_ul),
+            ],
+        )
 
     # ---private interface methods and properties---
 

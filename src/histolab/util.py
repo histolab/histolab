@@ -15,13 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------
-
-import collections
 import functools
-from itertools import filterfalse as ifilterfalse
+import operator
+from typing import List
 
 import numpy as np
-from PIL import Image
+
+from itertools import filterfalse as ifilterfalse
+from collections import deque, namedtuple
+
+from PIL import Image, ImageDraw
 
 
 def np_to_pil(np_img):
@@ -48,8 +51,10 @@ def np_to_pil(np_img):
     return Image.fromarray(image_array)
 
 
-def threshold_to_mask(img: Image.Image, threshold: float) -> np.ndarray:
-    """Mask image with pixel below the threshold value.
+def threshold_to_mask(
+    img: Image.Image, threshold: float, relate: operator
+) -> np.ndarray:
+    """Mask image with pixel according to the threshold value.
 
     Parameters
     ----------
@@ -57,6 +62,8 @@ def threshold_to_mask(img: Image.Image, threshold: float) -> np.ndarray:
         Input image
     threshold: float
         The threshold value to exceed.
+    relate: operator
+        Comparison operator between img and threshold
 
     Returns
     -------
@@ -65,7 +72,55 @@ def threshold_to_mask(img: Image.Image, threshold: float) -> np.ndarray:
         if the corresponding input array pixel exceeds the threshold value.
     """
     img_arr = np.array(img)
-    return img_arr > threshold
+    return relate(img_arr, threshold)
+
+
+def polygon_to_mask_array(dims: tuple, vertices: List[tuple]) -> np.ndarray:
+    """
+
+    :param dims:
+    :param vertices:
+    :return:
+    """
+    img = Image.new("L", dims, 0)
+    poly = list(map(tuple, vertices))
+    ImageDraw.Draw(img).polygon(poly, outline=1, fill=1)
+    return np.array(img)
+
+
+CoordinatePair = namedtuple("CoordinatePair", ("x_ul", "y_ul", "x_br", "y_br"))
+
+
+def scale_coordinates(reference_coords, reference_size, target_size):
+    """Compute the coordinates corresponding to a scaled version of the image.
+
+    Parameters
+    ----------
+    reference_coords: tuple, array-like or Coordinates
+        (x, y) pair of coordinates referring to the upper left and lower right corners
+        respectively. The function expects a tuple of four elements or a tuple of two
+        pairs of coordinates as input.
+    reference_size: array_like of int
+        Reference (width, height) size to which input coordinates refer to
+    target_size: array_like of int
+        Target (width, height) size of the resulting scaled image
+
+    Returns
+    -------
+    coords: Coordinates
+        Coordinates in the scaled image
+
+    """
+    assert len(reference_size) == 2
+    assert len(target_size) == 2
+    assert len(reference_coords) == 4
+
+    reference_coords = np.asarray(reference_coords).ravel()
+    reference_size = np.tile(reference_size, 2)
+    target_size = np.tile(target_size, 2)
+    return CoordinatePair(
+        *np.floor((reference_coords * target_size) / reference_size).astype("int64")
+    )
 
 
 def apply_mask_image(img: Image.Image, mask: np.ndarray) -> Image.Image:
@@ -205,7 +260,7 @@ def lru_cache(maxsize=100):  # pragma: no cover
         user_function, len=len, iter=iter, tuple=tuple, sorted=sorted, KeyError=KeyError
     ):
         cache = {}  # mapping of args to results
-        queue = collections.deque()  # order that keys have been used
+        queue = deque()  # order that keys have been used
         refcount = Counter()  # times each key is in the queue
         sentinel = object()  # marker for looping around the queue
         kwd_mark = object()  # separate positional and keyword args
