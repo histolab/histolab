@@ -2,10 +2,10 @@ MAKE   = make
 PYTHON = python
 SETUP  = $(PYTHON) ./setup.py
 
-#.PHONY: clean cleandocs coverage dist docs opendocs unit-coverage upload
+.PHONY: clean cleandocs coverage dist docs opendocs unit-coverage upload
 
 help:
-	@echo "Usage: \`make <target>' where <target> is one or more of"
+    @echo "Usage: \`make <target>' where <target> is one or more of"
 	@echo "  clean          delete intermediate work product and start fresh"
 	@echo "  cleandocs      delete cached HTML documentation and start fresh"
 	@echo "  coverage       report overall test coverage"
@@ -21,8 +21,7 @@ clean:
 	rm -rf dist .coverage
 
 cleandocs:
-    echo "Features not implemented yet"
-	#$(MAKE) -C docs clean
+	$(MAKE) -C docs clean
 
 coverage:
 	pytest --cov-report term-missing --cov=src --cov=tests
@@ -32,12 +31,10 @@ dist:
 	$(SETUP) sdist bdist_wheel
 
 docs:
-    echo "Features not implemented yet"
-#	$(MAKE) -C docs html
+	$(MAKE) -C docs html
 
 opendocs:
-    echo "Features not implemented yet"
-#	open docs/build/html/index.html
+	open docs/_build/html/index.html
 
 unit-coverage:
 	pytest --cov-report term-missing --cov=src tests/unit

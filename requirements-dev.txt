@@ -4,3 +4,4 @@ pyflakes
 pycodestyle
 toml
 twine
+sphinx

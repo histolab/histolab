@@ -49,10 +49,7 @@ plt.ioff()
 
 
 class Slide(object):
-    """Provides Slide objects and expose property and methods.
-
-    HERE-> expand the docstring
-    """
+    """Provides Slide objects and expose property and methods."""
 
     def __init__(self, path: str, processed_path: str) -> None:
         self._path = path
@@ -119,6 +116,16 @@ class Slide(object):
         return ntpath.basename(self._path).split(".")[0]
 
     def resampled_array(self, scale_factor: int = 32) -> np.array:
+        """Retrieves the resampled array from the original slide
+
+        Parameters
+        ----------
+        scale_factor : int, default is 32
+            Image scaling factor
+        Returns
+        ----------
+        resampled_array: np.array
+        """
         return self._resample(scale_factor)[1]
 
     def save_scaled_image(self, scale_factor: int = 32) -> None:
@@ -349,6 +356,8 @@ class Slide(object):
 
 
 class SlideSet(object):
+    """Slideset object. It is considered a collection of slides."""
+
     def __init__(
         self, slides_path: str, processed_path: str, valid_extensions: list
     ) -> None:
@@ -390,6 +399,12 @@ class SlideSet(object):
 
     @lazyproperty
     def slides(self) -> List[Slide]:
+        """Retrieve all the slides of the slideset
+
+        Returns
+        ----------
+        slides: list, list of `Slide` objects
+        """
         return [
             Slide(os.path.join(self._slides_path, _path), self._processed_path)
             for _path in os.listdir(self._slides_path)
@@ -398,8 +413,13 @@ class SlideSet(object):
 
     @lazyproperty
     def slides_stats(self) -> Tuple[dict, matplotlib_figure]:
-        """Retrieve statistic/graphs of slides files contained in the dataset"""
+        """Retrieve statistic/graphs of slides files contained in the dataset
 
+        Returns
+        ----------
+        basic_stats: dict of slides stats e.g. min_size, avg_size, etc...
+        figure: matplotlib.figure.Figure
+        """
         basic_stats = self._dimensions_stats
 
         x, y = zip(*self._slides_dimensions_list)
@@ -437,6 +457,12 @@ class SlideSet(object):
 
     @lazyproperty
     def total_slides(self) -> int:
+        """Number of slides within the slideset
+
+        Returns
+        ----------
+        n: int, number of slides
+        """
         return len(self.slides)
 
     # ---private interface methods and properties---
