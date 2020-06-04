@@ -17,6 +17,7 @@
 # ------------------------------------------------------------------------
 
 import math
+from functools import reduce
 
 import numpy as np
 import skimage.color as sk_color
@@ -26,13 +27,10 @@ import skimage.filters as sk_filters
 import skimage.future as sk_future
 import skimage.morphology as sk_morphology
 import skimage.segmentation as sk_segmentation
-
-from functools import reduce
-
 from PIL import Image, ImageOps
 
+from ..util import apply_mask_image, np_to_pil, threshold_to_mask
 from .util import mask_percent
-from ..util import np_to_pil, threshold_to_mask
 
 
 def invert(img: Image.Image) -> Image.Image:
@@ -149,13 +147,14 @@ def histogram_equalization(img: Image.Image, nbins: int = 256) -> Image.Image:
     Parameters
     ----------
     img : Image.Image
-          Input image.
+        Input image.
     nbins : iny. optional (default is 256)
-          Number of histogram bins.
+        Number of histogram bins.
 
     Returns
     -------
-    NumPy array (float or uint8) with contrast enhanced by histogram equalization.
+    PIL.Image.Image
+        Image with contrast enhanced by histogram equalization.
     """
     img_arr = np.array(img)
     hist_equ = sk_exposure.equalize_hist(img_arr, nbins=nbins)
@@ -167,23 +166,23 @@ def adaptive_equalization(
 ) -> Image.Image:
     """Increase image contrast using adaptive equalization.
 
-     Contrast in local region of input image (gray or RGB) is increased using
-     adaptive equalization
+    Contrast in local region of input image (gray or RGB) is increased using
+    adaptive equalization
 
-     Parameters
-     ----------
-     img : Image.Image
-            Input image (gray or RGB)
-     nbins : int
-            Number of histogram bins.
-     clip_limit : float, optional (default is 0.01)
-            Clipping limit where higher value increases contrast.
+    Parameters
+    ----------
+    img : Image.Image
+        Input image (gray or RGB)
+    nbins : int
+        Number of histogram bins.
+    clip_limit : float, optional (default is 0.01)
+        Clipping limit where higher value increases contrast.
 
-     Returns
-     -------
-     Image.Image
-          image with contrast enhanced by adaptive equalization.
-     """
+    Returns
+    -------
+    Image.Image
+        image with contrast enhanced by adaptive equalization.
+    """
     if not (isinstance(nbins, int) and nbins > 0):
         raise ValueError("Number of histogram bins must be positive integer")
     img_arr = np.array(img)
@@ -303,14 +302,14 @@ def hysteresis_threshold(
     Returns
     -------
     Image.Image
-        Boolean mask where True represents pixel above
-        the hysteresis threshold
+        Image with the hysteresis threshold applied
     """
     # TODO: warning grayscale input image (skimage doc)
     if low is None or high is None:
         raise ValueError("thresholds cannot be None")
     hyst = sk_filters.apply_hysteresis_threshold(np.array(img), low, high)
-    return np_to_pil(hyst)
+    img_out = apply_mask_image(img, hyst)
+    return img_out
 
 
 def local_otsu_threshold(img: Image.Image, disk_size: float = 3.0) -> Image.Image:
@@ -771,7 +770,7 @@ def blue_pen_filter(img: Image.Image) -> np.ndarray:
 def pen_marks(img: Image.Image) -> np.ndarray:
     """Filter out pen marks from a diagnostic slide.
 
-    Pen amrks are removed by applying Otsu threshold on the H channel of the image
+    Pen marks are removed by applying Otsu threshold on the H channel of the image
     converted to the HSV space.
 
     Parameters
