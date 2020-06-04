@@ -17,6 +17,7 @@
 # ------------------------------------------------------------------------
 
 import math
+from functools import reduce
 
 import numpy as np
 import skimage.color as sk_color
@@ -26,13 +27,10 @@ import skimage.filters as sk_filters
 import skimage.future as sk_future
 import skimage.morphology as sk_morphology
 import skimage.segmentation as sk_segmentation
-
-from functools import reduce
-
 from PIL import Image, ImageOps
 
-from .util import mask_percent
 from ..util import np_to_pil, threshold_to_mask
+from .util import mask_percent
 
 
 def invert(img: Image.Image) -> Image.Image:
@@ -771,7 +769,7 @@ def blue_pen_filter(img: Image.Image) -> np.ndarray:
 def pen_marks(img: Image.Image) -> np.ndarray:
     """Filter out pen marks from a diagnostic slide.
 
-    Pen amrks are removed by applying Otsu threshold on the H channel of the image
+    Pen marks are removed by applying Otsu threshold on the H channel of the image
     converted to the HSV space.
 
     Parameters
