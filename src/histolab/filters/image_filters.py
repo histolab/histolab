@@ -66,7 +66,7 @@ class RgbToGrayscale(object):
     Parameters
     ----------
     img : PIL.Image.Image
-         Input image
+        Input image
 
     Returns
     -------
@@ -113,7 +113,7 @@ class RgbToHsv(object):
     Parameters
     ----------
     img : PIL.Image.Image
-         Input image
+        Input image
 
     Returns
     -------
@@ -137,16 +137,16 @@ class StretchContrast(object):
     Parameters
     ----------
     img: PIL.Image.Image
-         Input image
+        Input image
     low: int
-         Range low value (0 to 255).
+        Range low value (0 to 255).
     high: int
-          Range high value (0 to 255).
+        Range high value (0 to 255).
 
     Returns
     -------
     PIL.Image.Image
-            Image with contrast enhanced.
+        Image with contrast enhanced.
     """
 
     def __init__(self, low, high):
@@ -170,9 +170,9 @@ class HistogramEqualization(object):
     Parameters
     ----------
     img : PIL.Image.Image
-          Input image.
+        Input image.
     nbins : iny. optional (default is 256)
-          Number of histogram bins.
+        Number of histogram bins.
 
     Returns
     -------
@@ -199,16 +199,16 @@ class AdaptiveEqualization(object):
     Parameters
     ----------
     img : PIL.Image.Image
-           Input image (gray or RGB)
+        Input image (gray or RGB)
     nbins : int
-           Number of histogram bins.
+        Number of histogram bins.
     clip_limit : float, optional (default is 0.01)
-           Clipping limit where higher value increases contrast.
+        Clipping limit where higher value increases contrast.
 
     Returns
     -------
     PIL.Image.Image
-         image with contrast enhanced by adaptive equalization.
+        Image with contrast enhanced by adaptive equalization.
     """
 
     def __init__(self, n_bins, clip_limit):
@@ -378,7 +378,7 @@ class HysteresisThresholdMask(object):
     low : int, optional (default is 50)
         low threshold
     high : int, optional (default is 100)
-         high threshold
+        high threshold
 
     Returns
     -------
