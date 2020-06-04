@@ -16,9 +16,9 @@
 # limitations under the License.
 # ------------------------------------------------------------------------
 
+import numpy as np
 import scipy.ndimage.morphology
 import skimage.morphology
-import numpy as np
 
 from . import morphological_filters_functional as F
 
@@ -47,14 +47,20 @@ class RemoveSmallObjects(object):
         Mask with small objects filtered out
     """
 
-    def __call__(
+    def __init__(
         self,
-        np_img,
         min_size: int = 3000,
         avoid_overmask: bool = True,
         overmask_thresh: int = 95,
-    ) -> np.ndarray:
-        return F.remove_small_objects(np_img, min_size, avoid_overmask, overmask_thresh)
+    ):
+        self.min_size = min_size
+        self.avoid_overmask = avoid_overmask
+        self.overmask_thresh = overmask_thresh
+
+    def __call__(self, np_img) -> np.ndarray:
+        return F.remove_small_objects(
+            np_img, self.min_size, self.avoid_overmask, self.overmask_thresh
+        )
 
     def __repr__(self):
         return self.__class__.__name__ + "()"
@@ -76,8 +82,11 @@ class RemoveSmallHoles(object):
         Mask with small holes filtered out
     """
 
-    def __call__(self, np_img, area_threshold: int = 3000) -> np.ndarray:
-        return skimage.morphology.remove_small_holes(np_img, area_threshold)
+    def __init__(self, area_threshold: int = 3000):
+        self.area_threshold = area_threshold
+
+    def __call__(self, np_img) -> np.ndarray:
+        return skimage.morphology.remove_small_holes(np_img, self.area_threshold)
 
     def __repr__(self):
         return self.__class__.__name__ + "()"
@@ -101,11 +110,13 @@ class BinaryErosion(object):
         Mask after the erosion
     """
 
-    def __call__(
-        self, np_img: np.ndarray, disk_size: int = 5, iterations: int = 1
-    ) -> np.ndarray:
+    def __init__(self, disk_size: int = 5, iterations: int = 1):
+        self.disk_size = disk_size
+        self.iterations = iterations
+
+    def __call__(self, np_img: np.ndarray) -> np.ndarray:
         return scipy.ndimage.morphology.binary_erosion(
-            np_img, skimage.morphology.disk(disk_size), iterations
+            np_img, skimage.morphology.disk(self.disk_size), self.iterations
         )
 
     def __repr__(self):
@@ -130,11 +141,13 @@ class BinaryDilation(object):
         Mask after the dilation
     """
 
-    def __call__(
-        self, np_img: np.ndarray, disk_size: int = 5, iterations: int = 1
-    ) -> np.ndarray:
+    def __init__(self, disk_size: int = 5, iterations: int = 1):
+        self.disk_size = disk_size
+        self.iteractions = iteractions
+
+    def __call__(self, np_img: np.ndarray) -> np.ndarray:
         return scipy.ndimage.morphology.binary_dilation(
-            np_img, skimage.morphology.disk(disk_size), iterations
+            np_img, skimage.morphology.disk(self.disk_size), self.iterations
         )
 
     def __repr__(self):
@@ -151,7 +164,7 @@ class BinaryOpening(object):
     ----------
     np_img : np.ndarray (arbitrary shape, int or bool type)
         Numpy array of the binary mask
-    disk_size : int, optional (default is 5)
+    disk_size : int, optional (default is 3)
         Radius of the disk structuring element used for opening.
     iterations : int, optional (default is 1)
             How many times to repeat the opening.
@@ -162,9 +175,13 @@ class BinaryOpening(object):
         Mask after the opening
     """
 
-    def __call__(self, np_img, disk_size: int = 3, iterations: int = 1) -> np.ndarray:
+    def __init__(self, disk_size: int = 3, iterations: int = 1):
+        self.disk_size = disk_size
+        self.iteractions = iteractions
+
+    def __call__(self, np_img) -> np.ndarray:
         return scipy.ndimage.morphology.binary_opening(
-            np_img, skimage.morphology.disk(disk_size), iterations
+            np_img, skimage.morphology.disk(self.disk_size), self.iterations
         )
 
     def __repr__(self):
@@ -181,7 +198,7 @@ class BinaryClosing(object):
     ----------
     np_img : np.ndarray (arbitrary shape, int or bool type)
         Numpy array of the binary mask
-    disk_size : int, optional (default is 5)
+    disk_size : int, optional (default is 3)
         Radius of the disk structuring element used for closing.
     iterations : int, optional (default is 1)
         How many times to repeat the closing.
@@ -192,9 +209,13 @@ class BinaryClosing(object):
         Mask after the closing
     """
 
-    def __call__(self, np_img, disk_size: int = 3, iterations: int = 1) -> np.ndarray:
+    def __init__(self, disk_size: int = 3, iterations: int = 1):
+        self.disk_size = disk_size
+        self.iteractions = iteractions
+
+    def __call__(self, np_img) -> np.ndarray:
         return scipy.ndimage.morphology.binary_closing(
-            np_img, skimage.morphology.disk(disk_size), iterations
+            np_img, skimage.morphology.disk(self.disk_size), self.iterations
         )
 
     def __repr__(self):
