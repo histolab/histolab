@@ -143,7 +143,7 @@ class BinaryDilation(object):
 
     def __init__(self, disk_size: int = 5, iterations: int = 1):
         self.disk_size = disk_size
-        self.iteractions = iteractions
+        self.iterations = iterations
 
     def __call__(self, np_img: np.ndarray) -> np.ndarray:
         return scipy.ndimage.morphology.binary_dilation(
@@ -177,7 +177,7 @@ class BinaryOpening(object):
 
     def __init__(self, disk_size: int = 3, iterations: int = 1):
         self.disk_size = disk_size
-        self.iteractions = iteractions
+        self.iterations = iterations
 
     def __call__(self, np_img) -> np.ndarray:
         return scipy.ndimage.morphology.binary_opening(
@@ -211,7 +211,7 @@ class BinaryClosing(object):
 
     def __init__(self, disk_size: int = 3, iterations: int = 1):
         self.disk_size = disk_size
-        self.iteractions = iteractions
+        self.iterations = iterations
 
     def __call__(self, np_img) -> np.ndarray:
         return scipy.ndimage.morphology.binary_closing(
