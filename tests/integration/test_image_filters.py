@@ -1088,12 +1088,12 @@ def test_red_filter_raises_right_exceptions(
 def test_red_pen_filter_on_rgba_image():
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
-        "mask-arrays/diagnostic-slide-thumb-red-pen-filter-mask", type_="npy"
+        "pil-images-rgba/diagnostic-slide-thumb-red-pen-filter", type_="png"
     )
 
-    red_pen_filter_mask = imf.red_pen_filter(rgba_img)
+    red_pen_filter_img = imf.red_pen_filter(rgba_img)
 
-    np.testing.assert_array_equal(red_pen_filter_mask, expected_value)
+    np.testing.assert_array_equal(red_pen_filter_img, expected_value)
 
 
 @pytest.mark.parametrize(
@@ -1101,24 +1101,32 @@ def test_red_pen_filter_on_rgba_image():
     (
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "mask-arrays/diagnostic-slide-thumb-rgb-red-pen-filter-mask",
+            "pil-images-rgb/diagnostic-slide-thumb-rgb-red-pen-filter",
         ),
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
-            "mask-arrays/diagnostic-slide-thumb-hsv-red-pen-filter-mask",
+            "pil-images-rgb/diagnostic-slide-thumb-hsv-red-pen-filter",
         ),
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
-            "mask-arrays/diagnostic-slide-thumb-ycbcr-red-pen-filter-mask",
+            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-red-pen-filter",
         ),
     ),
 )
 def test_red_pen_filter_on_rgb_image(pil_img, expected_value):
-    expected_value = load_expectation(expected_value, type_="npy")
+    expected_value = load_expectation(expected_value, type_="png")
 
-    red_pen_filter_mask = imf.red_pen_filter(pil_img)
+    red_pen_filter_img = imf.red_pen_filter(pil_img)
 
-    np.testing.assert_array_equal(red_pen_filter_mask, expected_value)
+    np.testing.assert_array_almost_equal(
+        np.array(red_pen_filter_img), np.array(expected_value)
+    )
+    assert (
+        np.unique(np.array(ImageChops.difference(red_pen_filter_img, expected_value)))[
+            0
+        ]
+        == 0
+    )
 
 
 @pytest.mark.parametrize(
@@ -1254,12 +1262,12 @@ def test_green_filter_raises_right_exceptions(
 def test_green_pen_filter_on_rgba_image():
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
-        "mask-arrays/diagnostic-slide-thumb-green-pen-filter-mask", type_="npy"
+        "pil-images-rgba/diagnostic-slide-thumb-green-pen-filter", type_="png"
     )
 
-    green_pen_filter_mask = imf.green_pen_filter(rgba_img)
+    green_pen_filter_img = imf.green_pen_filter(rgba_img)
 
-    np.testing.assert_array_equal(green_pen_filter_mask, expected_value)
+    np.testing.assert_array_equal(green_pen_filter_img, expected_value)
 
 
 @pytest.mark.parametrize(
@@ -1267,24 +1275,24 @@ def test_green_pen_filter_on_rgba_image():
     (
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "mask-arrays/diagnostic-slide-thumb-rgb-green-pen-filter-mask",
+            "pil-images-rgb/diagnostic-slide-thumb-rgb-green-pen-filter",
         ),
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
-            "mask-arrays/diagnostic-slide-thumb-hsv-green-pen-filter-mask",
+            "pil-images-rgb/diagnostic-slide-thumb-hsv-green-pen-filter",
         ),
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
-            "mask-arrays/diagnostic-slide-thumb-ycbcr-green-pen-filter-mask",
+            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-green-pen-filter",
         ),
     ),
 )
 def test_green_pen_filter_on_rgb_image(pil_img, expected_value):
-    expected_value = load_expectation(expected_value, type_="npy")
+    expected_value = load_expectation(expected_value, type_="png")
 
-    green_pen_filter_mask = imf.green_pen_filter(pil_img)
+    green_pen_filter_img = imf.green_pen_filter(pil_img)
 
-    np.testing.assert_array_equal(green_pen_filter_mask, expected_value)
+    np.testing.assert_array_equal(green_pen_filter_img, expected_value)
 
 
 @pytest.mark.parametrize(
@@ -1420,12 +1428,12 @@ def test_blue_filter_raises_right_exceptions(
 def test_blue_pen_filter_on_rgba_image():
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
-        "mask-arrays/diagnostic-slide-thumb-blue-pen-filter-mask", type_="npy"
+        "pil-images-rgba/diagnostic-slide-thumb-blue-pen-filter", type_="png"
     )
 
-    blue_pen_filter_mask = imf.blue_pen_filter(rgba_img)
+    blue_pen_filter_img = imf.blue_pen_filter(rgba_img)
 
-    np.testing.assert_array_equal(blue_pen_filter_mask, expected_value)
+    np.testing.assert_array_equal(blue_pen_filter_img, expected_value)
 
 
 @pytest.mark.parametrize(
@@ -1433,24 +1441,24 @@ def test_blue_pen_filter_on_rgba_image():
     (
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "mask-arrays/diagnostic-slide-thumb-rgb-blue-pen-filter-mask",
+            "pil-images-rgb/diagnostic-slide-thumb-rgb-blue-pen-filter",
         ),
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
-            "mask-arrays/diagnostic-slide-thumb-hsv-blue-pen-filter-mask",
+            "pil-images-rgb/diagnostic-slide-thumb-hsv-blue-pen-filter",
         ),
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
-            "mask-arrays/diagnostic-slide-thumb-ycbcr-blue-pen-filter-mask",
+            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-blue-pen-filter",
         ),
     ),
 )
 def test_blue_pen_filter_on_rgb_image(pil_img, expected_value):
-    expected_value = load_expectation(expected_value, type_="npy")
+    expected_value = load_expectation(expected_value, type_="png")
 
-    blue_pen_filter_mask = imf.blue_pen_filter(pil_img)
+    blue_pen_filter_img = imf.blue_pen_filter(pil_img)
 
-    np.testing.assert_array_equal(blue_pen_filter_mask, expected_value)
+    np.testing.assert_array_equal(blue_pen_filter_img, expected_value)
 
 
 # TODO: manage general pen marks

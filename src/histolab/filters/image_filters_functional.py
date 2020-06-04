@@ -345,6 +345,115 @@ def local_otsu_threshold(img: Image.Image, disk_size: float = 3.0) -> Image.Imag
     return np_to_pil(local_otsu)
 
 
+def red_pen_filter(img: Image.Image) -> Image.Image:
+    """Filter out red pen marks on diagnostic slides.
+
+    The resulting mask is a composition of red filters with different thresholds
+    for the RGB channels.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image.
+
+    Returns
+    -------
+    Image.Image
+        Input image with the pen marks filtered out.
+    """
+    parameters = [
+        {"red_thresh": 150, "green_thresh": 80, "blue_thresh": 90},
+        {"red_thresh": 110, "green_thresh": 20, "blue_thresh": 30},
+        {"red_thresh": 185, "green_thresh": 65, "blue_thresh": 105},
+        {"red_thresh": 195, "green_thresh": 85, "blue_thresh": 125},
+        {"red_thresh": 220, "green_thresh": 115, "blue_thresh": 145},
+        {"red_thresh": 125, "green_thresh": 40, "blue_thresh": 70},
+        {"red_thresh": 100, "green_thresh": 50, "blue_thresh": 65},
+        {"red_thresh": 85, "green_thresh": 25, "blue_thresh": 45},
+    ]
+    red_pen_filter_img = reduce(
+        (lambda x, y: x & y), [red_filter(img, **param) for param in parameters]
+    )
+    return apply_mask_image(img, red_pen_filter_img)
+
+
+def green_pen_filter(img: Image.Image) -> Image.Image:
+    """Filter out green pen marks from a diagnostic slide.
+
+    The resulting mask is a composition of green filters with different thresholds
+    for the RGB channels.
+
+    Parameters
+    ---------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Input image with the green pen marks filtered out.
+    """
+    parameters = [
+        {"red_thresh": 150, "green_thresh": 160, "blue_thresh": 140},
+        {"red_thresh": 70, "green_thresh": 110, "blue_thresh": 110},
+        {"red_thresh": 45, "green_thresh": 115, "blue_thresh": 100},
+        {"red_thresh": 30, "green_thresh": 75, "blue_thresh": 60},
+        {"red_thresh": 195, "green_thresh": 220, "blue_thresh": 210},
+        {"red_thresh": 225, "green_thresh": 230, "blue_thresh": 225},
+        {"red_thresh": 170, "green_thresh": 210, "blue_thresh": 200},
+        {"red_thresh": 20, "green_thresh": 30, "blue_thresh": 20},
+        {"red_thresh": 50, "green_thresh": 60, "blue_thresh": 40},
+        {"red_thresh": 30, "green_thresh": 50, "blue_thresh": 35},
+        {"red_thresh": 65, "green_thresh": 70, "blue_thresh": 60},
+        {"red_thresh": 100, "green_thresh": 110, "blue_thresh": 105},
+        {"red_thresh": 165, "green_thresh": 180, "blue_thresh": 180},
+        {"red_thresh": 140, "green_thresh": 140, "blue_thresh": 150},
+        {"red_thresh": 185, "green_thresh": 195, "blue_thresh": 195},
+    ]
+
+    green_pen_filter_img = reduce(
+        (lambda x, y: x & y), [green_filter(img, **param) for param in parameters]
+    )
+    return apply_mask_image(img, green_pen_filter_img)
+
+
+def blue_pen_filter(img: Image.Image) -> Image.Image:
+    """Filter out blue pen marks from a diagnostic slide.
+
+    The resulting mask is a composition of green filters with different thresholds
+    for the RGB channels.
+
+    Parameters
+    ---------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Input image with the blue pen marks filtered out.
+    """
+    parameters = [
+        {"red_thresh": 60, "green_thresh": 120, "blue_thresh": 190},
+        {"red_thresh": 120, "green_thresh": 170, "blue_thresh": 200},
+        {"red_thresh": 175, "green_thresh": 210, "blue_thresh": 230},
+        {"red_thresh": 145, "green_thresh": 180, "blue_thresh": 210},
+        {"red_thresh": 37, "green_thresh": 95, "blue_thresh": 160},
+        {"red_thresh": 30, "green_thresh": 65, "blue_thresh": 130},
+        {"red_thresh": 130, "green_thresh": 155, "blue_thresh": 180},
+        {"red_thresh": 40, "green_thresh": 35, "blue_thresh": 85},
+        {"red_thresh": 30, "green_thresh": 20, "blue_thresh": 65},
+        {"red_thresh": 90, "green_thresh": 90, "blue_thresh": 140},
+        {"red_thresh": 60, "green_thresh": 60, "blue_thresh": 120},
+        {"red_thresh": 110, "green_thresh": 110, "blue_thresh": 175},
+    ]
+
+    blue_pen_filter_img = reduce(
+        (lambda x, y: x & y), [blue_filter(img, **param) for param in parameters]
+    )
+    return apply_mask_image(img, blue_pen_filter_img)
+
+
 # -------- Branching function --------
 
 
@@ -583,37 +692,6 @@ def red_filter(
     return red_filter_mask
 
 
-def red_pen_filter(img: Image.Image) -> np.ndarray:
-    """Filter out red pen marks on diagnostic slides.
-
-    The resulting mask is a composition of red filters with different thresholds
-    for the RGB channels.
-
-    Parameters
-    ----------
-    img : Image.Image
-        Input RGB image.
-
-    Returns
-    -------
-        Boolean NumPy array representing the mask with the pen marks filtered out.
-    """
-    parameters = [
-        {"red_thresh": 150, "green_thresh": 80, "blue_thresh": 90},
-        {"red_thresh": 110, "green_thresh": 20, "blue_thresh": 30},
-        {"red_thresh": 185, "green_thresh": 65, "blue_thresh": 105},
-        {"red_thresh": 195, "green_thresh": 85, "blue_thresh": 125},
-        {"red_thresh": 220, "green_thresh": 115, "blue_thresh": 145},
-        {"red_thresh": 125, "green_thresh": 40, "blue_thresh": 70},
-        {"red_thresh": 100, "green_thresh": 50, "blue_thresh": 65},
-        {"red_thresh": 85, "green_thresh": 25, "blue_thresh": 45},
-    ]
-    red_pen_filter_mask = reduce(
-        (lambda x, y: x & y), [red_filter(img, **param) for param in parameters]
-    )
-    return red_pen_filter_mask
-
-
 def green_filter(
     img: Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
 ) -> np.ndarray:
@@ -655,46 +733,6 @@ def green_filter(
     return green_filter
 
 
-def green_pen_filter(img: Image.Image) -> np.ndarray:
-    """Filter out green pen marks from a diagnostic slide.
-
-    The resulting mask is a composition of green filters with different thresholds
-    for the RGB channels.
-
-    Parameters
-    ---------
-    img : Image.Image
-        Input RGB image
-
-    Returns
-    -------
-    np.ndarray
-        NumPy array representing the mask with the green pen marks filtered out.
-    """
-    parameters = [
-        {"red_thresh": 150, "green_thresh": 160, "blue_thresh": 140},
-        {"red_thresh": 70, "green_thresh": 110, "blue_thresh": 110},
-        {"red_thresh": 45, "green_thresh": 115, "blue_thresh": 100},
-        {"red_thresh": 30, "green_thresh": 75, "blue_thresh": 60},
-        {"red_thresh": 195, "green_thresh": 220, "blue_thresh": 210},
-        {"red_thresh": 225, "green_thresh": 230, "blue_thresh": 225},
-        {"red_thresh": 170, "green_thresh": 210, "blue_thresh": 200},
-        {"red_thresh": 20, "green_thresh": 30, "blue_thresh": 20},
-        {"red_thresh": 50, "green_thresh": 60, "blue_thresh": 40},
-        {"red_thresh": 30, "green_thresh": 50, "blue_thresh": 35},
-        {"red_thresh": 65, "green_thresh": 70, "blue_thresh": 60},
-        {"red_thresh": 100, "green_thresh": 110, "blue_thresh": 105},
-        {"red_thresh": 165, "green_thresh": 180, "blue_thresh": 180},
-        {"red_thresh": 140, "green_thresh": 140, "blue_thresh": 150},
-        {"red_thresh": 185, "green_thresh": 195, "blue_thresh": 195},
-    ]
-
-    green_pen_filter = reduce(
-        (lambda x, y: x & y), [green_filter(img, **param) for param in parameters]
-    )
-    return green_pen_filter
-
-
 def blue_filter(
     img: Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
 ) -> np.ndarray:
@@ -732,43 +770,6 @@ def blue_filter(
     b = img_arr[:, :, 2] < blue_thresh
     blue_filter_mask = r | g | b
     return blue_filter_mask
-
-
-def blue_pen_filter(img: Image.Image) -> np.ndarray:
-    """Filter out blue pen marks from a diagnostic slide.
-
-    The resulting mask is a composition of green filters with different thresholds
-    for the RGB channels.
-
-    Parameters
-    ---------
-    img : Image.Image
-        Input RGB image
-
-    Returns
-    -------
-    np.ndarray
-        NumPy array representing the mask with the blue pen marks filtered out.
-    """
-    parameters = [
-        {"red_thresh": 60, "green_thresh": 120, "blue_thresh": 190},
-        {"red_thresh": 120, "green_thresh": 170, "blue_thresh": 200},
-        {"red_thresh": 175, "green_thresh": 210, "blue_thresh": 230},
-        {"red_thresh": 145, "green_thresh": 180, "blue_thresh": 210},
-        {"red_thresh": 37, "green_thresh": 95, "blue_thresh": 160},
-        {"red_thresh": 30, "green_thresh": 65, "blue_thresh": 130},
-        {"red_thresh": 130, "green_thresh": 155, "blue_thresh": 180},
-        {"red_thresh": 40, "green_thresh": 35, "blue_thresh": 85},
-        {"red_thresh": 30, "green_thresh": 20, "blue_thresh": 65},
-        {"red_thresh": 90, "green_thresh": 90, "blue_thresh": 140},
-        {"red_thresh": 60, "green_thresh": 60, "blue_thresh": 120},
-        {"red_thresh": 110, "green_thresh": 110, "blue_thresh": 175},
-    ]
-
-    blue_pen_filter = reduce(
-        (lambda x, y: x & y), [blue_filter(img, **param) for param in parameters]
-    )
-    return blue_pen_filter
 
 
 def pen_marks(img: Image.Image) -> np.ndarray:
