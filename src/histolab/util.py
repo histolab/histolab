@@ -18,11 +18,9 @@
 
 import collections
 import functools
-
-import numpy as np
-
 from itertools import filterfalse as ifilterfalse
 
+import numpy as np
 from PIL import Image
 
 
@@ -56,7 +54,7 @@ def threshold_to_mask(img: Image.Image, threshold: float) -> np.ndarray:
     Parameters
     ----------
     img: Image.Image
-        input image
+        Input image
     threshold: float
         The threshold value to exceed.
 
@@ -68,6 +66,34 @@ def threshold_to_mask(img: Image.Image, threshold: float) -> np.ndarray:
     """
     img_arr = np.array(img)
     return img_arr > threshold
+
+
+def apply_mask_image(img: Image.Image, mask: np.ndarray) -> Image.Image:
+    """Mask image with the provided binary mask.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input image
+    mask : np.ndarray
+        Binary mask
+
+    Returns
+    -------
+    Image.Image
+        Image with the mask applied
+    
+    """
+    img_arr = np.array(img)
+
+    if mask.ndim == 2 and img_arr.ndim != 2:
+        masked_image = np.zeros(img_arr.shape, "uint8")
+        n_channels = img_arr.shape[2]
+        for channel_i in range(n_channels):
+            masked_image[:, :, channel_i] = img_arr[:, :, channel_i] * mask
+    else:
+        masked_image = img_arr * mask
+    return np_to_pil(masked_image)
 
 
 class Counter(dict):

@@ -176,7 +176,8 @@ class HistogramEqualization(object):
 
     Returns
     -------
-    NumPy array (float or uint8) with contrast enhanced by histogram equalization.
+    PIL.Image.Image
+        Image with contrast enhanced by histogram equalization.
     """
 
     def __init__(self, n_bins):
@@ -347,8 +348,7 @@ class HysteresisThreshold(object):
     Returns
     -------
     PIL.Image.Image
-        Boolean mask where True represents pixel above
-        the hysteresis threshold
+        Image with the hysteresis threshold applied
     """
 
     def __init__(self, low: int = 50, high: int = 50):
