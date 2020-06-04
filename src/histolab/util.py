@@ -82,7 +82,6 @@ def apply_mask_image(img: Image.Image, mask: np.ndarray) -> Image.Image:
     -------
     Image.Image
         Image with the mask applied
-    
     """
     img_arr = np.array(img)
 
