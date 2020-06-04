@@ -5,7 +5,7 @@
 import pytest
 import numpy as np
 
-from src.histolab.util import lazyproperty, np_to_pil
+from src.histolab.util import lazyproperty, np_to_pil, threshold_to_mask
 
 
 @pytest.mark.parametrize(
@@ -95,6 +95,15 @@ def test_util_np_to_pil(
     assert pil_img.size == expected_size
     assert np.array(pil_img).dtype == expected_type
     np.testing.assert_array_almost_equal(np.array(pil_img), expected_array)
+
+
+@pytest.mark.parametrize(
+    "pil_img, threshold, relate, expected_array", (),
+)
+def test_util_threshold_to_mask(pil_img, threshold, relate, expected_array):
+    mask = threshold_to_mask(pil_img, threshold, relate)
+
+    np.testing.assert_array_equal(mask, expected_array)
 
 
 class DescribeLazyPropertyDecorator(object):

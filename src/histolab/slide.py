@@ -38,7 +38,13 @@ import skimage.morphology as morph
 from scipy import ndimage
 
 from .util import lazyproperty, scale_coordinates, polygon_to_mask_array
-from .filters.image_filters import RgbToGrayscale, OtsuThreshold
+from .filters.image_filters import (
+    RgbToGrayscale,
+    OtsuThreshold,
+    GreenPenFilter,
+    BluePenFilter,
+)
+from .filters.morphological_filters import RemoveSmallObjects
 
 IMG_EXT = "png"
 THUMBNAIL_SIZE = 1000
@@ -135,12 +141,13 @@ class Slide(object):
 
     @property
     def mask_biggest_tissue_box(self):
-        """Returns the coordinates of the box containing the tissue.
+        """Returns the coordinates of the box containing the max area of tissue.
 
         Returns
         -------
         box_coords: Coordinates
-            [x_ul, y_ul, x_br, y_br] coordinates of the box containing the tissue
+            [x_ul, y_ul, x_br, y_br] coordinates of the box containing the
+            max area of tissue.
 
         """
         Region = namedtuple("Region", ("index", "area", "bbox", "center"))
@@ -155,13 +162,34 @@ class Slide(object):
 
         otsu_threshold = OtsuThreshold()
         thumb_otsu_threshold = otsu_threshold(grey_thumb)
+        #
+        # filters = C
+        # dilation = BinaryDilation()
+        # thumb_filter_dilated = dilation(thumb_otsu_threshold, disk_size=3)
+        #
+        # remove_holes = RemoveSmallHoles()
+        # thumb_filter_dilated_filled = remove_holes(thumb_filter_dilated)
+
         thumb_filter_dilated = morph.dilation(thumb_otsu_threshold, morph.disk(3))
         thumb_filter_dilated_filled = ndimage.binary_fill_holes(
             thumb_filter_dilated, structure=np.ones((5, 5))
-        ).astype(int)
+        ).astype(bool)
 
+        import ipdb
+
+        ipdb.set_trace()
+
+        remove_g_marks = GreenPenFilter()
+        remove_b_marks = BluePenFilter()
+        thumb_filter_no_pen = remove_g_marks(thumb) & remove_b_marks(thumb)
+
+        remove_small_objects = RemoveSmallObjects()
+        thumb_filter_dilated_filled_sm = remove_small_objects(
+            thumb_filter_dilated_filled
+        )
+        thumb_mask = thumb_filter_dilated_filled_sm & thumb_filter_no_pen
         # get biggest region
-        thumb_labeled_regions = label(thumb_filter_dilated_filled)
+        thumb_labeled_regions = label(thumb_mask)
         labeled_region_properties = regionprops(thumb_labeled_regions)
 
         regions = [

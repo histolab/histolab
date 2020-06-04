@@ -791,4 +791,4 @@ def pen_marks(img: Image.Image) -> np.ndarray:
     np_hsv = sk_color.convert_colorspace(np_img, "RGB", "HSV")
     hue = np_hsv[:, :, 0]
     threshold = sk_filters.threshold_otsu(hue)
-    return hue > threshold
+    return threshold_to_mask(hue, threshold, operator.gt)

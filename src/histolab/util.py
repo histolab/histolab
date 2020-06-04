@@ -27,7 +27,7 @@ from collections import deque, namedtuple
 from PIL import Image, ImageDraw
 
 
-def np_to_pil(np_img):
+def np_to_pil(np_img: np.ndarray) -> Image.Image:
     """ Convert a NumPy array to a PIL Image.
 
     Args:

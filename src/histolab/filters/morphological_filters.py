@@ -141,11 +141,22 @@ class BinaryDilation(object):
         Mask after the dilation
     """
 
+<<<<<<< HEAD
     def __init__(self, disk_size: int = 5, iterations: int = 1):
         self.disk_size = disk_size
         self.iterations = iterations
 
     def __call__(self, np_img: np.ndarray) -> np.ndarray:
+=======
+    def __init__(
+        self, disk_size,
+    ):
+        self.disk_size = disk_size
+
+    def __call__(
+        self, np_img: np.ndarray, disk_size: int = 5, iterations: int = 1
+    ) -> np.ndarray:
+>>>>>>> refactoring slide tissue box
         return scipy.ndimage.morphology.binary_dilation(
             np_img, skimage.morphology.disk(self.disk_size), self.iterations
         )
