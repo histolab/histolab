@@ -4,8 +4,23 @@
 
 import pytest
 import numpy as np
+import operator
 
-from src.histolab.util import lazyproperty, np_to_pil
+from src.histolab.util import lazyproperty, np_to_pil, threshold_to_mask
+from tests.base import (
+    IMAGE1_GREY,
+    IMAGE2_GREY,
+    IMAGE3_GREY_BLACK,
+    IMAGE4_GREY_WHITE,
+    IMAGE1_RGB,
+    IMAGE2_RGB,
+    IMAGE3_RGB_BLACK,
+    IMAGE4_RGB_WHITE,
+    IMAGE1_RGBA,
+    IMAGE2_RGBA,
+    IMAGE3_RGBA_BLACK,
+    IMAGE4_RGBA_WHITE,
+)
 
 
 @pytest.mark.parametrize(
@@ -97,6 +112,13 @@ def test_util_np_to_pil(
     np.testing.assert_array_almost_equal(np.array(pil_img), expected_array)
 
 
+def test_util_threshold_to_mask(threshold_to_mask_fixture):
+    (img, threshold, relate, expected_array) = threshold_to_mask_fixture
+    mask = threshold_to_mask(np_to_pil(img), threshold, relate)
+
+    np.testing.assert_array_equal(mask, expected_array)
+
+
 class DescribeLazyPropertyDecorator(object):
     """Tests @lazyproperty decorator class."""
 
@@ -142,3 +164,231 @@ class DescribeLazyPropertyDecorator(object):
     @pytest.fixture
     def obj(self, Obj):
         return Obj()
+
+
+@pytest.fixture(
+    params=[
+        (
+            IMAGE1_GREY,
+            160,
+            operator.gt,
+            np.array(
+                [
+                    [False, False, True, False, False],
+                    [False, False, False, False, False],
+                    [True, True, False, False, False],
+                    [False, False, False, False, True],
+                    [False, True, False, True, False],
+                ]
+            ),
+        ),
+        (
+            IMAGE2_GREY,
+            140,
+            operator.lt,
+            np.array(
+                [
+                    [False, False, False, True, True],
+                    [True, True, True, True, True],
+                    [False, False, False, False, False],
+                    [True, False, False, True, True],
+                    [False, True, False, True, False],
+                ]
+            ),
+        ),
+        (IMAGE3_GREY_BLACK, 0, operator.gt, np.zeros((5, 5), dtype=bool),),
+        (IMAGE3_GREY_BLACK, 0, operator.lt, np.zeros((5, 5), dtype=bool),),
+        (IMAGE3_GREY_BLACK, 1, operator.lt, np.ones((5, 5), dtype=bool),),
+        (IMAGE4_GREY_WHITE, 0, operator.gt, np.ones((5, 5), dtype=bool),),
+        (IMAGE4_GREY_WHITE, 1, operator.lt, np.zeros((5, 5), dtype=bool),),
+        (
+            IMAGE1_RGB,
+            200,
+            operator.lt,
+            np.array(
+                [
+                    [
+                        [False, False, False],
+                        [False, True, True],
+                        [True, True, True],
+                        [True, True, True],
+                        [True, True, True],
+                    ],
+                    [
+                        [True, False, False],
+                        [True, False, True],
+                        [True, True, True],
+                        [True, False, False],
+                        [True, True, False],
+                    ],
+                    [
+                        [True, True, True],
+                        [True, False, True],
+                        [True, True, False],
+                        [False, True, True],
+                        [True, True, True],
+                    ],
+                    [
+                        [True, True, True],
+                        [True, True, True],
+                        [True, False, False],
+                        [True, True, True],
+                        [True, True, True],
+                    ],
+                    [
+                        [False, True, True],
+                        [True, False, True],
+                        [True, True, True],
+                        [True, True, True],
+                        [True, True, True],
+                    ],
+                ]
+            ),
+        ),
+        (
+            IMAGE2_RGB,
+            39,
+            operator.gt,
+            np.array(
+                [
+                    [
+                        [True, True, True],
+                        [True, True, True],
+                        [True, True, True],
+                        [True, True, True],
+                        [False, True, False],
+                    ],
+                    [
+                        [True, True, True],
+                        [True, True, True],
+                        [True, True, False],
+                        [True, True, False],
+                        [True, True, True],
+                    ],
+                    [
+                        [True, True, True],
+                        [False, True, True],
+                        [True, True, True],
+                        [True, True, True],
+                        [True, True, False],
+                    ],
+                    [
+                        [True, True, False],
+                        [True, True, True],
+                        [True, True, False],
+                        [False, True, True],
+                        [False, True, True],
+                    ],
+                    [
+                        [True, True, True],
+                        [False, False, True],
+                        [True, False, False],
+                        [True, True, True],
+                        [True, True, True],
+                    ],
+                ]
+            ),
+        ),
+        (IMAGE3_RGB_BLACK, 0, operator.gt, np.zeros((5, 5, 3), dtype=bool),),
+        (IMAGE3_RGB_BLACK, 0, operator.lt, np.zeros((5, 5, 3), dtype=bool),),
+        (IMAGE3_RGB_BLACK, 1, operator.lt, np.ones((5, 5, 3), dtype=bool),),
+        (IMAGE4_RGB_WHITE, 0, operator.gt, np.ones((5, 5, 3), dtype=bool),),
+        (IMAGE4_RGB_WHITE, 1, operator.lt, np.zeros((5, 5, 3), dtype=bool),),
+        (
+            IMAGE1_RGBA,
+            178,
+            operator.gt,
+            np.array(
+                [
+                    [
+                        [False, False, True, True],
+                        [False, True, False, False],
+                        [False, True, True, True],
+                        [False, False, True, False],
+                        [True, False, True, False],
+                    ],
+                    [
+                        [True, False, False, False],
+                        [False, False, True, False],
+                        [True, False, False, False],
+                        [False, False, True, False],
+                        [False, True, False, False],
+                    ],
+                    [
+                        [False, False, True, True],
+                        [False, False, False, False],
+                        [False, True, False, False],
+                        [False, False, True, True],
+                        [True, False, True, False],
+                    ],
+                    [
+                        [True, False, False, True],
+                        [True, True, True, False],
+                        [False, True, True, True],
+                        [True, False, True, True],
+                        [False, False, False, False],
+                    ],
+                    [
+                        [False, False, True, True],
+                        [False, True, False, False],
+                        [True, False, False, True],
+                        [True, False, False, False],
+                        [False, False, False, True],
+                    ],
+                ]
+            ),
+        ),
+        (
+            IMAGE2_RGBA,
+            37,
+            operator.lt,
+            np.array(
+                [
+                    [
+                        [False, False, False, False],
+                        [False, False, False, False],
+                        [False, False, False, False],
+                        [False, False, True, False],
+                        [False, False, False, False],
+                    ],
+                    [
+                        [True, False, True, False],
+                        [True, False, False, False],
+                        [False, False, False, True],
+                        [False, False, False, False],
+                        [False, False, True, False],
+                    ],
+                    [
+                        [False, False, False, False],
+                        [False, False, False, False],
+                        [True, False, False, False],
+                        [False, False, False, False],
+                        [False, False, True, True],
+                    ],
+                    [
+                        [False, False, False, False],
+                        [False, False, False, False],
+                        [True, True, True, False],
+                        [False, False, False, False],
+                        [False, False, False, False],
+                    ],
+                    [
+                        [True, False, False, False],
+                        [True, False, False, False],
+                        [False, False, False, False],
+                        [True, False, False, False],
+                        [False, False, False, False],
+                    ],
+                ]
+            ),
+        ),
+        (IMAGE3_RGBA_BLACK, 2, operator.gt, np.zeros((5, 5, 4), dtype=bool),),
+        (IMAGE3_RGBA_BLACK, 0, operator.lt, np.zeros((5, 5, 4), dtype=bool),),
+        (IMAGE3_RGBA_BLACK, 1, operator.lt, np.ones((5, 5, 4), dtype=bool),),
+        (IMAGE4_RGBA_WHITE, 0, operator.gt, np.ones((5, 5, 4), dtype=bool),),
+        (IMAGE4_RGBA_WHITE, 1, operator.lt, np.zeros((5, 5, 4), dtype=bool),),
+    ]
+)
+def threshold_to_mask_fixture(request):
+    (img, threshold, relate, expected_array) = request.param
+    return img, threshold, relate, expected_array
