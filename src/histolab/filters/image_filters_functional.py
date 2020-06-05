@@ -17,9 +17,9 @@
 # ------------------------------------------------------------------------
 
 import math
+import operator
 from functools import reduce
 
-import operator
 import numpy as np
 import skimage.color as sk_color
 import skimage.exposure as sk_exposure

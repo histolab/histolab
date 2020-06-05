@@ -112,9 +112,62 @@ def test_util_np_to_pil(
     np.testing.assert_array_almost_equal(np.array(pil_img), expected_array)
 
 
-@pytest.mark.parametrize(
-    "img, threshold, relate, expected_array",
-    (
+def test_util_threshold_to_mask(threshold_to_mask_fixture):
+    (img, threshold, relate, expected_array) = threshold_to_mask_fixture
+    mask = threshold_to_mask(np_to_pil(img), threshold, relate)
+
+    np.testing.assert_array_equal(mask, expected_array)
+
+
+class DescribeLazyPropertyDecorator(object):
+    """Tests @lazyproperty decorator class."""
+
+    def it_is_a_lazyproperty_object_on_class_access(self, Obj):
+        assert isinstance(Obj.fget, lazyproperty)
+
+    def but_it_adopts_the_name_of_the_decorated_method(self, Obj):
+        assert Obj.fget.__name__ == "fget"
+
+    def and_it_adopts_the_module_of_the_decorated_method(self, Obj):
+        # ---the module name actually, not a module object
+        assert Obj.fget.__module__ == __name__
+
+    def and_it_adopts_the_docstring_of_the_decorated_method(self, Obj):
+        assert Obj.fget.__doc__ == "Docstring of Obj.fget method definition."
+
+    def it_only_calculates_value_on_first_call(self, obj):
+        assert obj.fget == 1
+        assert obj.fget == 1
+
+    def it_raises_on_attempt_to_assign(self, obj):
+        assert obj.fget == 1
+        with pytest.raises(AttributeError):
+            obj.fget = 42
+        assert obj.fget == 1
+        assert obj.fget == 1
+
+    # fixture components ---------------------------------------------
+
+    @pytest.fixture
+    def Obj(self):
+        class Obj(object):
+            @lazyproperty
+            def fget(self):
+                """Docstring of Obj.fget method definition."""
+                if not hasattr(self, "_n"):
+                    self._n = 0
+                self._n += 1
+                return self._n
+
+        return Obj
+
+    @pytest.fixture
+    def obj(self, Obj):
+        return Obj()
+
+
+@pytest.fixture(
+    params=[
         (
             IMAGE1_GREY,
             160,
@@ -334,56 +387,8 @@ def test_util_np_to_pil(
         (IMAGE3_RGBA_BLACK, 1, operator.lt, np.ones((5, 5, 4), dtype=bool),),
         (IMAGE4_RGBA_WHITE, 0, operator.gt, np.ones((5, 5, 4), dtype=bool),),
         (IMAGE4_RGBA_WHITE, 1, operator.lt, np.zeros((5, 5, 4), dtype=bool),),
-    ),
+    ]
 )
-def test_util_threshold_to_mask(img, threshold, relate, expected_array):
-    mask = threshold_to_mask(np_to_pil(img), threshold, relate)
-
-    np.testing.assert_array_equal(mask, expected_array)
-
-
-class DescribeLazyPropertyDecorator(object):
-    """Tests @lazyproperty decorator class."""
-
-    def it_is_a_lazyproperty_object_on_class_access(self, Obj):
-        assert isinstance(Obj.fget, lazyproperty)
-
-    def but_it_adopts_the_name_of_the_decorated_method(self, Obj):
-        assert Obj.fget.__name__ == "fget"
-
-    def and_it_adopts_the_module_of_the_decorated_method(self, Obj):
-        # ---the module name actually, not a module object
-        assert Obj.fget.__module__ == __name__
-
-    def and_it_adopts_the_docstring_of_the_decorated_method(self, Obj):
-        assert Obj.fget.__doc__ == "Docstring of Obj.fget method definition."
-
-    def it_only_calculates_value_on_first_call(self, obj):
-        assert obj.fget == 1
-        assert obj.fget == 1
-
-    def it_raises_on_attempt_to_assign(self, obj):
-        assert obj.fget == 1
-        with pytest.raises(AttributeError):
-            obj.fget = 42
-        assert obj.fget == 1
-        assert obj.fget == 1
-
-    # fixture components ---------------------------------------------
-
-    @pytest.fixture
-    def Obj(self):
-        class Obj(object):
-            @lazyproperty
-            def fget(self):
-                """Docstring of Obj.fget method definition."""
-                if not hasattr(self, "_n"):
-                    self._n = 0
-                self._n += 1
-                return self._n
-
-        return Obj
-
-    @pytest.fixture
-    def obj(self, Obj):
-        return Obj()
+def threshold_to_mask_fixture(request):
+    (img, threshold, relate, expected_array) = request.param
+    return img, threshold, relate, expected_array

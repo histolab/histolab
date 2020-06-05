@@ -111,10 +111,6 @@ def scale_coordinates(reference_coords, reference_size, target_size):
         Coordinates in the scaled image
 
     """
-    assert len(reference_size) == 2
-    assert len(target_size) == 2
-    assert len(reference_coords) == 4
-
     reference_coords = np.asarray(reference_coords).ravel()
     reference_size = np.tile(reference_size, 2)
     target_size = np.tile(target_size, 2)
