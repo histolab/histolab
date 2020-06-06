@@ -6,7 +6,12 @@ import pytest
 import numpy as np
 import operator
 
-from src.histolab.util import lazyproperty, np_to_pil, threshold_to_mask
+from src.histolab.util import (
+    lazyproperty,
+    np_to_pil,
+    threshold_to_mask,
+    polygon_to_mask_array,
+)
 from tests.base import (
     IMAGE1_GREY,
     IMAGE2_GREY,
@@ -117,6 +122,57 @@ def test_util_threshold_to_mask(threshold_to_mask_fixture):
     mask = threshold_to_mask(np_to_pil(img), threshold, relate)
 
     np.testing.assert_array_equal(mask, expected_array)
+
+
+@pytest.mark.parametrize(
+    "dims, vertices, expected_array",
+    (
+        (
+            (5, 5),
+            [(0, 3), (2, 3), (2, 5), (0, 5)],
+            np.array(
+                [
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
+                    [1, 1, 1, 0, 0],
+                    [1, 1, 1, 0, 0],
+                ]
+            ),
+        ),
+        (
+            (5, 6),
+            [(1, 0), (1, 1), (2, 0), (2, 1)],
+            np.array(
+                [
+                    [0, 1, 1, 0, 0],
+                    [0, 1, 1, 0, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
+                ]
+            ),
+        ),
+        (
+            (5, 5),
+            [(2, 1), (4, 1), (4, 3), (2, 3)],
+            np.array(
+                [
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 1, 1, 1],
+                    [0, 0, 1, 1, 1],
+                    [0, 0, 1, 1, 1],
+                    [0, 0, 0, 0, 0],
+                ]
+            ),
+        ),
+    ),
+)
+def test_util_polygon_to_mask_array(dims, vertices, expected_array):
+    polygon_mask = polygon_to_mask_array(dims, vertices)
+
+    np.testing.assert_array_almost_equal(polygon_mask, expected_array)
 
 
 class DescribeLazyPropertyDecorator(object):

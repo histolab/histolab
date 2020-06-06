@@ -78,11 +78,20 @@ def threshold_to_mask(
 
 
 def polygon_to_mask_array(dims: tuple, vertices: List[tuple]) -> np.ndarray:
-    """
+    """Draw a white polygon of specified vertices on a black image of
+    specified dimensions
 
-    :param dims:
-    :param vertices:
-    :return:
+    Parameters
+    ----------
+    dims : tuple
+        (w,h) of the black image
+    vertices : List[tuple]
+        List of vertices of the polygon
+
+    Returns
+    -------
+    np.ndarray
+        NumPy array corresponding to the image with the polygon
     """
     img = Image.new("L", dims, 0)
     poly = list(map(tuple, vertices))

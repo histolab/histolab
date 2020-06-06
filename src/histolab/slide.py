@@ -34,17 +34,10 @@ import PIL
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure as matplotlib_figure
 from skimage.measure import label, regionprops
-import skimage.morphology as morph
-from scipy import ndimage
 
 from .util import lazyproperty, scale_coordinates, polygon_to_mask_array
-from .filters.image_filters import (
-    RgbToGrayscale,
-    OtsuThreshold,
-    GreenPenFilter,
-    BluePenFilter,
-)
-from .filters.morphological_filters import RemoveSmallObjects
+import src.histolab.filters.image_filters as imf
+import src.histolab.filters.morphological_filters as mof
 
 IMG_EXT = "png"
 THUMBNAIL_SIZE = 1000
@@ -152,42 +145,22 @@ class Slide(object):
         """
         Region = namedtuple("Region", ("index", "area", "bbox", "center"))
 
-        w_out, h_out = self.dimensions
-
         thumb = self._wsi.get_thumbnail((1000, 1000))
         h_in, w_in, ch = np.array(thumb).shape
 
-        rgb2greyscale = RgbToGrayscale()
-        grey_thumb = rgb2greyscale(thumb)
-
-        otsu_threshold = OtsuThreshold()
-        thumb_otsu_threshold = otsu_threshold(grey_thumb)
-        #
-        # filters = C
-        # dilation = BinaryDilation()
-        # thumb_filter_dilated = dilation(thumb_otsu_threshold, disk_size=3)
-        #
-        # remove_holes = RemoveSmallHoles()
-        # thumb_filter_dilated_filled = remove_holes(thumb_filter_dilated)
-
-        thumb_filter_dilated = morph.dilation(thumb_otsu_threshold, morph.disk(3))
-        thumb_filter_dilated_filled = ndimage.binary_fill_holes(
-            thumb_filter_dilated, structure=np.ones((5, 5))
-        ).astype(bool)
-
-        import ipdb
-
-        ipdb.set_trace()
-
-        remove_g_marks = GreenPenFilter()
-        remove_b_marks = BluePenFilter()
-        thumb_filter_no_pen = remove_g_marks(thumb) & remove_b_marks(thumb)
-
-        remove_small_objects = RemoveSmallObjects()
-        thumb_filter_dilated_filled_sm = remove_small_objects(
-            thumb_filter_dilated_filled
+        filters = imf.Compose(
+            [
+                imf.RgbToGrayscale(),
+                imf.OtsuThreshold(),
+                mof.BinaryDilation(),
+                mof.RemoveSmallHoles(),
+                # imf.GreenPenFilter(),
+                # imf.BluePenFilter(),
+                mof.RemoveSmallObjects(),
+            ]
         )
-        thumb_mask = thumb_filter_dilated_filled_sm & thumb_filter_no_pen
+
+        thumb_mask = filters(thumb)
         # get biggest region
         thumb_labeled_regions = label(thumb_mask)
         labeled_region_properties = regionprops(thumb_labeled_regions)
@@ -201,11 +174,11 @@ class Slide(object):
         scaled_coords = scale_coordinates(
             reference_coords=(x_ul, y_ul, x_br, y_br),
             reference_size=(w_in, h_in),
-            target_size=(w_out, h_out),
+            target_size=(self.dimensions),
         )
 
         return polygon_to_mask_array(
-            (w_out, h_out),
+            (self.dimensions),
             [
                 (scaled_coords.x_ul, scaled_coords.y_ul),
                 (scaled_coords.x_ul, scaled_coords.y_br),
