@@ -20,7 +20,7 @@ import operator
 import warnings
 from collections import deque
 from itertools import filterfalse as ifilterfalse
-from typing import List
+from typing import Tuple
 
 import numpy as np
 from PIL import Image, ImageDraw
@@ -107,13 +107,12 @@ def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
     ]
 
     img = Image.new("L", dims, 0)
-    # poly = list(map(tuple, poly_vertices))
     ImageDraw.Draw(img).polygon(poly_vertices, outline=1, fill=1)
     return np.array(img)
 
 
 def resize_mask(
-    input_mask: np.ndarray, target_dimensions: List[int, int]
+    input_mask: np.ndarray, target_dimensions: Tuple[int, int]
 ) -> np.ndarray:
     """Resize mask to ``target_dimensions``.
 
