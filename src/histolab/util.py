@@ -30,7 +30,7 @@ def np_to_pil(np_img: np.ndarray) -> Image.Image:
 
     Parameters
     ----------
-    np_img : np.ndarray 
+    np_img : np.ndarray
         The image represented as a NumPy array.
 
     Returns
