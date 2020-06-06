@@ -97,15 +97,7 @@ class Slide(object):
         """
 
         thumb = self._wsi.get_thumbnail((1000, 1000))
-        filters = imf.Compose(
-            [
-                imf.RgbToGrayscale(),
-                imf.OtsuThreshold(),
-                mof.BinaryDilation(),
-                mof.RemoveSmallHoles(),
-                mof.RemoveSmallObjects(),
-            ]
-        )
+        filters = self._main_tissue_areas_mask_filters
 
         thumb_mask = filters(thumb)
         regions = self._regions_from_binary_mask(thumb_mask)
@@ -234,6 +226,26 @@ class Slide(object):
                 f"{new_h}.{IMG_EXT}",
             )
         return final_path
+
+    @lazyproperty
+    def _main_tissue_areas_mask_filters(self) -> imf.Compose:
+        """Return a filters composition to get a binary mask of the main tissue regions.
+
+        Returns
+        -------
+        imf.Compose
+            Filters composition
+        """
+        filters = imf.Compose(
+            [
+                imf.RgbToGrayscale(),
+                imf.OtsuThreshold(),
+                mof.BinaryDilation(),
+                mof.RemoveSmallHoles(),
+                mof.RemoveSmallObjects(),
+            ]
+        )
+        return filters
 
     @staticmethod
     def _region_coordinates(region: Region) -> CoordinatePair:
