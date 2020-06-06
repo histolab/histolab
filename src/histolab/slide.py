@@ -59,6 +59,78 @@ class Slide(object):
 
     # ---public interface methods and properties---
 
+    @lazyproperty
+    def dimensions(self) -> Tuple[int, int]:
+        """Returns the slide dimensions (w,h)
+
+        Returns
+        -------
+        dimensions : tuple(width, height)
+        """
+        return self._wsi.dimensions
+
+    @lazyproperty
+    def mask_biggest_tissue_box(self):
+        """Returns the coordinates of the box containing the max area of tissue.
+
+        Returns
+        -------
+        box_coords: Coordinates
+            [x_ul, y_ul, x_br, y_br] coordinates of the box containing the
+            max area of tissue.
+
+        """
+        Region = namedtuple("Region", ("index", "area", "bbox", "center"))
+
+        thumb = self._wsi.get_thumbnail((1000, 1000))
+        h_in, w_in, ch = np.array(thumb).shape
+
+        filters = imf.Compose(
+            [
+                imf.RgbToGrayscale(),
+                imf.OtsuThreshold(),
+                mof.BinaryDilation(),
+                mof.RemoveSmallHoles(),
+                mof.RemoveSmallObjects(),
+            ]
+        )
+
+        thumb_mask = filters(thumb)
+        thumb_labeled_regions = label(thumb_mask)
+        labeled_region_properties = regionprops(thumb_labeled_regions)
+
+        regions = [
+            Region(index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid)
+            for i, rp in enumerate(labeled_region_properties)
+        ]
+        biggest_region = max(regions, key=lambda r: r.area)
+        y_ul, x_ul, y_br, x_br = biggest_region.bbox
+        scaled_coords = scale_coordinates(
+            reference_coords=(x_ul, y_ul, x_br, y_br),
+            reference_size=(w_in, h_in),
+            target_size=(self.dimensions),
+        )
+
+        return polygon_to_mask_array(
+            (self.dimensions),
+            [
+                (scaled_coords.x_ul, scaled_coords.y_ul),
+                (scaled_coords.x_ul, scaled_coords.y_br),
+                (scaled_coords.x_br, scaled_coords.y_br),
+                (scaled_coords.x_br, scaled_coords.y_ul),
+            ],
+        )
+
+    @lazyproperty
+    def name(self) -> str:
+        """Retrieves the slide name without extension.
+
+        Returns
+        -------
+        name : str
+        """
+        return ntpath.basename(self._path).split(".")[0]
+
     def resampled_array(self, scale_factor: int = 32) -> np.array:
         return self._resample(scale_factor)[1]
 
@@ -111,81 +183,6 @@ class Slide(object):
             self._processed_path, "thumbnails", f"{self.name}.{IMG_EXT}"
         )
         return thumb_path
-
-    @lazyproperty
-    def dimensions(self) -> Tuple[int, int]:
-        """Returns the slide dimensions (w,h)
-
-        Returns
-        -------
-        dimensions : tuple(width, height)
-        """
-        return self._wsi.dimensions
-
-    @lazyproperty
-    def name(self) -> str:
-        """Retrieves the slide name without extension.
-
-        Returns
-        -------
-        name : str
-        """
-        return ntpath.basename(self._path).split(".")[0]
-
-    @property
-    def mask_biggest_tissue_box(self):
-        """Returns the coordinates of the box containing the max area of tissue.
-
-        Returns
-        -------
-        box_coords: Coordinates
-            [x_ul, y_ul, x_br, y_br] coordinates of the box containing the
-            max area of tissue.
-
-        """
-        Region = namedtuple("Region", ("index", "area", "bbox", "center"))
-
-        thumb = self._wsi.get_thumbnail((1000, 1000))
-        h_in, w_in, ch = np.array(thumb).shape
-
-        filters = imf.Compose(
-            [
-                imf.RgbToGrayscale(),
-                imf.OtsuThreshold(),
-                mof.BinaryDilation(),
-                mof.RemoveSmallHoles(),
-                # imf.GreenPenFilter(),
-                # imf.BluePenFilter(),
-                mof.RemoveSmallObjects(),
-            ]
-        )
-
-        thumb_mask = filters(thumb)
-        # get biggest region
-        thumb_labeled_regions = label(thumb_mask)
-        labeled_region_properties = regionprops(thumb_labeled_regions)
-
-        regions = [
-            Region(index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid)
-            for i, rp in enumerate(labeled_region_properties)
-        ]
-        biggest_region = max(regions, key=lambda r: r.area)
-        y_ul, x_ul, y_br, x_br = biggest_region.bbox
-        scaled_coords = scale_coordinates(
-            reference_coords=(x_ul, y_ul, x_br, y_br),
-            reference_size=(w_in, h_in),
-            target_size=(self.dimensions),
-        )
-
-        return polygon_to_mask_array(
-            (self.dimensions),
-            [
-                (scaled_coords.x_ul, scaled_coords.y_ul),
-                (scaled_coords.x_ul, scaled_coords.y_br),
-                (scaled_coords.x_br, scaled_coords.y_br),
-                (scaled_coords.x_br, scaled_coords.y_ul),
-            ],
-        )
 
     # ---private interface methods and properties---
 

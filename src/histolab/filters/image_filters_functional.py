@@ -30,7 +30,7 @@ import skimage.morphology as sk_morphology
 import skimage.segmentation as sk_segmentation
 from PIL import Image, ImageOps
 
-from ..util import apply_mask_image, np_to_pil, threshold_to_mask
+from ..util import apply_mask_image, np_to_pil, threshold_to_mask, warn
 from .util import mask_percent
 
 
@@ -158,7 +158,8 @@ def histogram_equalization(img: Image.Image, nbins: int = 256) -> Image.Image:
         Image with contrast enhanced by histogram equalization.
     """
     img_arr = np.array(img)
-    hist_equ = sk_exposure.equalize_hist(img_arr, nbins=nbins)
+    hist_equ = sk_exposure.equalize_hist(img_arr.flatten(), nbins=nbins)
+    hist_equ = hist_equ.reshape(img_arr.shape)
     return np_to_pil(hist_equ)
 
 
@@ -505,10 +506,18 @@ def otsu_threshold(img: Image.Image, relate: operator = operator.lt) -> np.ndarr
     np.ndarray
         Boolean NumPy array where True represents a pixel above Otsu threshold.
     """
-    img_arr = np.array(img)
-    otsu_thresh = sk_filters.threshold_otsu(img_arr)
-    # TODO UserWarning: threshold_otsu is expected to work correctly only for grayscale images
-    return threshold_to_mask(img_arr, otsu_thresh, relate)
+    if img.mode in ["RGB", "RGBA"]:
+        image = ImageOps.grayscale(img)
+        warn(
+            "otsu_threshold is expected to work correctly only for grayscale images."
+            "NOTE: the image will be converted to greyscale before applying Otsu"
+            "threshold"
+        )
+    else:
+        image = img
+
+    otsu_thresh = sk_filters.threshold_otsu(np.array(image))
+    return threshold_to_mask(image, otsu_thresh, relate)
 
 
 def filter_entropy(

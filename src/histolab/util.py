@@ -17,12 +17,15 @@
 # ------------------------------------------------------------------------
 import functools
 import operator
+import warnings
 from collections import deque, namedtuple
 from itertools import filterfalse as ifilterfalse
 from typing import List
 
 import numpy as np
 from PIL import Image, ImageDraw
+
+warn = functools.partial(warnings.warn, stacklevel=2)
 
 
 def np_to_pil(np_img: np.ndarray) -> Image.Image:
