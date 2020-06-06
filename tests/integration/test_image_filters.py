@@ -814,7 +814,7 @@ def test_otsu_threshold_filter_on_rgba_image():
     (
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "mask-arrays/diagnostic-slide-thumb-rgb-otsu-threshold-mask",
+            "mask-arrays/diagnostic-slide-thumb-gs-otsu-threshold-mask",
         ),
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
