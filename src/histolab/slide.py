@@ -24,20 +24,21 @@ Slide is the main API class for manipulating slide objects.
 import math
 import os
 import pathlib
-import ntpath
 from collections import namedtuple
-from typing import Tuple, Union, List
+from typing import List, Tuple, Union
 
+import matplotlib.pyplot as plt
+import ntpath
 import numpy as np
 import openslide
 import PIL
-import matplotlib.pyplot as plt
 from matplotlib.figure import Figure as matplotlib_figure
 from skimage.measure import label, regionprops
 
-from .util import lazyproperty, scale_coordinates, polygon_to_mask_array
 import src.histolab.filters.image_filters as imf
 import src.histolab.filters.morphological_filters as mof
+
+from .util import CoordinatePair, lazyproperty, polygon_to_mask_array, resize_mask
 
 IMG_EXT = "png"
 THUMBNAIL_SIZE = 1000
@@ -69,6 +70,20 @@ class Slide(object):
         """
         return self._wsi.dimensions
 
+    def level_dimensions(self, level: int = 0) -> Tuple[int, int]:
+        """Returns the slide dimensions (w,h) at the specified level
+
+        Parameters
+        ---------
+        level : int
+            The level which dimensions are requested, default is 0
+
+        Returns
+        -------
+        dimensions : tuple(width, height)
+        """
+        return self._wsi.level_dimensions[level]
+
     @lazyproperty
     def mask_biggest_tissue_box(self):
         """Returns the coordinates of the box containing the max area of tissue.
@@ -83,8 +98,6 @@ class Slide(object):
         Region = namedtuple("Region", ("index", "area", "bbox", "center"))
 
         thumb = self._wsi.get_thumbnail((1000, 1000))
-        h_in, w_in, ch = np.array(thumb).shape
-
         filters = imf.Compose(
             [
                 imf.RgbToGrayscale(),
@@ -105,21 +118,10 @@ class Slide(object):
         ]
         biggest_region = max(regions, key=lambda r: r.area)
         y_ul, x_ul, y_br, x_br = biggest_region.bbox
-        scaled_coords = scale_coordinates(
-            reference_coords=(x_ul, y_ul, x_br, y_br),
-            reference_size=(w_in, h_in),
-            target_size=(self.dimensions),
-        )
 
-        return polygon_to_mask_array(
-            (self.dimensions),
-            [
-                (scaled_coords.x_ul, scaled_coords.y_ul),
-                (scaled_coords.x_ul, scaled_coords.y_br),
-                (scaled_coords.x_br, scaled_coords.y_br),
-                (scaled_coords.x_br, scaled_coords.y_ul),
-            ],
-        )
+        thumb_bbox_coords = CoordinatePair(x_ul, y_ul, x_br, y_br)
+        thumb_bbox_mask = polygon_to_mask_array((1000, 1000), thumb_bbox_coords)
+        return resize_mask(thumb_bbox_mask, self.dimensions)
 
     @lazyproperty
     def name(self) -> str:
