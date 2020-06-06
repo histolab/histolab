@@ -2,8 +2,8 @@
 
 """Functions that make mocking with pytest easier and more readable."""
 
-from unittest.mock import (ANY, PropertyMock, call, create_autospec,  # noqa
-                           patch)
+from unittest.mock import ANY, call  # noqa # isort:skip
+from unittest.mock import create_autospec, patch, PropertyMock  # isort:skip
 
 import numpy as np
 import PIL
