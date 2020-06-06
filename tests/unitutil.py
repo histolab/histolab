@@ -2,9 +2,11 @@
 
 """Functions that make mocking with pytest easier and more readable."""
 
+from unittest.mock import ANY, call  # noqa # isort:skip
+from unittest.mock import create_autospec, patch, PropertyMock  # isort:skip
+
+import numpy as np
 import PIL
-from unittest.mock import ANY, call  # noqa
-from unittest.mock import create_autospec, patch, PropertyMock
 
 
 def dict_list_eq(l1, l2):
@@ -86,3 +88,8 @@ class PILImageMock:
     DIMS_50X50_RGBA_COLOR_155_0_0 = PIL.Image.new(
         "RGBA", size=(50, 50), color=(155, 0, 0)
     )
+
+
+class NpArrayMock:
+    ONES_30X30_UINT8 = np.ones([30, 30], dtype="uint8")
+    ONES_500X500X4_BOOL = np.ones([500, 500, 4], dtype="bool")

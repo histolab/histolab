@@ -1,25 +1,25 @@
 # encoding: utf-8
 
 import os
+from unittest.mock import call
 
 import numpy as np
 import openslide
 import PIL
 import pytest
 from matplotlib.figure import Figure as matplotlib_figure
-from unittest.mock import call
 
 from src.histolab.slide import Slide, SlideSet
 
 from ..unitutil import (
-    dict_list_eq,
-    property_mock,
-    initializer_mock,
+    ANY,
+    PILImageMock,
     class_mock,
+    dict_list_eq,
+    initializer_mock,
     instance_mock,
     method_mock,
-    PILImageMock,
-    ANY,
+    property_mock,
 )
 
 
@@ -704,5 +704,5 @@ class Describe_Slideset(object):
         return property_mock(request, SlideSet, "_slides_dimensions_list")
 
     @pytest.fixture
-    def Slide_(selfs, request):
+    def Slide_(self, request):
         return class_mock(request, "src.histolab.slide.Slide")
