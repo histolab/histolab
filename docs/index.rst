@@ -30,6 +30,7 @@ API Reference
 
    api/slide
    api/filters
+   utils
 
 
 Indices and tables
