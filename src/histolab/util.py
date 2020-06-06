@@ -17,24 +17,26 @@
 # ------------------------------------------------------------------------
 import functools
 import operator
+from collections import deque, namedtuple
+from itertools import filterfalse as ifilterfalse
 from typing import List
 
 import numpy as np
-
-from itertools import filterfalse as ifilterfalse
-from collections import deque, namedtuple
-
 from PIL import Image, ImageDraw
 
 
 def np_to_pil(np_img: np.ndarray) -> Image.Image:
-    """ Convert a NumPy array to a PIL Image.
+    """Convert a NumPy array to a PIL Image.
 
-    Args:
-      np_img: The image represented as a NumPy array.
+    Parameters
+    ----------
+    np_img : np.ndarray 
+        The image represented as a NumPy array.
 
-    Returns:
-       Image.
+    Returns
+    -------
+    PIL.Image.Image
+        The image represented as PIL Image
     """
 
     def _transform_bool(image_array):
