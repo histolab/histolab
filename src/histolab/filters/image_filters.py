@@ -18,6 +18,7 @@
 
 from PIL import ImageOps
 
+from .. import util as U
 from . import image_filters_functional as F
 
 
@@ -37,6 +38,50 @@ class Compose(object):
         for f in self.filters:
             img = f(img)
         return img
+
+
+class ToPILImage(object):
+    """Convert a ndarray to a PIL Image, while preserving the value range.
+
+    Parameters
+    ----------
+    np_img : np.ndarray
+        The image represented as a NumPy array.
+
+    Returns
+    -------
+    PIL.Image.Image
+        The image represented as PIL Image
+    """
+
+    def __call__(self, np_img):
+        return U.np_to_pil(np_img)
+
+    def __repr__(self):
+        return self.__class__.__name__ + "()"
+
+
+class ApplyMaskImage(object):
+    """Mask image with the provided binary mask.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input image
+    mask : np.ndarray
+        Binary mask
+
+    Returns
+    -------
+    Image.Image
+        Image with the mask applied
+    """
+
+    def __init__(self, img):
+        self.img = img
+
+    def __call__(self, mask):
+        return U.apply_mask_image(self.img, mask)
 
 
 class Invert(object):
@@ -171,7 +216,7 @@ class HistogramEqualization(object):
     ----------
     img : PIL.Image.Image
         Input image.
-    nbins : iny. optional (default is 256)
+    n_bins : iny. optional (default is 256)
         Number of histogram bins.
 
     Returns

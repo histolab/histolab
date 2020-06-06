@@ -5,7 +5,7 @@ import PIL
 
 from src.histolab.filters import image_filters as imf
 
-from ..unitutil import PILImageMock, function_mock
+from ..unitutil import NpArrayMock, PILImageMock, function_mock
 
 
 class DescribeImageFilters(object):
@@ -325,3 +325,29 @@ class DescribeImageFilters(object):
 
         F_blue_pen_filter.assert_called_once_with(image)
         assert type(blue_pen_filter(image)) == np.ndarray
+
+    def it_calls_np_to_pil(self, request):
+        array = NpArrayMock.ONES_30X30_UINT8
+        util_np_to_pil = function_mock(request, "src.histolab.util.np_to_pil")
+        util_np_to_pil.return_value = PIL.Image.fromarray(array)
+        to_pil_image = imf.ToPILImage()
+
+        to_pil_image(array)
+        print(util_np_to_pil.call_count)
+
+        util_np_to_pil.assert_called_once_with(array)
+        assert type(to_pil_image(array)) == PIL.Image.Image
+
+    def it_calls_apply_mask_image(self, request):
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        mask = NpArrayMock.ONES_500X500X4_BOOL
+        util_apply_mask_image = function_mock(
+            request, "src.histolab.util.apply_mask_image"
+        )
+        util_apply_mask_image.return_value = PIL.Image.fromarray(np.array(image) * mask)
+        class_apply_mask_image = imf.ApplyMaskImage(image)
+
+        class_apply_mask_image(mask)
+
+        util_apply_mask_image.assert_called_once_with(image, mask)
+        assert type(util_apply_mask_image(image, mask)) == PIL.Image.Image
