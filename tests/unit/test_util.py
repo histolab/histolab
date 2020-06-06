@@ -119,7 +119,7 @@ def test_util_np_to_pil(
 
 
 def test_util_threshold_to_mask(threshold_to_mask_fixture):
-    (img, threshold, relate, expected_array) = threshold_to_mask_fixture
+    img, threshold, relate, expected_array = threshold_to_mask_fixture
 
     mask = threshold_to_mask(np_to_pil(img), threshold, relate)
 
@@ -127,7 +127,7 @@ def test_util_threshold_to_mask(threshold_to_mask_fixture):
 
 
 def test_apply_mask_image(apply_mask_image_fixture):
-    (img, mask, expected_array) = apply_mask_image_fixture
+    img, mask, expected_array = apply_mask_image_fixture
 
     masked_image = apply_mask_image(img, mask)
 
