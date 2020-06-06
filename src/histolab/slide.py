@@ -85,7 +85,7 @@ class Slide(object):
         return self._wsi.level_dimensions[level]
 
     @lazyproperty
-    def mask_biggest_tissue_box(self):
+    def biggest_tissue_box_mask(self):
         """Returns the coordinates of the box containing the max area of tissue.
 
         Returns
@@ -108,18 +108,12 @@ class Slide(object):
         )
 
         thumb_mask = filters(thumb)
-        thumb_labeled_regions = label(thumb_mask)
-        labeled_region_properties = regionprops(thumb_labeled_regions)
-
-        regions = [
-            Region(index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid)
-            for i, rp in enumerate(labeled_region_properties)
-        ]
-        biggest_region = max(regions, key=lambda r: r.area)
-        y_ul, x_ul, y_br, x_br = biggest_region.bbox
-
-        thumb_bbox_coords = CoordinatePair(x_ul, y_ul, x_br, y_br)
-        thumb_bbox_mask = polygon_to_mask_array((1000, 1000), thumb_bbox_coords)
+        regions = self._regions_from_binary_mask(thumb_mask)
+        biggest_region = self._biggest_regions(regions, n=1)
+        biggest_region_coordinates = self._region_coordinates(biggest_region)
+        thumb_bbox_mask = polygon_to_mask_array(
+            (1000, 1000), biggest_region_coordinates
+        )
         return resize_mask(thumb_bbox_mask, self.dimensions)
 
     @lazyproperty
@@ -187,6 +181,34 @@ class Slide(object):
 
     # ---private interface methods and properties---
 
+    @staticmethod
+    def _biggest_regions(regions: List[Region], n: int = 1) -> List[Region]:
+        """Return the biggest ``n`` regions.
+
+        Parameters
+        ----------
+        regions : List[Region]
+            List of regions
+        n : int, optional
+            Number of regions to return, by default 1
+
+        Returns
+        -------
+        List[Region]
+            List of ``n`` biggest regions
+
+        Raises
+        ------
+        ValueError
+            If ``n`` is not between 1 and the number of elements of ``regions``
+        """
+
+        if not 1 >= n <= len(regions):
+            raise ValueError(f"n should be between 1 and {len(regions)}, got {n}")
+
+        sorted_regions = sorted(regions, key=lambda r: r.area)
+        return sorted_regions[:n]
+
     def _breadcumb(self, directory_path: str, scale_factor: int = 32) -> str:
         """Returns a complete path according to the give directory path
 
@@ -212,6 +234,45 @@ class Slide(object):
                 f"{new_h}.{IMG_EXT}",
             )
         return final_path
+
+    @staticmethod
+    def _region_coordinates(region: Region) -> CoordinatePair:
+        """Extract bbox coordinates from the region.
+
+        Parameters
+        ----------
+        region : Region
+            Region from which to extract the coordinates of the bbox
+
+        Returns
+        -------
+        CoordinatePair
+            Coordinates of the bbox
+        """
+        y_ul, x_ul, y_br, x_br = region.bbox
+        return CoordinatePair(x_ul, y_ul, x_br, y_br)
+
+    @staticmethod
+    def _regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
+        """Calculate regions properties from a binary mask.
+
+        Parameters
+        ----------
+        binary_mask : np.ndarray
+            Binary mask from which to extract the regions
+
+        Returns
+        -------
+        List[Region]
+            Properties for all the regions present in the binary mask
+        """
+
+        thumb_labeled_regions = label(binary_mask)
+        regions = [
+            Region(index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid)
+            for i, rp in enumerate(regionprops(thumb_labeled_regions))
+        ]
+        return regions
 
     def _resample(self, scale_factor: int = 32) -> Tuple[PIL.Image.Image, np.array]:
         """Converts a slide to a scaled-down PIL image.
