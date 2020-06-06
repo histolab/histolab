@@ -216,7 +216,7 @@ class HistogramEqualization(object):
     ----------
     img : PIL.Image.Image
         Input image.
-    n_bins : iny. optional (default is 256)
+    n_bins : int. optional (default is 256)
         Number of histogram bins.
 
     Returns
