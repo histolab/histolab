@@ -24,7 +24,6 @@ Slide is the main API class for manipulating slide objects.
 import math
 import os
 import pathlib
-from collections import namedtuple
 from typing import List, Tuple, Union
 
 import matplotlib.pyplot as plt
@@ -38,7 +37,8 @@ from skimage.measure import label, regionprops
 import src.histolab.filters.image_filters as imf
 import src.histolab.filters.morphological_filters as mof
 
-from .util import CoordinatePair, lazyproperty, polygon_to_mask_array, resize_mask
+from .types import CoordinatePair, Region
+from .util import lazyproperty, polygon_to_mask_array, resize_mask
 
 IMG_EXT = "png"
 THUMBNAIL_SIZE = 1000
@@ -95,7 +95,6 @@ class Slide(object):
             max area of tissue.
 
         """
-        Region = namedtuple("Region", ("index", "area", "bbox", "center"))
 
         thumb = self._wsi.get_thumbnail((1000, 1000))
         filters = imf.Compose(

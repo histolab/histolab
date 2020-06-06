@@ -18,16 +18,16 @@
 import functools
 import operator
 import warnings
-from collections import deque, namedtuple
+from collections import deque
 from itertools import filterfalse as ifilterfalse
 from typing import List
 
 import numpy as np
 from PIL import Image, ImageDraw
 
-warn = functools.partial(warnings.warn, stacklevel=2)
+from .types import CoordinatePair
 
-CoordinatePair = namedtuple("CoordinatePair", ("x_ul", "y_ul", "x_br", "y_br"))
+warn = functools.partial(warnings.warn, stacklevel=2)
 
 
 def np_to_pil(np_img: np.ndarray) -> Image.Image:
