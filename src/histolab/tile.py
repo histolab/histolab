@@ -81,9 +81,11 @@ class Tile:
         return np.mean(image_filtered_arr) > threshold
 
     def save(self, path):
-        """Save tile at given path. The format to use is determined from the filename
-        extension (to be compatible to PIL.Image formats). If no extension is provided,
-        the image will be saved in png format.
+        """Save tile at given path.
+
+        The format to use is determined from the filename extension (to be compatible to
+        PIL.Image formats). If no extension is provided, the image will be saved in png
+        format.
 
         Parameters
         ---------
