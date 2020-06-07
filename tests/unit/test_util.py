@@ -2,30 +2,32 @@
 
 """Unit test suite for src.histolab.util module."""
 
-import pytest
-import numpy as np
 import operator
 
-from src.histolab.util import (
-    lazyproperty,
-    np_to_pil,
-    threshold_to_mask,
-    polygon_to_mask_array,
-    apply_mask_image,
-)
+import numpy as np
+import pytest
 from tests.base import (
     IMAGE1_GREY,
-    IMAGE2_GREY,
-    IMAGE3_GREY_BLACK,
-    IMAGE4_GREY_WHITE,
     IMAGE1_RGB,
-    IMAGE2_RGB,
-    IMAGE3_RGB_BLACK,
-    IMAGE4_RGB_WHITE,
     IMAGE1_RGBA,
+    IMAGE2_GREY,
+    IMAGE2_RGB,
     IMAGE2_RGBA,
+    IMAGE3_GREY_BLACK,
+    IMAGE3_RGB_BLACK,
     IMAGE3_RGBA_BLACK,
+    IMAGE4_GREY_WHITE,
+    IMAGE4_RGB_WHITE,
     IMAGE4_RGBA_WHITE,
+)
+
+from src.histolab.types import CoordinatePair
+from src.histolab.util import (
+    apply_mask_image,
+    lazyproperty,
+    np_to_pil,
+    polygon_to_mask_array,
+    threshold_to_mask,
 )
 
 
@@ -139,7 +141,7 @@ def test_apply_mask_image(apply_mask_image_fixture):
     (
         (
             (5, 5),
-            [(0, 3), (2, 3), (2, 5), (0, 5)],
+            CoordinatePair(0, 3, 2, 5),
             np.array(
                 [
                     [0, 0, 0, 0, 0],
@@ -152,11 +154,11 @@ def test_apply_mask_image(apply_mask_image_fixture):
         ),
         (
             (5, 6),
-            [(1, 0), (1, 1), (2, 0), (2, 1)],
+            CoordinatePair(1, 0, 2, 0),
             np.array(
                 [
-                    [0, 1, 1, 0, 0],
-                    [0, 1, 1, 0, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
@@ -166,7 +168,7 @@ def test_apply_mask_image(apply_mask_image_fixture):
         ),
         (
             (5, 5),
-            [(2, 1), (4, 1), (4, 3), (2, 3)],
+            CoordinatePair(2, 1, 4, 3),
             np.array(
                 [
                     [0, 0, 0, 0, 0],

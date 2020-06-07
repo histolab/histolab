@@ -18,12 +18,14 @@
 import functools
 import operator
 import warnings
-from collections import deque, namedtuple
+from collections import deque
 from itertools import filterfalse as ifilterfalse
-from typing import List
+from typing import Tuple
 
 import numpy as np
 from PIL import Image, ImageDraw
+
+from .types import CoordinatePair
 
 warn = functools.partial(warnings.warn, stacklevel=2)
 
@@ -80,57 +82,55 @@ def threshold_to_mask(
     return relate(img_arr, threshold)
 
 
-def polygon_to_mask_array(dims: tuple, vertices: List[tuple]) -> np.ndarray:
-    """Draw a white polygon of specified vertices on a black image of
-    specified dimensions
+def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
+    """Draw a white polygon of vertices on a black image of specified dimensions.
 
     Parameters
     ----------
     dims : tuple
         (w,h) of the black image
-    vertices : List[tuple]
-        List of vertices of the polygon
+    vertices : CoordinatePair
+        CoordinatePair representing the upper left and bottom right vertices of the
+        polygon
 
     Returns
     -------
     np.ndarray
         NumPy array corresponding to the image with the polygon
     """
+
+    poly_vertices = [
+        (vertices.x_ul, vertices.y_ul),
+        (vertices.x_ul, vertices.y_br),
+        (vertices.x_br, vertices.y_br),
+        (vertices.x_br, vertices.y_ul),
+    ]
+
     img = Image.new("L", dims, 0)
-    poly = list(map(tuple, vertices))
-    ImageDraw.Draw(img).polygon(poly, outline=1, fill=1)
+    ImageDraw.Draw(img).polygon(poly_vertices, outline=1, fill=1)
     return np.array(img)
 
 
-CoordinatePair = namedtuple("CoordinatePair", ("x_ul", "y_ul", "x_br", "y_br"))
-
-
-def scale_coordinates(reference_coords, reference_size, target_size):
-    """Compute the coordinates corresponding to a scaled version of the image.
+def resize_mask(
+    input_mask: np.ndarray, target_dimensions: Tuple[int, int]
+) -> np.ndarray:
+    """Resize mask to ``target_dimensions``.
 
     Parameters
     ----------
-    reference_coords: tuple, array-like or Coordinates
-        (x, y) pair of coordinates referring to the upper left and lower right corners
-        respectively. The function expects a tuple of four elements or a tuple of two
-        pairs of coordinates as input.
-    reference_size: array_like of int
-        Reference (width, height) size to which input coordinates refer to
-    target_size: array_like of int
-        Target (width, height) size of the resulting scaled image
+    input_mask : np.ndarray
+        Input mask
+    target_dimensions : List[int, int]
+        Dimensions of the resized mask
 
     Returns
     -------
-    coords: Coordinates
-        Coordinates in the scaled image
-
+    np.ndarray
+        Resized mask
     """
-    reference_coords = np.asarray(reference_coords).ravel()
-    reference_size = np.tile(reference_size, 2)
-    target_size = np.tile(target_size, 2)
-    return CoordinatePair(
-        *np.floor((reference_coords * target_size) / reference_size).astype("int64")
-    )
+    input_mask_img = Image.fromarray(input_mask)
+    resized_mask_img = input_mask_img.resize(target_dimensions)
+    return np.array(resized_mask_img)
 
 
 def apply_mask_image(img: Image.Image, mask: np.ndarray) -> Image.Image:
