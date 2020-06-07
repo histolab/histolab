@@ -103,7 +103,7 @@ class DescribeImageFilters(object):
     def it_calls_local_equalization_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_local_equalization = function_mock(
-            request, "src.histolab.filters.image_filters_functional.local_equalization",
+            request, "src.histolab.filters.image_filters_functional.local_equalization"
         )
         F_local_equalization.return_value = image
         local_equalization = imf.LocalEqualization(5)
@@ -116,8 +116,7 @@ class DescribeImageFilters(object):
     def it_calls_kmeans_segmentation_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_kmeans_segmentation = function_mock(
-            request,
-            "src.histolab.filters.image_filters_functional.kmeans_segmentation",
+            request, "src.histolab.filters.image_filters_functional.kmeans_segmentation"
         )
         F_kmeans_segmentation.return_value = image
         kmeans_segmentation = imf.KmeansSegmentation(5, 400)
@@ -130,7 +129,7 @@ class DescribeImageFilters(object):
     def it_calls_rag_threshold_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_rag_threshold = function_mock(
-            request, "src.histolab.filters.image_filters_functional.rag_threshold",
+            request, "src.histolab.filters.image_filters_functional.rag_threshold"
         )
         F_rag_threshold.return_value = image
         rag_threshold = imf.RagThreshold(3, 600, 15)
@@ -171,7 +170,7 @@ class DescribeImageFilters(object):
     def it_calls_otsu_threshold_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_otsu_threshold = function_mock(
-            request, "src.histolab.filters.image_filters_functional.otsu_threshold",
+            request, "src.histolab.filters.image_filters_functional.otsu_threshold"
         )
         F_otsu_threshold.return_value = np.array(image)
         otsu_threshold = imf.OtsuThreshold()
@@ -198,7 +197,7 @@ class DescribeImageFilters(object):
     def it_calls_filter_entropy_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_filter_entropy = function_mock(
-            request, "src.histolab.filters.image_filters_functional.filter_entropy",
+            request, "src.histolab.filters.image_filters_functional.filter_entropy"
         )
         F_filter_entropy.return_value = np.array(image)
         filter_entropy = imf.FilterEntropy(3, 6)
@@ -211,7 +210,7 @@ class DescribeImageFilters(object):
     def it_calls_canny_edges_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_canny_edges = function_mock(
-            request, "src.histolab.filters.image_filters_functional.canny_edges",
+            request, "src.histolab.filters.image_filters_functional.canny_edges"
         )
         F_canny_edges.return_value = np.array(image)
         canny_edges = imf.CannyEdges(0.8, 0.3, 13)
@@ -224,7 +223,7 @@ class DescribeImageFilters(object):
     def it_calls_grays_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_grays = function_mock(
-            request, "src.histolab.filters.image_filters_functional.grays",
+            request, "src.histolab.filters.image_filters_functional.grays"
         )
         F_grays.return_value = np.array(image)
         grays = imf.Grays(20)
@@ -251,7 +250,7 @@ class DescribeImageFilters(object):
     def it_calls_red_filter_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_red_filter = function_mock(
-            request, "src.histolab.filters.image_filters_functional.red_filter",
+            request, "src.histolab.filters.image_filters_functional.red_filter"
         )
         F_red_filter.return_value = np.array(image)
         red_filter = imf.RedFilter(180, 100, 85)
@@ -264,7 +263,7 @@ class DescribeImageFilters(object):
     def it_calls_red_pen_filter_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_red_pen_filter = function_mock(
-            request, "src.histolab.filters.image_filters_functional.red_pen_filter",
+            request, "src.histolab.filters.image_filters_functional.red_pen_filter"
         )
         F_red_pen_filter.return_value = np.array(image)
         red_pen_filter = imf.RedPenFilter()
@@ -277,7 +276,7 @@ class DescribeImageFilters(object):
     def it_calls_green_filter_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_green_filter = function_mock(
-            request, "src.histolab.filters.image_filters_functional.green_filter",
+            request, "src.histolab.filters.image_filters_functional.green_filter"
         )
         F_green_filter.return_value = np.array(image)
         green_filter = imf.GreenFilter(150, 160, 140)
@@ -290,7 +289,7 @@ class DescribeImageFilters(object):
     def it_calls_green_pen_filter_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_green_pen_filter = function_mock(
-            request, "src.histolab.filters.image_filters_functional.green_pen_filter",
+            request, "src.histolab.filters.image_filters_functional.green_pen_filter"
         )
         F_green_pen_filter.return_value = np.array(image)
         green_pen_filter = imf.GreenPenFilter()
@@ -303,7 +302,7 @@ class DescribeImageFilters(object):
     def it_calls_blue_filter_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_blue_filter = function_mock(
-            request, "src.histolab.filters.image_filters_functional.blue_filter",
+            request, "src.histolab.filters.image_filters_functional.blue_filter"
         )
         F_blue_filter.return_value = np.array(image)
         blue_filter = imf.BlueFilter(60, 120, 190)
@@ -316,7 +315,7 @@ class DescribeImageFilters(object):
     def it_calls_blue_pen_filter_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_blue_pen_filter = function_mock(
-            request, "src.histolab.filters.image_filters_functional.blue_pen_filter",
+            request, "src.histolab.filters.image_filters_functional.blue_pen_filter"
         )
         F_blue_pen_filter.return_value = np.array(image)
         blue_pen_filter = imf.BluePenFilter()

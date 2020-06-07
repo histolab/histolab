@@ -10,6 +10,7 @@ import pytest
 from matplotlib.figure import Figure as matplotlib_figure
 
 from src.histolab.slide import Slide, SlideSet
+from src.histolab.filters.image_filters import Compose
 
 from ..unitutil import (
     ANY,
@@ -258,6 +259,32 @@ class Describe_Slide(object):
         )
         assert os.path.exists(os.path.join(tmp_path_, slide.thumbnail_path))
 
+    def test_main_tissue_areas_mask_filters_composition(
+        self,
+        RgbToGrayscale_,
+        OtsuThreshold_,
+        BinaryDilation_,
+        RemoveSmallHoles_,
+        RemoveSmallObjects_,
+    ):
+        slide = Slide("/a/b", "c/d")
+
+        main_tissue_areas_mask_filters_ = slide._main_tissue_areas_mask_filters
+
+        RgbToGrayscale_.assert_called_once()
+        OtsuThreshold_.assert_called_once()
+        BinaryDilation_.assert_called_once()
+        RemoveSmallHoles_.assert_called_once()
+        RemoveSmallObjects_.assert_called_once()
+        assert main_tissue_areas_mask_filters_.filters == [
+            RgbToGrayscale_(),
+            OtsuThreshold_(),
+            BinaryDilation_(),
+            RemoveSmallHoles_(),
+            RemoveSmallObjects_(),
+        ]
+        assert type(main_tissue_areas_mask_filters_) == Compose
+
     # fixtures -------------------------------------------------------
 
     @pytest.fixture(params=[("/a/b/mywsi.svs", ".svs"), ("/a/b/mywsi.34s", ".34s")])
@@ -383,6 +410,32 @@ class Describe_Slide(object):
     @pytest.fixture
     def dimensions_(self, request):
         return property_mock(request, Slide, "dimensions")
+
+    @pytest.fixture
+    def RgbToGrayscale_(self, request):
+        return class_mock(request, "src.histolab.filters.image_filters.RgbToGrayscale")
+
+    @pytest.fixture
+    def OtsuThreshold_(self, request):
+        return class_mock(request, "src.histolab.filters.image_filters.OtsuThreshold")
+
+    @pytest.fixture
+    def BinaryDilation_(self, request):
+        return class_mock(
+            request, "src.histolab.filters.morphological_filters.BinaryDilation"
+        )
+
+    @pytest.fixture
+    def RemoveSmallHoles_(self, request):
+        return class_mock(
+            request, "src.histolab.filters.morphological_filters.RemoveSmallHoles"
+        )
+
+    @pytest.fixture
+    def RemoveSmallObjects_(self, request):
+        return class_mock(
+            request, "src.histolab.filters.morphological_filters.RemoveSmallObjects"
+        )
 
 
 class Describe_Slideset(object):
