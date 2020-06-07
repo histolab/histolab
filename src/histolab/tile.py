@@ -4,8 +4,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from .filters.image_filters import Compose, OtsuThreshold, RgbToGrayscale
-from .filters.morphological_filters import BinaryDilation, BinaryFillHoles
+from .filters import image_filters as imf
+from .filters import morphological_filters as mof
 from .types import CoordinatePair
 
 
@@ -50,26 +50,12 @@ class Tile:
             ``near_zero_var_threshold``.
         """
 
-        rgb2grey = RgbToGrayscale()
-        image_gray = rgb2grey(self._image)
-        image_gray_arr = np.array(image_gray)
-
-        # Check if image is FULL-WHITE
-        if (
-            np.mean(image_gray_arr.ravel()) > 0.9
-            and np.std(image_gray_arr.ravel()) < 0.09
-        ):  # full or almost white
+        if self._is_almost_white:
             return False
 
-        filters = Compose(
-            [
-                OtsuThreshold(),
-                BinaryDilation(),
-                BinaryFillHoles(structure=np.ones((5, 5))),
-            ]
-        )
+        filters = self._enough_tissue_mask_filters
 
-        image_filtered = filters(image_gray)
+        image_filtered = filters(self._image)
         image_filtered_arr = np.array(image_filtered)
 
         # Near-zero variance threshold
@@ -101,3 +87,40 @@ class Tile:
         Path(path).parent.mkdir(parents=True, exist_ok=True)
 
         self._image.save(path)
+
+    @property
+    def _enough_tissue_mask_filters(self) -> imf.Compose:
+        """Return a filters composition to get a binary mask to estimate tissue.
+
+        Returns
+        -------
+        imf.Compose
+            Filters composition
+        """
+        filters = imf.Compose(
+            [
+                imf.RgbToGrayscale(),
+                imf.OtsuThreshold(),
+                mof.BinaryDilation(),
+                mof.BinaryFillHoles(structure=np.ones((5, 5))),
+            ]
+        )
+        return filters
+
+    @property
+    def _is_almost_white(self) -> bool:
+        """Check if the image is almost white.
+
+        Returns
+        -------
+        bool
+            True if the image is almost white, False otherwise
+        """
+        rgb2grey = imf.RgbToGrayscale()
+        image_gray = rgb2grey(self._image)
+        image_gray_arr = np.array(image_gray)
+
+        return (
+            np.mean(image_gray_arr.ravel()) < 0.9
+            and np.std(image_gray_arr.ravel()) > 0.09
+        )
