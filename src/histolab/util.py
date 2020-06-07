@@ -128,7 +128,7 @@ def resize_mask(
     np.ndarray
         Resized mask
     """
-    input_mask_img = Image(input_mask)
+    input_mask_img = Image.fromarray(input_mask)
     resized_mask_img = input_mask_img.resize(target_dimensions)
     return np.array(resized_mask_img)
 
