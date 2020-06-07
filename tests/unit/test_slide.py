@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import os
+from collections import namedtuple
 from unittest.mock import call
 
 import numpy as np
@@ -11,12 +12,14 @@ from matplotlib.figure import Figure as matplotlib_figure
 
 from src.histolab.slide import Slide, SlideSet
 from src.histolab.filters.image_filters import Compose
+from src.histolab.types import Region
 
 from ..unitutil import (
     ANY,
     PILImageMock,
     class_mock,
     dict_list_eq,
+    function_mock,
     initializer_mock,
     instance_mock,
     method_mock,
@@ -259,7 +262,7 @@ class Describe_Slide(object):
         )
         assert os.path.exists(os.path.join(tmp_path_, slide.thumbnail_path))
 
-    def test_main_tissue_areas_mask_filters_composition(
+    def it_knows_tissue_areas_mask_filters_composition(
         self,
         RgbToGrayscale_,
         OtsuThreshold_,
@@ -284,6 +287,33 @@ class Describe_Slide(object):
             RemoveSmallObjects_(),
         ]
         assert type(main_tissue_areas_mask_filters_) == Compose
+
+    def it_knows_regions_from_binary_mask(self, request):
+        binary_mask = np.array([[True, False], [True, True]])
+        label = function_mock(request, "src.histolab.slide.label")
+        regionprops = function_mock(request, "src.histolab.slide.regionprops")
+        RegionProps = namedtuple("RegionProps", ("area", "bbox", "centroid"))
+        regions_props = [
+            RegionProps(3, (0, 0, 2, 2), (0.6666666666666666, 0.3333333333333333))
+        ]
+        regionprops.return_value = regions_props
+        label(binary_mask).return_value = [[0, 1], [1, 1]]
+        slide = Slide("/a/b", "c/d")
+
+        regions_from_binary_mask_ = slide._regions_from_binary_mask(binary_mask)
+
+        regionprops.assert_called_once_with(label(binary_mask))
+        assert type(regions_from_binary_mask_) == list
+        assert len(regions_from_binary_mask_) == 1
+        assert type(regions_from_binary_mask_[0]) == Region
+        assert regions_from_binary_mask_ == [
+            Region(
+                index=0,
+                area=regions_props[0].area,
+                bbox=regions_props[0].bbox,
+                center=regions_props[0].centroid,
+            )
+        ]
 
     # fixtures -------------------------------------------------------
 
