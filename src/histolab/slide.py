@@ -202,7 +202,7 @@ class Slide(object):
             If ``n`` is not between 1 and the number of elements of ``regions``
         """
 
-        if not 1 >= n <= len(regions):
+        if not 1 <= n <= len(regions):
             raise ValueError(f"n should be between 1 and {len(regions)}, got {n}")
 
         sorted_regions = sorted(regions, key=lambda r: r.area, reverse=True)

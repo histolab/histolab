@@ -315,6 +315,28 @@ class Describe_Slide(object):
             )
         ]
 
+    def it_knows_its_biggest_regions(self):
+        regions = [
+            Region(index=0, area=14, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
+            Region(index=1, area=2, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
+            Region(index=2, area=5, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
+            Region(index=3, area=10, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
+        ]
+        slide = Slide("a/b", "c/d")
+
+        biggest_regions = slide._biggest_regions(regions, 2)
+
+        assert biggest_regions == [regions[0], regions[3]]
+
+    @pytest.mark.parametrize("n", (0, 6))
+    def but_it_raises_an_error_when_n_is_not_between_1_and_number_of_regions(self, n):
+        regions = [Region(i, i + 1, (0, 0, 2, 2), (0.5, 0.5)) for i in range(4)]
+        slide = Slide("a/b", "c/d")
+        with pytest.raises(ValueError) as err:
+            slide._biggest_regions(regions, n)
+
+        assert str(err.value) == f"n should be between 1 and {len(regions)}, got {n}"
+
     # fixtures -------------------------------------------------------
 
     @pytest.fixture(params=[("/a/b/mywsi.svs", ".svs"), ("/a/b/mywsi.34s", ".34s")])
