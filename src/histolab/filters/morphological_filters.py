@@ -159,11 +159,35 @@ class BinaryDilation(object):
         return self.__class__.__name__ + "()"
 
 
+class BinaryFillHoles(object):
+    """Fill the holes in binary objects.
+
+    Parameters
+    ----------
+    np_img : np.ndarray (arbitrary shape, int or bool type)
+        Numpy array of the binary mask
+    structure: np.ndarray, optional
+        Structuring element used in the computation; The default element yields the
+        intuitive result where all holes in the input have been filled.
+
+    Returns
+    -------
+    np.ndarray
+        Transformation of the initial image input where holes have been filled.
+    """
+
+    def __init__(self, structure: np.ndarray = None):
+        self.structure = structure
+
+    def __call__(self, np_img: np.ndarray) -> np.ndarray:
+        return scipy.ndimage.morphology.binary_fill_holes(np_img, self.structure)
+
+
 class BinaryOpening(object):
     """Open a binary mask.
 
-     Opening is an erosion followed by a dilation. Opening can be used to remove
-     small objects.
+    Opening is an erosion followed by a dilation. Opening can be used to remove
+    small objects.
 
     Parameters
     ----------
