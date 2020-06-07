@@ -12,7 +12,7 @@ from matplotlib.figure import Figure as matplotlib_figure
 
 from src.histolab.slide import Slide, SlideSet
 from src.histolab.filters.image_filters import Compose
-from src.histolab.types import Region
+from src.histolab.types import Region, CoordinatePair
 
 from ..unitutil import (
     ANY,
@@ -336,6 +336,71 @@ class Describe_Slide(object):
             slide._biggest_regions(regions, n)
 
         assert str(err.value) == f"n should be between 1 and {len(regions)}, got {n}"
+
+    def it_knows_its_region_coordinates(self):
+        region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5))
+        slide = Slide("a/b", "c/d")
+
+        region_coords_ = slide._region_coordinates(region)
+
+        assert region_coords_ == CoordinatePair(x_ul=1, y_ul=0, x_br=2, y_br=1)
+
+    def it_knows_its_biggest_tissue_box_mask(
+        self,
+        request,
+        tmpdir,
+        RgbToGrayscale_,
+        OtsuThreshold_,
+        BinaryDilation_,
+        RemoveSmallHoles_,
+        RemoveSmallObjects_,
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        regions = [Region(index=0, area=33, bbox=(0, 0, 2, 2), center=(0.5, 0.5))]
+        main_tissue_areas_mask_filters_ = property_mock(
+            request, Slide, "_main_tissue_areas_mask_filters"
+        )
+        main_tissue_areas_mask_filters_.return_value = Compose(
+            [
+                RgbToGrayscale_,
+                OtsuThreshold_,
+                BinaryDilation_,
+                RemoveSmallHoles_,
+                RemoveSmallObjects_,
+            ]
+        )
+        regions_from_binary_mask = function_mock(
+            request, "src.histolab.slide.Slide._regions_from_binary_mask"
+        )
+        regions_from_binary_mask.return_value = regions
+        biggest_regions_ = function_mock(
+            request, "src.histolab.slide.Slide._biggest_regions"
+        )
+        biggest_regions_.return_value = regions
+        region_coordinates_ = function_mock(
+            request, "src.histolab.slide.Slide._region_coordinates"
+        )
+        region_coordinates_.return_values = CoordinatePair(0, 0, 2, 2)
+        polygon_to_mask_array_ = function_mock(
+            request, "src.histolab.util.polygon_to_mask_array"
+        )
+        polygon_to_mask_array_(
+            (1000, 1000), CoordinatePair(0, 0, 2, 2)
+        ).return_value = [[True, True], [False, True]]
+
+        biggest_mask_tissue_box = slide.biggest_tissue_box_mask
+
+        region_coordinates_.assert_called_once_with(regions)
+        biggest_regions_.assert_called_once_with(regions, n=1)
+        region_coordinates_.assert_called_once_with(regions)
+        polygon_to_mask_array_.assert_called_once_with(
+            (1000, 1000), CoordinatePair(x_ul=0, y_ul=0, x_br=2, y_br=2)
+        )
+        np.testing.assert_almost_equal(biggest_mask_tissue_box, np.zeros((500, 500)))
 
     # fixtures -------------------------------------------------------
 

@@ -187,51 +187,7 @@ def test_util_polygon_to_mask_array(dims, vertices, expected_array):
     np.testing.assert_array_almost_equal(polygon_mask, expected_array)
 
 
-class DescribeLazyPropertyDecorator(object):
-    """Tests @lazyproperty decorator class."""
-
-    def it_is_a_lazyproperty_object_on_class_access(self, Obj):
-        assert isinstance(Obj.fget, lazyproperty)
-
-    def but_it_adopts_the_name_of_the_decorated_method(self, Obj):
-        assert Obj.fget.__name__ == "fget"
-
-    def and_it_adopts_the_module_of_the_decorated_method(self, Obj):
-        # ---the module name actually, not a module object
-        assert Obj.fget.__module__ == __name__
-
-    def and_it_adopts_the_docstring_of_the_decorated_method(self, Obj):
-        assert Obj.fget.__doc__ == "Docstring of Obj.fget method definition."
-
-    def it_only_calculates_value_on_first_call(self, obj):
-        assert obj.fget == 1
-        assert obj.fget == 1
-
-    def it_raises_on_attempt_to_assign(self, obj):
-        assert obj.fget == 1
-        with pytest.raises(AttributeError):
-            obj.fget = 42
-        assert obj.fget == 1
-        assert obj.fget == 1
-
-    # fixture components ---------------------------------------------
-
-    @pytest.fixture
-    def Obj(self):
-        class Obj(object):
-            @lazyproperty
-            def fget(self):
-                """Docstring of Obj.fget method definition."""
-                if not hasattr(self, "_n"):
-                    self._n = 0
-                self._n += 1
-                return self._n
-
-        return Obj
-
-    @pytest.fixture
-    def obj(self, Obj):
-        return Obj()
+# fixtures ---------------------------------------------
 
 
 @pytest.fixture(
@@ -264,11 +220,11 @@ class DescribeLazyPropertyDecorator(object):
                 ]
             ),
         ),
-        (IMAGE3_GREY_BLACK, 0, operator.gt, np.zeros((5, 5), dtype=bool),),
-        (IMAGE3_GREY_BLACK, 0, operator.lt, np.zeros((5, 5), dtype=bool),),
-        (IMAGE3_GREY_BLACK, 1, operator.lt, np.ones((5, 5), dtype=bool),),
-        (IMAGE4_GREY_WHITE, 0, operator.gt, np.ones((5, 5), dtype=bool),),
-        (IMAGE4_GREY_WHITE, 1, operator.lt, np.zeros((5, 5), dtype=bool),),
+        (IMAGE3_GREY_BLACK, 0, operator.gt, np.zeros((5, 5), dtype=bool)),
+        (IMAGE3_GREY_BLACK, 0, operator.lt, np.zeros((5, 5), dtype=bool)),
+        (IMAGE3_GREY_BLACK, 1, operator.lt, np.ones((5, 5), dtype=bool)),
+        (IMAGE4_GREY_WHITE, 0, operator.gt, np.ones((5, 5), dtype=bool)),
+        (IMAGE4_GREY_WHITE, 1, operator.lt, np.zeros((5, 5), dtype=bool)),
         (
             IMAGE1_RGB,
             200,
@@ -357,11 +313,11 @@ class DescribeLazyPropertyDecorator(object):
                 ]
             ),
         ),
-        (IMAGE3_RGB_BLACK, 0, operator.gt, np.zeros((5, 5, 3), dtype=bool),),
-        (IMAGE3_RGB_BLACK, 0, operator.lt, np.zeros((5, 5, 3), dtype=bool),),
-        (IMAGE3_RGB_BLACK, 1, operator.lt, np.ones((5, 5, 3), dtype=bool),),
-        (IMAGE4_RGB_WHITE, 0, operator.gt, np.ones((5, 5, 3), dtype=bool),),
-        (IMAGE4_RGB_WHITE, 1, operator.lt, np.zeros((5, 5, 3), dtype=bool),),
+        (IMAGE3_RGB_BLACK, 0, operator.gt, np.zeros((5, 5, 3), dtype=bool)),
+        (IMAGE3_RGB_BLACK, 0, operator.lt, np.zeros((5, 5, 3), dtype=bool)),
+        (IMAGE3_RGB_BLACK, 1, operator.lt, np.ones((5, 5, 3), dtype=bool)),
+        (IMAGE4_RGB_WHITE, 0, operator.gt, np.ones((5, 5, 3), dtype=bool)),
+        (IMAGE4_RGB_WHITE, 1, operator.lt, np.zeros((5, 5, 3), dtype=bool)),
         (
             IMAGE1_RGBA,
             178,
@@ -450,11 +406,11 @@ class DescribeLazyPropertyDecorator(object):
                 ]
             ),
         ),
-        (IMAGE3_RGBA_BLACK, 2, operator.gt, np.zeros((5, 5, 4), dtype=bool),),
-        (IMAGE3_RGBA_BLACK, 0, operator.lt, np.zeros((5, 5, 4), dtype=bool),),
-        (IMAGE3_RGBA_BLACK, 1, operator.lt, np.ones((5, 5, 4), dtype=bool),),
-        (IMAGE4_RGBA_WHITE, 0, operator.gt, np.ones((5, 5, 4), dtype=bool),),
-        (IMAGE4_RGBA_WHITE, 1, operator.lt, np.zeros((5, 5, 4), dtype=bool),),
+        (IMAGE3_RGBA_BLACK, 2, operator.gt, np.zeros((5, 5, 4), dtype=bool)),
+        (IMAGE3_RGBA_BLACK, 0, operator.lt, np.zeros((5, 5, 4), dtype=bool)),
+        (IMAGE3_RGBA_BLACK, 1, operator.lt, np.ones((5, 5, 4), dtype=bool)),
+        (IMAGE4_RGBA_WHITE, 0, operator.gt, np.ones((5, 5, 4), dtype=bool)),
+        (IMAGE4_RGBA_WHITE, 1, operator.lt, np.zeros((5, 5, 4), dtype=bool)),
     ]
 )
 def threshold_to_mask_fixture(request):
@@ -741,3 +697,50 @@ def threshold_to_mask_fixture(request):
 def apply_mask_image_fixture(request):
     (img, mask, expected_array) = request.param
     return img, mask, expected_array
+
+
+class DescribeLazyPropertyDecorator(object):
+    """Tests @lazyproperty decorator class."""
+
+    def it_is_a_lazyproperty_object_on_class_access(self, Obj):
+        assert isinstance(Obj.fget, lazyproperty)
+
+    def but_it_adopts_the_name_of_the_decorated_method(self, Obj):
+        assert Obj.fget.__name__ == "fget"
+
+    def and_it_adopts_the_module_of_the_decorated_method(self, Obj):
+        # ---the module name actually, not a module object
+        assert Obj.fget.__module__ == __name__
+
+    def and_it_adopts_the_docstring_of_the_decorated_method(self, Obj):
+        assert Obj.fget.__doc__ == "Docstring of Obj.fget method definition."
+
+    def it_only_calculates_value_on_first_call(self, obj):
+        assert obj.fget == 1
+        assert obj.fget == 1
+
+    def it_raises_on_attempt_to_assign(self, obj):
+        assert obj.fget == 1
+        with pytest.raises(AttributeError):
+            obj.fget = 42
+        assert obj.fget == 1
+        assert obj.fget == 1
+
+    # fixture components ---------------------------------------------
+
+    @pytest.fixture
+    def Obj(self):
+        class Obj(object):
+            @lazyproperty
+            def fget(self):
+                """Docstring of Obj.fget method definition."""
+                if not hasattr(self, "_n"):
+                    self._n = 0
+                self._n += 1
+                return self._n
+
+        return Obj
+
+    @pytest.fixture
+    def obj(self, Obj):
+        return Obj()
