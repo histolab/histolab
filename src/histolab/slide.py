@@ -198,7 +198,7 @@ class Slide(object):
         if not 1 >= n <= len(regions):
             raise ValueError(f"n should be between 1 and {len(regions)}, got {n}")
 
-        sorted_regions = sorted(regions, key=lambda r: r.area)
+        sorted_regions = sorted(regions, key=lambda r: r.area, reverse=True)
         return sorted_regions[:n]
 
     def _breadcumb(self, directory_path: str, scale_factor: int = 32) -> str:
