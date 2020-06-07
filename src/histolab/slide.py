@@ -120,7 +120,7 @@ class Slide(object):
 
         Parameters
         ----------
-        scale_factor : int, default is 32
+        scale_factor : int, 32 by default
             Image scaling factor
         Returns
         ----------
@@ -133,7 +133,7 @@ class Slide(object):
 
         Parameters
         ----------
-        scale_factor : int, default is 32
+        scale_factor : int, 32 by default
             Image scaling factor
         """
         os.makedirs(self._processed_path, exist_ok=True)
@@ -155,7 +155,7 @@ class Slide(object):
 
         Parameters
         ----------
-        scale_factor : int, default is 32
+        scale_factor : int, 32 by default
             Image scaling factor
 
         Returns
@@ -214,7 +214,7 @@ class Slide(object):
         Parameters
         ----------
         directory_path: str
-        scale_factor : int, default is 32
+        scale_factor : int, 32 by default
             Image scaling factor
 
         Returns
@@ -303,7 +303,7 @@ class Slide(object):
 
         Parameters
         ----------
-        scale_factor : int, default is 32
+        scale_factor : int, 32 by default
             Image scaling factor
 
         Returns
@@ -372,10 +372,11 @@ class SlideSet(object):
 
         Parameters
         ----------
-        n: int
-           first n slides in dataset folder to rescale and save
+        scale_factor: int, 32 by default
+            Image scaling factor
+        n: int,
+            first n slides in dataset folder to rescale and save
         """
-        # TODO: add logger if n>total_slide and log saved images names
         os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
         for slide in self.slides[:n]:
@@ -388,7 +389,7 @@ class SlideSet(object):
         ----------
         n: int
             first n slides in dataset folder
-        scale_factor : int, default is 32
+        scale_factor : int, 32 by default
             Image scaling factor
         """
         # TODO: add logger n>total_slide and log thumbnails names
