@@ -376,7 +376,7 @@ class Describe_Slide(object):
         regions_from_binary_mask = function_mock(
             request, "src.histolab.slide.Slide._regions_from_binary_mask"
         )
-        regions_from_binary_mask([[True, False], [False, True]]).return_value = regions
+        regions_from_binary_mask.return_value = regions
         biggest_regions_ = function_mock(
             request, "src.histolab.slide.Slide._biggest_regions"
         )
@@ -394,11 +394,9 @@ class Describe_Slide(object):
 
         biggest_mask_tissue_box = slide.biggest_tissue_box_mask
 
-        region_coordinates_.assert_called_once_with(regions)
-        biggest_regions_.assert_called_once_with(
-            regions_from_binary_mask([[True, False], [False, True]]), n=1
-        )
-        region_coordinates_.assert_called_once_with(regions)
+        region_coordinates_.assert_called_once_with(slide, regions)
+        biggest_regions_.assert_called_once_with(slide, regions, n=1)
+        region_coordinates_.assert_called_once_with(slide, regions)
         polygon_to_mask_array_.assert_called_once_with(
             (1000, 1000), CoordinatePair(x_ul=0, y_ul=0, x_br=2, y_br=2)
         )
