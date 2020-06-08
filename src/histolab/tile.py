@@ -8,6 +8,7 @@ from .filters import image_filters as imf
 from .filters import morphological_filters as mof
 from .filters.util import mask_percent
 from .types import CoordinatePair
+from .util import lazyproperty
 
 
 class Tile:
@@ -16,15 +17,15 @@ class Tile:
         self._level = level
         self._coords = coords
 
-    @property
+    @lazyproperty
     def image(self) -> Image.Image:
         return self._image
 
-    @property
+    @lazyproperty
     def level(self) -> int:
         return self._level
 
-    @property
+    @lazyproperty
     def coords(self) -> CoordinatePair:
         return self._coords
 
@@ -84,7 +85,7 @@ class Tile:
 
         self._image.save(path)
 
-    @property
+    @lazyproperty
     def _enough_tissue_mask_filters(self) -> imf.Compose:
         """Return a filters composition to get a binary mask to estimate tissue.
 
@@ -122,7 +123,7 @@ class Tile:
 
         return np.var(tissue_mask) > near_zero_var_threshold
 
-    @property
+    @lazyproperty
     def _is_almost_white(self) -> bool:
         """Check if the image is almost white.
 
