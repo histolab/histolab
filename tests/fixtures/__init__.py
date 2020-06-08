@@ -3,6 +3,7 @@
 """SVS source files loader for testing purposes."""
 
 import os
+import numpy as np
 
 from PIL import Image
 
@@ -66,7 +67,24 @@ class LazyPILResponseLoader(LazyResponder):
         self._cache[fixture_name] = self._load_pil(pil_path)
 
 
+class LazyNPYResponseLoader(LazyResponder):
+    """Specific class for PIL fixtures loader"""
+
+    def _npy_path(self, fixture_name):
+        return "%s/%s.npy" % (self._dirpath, fixture_name.replace("_", "-").lower())
+
+    def _load_npy(self, path):
+        return np.load(path)
+
+    def _load_to_cache(self, fixture_name):
+        npy_path = self._npy_path(fixture_name)
+        if not os.path.exists(npy_path):
+            raise ValueError("no NPY fixture found at %s" % npy_path)
+        self._cache[fixture_name] = self._load_npy(npy_path)
+
+
 SVS = LazySVSResponseLoader("./svs-images")
 RGBA = LazyPILResponseLoader("./pil-images-rgba")
 RGB = LazyPILResponseLoader("./pil-images-rgb")
 GS = LazyPILResponseLoader("./pil-images-gs")
+NPY = LazyNPYResponseLoader("./mask-arrays")
