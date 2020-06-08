@@ -1,5 +1,4 @@
 import numpy as np
-
 from PIL import Image
 
 
@@ -24,14 +23,14 @@ def mask_percent(mask: np.ndarray) -> float:
 def tissue_percent(img: Image.Image) -> float:
     """Compute percentage of tissue in an image.
 
-        Parameters
-        ----------
-        img : Image.Image
-            Input image
+    Parameters
+    ----------
+    img : Image.Image
+        Input image
 
-        Returns
-        -------
-        float
-            Percentage of image that is not masked
-        """
+    Returns
+    -------
+    float
+        Percentage of image that is not masked
+    """
     return 100 - mask_percent(img)
