@@ -6,6 +6,7 @@ from PIL import Image
 
 from .filters import image_filters as imf
 from .filters import morphological_filters as mof
+from .filters.util import mask_percent
 from .types import CoordinatePair
 
 
@@ -28,15 +29,15 @@ class Tile:
         return self._coords
 
     def has_enough_tissue(
-        self, threshold: float = 0.8, near_zero_var_threshold: float = 0.1
+        self, tissue_percent: float = 80.0, near_zero_var_threshold: float = 0.1
     ) -> bool:
         """Check if the tile has enough tissue.
 
         Parameters
         ----------
-        threshold : float, optional
-            Number between 0.0 and 1.0 representing the minimum required proportion of
-            tissue over the total area of the image, default is 0.8
+        tissue_percent : float, optional
+            Number between 0.0 and 100.0 representing the minimum required percentage of
+            tissue over the total area of the image, default is 80.0
         near_zero_var_threshold : float, optional
             Minimum image variance after morphological operations (dilation, fill
             holes), default is 0.1
@@ -53,18 +54,13 @@ class Tile:
         if self._is_almost_white:
             return False
 
-        filters = self._enough_tissue_mask_filters
-
-        image_filtered = filters(self._image)
-        image_filtered_arr = np.array(image_filtered)
-
-        # Near-zero variance threshold
-        # This also includes cases in which there is ALL TISSUE (too clear) or
-        # NO TISSUE (zeros)
-        if np.var(image_filtered_arr) < near_zero_var_threshold:
+        if self._is_all_tissue_or_no_tissue(near_zero_var_threshold):
             return False
 
-        return np.mean(image_filtered_arr) > threshold
+        if not self._has_tissue_more_than_percent(tissue_percent):
+            return False
+
+        return True
 
     def save(self, path):
         """Save tile at given path.
@@ -107,6 +103,25 @@ class Tile:
         )
         return filters
 
+    def _is_all_tissue_or_no_tissue(self, near_zero_var_threshold: float = 0.1) -> bool:
+        """Check if the image is composed all by tissue or by no tissue at all.
+
+        Parameters
+        ----------
+        near_zero_var_threshold : float, optional
+            Minimum image variance after morphological operations (dilation, fill
+            holes), default is 0.1
+        Returns
+        -------
+        bool
+            True if the image is composed all by tissue or by no tissue at all, False
+            otherwise.
+        """
+        filters = self._enough_tissue_mask_filters
+        tissue_mask = filters(self._image)
+
+        return np.var(tissue_mask) > near_zero_var_threshold
+
     @property
     def _is_almost_white(self) -> bool:
         """Check if the image is almost white.
@@ -124,3 +139,23 @@ class Tile:
             np.mean(image_gray_arr.ravel()) < 0.9
             and np.std(image_gray_arr.ravel()) > 0.09
         )
+
+    def _has_tissue_more_than_percent(self, tissue_percent: float = 80.0) -> bool:
+        """Check if tissue represent more than ``tissue_percent`` % of the image.
+
+        Parameters
+        ----------
+        tissue_percent : float, optional
+            Number between 0.0 and 100.0 representing the minimum required percentage of
+            tissue over the total area of the image, default is 80.0
+
+        Returns
+        -------
+        bool
+            True if tissue represent more than ``tissue_percent`` % of the image, False
+            otherwise.
+        """
+        filters = self._enough_tissue_mask_filters
+        tissue_mask = filters(self._image)
+
+        return mask_percent(tissue_mask) > tissue_percent
