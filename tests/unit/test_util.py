@@ -19,8 +19,11 @@ from tests.base import (
     IMAGE4_GREY_WHITE,
     IMAGE4_RGB_WHITE,
     IMAGE4_RGBA_WHITE,
+    BASE_MASK,
+    COMPLEX_MASK,
 )
 
+from ..util import load_expectation
 from src.histolab.types import CoordinatePair
 from src.histolab.util import (
     apply_mask_image,
@@ -28,6 +31,7 @@ from src.histolab.util import (
     np_to_pil,
     polygon_to_mask_array,
     threshold_to_mask,
+    resize_mask,
 )
 
 
@@ -185,6 +189,21 @@ def test_util_polygon_to_mask_array(dims, vertices, expected_array):
     polygon_mask = polygon_to_mask_array(dims, vertices)
 
     np.testing.assert_array_almost_equal(polygon_mask, expected_array)
+
+
+@pytest.mark.parametrize(
+    "mask_array, target_dims, expected_array",
+    (
+        (BASE_MASK, (2, 2), "mask-arrays/resized-base-mask"),
+        (COMPLEX_MASK, (5, 5), "mask-arrays/resized-complex-mask"),
+    ),
+)
+def test_util_resize_mask(mask_array, target_dims, expected_array):
+    resized_mask = resize_mask(mask_array, target_dims)
+
+    np.testing.assert_array_almost_equal(
+        resized_mask, load_expectation(expected_array, "npy")
+    )
 
 
 # fixtures ---------------------------------------------

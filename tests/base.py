@@ -1,5 +1,6 @@
 import numpy as np
 
+# ============== IMAGES ==============
 IMAGE1_GREY = np.array(
     [
         [152, 100, 162, 160, 23],
@@ -214,5 +215,23 @@ IMAGE4_RGBA_WHITE = np.array(
         [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],
         [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],
         [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],
+    ]
+)
+
+# ============== MASKS ==============
+
+BASE_MASK = np.array([[True, True, False, False], [False, True, False, False]])
+COMPLEX_MASK = np.array(
+    [
+        [False, True, True, True, True, True, False, False, True, False],
+        [True, True, False, False, True, False, False, False, True, False],
+        [True, True, False, False, True, True, False, False, True, True],
+        [True, True, True, True, False, True, False, True, True, False],
+        [True, False, False, True, False, True, False, True, True, False],
+        [False, True, True, False, True, True, True, True, True, True],
+        [True, False, True, False, False, True, True, False, True, True],
+        [True, True, False, True, True, False, True, True, True, True],
+        [False, True, True, True, True, False, True, True, False, False],
+        [True, True, False, False, False, True, True, False, True, False],
     ]
 )
