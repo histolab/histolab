@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Union
 
 import numpy as np
 from PIL import Image
@@ -12,6 +13,16 @@ from .util import lazyproperty
 
 
 class Tile:
+    """Provide Tile object representing a tile generated from a Slide object.
+
+    image : Image.Image
+        Image describing the tile
+    coords : CoordinatePair
+        Level 0 Coordinates of the Slide from which the tile was extracted
+    level : int, optional
+        Level of tile extraction, by default 0
+    """
+
     def __init__(self, image: Image.Image, coords: CoordinatePair, level: int = 0):
         self._image = image
         self._level = level
@@ -63,7 +74,7 @@ class Tile:
 
         return True
 
-    def save(self, path):
+    def save(self, path: Union[str, bytes, os.PathLike]) -> None:
         """Save tile at given path.
 
         The format to use is determined from the filename extension (to be compatible to
