@@ -23,7 +23,7 @@ from .util import mask_percent
 
 
 def remove_small_objects(
-    mask_img: np.ndarray,
+    np_mask: np.ndarray,
     min_size: int = 3000,
     avoid_overmask: bool = True,
     overmask_thresh: int = 95,
@@ -49,7 +49,7 @@ def remove_small_objects(
     np.ndarray
         Mask with small objects filtered out
     """
-    mask_no_small_object = sk_morphology.remove_small_objects(mask_img, min_size)
+    mask_no_small_object = sk_morphology.remove_small_objects(np_mask, min_size)
     if (
         avoid_overmask
         and mask_percent(mask_no_small_object) >= overmask_thresh
@@ -57,6 +57,6 @@ def remove_small_objects(
     ):
         new_min_size = min_size // 2
         mask_no_small_object = remove_small_objects(
-            mask_img, new_min_size, avoid_overmask, overmask_thresh
+            np_mask, new_min_size, avoid_overmask, overmask_thresh
         )
     return mask_no_small_object
