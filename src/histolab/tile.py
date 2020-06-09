@@ -66,7 +66,7 @@ class Tile:
         if self._is_almost_white:
             return False
 
-        if self._is_all_tissue_or_no_tissue(near_zero_var_threshold):
+        if not self._has_only_some_tissue(near_zero_var_threshold):
             return False
 
         if not self._has_tissue_more_than_percent(tissue_percent):
@@ -115,19 +115,20 @@ class Tile:
         )
         return filters
 
-    def _is_all_tissue_or_no_tissue(self, near_zero_var_threshold: float = 0.1) -> bool:
-        """Check if the image is composed all by tissue or by no tissue at all.
+    def _has_only_some_tissue(self, near_zero_var_threshold: float = 0.1) -> bool:
+        """Check if the tile is composed by only some tissue.
 
         Parameters
         ----------
         near_zero_var_threshold : float, optional
-            Minimum image variance after morphological operations (dilation, fill
-            holes), default is 0.1
+            Minimum image variance after morphological operations (dilation, fill holes)
+            to consider the image to be composed by only some tissue, default is 0.1
+
         Returns
         -------
         bool
-            True if the image is composed all by tissue or by no tissue at all, False
-            otherwise.
+            True if the image is composed by only some tissue. False if the tile is
+            composed by all tissue or by no tissue at all.
         """
         filters = self._enough_tissue_mask_filters
         tissue_mask = filters(self._image)
