@@ -58,6 +58,37 @@ def np_to_pil(np_img: np.ndarray) -> Image.Image:
     return Image.fromarray(image_array)
 
 
+def scale_coordinates(
+    reference_coords: CoordinatePair,
+    reference_size: Tuple[int, int],
+    target_size: Tuple[int, int],
+) -> CoordinatePair:
+    """Compute the coordinates corresponding to a scaled version of the image.
+
+    Parameters
+    ----------
+    reference_coords: tuple, array-like or Coordinates
+        (x, y) pair of coordinates referring to the upper left and lower right corners
+        respectively. The function expects a tuple of four elements or a tuple of two
+        pairs of coordinates as input.
+    reference_size: array_like of int
+        Reference (width, height) size to which input coordinates refer to
+    target_size: array_like of int
+        Target (width, height) size of the resulting scaled image
+
+    Returns
+    -------
+    coords: Coordinates
+        Coordinates in the scaled image
+    """
+    reference_coords = np.asarray(reference_coords).ravel()
+    reference_size = np.tile(reference_size, 2)
+    target_size = np.tile(target_size, 2)
+    return CoordinatePair(
+        *np.floor((reference_coords * target_size) / reference_size).astype("int64")
+    )
+
+
 def threshold_to_mask(
     img: Image.Image, threshold: float, relate: operator
 ) -> np.ndarray:
