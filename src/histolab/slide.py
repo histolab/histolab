@@ -37,8 +37,9 @@ from skimage.measure import label, regionprops
 import src.histolab.filters.image_filters as imf
 import src.histolab.filters.morphological_filters as mof
 
+from .tile import Tile
 from .types import CoordinatePair, Region
-from .util import lazyproperty, polygon_to_mask_array, resize_mask
+from .util import lazyproperty, polygon_to_mask_array, resize_mask, scale_coordinates
 
 IMG_EXT = "png"
 THUMBNAIL_SIZE = 1000
@@ -88,7 +89,7 @@ class Slide(object):
         return self._wsi.level_dimensions[level]
 
     @lazyproperty
-    def biggest_tissue_box_mask(self):
+    def biggest_tissue_box_mask(self) -> np.ndarray:
         """Returns the coordinates of the box containing the max area of tissue.
 
         Returns
@@ -110,6 +111,37 @@ class Slide(object):
             (1000, 1000), biggest_region_coordinates
         )
         return resize_mask(thumb_bbox_mask, self.dimensions)
+
+    def extract_tile(self, coords: CoordinatePair, level: int) -> Tile:
+        """Extract a tile of the image at the selected level.
+
+        Parameters
+        ----------
+        coords : CoordinatePair
+            Coordinates in the first level (0)
+        level : int
+            Level from which to extract the tile
+
+        Returns
+        -------
+        tile : Tile
+            Image containing the selected tile
+        """
+
+        coords_level = scale_coordinates(
+            reference_coords=coords,
+            reference_size=self.level_dimensions(level=0),
+            target_size=self.level_dimensions(level=level),
+        )
+
+        h_l = coords_level.y_br - coords_level.y_ul
+        w_l = coords_level.x_br - coords_level.x_ul
+
+        image = self._wsi.read_region(
+            location=(coords.x_ul, coords.y_ul), level=level, size=(w_l, h_l)
+        )
+        tile = Tile(image, coords, level)
+        return tile
 
     @lazyproperty
     def name(self) -> str:
