@@ -115,7 +115,7 @@ class Tile:
         )
         return filters
 
-    def _has_only_some_tissue(self, near_zero_var_threshold: float = 0.1) -> bool:
+    def _has_only_some_tissue(self, near_zero_var_threshold: float = 0.1) -> np.bool_:
         """Check if the tile is composed by only some tissue.
 
         Parameters
