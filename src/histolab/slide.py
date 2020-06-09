@@ -180,8 +180,7 @@ class Slide(object):
 
     # ---private interface methods and properties---
 
-    @staticmethod
-    def _biggest_regions(regions: List[Region], n: int = 1) -> List[Region]:
+    def _biggest_regions(self, regions: List[Region], n: int = 1) -> List[Region]:
         """Return the biggest ``n`` regions.
 
         Parameters
@@ -202,7 +201,7 @@ class Slide(object):
             If ``n`` is not between 1 and the number of elements of ``regions``
         """
 
-        if not 1 >= n <= len(regions):
+        if not 1 <= n <= len(regions):
             raise ValueError(f"n should be between 1 and {len(regions)}, got {n}")
 
         sorted_regions = sorted(regions, key=lambda r: r.area, reverse=True)
@@ -254,8 +253,7 @@ class Slide(object):
         )
         return filters
 
-    @staticmethod
-    def _region_coordinates(region: Region) -> CoordinatePair:
+    def _region_coordinates(self, region: Region) -> CoordinatePair:
         """Extract bbox coordinates from the region.
 
         Parameters
@@ -271,8 +269,7 @@ class Slide(object):
         y_ul, x_ul, y_br, x_br = region.bbox
         return CoordinatePair(x_ul, y_ul, x_br, y_br)
 
-    @staticmethod
-    def _regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
+    def _regions_from_binary_mask(self, binary_mask: np.ndarray) -> List[Region]:
         """Calculate regions properties from a binary mask.
 
         Parameters

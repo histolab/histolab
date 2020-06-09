@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import os
+from collections import namedtuple
 from unittest.mock import call
 
 import numpy as np
@@ -10,12 +11,15 @@ import pytest
 from matplotlib.figure import Figure as matplotlib_figure
 
 from src.histolab.slide import Slide, SlideSet
+from src.histolab.filters.image_filters import Compose
+from src.histolab.types import Region, CoordinatePair
 
 from ..unitutil import (
     ANY,
     PILImageMock,
     class_mock,
     dict_list_eq,
+    function_mock,
     initializer_mock,
     instance_mock,
     method_mock,
@@ -258,6 +262,146 @@ class Describe_Slide(object):
         )
         assert os.path.exists(os.path.join(tmp_path_, slide.thumbnail_path))
 
+    def it_knows_tissue_areas_mask_filters_composition(
+        self,
+        RgbToGrayscale_,
+        OtsuThreshold_,
+        BinaryDilation_,
+        RemoveSmallHoles_,
+        RemoveSmallObjects_,
+    ):
+        slide = Slide("/a/b", "c/d")
+
+        main_tissue_areas_mask_filters_ = slide._main_tissue_areas_mask_filters
+
+        RgbToGrayscale_.assert_called_once()
+        OtsuThreshold_.assert_called_once()
+        BinaryDilation_.assert_called_once()
+        RemoveSmallHoles_.assert_called_once()
+        RemoveSmallObjects_.assert_called_once()
+        assert main_tissue_areas_mask_filters_.filters == [
+            RgbToGrayscale_(),
+            OtsuThreshold_(),
+            BinaryDilation_(),
+            RemoveSmallHoles_(),
+            RemoveSmallObjects_(),
+        ]
+        assert type(main_tissue_areas_mask_filters_) == Compose
+
+    def it_knows_regions_from_binary_mask(self, request):
+        binary_mask = np.array([[True, False], [True, True]])
+        label = function_mock(request, "src.histolab.slide.label")
+        regionprops = function_mock(request, "src.histolab.slide.regionprops")
+        RegionProps = namedtuple("RegionProps", ("area", "bbox", "centroid"))
+        regions_props = [
+            RegionProps(3, (0, 0, 2, 2), (0.6666666666666666, 0.3333333333333333))
+        ]
+        regionprops.return_value = regions_props
+        label(binary_mask).return_value = [[0, 1], [1, 1]]
+        slide = Slide("/a/b", "c/d")
+
+        regions_from_binary_mask_ = slide._regions_from_binary_mask(binary_mask)
+
+        regionprops.assert_called_once_with(label(binary_mask))
+        assert type(regions_from_binary_mask_) == list
+        assert len(regions_from_binary_mask_) == 1
+        assert type(regions_from_binary_mask_[0]) == Region
+        assert regions_from_binary_mask_ == [
+            Region(
+                index=0,
+                area=regions_props[0].area,
+                bbox=regions_props[0].bbox,
+                center=regions_props[0].centroid,
+            )
+        ]
+
+    def it_knows_its_biggest_regions(self):
+        regions = [
+            Region(index=0, area=14, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
+            Region(index=1, area=2, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
+            Region(index=2, area=5, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
+            Region(index=3, area=10, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
+        ]
+        slide = Slide("a/b", "c/d")
+
+        biggest_regions = slide._biggest_regions(regions, 2)
+
+        assert biggest_regions == [regions[0], regions[3]]
+
+    @pytest.mark.parametrize("n", (0, 6))
+    def but_it_raises_an_error_when_n_is_not_between_1_and_number_of_regions(self, n):
+        regions = [Region(i, i + 1, (0, 0, 2, 2), (0.5, 0.5)) for i in range(4)]
+        slide = Slide("a/b", "c/d")
+        with pytest.raises(ValueError) as err:
+            slide._biggest_regions(regions, n)
+
+        assert str(err.value) == f"n should be between 1 and {len(regions)}, got {n}"
+
+    def it_knows_its_region_coordinates(self):
+        region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5))
+        slide = Slide("a/b", "c/d")
+
+        region_coords_ = slide._region_coordinates(region)
+
+        assert region_coords_ == CoordinatePair(x_ul=1, y_ul=0, x_br=2, y_br=1)
+
+    def it_knows_its_biggest_tissue_box_mask(
+        self,
+        request,
+        tmpdir,
+        RgbToGrayscale_,
+        OtsuThreshold_,
+        BinaryDilation_,
+        RemoveSmallHoles_,
+        RemoveSmallObjects_,
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        regions = [Region(index=0, area=33, bbox=(0, 0, 2, 2), center=(0.5, 0.5))]
+        main_tissue_areas_mask_filters_ = property_mock(
+            request, Slide, "_main_tissue_areas_mask_filters"
+        )
+        main_tissue_areas_mask_filters_.return_value = Compose(
+            [
+                RgbToGrayscale_,
+                OtsuThreshold_,
+                BinaryDilation_,
+                RemoveSmallHoles_,
+                RemoveSmallObjects_,
+            ]
+        )
+        regions_from_binary_mask = function_mock(
+            request, "src.histolab.slide.Slide._regions_from_binary_mask"
+        )
+        regions_from_binary_mask.return_value = regions
+        biggest_regions_ = function_mock(
+            request, "src.histolab.slide.Slide._biggest_regions"
+        )
+        biggest_regions_.return_value = regions
+        region_coordinates_ = function_mock(
+            request, "src.histolab.slide.Slide._region_coordinates"
+        )
+        region_coordinates_.return_values = CoordinatePair(0, 0, 2, 2)
+        polygon_to_mask_array_ = function_mock(
+            request, "src.histolab.util.polygon_to_mask_array"
+        )
+        polygon_to_mask_array_(
+            (1000, 1000), CoordinatePair(0, 0, 2, 2)
+        ).return_value = [[True, True], [False, True]]
+
+        biggest_mask_tissue_box = slide.biggest_tissue_box_mask
+
+        region_coordinates_.assert_called_once_with(slide, regions)
+        biggest_regions_.assert_called_once_with(slide, regions, n=1)
+        region_coordinates_.assert_called_once_with(slide, regions)
+        polygon_to_mask_array_.assert_called_once_with(
+            (1000, 1000), CoordinatePair(x_ul=0, y_ul=0, x_br=2, y_br=2)
+        )
+        np.testing.assert_almost_equal(biggest_mask_tissue_box, np.zeros((500, 500)))
+
     # fixtures -------------------------------------------------------
 
     @pytest.fixture(params=[("/a/b/mywsi.svs", ".svs"), ("/a/b/mywsi.34s", ".34s")])
@@ -383,6 +527,32 @@ class Describe_Slide(object):
     @pytest.fixture
     def dimensions_(self, request):
         return property_mock(request, Slide, "dimensions")
+
+    @pytest.fixture
+    def RgbToGrayscale_(self, request):
+        return class_mock(request, "src.histolab.filters.image_filters.RgbToGrayscale")
+
+    @pytest.fixture
+    def OtsuThreshold_(self, request):
+        return class_mock(request, "src.histolab.filters.image_filters.OtsuThreshold")
+
+    @pytest.fixture
+    def BinaryDilation_(self, request):
+        return class_mock(
+            request, "src.histolab.filters.morphological_filters.BinaryDilation"
+        )
+
+    @pytest.fixture
+    def RemoveSmallHoles_(self, request):
+        return class_mock(
+            request, "src.histolab.filters.morphological_filters.RemoveSmallHoles"
+        )
+
+    @pytest.fixture
+    def RemoveSmallObjects_(self, request):
+        return class_mock(
+            request, "src.histolab.filters.morphological_filters.RemoveSmallObjects"
+        )
 
 
 class Describe_Slideset(object):
