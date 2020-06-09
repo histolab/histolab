@@ -90,13 +90,12 @@ class Slide(object):
 
     @lazyproperty
     def biggest_tissue_box_mask(self) -> np.ndarray:
-        """Returns the coordinates of the box containing the max area of tissue.
+        """Returns the binary mask of the box containing the max area of tissue.
 
         Returns
         -------
-        box_coords: Coordinates
-            [x_ul, y_ul, x_br, y_br] coordinates of the box containing the
-            max area of tissue.
+        mask: np.ndarray
+            Binary mask of the box containing the max area of tissue.
 
         """
 
@@ -105,7 +104,7 @@ class Slide(object):
 
         thumb_mask = filters(thumb)
         regions = self._regions_from_binary_mask(thumb_mask)
-        biggest_region = self._biggest_regions(regions, n=1)
+        biggest_region = self._biggest_regions(regions, n=1)[0]
         biggest_region_coordinates = self._region_coordinates(biggest_region)
         thumb_bbox_mask = polygon_to_mask_array(
             (1000, 1000), biggest_region_coordinates
