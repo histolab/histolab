@@ -5,7 +5,6 @@ docs/_site
 **/filters*.html
 **/tiles*.html
 *.ipynb
-.ipynb_checkpoints
 coverage_html_report
 
 # IDE + OS

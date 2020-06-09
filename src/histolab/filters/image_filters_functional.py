@@ -534,7 +534,7 @@ def filter_entropy(
     Note that input must be 2D.
 
     Parameters:
-    ----------
+    -----------
     img : Image.Image
         input 2-dimensional image
     neighborhood : float, optional (default is 9)
