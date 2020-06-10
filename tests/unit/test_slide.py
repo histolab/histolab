@@ -410,9 +410,8 @@ class Describe_Slide(object):
 
         biggest_mask_tissue_box = slide.biggest_tissue_box_mask
 
-        region_coordinates_.assert_called_once_with(slide, regions)
+        region_coordinates_.assert_called_once_with(slide, regions[0])
         biggest_regions_.assert_called_once_with(slide, regions, n=1)
-        region_coordinates_.assert_called_once_with(slide, regions)
         polygon_to_mask_array_.assert_called_once_with(
             (1000, 1000), CoordinatePair(x_ul=0, y_ul=0, x_br=2, y_br=2)
         )
