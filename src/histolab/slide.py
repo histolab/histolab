@@ -127,6 +127,19 @@ class Slide(object):
             Image containing the selected tile
         """
 
+        if (
+            coords.x_ul >= self.dimensions[0]
+            or coords.x_br >= self.dimensions[0]
+            or coords.y_ul >= self.dimensions[1]
+            or coords.y_br >= self.dimensions[1]
+        ):
+            # OpenSlide doesn't complain if the coordinates for extraction are wrong,
+            # but it returns an odd image.
+            raise ValueError(
+                f"Extraction Coordinates {coords} not valid for slide with dimensions "
+                f"{self.dimensions}"
+            )
+
         coords_level = scale_coordinates(
             reference_coords=coords,
             reference_size=self.level_dimensions(level=0),
