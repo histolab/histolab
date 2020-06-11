@@ -204,5 +204,9 @@ def cmu_small_region():
     return _load_svs("data/cmu_small_region.svs")
 
 
-def aperio1():
+def aorta_tissue():
     return _load_svs("aperio/JP2K-33003-1.svs")
+
+
+def heart_tissue():
+    return _load_svs("aperio/JP2K-33003-2.svs")
