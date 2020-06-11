@@ -129,6 +129,7 @@ def _fetch(data_filename):
     """
     resolved_path = os.path.join(data_dir, "..", data_filename)
     expected_hash = registry[data_filename]
+
     # Case 1:
     # The file may already be in the data_dir.
     # We may have decided to ship it in the histolab distribution.
@@ -205,8 +206,50 @@ def cmu_small_region():
 
 
 def aorta_tissue():
+    """Aorta tissue, brightfield, JPEG 2000, YCbCr
+
+    This image is avaliable here
+    http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/
+
+    Free to use and distribute, with or without modification
+
+    Returns
+    -------
+    aorta_tissue : OpenSlide object
+        Aorta tissue Whole-Slide-Image
+    """
     return _load_svs("aperio/JP2K-33003-1.svs")
 
 
 def heart_tissue():
+    """Heart tissue, brightfield, JPEG 2000, YCbCr
+
+    This image is avaliable here
+    http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/
+
+    Free to use and distribute, with or without modification
+
+    Returns
+    -------
+    heart_tissue : OpenSlide object
+        Heart tissue Whole-Slide-Image
+    """
     return _load_svs("aperio/JP2K-33003-2.svs")
+
+
+def breast_tissue():
+    """Breast tissue, TCGA
+
+    This image is avaliable here
+    https://portal.gdc.cancer.gov/files/9c960533-2e58-4e54-97b2-8454dfb4b8c8
+    or through the API
+    https://api.gdc.cancer.gov/data/9c960533-2e58-4e54-97b2-8454dfb4b8c8
+
+    Access: open
+
+    Returns
+    -------
+    breast_tissue : OpenSlide object
+        Breast tissue Whole-Slide-Image
+    """
+    return _load_svs("tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8")
