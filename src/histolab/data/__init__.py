@@ -202,10 +202,19 @@ def _load_svs(f):
 
 
 def cmu_small_region():
+    """Carnegie Mellon University MRXS sample tissue
+
+    Licensed under a CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
+
+    Returns
+    -------
+    cmu_mrxs_tissue : OpenSlide object
+        Sample CMU tissue Whole-Slide-Image
+    """
     return _load_svs("data/cmu_small_region.svs")
 
 
-def aorta_tissue():
+def aorta_tissue():  # pragma: no cover
     """Aorta tissue, brightfield, JPEG 2000, YCbCr
 
     This image is avaliable here
@@ -221,7 +230,7 @@ def aorta_tissue():
     return _load_svs("aperio/JP2K-33003-1.svs")
 
 
-def heart_tissue():
+def heart_tissue():  # pragma: no cover
     """Heart tissue, brightfield, JPEG 2000, YCbCr
 
     This image is avaliable here
@@ -237,7 +246,7 @@ def heart_tissue():
     return _load_svs("aperio/JP2K-33003-2.svs")
 
 
-def breast_tissue():
+def breast_tissue():  # pragma: no cover
     """Breast tissue, TCGA
 
     This image is avaliable here
