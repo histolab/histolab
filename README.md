@@ -37,8 +37,6 @@ See the detailed documentation [here]().
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
-
 ### Prerequisites
 
 HistoLab has only one sistem-wide dependency: OpenSlide.
@@ -52,6 +50,9 @@ You can download and install it from [OpenSlide](https://openslide.org/download/
 pip install histolab
 ```
 
+### Quickstart
+
+COMING SOON!
 
 ## Versioning
 
