@@ -261,9 +261,7 @@ class AdaptiveEqualization(object):
         self.n_bins = n_bins
         self.clip_limit = clip_limit
 
-    def __call__(
-        self, img,
-    ):
+    def __call__(self, img):
         adaptive_equ = F.adaptive_equalization(img, self.n_bins, self.clip_limit)
         return adaptive_equ
 
@@ -329,9 +327,7 @@ class KmeansSegmentation(object):
         self.compactness = compactness
         self.n_segment = n_segment
 
-    def __call__(
-        self, img,
-    ):
+    def __call__(self, img):
         kmeans_segmentation = F.kmeans_segmentation(
             img, self.compactness, self.n_segment
         )
@@ -507,12 +503,12 @@ class FilterEntropy(object):
     """Filter image based on entropy (complexity).
 
     The area of the image included in the local neighborhood is defined by a square
-    neighborhoodxneighborhood
+    neighborhood x neighborhood
 
     Note that input must be 2D.
 
     Parameters:
-    ----------
+    -----------
     img : PIL.Image.Image
         input 2-dimensional image
     neighborhood : int, optional (default is 9)

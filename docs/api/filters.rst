@@ -3,6 +3,7 @@ Filters
 
 .. toctree::
    :maxdepth: 2
+   :caption: API Reference
 
    filters/image_filters
    filters/image_filters_functional
