@@ -1,10 +1,5 @@
 # Project
-data/
-docs/_site
 **/__pycache__
-**/filters*.html
-**/tiles*.html
-*.ipynb
 coverage_html_report
 
 # IDE + OS
@@ -66,10 +61,6 @@ coverage.xml
 .pytest_cache/
 cover/
 
-# Translations
-*.mo
-*.pot
-
 # Sphinx documentation
 docs/_build/
 
@@ -86,13 +77,6 @@ ipython_config.py
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
 
 # Environments
 .env

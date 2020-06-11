@@ -6,3 +6,4 @@ toml
 twine
 sphinx
 ipdb
+isort
