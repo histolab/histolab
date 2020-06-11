@@ -22,12 +22,12 @@ Slide is the main API class for manipulating slide objects.
 """
 
 import math
+import ntpath
 import os
 import pathlib
 from typing import List, Tuple, Union
 
 import matplotlib.pyplot as plt
-import ntpath
 import numpy as np
 import openslide
 import PIL
