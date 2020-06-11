@@ -13,13 +13,15 @@
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
+  * [Quickstart](#quickstart)
 * [Versioning](#versioning)
 * [Authors](#authors)
-* [Contact](#contact)
 * [License](#license)
 * [Roadmap](#roadmap)
-* [Contribution guidelines](#contribution-guidelines)
 * [Acknowledgements](#acknowledgements)
+* [References](#references)
+* [Contribution guidelines](#contribution-guidelines)
+
 
 ## Motivation
 The histo-pathological analysis of tissue sections is the gold standard to assess the presence  and understand the nature of many complex diseases, such as tumors. 
@@ -73,7 +75,7 @@ This project is licensed under `Apache License  Version 2.0` - see the [LICENSE.
 
 [Open issues](https://github.com/MPBA/histolab/issues)
 
-## Acknowledgments
+## Acknowledgements
 
 * [https://github.com/deroneriksson](https://github.com/deroneriksson)
 
