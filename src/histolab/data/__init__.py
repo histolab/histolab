@@ -189,14 +189,20 @@ if has_pooch:
     _init_pooch()
 
 
-def _load(f):
+def _load_svs(f):
     """Load an image file located in the data directory."""
-    return openslide.open_slide(_fetch(f))
+    try:
+        svs = openslide.open_slide(_fetch(f))
+    except openslide.OpenSlideError:
+        raise openslide.OpenSlideError(
+            "Your wsi has something broken inside, a doctor is needed"
+        )
+    return svs
 
 
 def cmu_small_region():
-    return _load("data/cmu_small_region.svs")
+    return _load_svs("data/cmu_small_region.svs")
 
 
 def aperio1():
-    return _load("aperio/JP2K-33003-1.svs")
+    return _load_svs("aperio/JP2K-33003-1.svs")
