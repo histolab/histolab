@@ -24,7 +24,7 @@
 
 
 ## Motivation
-The histo-pathological analysis of tissue sections is the gold standard to assess the presence  of many complex diseases, such as tumors, and understand their nature. 
+The histo-pathological analysis of tissue sections is the gold standard to assess the presence of many complex diseases, such as tumors, and understand their nature. 
 In daily practice, pathologists usually perform microscopy examination of tissue slides considering a limited number of regions and the clinical evaulation relies on several factors such as nuclei morphology, cell distribution, and color (staining): this process is time consuming, could lead to information loss, and suffers from inter-observer variability.
 
 The advent of digital pathology is changing the way patholgists work and collaborate, and has opened the way to a new era in computational pathology. In particular, histopathology is expected to be at the center of the AI revolution in medicine [1], prevision supported by the increasing success of deep learning applications to digital pathology.
