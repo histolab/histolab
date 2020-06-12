@@ -34,7 +34,7 @@ install_requires = [
     "scipy",
 ]
 
-test_requires = ["pytest", "coverage", "pytest-cov", "coveralls", "pytest-mpl"]
+test_requires = ["pytest", "coverage", "pytest-cov==2.8.1", "coveralls", "pytest-mpl"]
 
 setuptools.setup(
     name="histolab",
