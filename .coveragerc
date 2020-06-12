@@ -4,7 +4,7 @@ branch = True
 omit =
     */site-packages/*
     */distutils/*
-    src/histolab/tiles.py # remove this line when tiles.py will be deleted from the repo
+    src/histolab/tiles.py
 
 [report]
 show_missing = true
