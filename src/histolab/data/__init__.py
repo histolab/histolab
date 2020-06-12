@@ -103,7 +103,18 @@ else:
 
 
 def _has_hash(path: str, expected_hash: str) -> bool:
-    """Check if the provided path has the expected hash."""
+    """Check if the provided path has the expected hash.
+
+    Parameters
+    ----------
+    path: str
+    expected_hash: str
+
+    Returns
+    -------
+    bool
+        True if the file hash and the expected one are equal
+    """
     if not os.path.exists(path):
         return False
     return file_hash(path) == expected_hash
