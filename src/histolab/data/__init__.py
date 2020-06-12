@@ -6,6 +6,8 @@
 
 import os
 import shutil
+from typing import Union
+
 import openslide
 
 from .. import __version__
@@ -19,20 +21,23 @@ try:
 except ModuleNotFoundError:
     # Function taken from
     # https://github.com/fatiando/pooch/blob/master/pooch/utils.py
-    def file_hash(fname, alg="sha256"):
-        """
-        Calculate the hash of a given file.
+    def file_hash(fname: str, alg: str = "sha256") -> str:
+        """Calculate the hash of a given file.
+
         Useful for checking if a file has changed or been corrupted.
+
         Parameters
         ----------
         fname : str
             The name of the file.
         alg : str
             The type of the hashing algorithm
+
         Returns
         -------
         hash : str
             The hash of the file.
+
         Examples
         --------
         >>> fname = "test-file-for-hash.txt"
@@ -58,7 +63,7 @@ except ModuleNotFoundError:
         return hasher.hexdigest()
 
 
-def create_image_fetcher():
+def _create_image_fetcher():
     try:
         import pooch
     except ImportError:
@@ -77,7 +82,7 @@ def create_image_fetcher():
         # On linux this converges to
         # '$HOME/.cache/histolab-image'
         # With a version qualifier
-        path=pooch.os_cache("histolab-image"),
+        path=pooch.os_cache("histolab-images"),
         base_url=url,
         version=pooch_version,
         env="HISTOLAB_DATADIR",
@@ -89,7 +94,7 @@ def create_image_fetcher():
     return image_fetcher, data_dir
 
 
-image_fetcher, data_dir = create_image_fetcher()
+image_fetcher, data_dir = _create_image_fetcher()
 
 if image_fetcher is None:
     has_pooch = False
@@ -97,35 +102,39 @@ else:
     has_pooch = True
 
 
-def _has_hash(path, expected_hash):
+def _has_hash(path: str, expected_hash: str) -> bool:
     """Check if the provided path has the expected hash."""
     if not os.path.exists(path):
         return False
     return file_hash(path) == expected_hash
 
 
-def _fetch(data_filename):
+def _fetch(data_filename: str) -> str:
     """Fetch a given data file from either the local cache or the repository.
     This function provides the path location of the data file given
     its name in the histolab repository.
+
     Parameters
     ----------
-    data_filename:
+    data_filename: str
         Name of the file in the histolab repository. e.g.
         'breast/sample1.svs'.
+
     Returns
     -------
-    Path of the local file as a python string.
+    resolved_path: str
+        Path of the local file
+
     Raises
     ------
     KeyError:
         If the filename is not known to the histolab distribution.
     ModuleNotFoundError:
-        If the filename is known to the histolab distribution but pooch
-        is not installed.
+        If the filename is known to the histolab distribution but pooch is not
+        installed.
     ConnectionError:
-        If histolab is unable to connect to the internet but the
-        dataset has not been downloaded yet.
+        If the dataset has not been downloaded yet and histolab is unable to connect
+        to the internet
     """
     resolved_path = os.path.join(data_dir, "..", data_filename)
     expected_hash = registry[data_filename]
@@ -161,7 +170,7 @@ def _fetch(data_filename):
         )
 
     # Case 4:
-    # Pooch needs to download the data. Let the image fetcher to search for
+    # Pooch needs to download the data. Let the image fetcher search for
     # our data. A ConnectionError is raised if no internet connection is
     # available.
     try:
@@ -178,7 +187,7 @@ def _fetch(data_filename):
     return resolved_path
 
 
-def _init_pooch():
+def _init_pooch() -> None:
     os.makedirs(data_dir, exist_ok=True)
     # data_base_dir = os.path.join(data_dir, "..")
     # Fetch all legacy data so that it is available by default
@@ -190,8 +199,25 @@ if has_pooch:
     _init_pooch()
 
 
-def _load_svs(f):
-    """Load an image file located in the data directory."""
+def _load_svs(f: str) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
+    """Load an image file located in the data directory.
+
+    Parameters
+    ----------
+    f: str
+        data_filename: str
+        Name of the file in the histolab repository
+
+    Returns
+    -------
+    slide : OpenSlide object
+            An OpenSlide object representing a whole-slide image.
+
+    Raises
+    ------
+    OpenSlideError:
+        OpenSlide cannot open the given input
+    """
     try:
         svs = openslide.open_slide(_fetch(f))
     except openslide.OpenSlideError:
@@ -201,7 +227,7 @@ def _load_svs(f):
     return svs
 
 
-def cmu_small_region():
+def cmu_small_region() -> Union[openslide.OpenSlide, openslide.ImageSlide]:
     """Carnegie Mellon University MRXS sample tissue
 
     Licensed under a CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
@@ -214,7 +240,9 @@ def cmu_small_region():
     return _load_svs("data/cmu_small_region.svs")
 
 
-def aorta_tissue():  # pragma: no cover
+def aorta_tissue() -> Union[
+    openslide.OpenSlide, openslide.ImageSlide
+]:  # pragma: no cover
     """Aorta tissue, brightfield, JPEG 2000, YCbCr
 
     This image is avaliable here
@@ -230,7 +258,9 @@ def aorta_tissue():  # pragma: no cover
     return _load_svs("aperio/JP2K-33003-1.svs")
 
 
-def heart_tissue():  # pragma: no cover
+def heart_tissue() -> Union[
+    openslide.OpenSlide, openslide.ImageSlide
+]:  # pragma: no cover
     """Heart tissue, brightfield, JPEG 2000, YCbCr
 
     This image is avaliable here
@@ -246,7 +276,9 @@ def heart_tissue():  # pragma: no cover
     return _load_svs("aperio/JP2K-33003-2.svs")
 
 
-def breast_tissue():  # pragma: no cover
+def breast_tissue() -> Union[
+    openslide.OpenSlide, openslide.ImageSlide
+]:  # pragma: no cover
     """Breast tissue, TCGA
 
     This image is avaliable here

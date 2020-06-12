@@ -23,18 +23,40 @@ import urllib.parse
 import urllib.request
 from contextlib import contextmanager
 from urllib.error import HTTPError, URLError
+from typing import Generator
+
 
 URL_REGEX = re.compile(r"http://|https://|ftp://|file://|file:\\")
 
 
-def _is_url(filename):
-    """Return True if string is an http or ftp path."""
-    return isinstance(filename, str) and URL_REGEX.match(filename) is not None
+def _is_url(filename: str) -> bool:
+    """Return True if string is an http or ftp path.
+
+    Parameters
+    ----------
+    filename: str
+
+    Returns
+    -------
+    bool
+        True if the filename is a string and if its name match the URL_REGEX
+    """
+    return isinstance(filename, str) and URL_REGEX.match(filename)
 
 
 @contextmanager
-def file_or_url_context(resource_name):
-    """Yield name of file from the given resource (i.e. file or url)."""
+def file_or_url_context(resource_name: str) -> Generator[str]:
+    """Yield name of file from the given resource (i.e. file or url).
+
+    Parameters
+    ----------
+    resource_name: str
+        resource file or url
+
+    Returns
+    -------
+    filename or resource_name: str
+    """
     if _is_url(resource_name):
         url_components = urllib.parse.urlparse(resource_name)
         _, ext = os.path.splitext(url_components.path)
