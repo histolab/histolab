@@ -4,6 +4,7 @@ branch = True
 omit =
     */site-packages/*
     */distutils/*
+    src/histolab/tiles.py
 
 [report]
 show_missing = true
