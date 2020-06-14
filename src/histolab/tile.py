@@ -7,7 +7,6 @@ from PIL import Image
 
 from .filters import image_filters as imf
 from .filters import morphological_filters as mof
-from .filters.util import mask_percent
 from .types import CoordinatePair
 from .util import lazyproperty
 
@@ -171,4 +170,4 @@ class Tile:
         filters = self._enough_tissue_mask_filters
         tissue_mask = filters(self._image)
 
-        return mask_percent(tissue_mask) > tissue_percent
+        return np.mean(tissue_mask) * 100 > tissue_percent
