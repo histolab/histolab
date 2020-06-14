@@ -173,11 +173,11 @@ class RandomTiler(Tiler):
         CoordinatePair
             Random tile Coordinates at level 0
         """
-        box_coords_lvl = self.box_mask_lvl(slide)
+        box_mask_lvl = self.box_mask_lvl(slide)
         tile_w_lvl, tile_h_lvl = self.tile_size
 
-        x_ul_lvl = np.random.choice(np.where(box_coords_lvl)[1])
-        y_ul_lvl = np.random.choice(np.where(box_coords_lvl)[0])
+        x_ul_lvl = np.random.choice(np.where(box_mask_lvl)[1])
+        y_ul_lvl = np.random.choice(np.where(box_mask_lvl)[0])
 
         x_br_lvl = x_ul_lvl + tile_w_lvl
         y_br_lvl = y_ul_lvl + tile_h_lvl
