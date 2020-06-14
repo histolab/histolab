@@ -39,7 +39,13 @@ import src.histolab.filters.morphological_filters as mof
 
 from .tile import Tile
 from .types import CoordinatePair, Region
-from .util import lazyproperty, polygon_to_mask_array, resize_mask, scale_coordinates
+from .util import (
+    lazyproperty,
+    lru_cache,
+    polygon_to_mask_array,
+    resize_mask,
+    scale_coordinates,
+)
 
 IMG_EXT = "png"
 THUMBNAIL_SIZE = 1000
@@ -89,6 +95,7 @@ class Slide(object):
         return self._wsi.level_dimensions[level]
 
     @lazyproperty
+    @lru_cache(maxsize=100)
     def biggest_tissue_box_mask(self) -> np.ndarray:
         """Returns the binary mask of the box containing the max area of tissue.
 
