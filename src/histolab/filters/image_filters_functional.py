@@ -95,6 +95,52 @@ def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
     return hed
 
 
+def hematoxylin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
+    """Obtain Hematoxylin channel from RGB image.
+
+    Input image is first converted into HED space and the the hematoxylin channel is
+    rescaled for increased contrast.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Greyscale image corresponding to input image with Hematoxylin channel enhanced.
+    """
+    if img.mode not in ["RGB", "RGBA"]:
+        raise ValueError("Input image must be RGB/RGBA.")
+    hematoxylin = np.array(rgb_to_hed(img))[:, :, 0]
+    hematoxylin = sk_exposure.rescale_intensity(hematoxylin)
+    return np_to_pil(hematoxylin)
+
+
+def eosin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
+    """Obtain Eosin channel from RGB image.
+
+    Input image is first converted into HED space and the the Eosin channel is
+    rescaled for increased contrast.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Greyscale image corresponding to input image with Eosin channel enhanced.
+    """
+    if img.mode not in ["RGB", "RGBA"]:
+        raise ValueError("Input image must be RGB/RGBA.")
+    eosin = np.array(rgb_to_hed(img))[:, :, 1]
+    eosin = sk_exposure.rescale_intensity(eosin)
+    return np_to_pil(eosin)
+
+
 def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
     """Convert RGB channels to HSV channels.
 
