@@ -77,19 +77,47 @@ class RandomTiler(Tiler):
 
         super().__init__()
 
-        assert (
-            max_iter >= n_tiles
-        ), "The maximum number of iterations must be grater than or equal to the "
-        f"maximum number of tiles. Got max_iter={max_iter} and n_tiles={n_tiles}."
-
         self.tile_size = tile_size
+        self.n_tiles = n_tiles
         self.max_iter = max_iter
         self.level = level
-        self.n_tiles = n_tiles
         self.seed = seed
         self.check_tissue = check_tissue
         self.prefix = prefix
         self.suffix = suffix
+
+    @property
+    def tile_size(self) -> Tuple[int, int]:
+        return self._valid_tile_size
+
+    @tile_size.setter
+    def tile_size(self, tile_size_: Tuple[int, int]):
+        if tile_size_[0] < 1 or tile_size_[1] < 1:
+            raise ValueError(f"Tile size cannot be negative ({tile_size_})")
+        self._valid_tile_size = tile_size_
+
+    @property
+    def level(self) -> int:
+        return self._valid_level
+
+    @level.setter
+    def level(self, level_: int):
+        if level_ < 0:
+            raise ValueError(f"Level cannot be negative ({level_})")
+        self._valid_level = level_
+
+    @property
+    def max_iter(self) -> int:
+        return self._valid_max_iter
+
+    @max_iter.setter
+    def max_iter(self, max_iter_: int = 1e4):
+        if max_iter_ < self.n_tiles:
+            raise ValueError(
+                f"The maximum number of iterations ({max_iter_}) must be grater than or "
+                f"equal to the maximum number of tiles ({self.n_tiles})."
+            )
+        self._valid_max_iter = max_iter_
 
     @lru_cache(maxsize=100)
     def box_mask(self, slide: Slide) -> np.ndarray:
