@@ -117,7 +117,7 @@ def test_rgb_to_hed_raises_exception_on_gs_image():
         imf.rgb_to_hed(gs_img)
 
     assert isinstance(err.value, Exception)
-    assert str(err.value) == "Input image must be RGB or RGBA"
+    assert str(err.value) == "Input image must be RGB."
 
 
 @pytest.mark.parametrize(
@@ -385,7 +385,7 @@ def test_adaptive_equalization_raises_exception_on_params(nbins, clip_limit):
         imf.adaptive_equalization(rgba_img, nbins, clip_limit)
 
     assert isinstance(err.value, Exception)
-    assert str(err.value) == "Number of histogram bins must be positive integer"
+    assert str(err.value) == "Number of histogram bins must be a positive integer"
 
 
 def test_local_equalization_filter_on_gs_image():
