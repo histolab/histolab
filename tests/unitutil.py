@@ -2,11 +2,14 @@
 
 """Functions that make mocking with pytest easier and more readable."""
 
-from unittest.mock import ANY, call  # noqa # isort:skip
-from unittest.mock import create_autospec, patch, PropertyMock  # isort:skip
+import os
+import sys
 
 import numpy as np
 import PIL
+
+from unittest.mock import ANY, call  # noqa # isort:skip
+from unittest.mock import create_autospec, patch, PropertyMock  # isort:skip
 
 
 def dict_list_eq(l1, l2):
@@ -79,6 +82,15 @@ def property_mock(request, cls, prop_name, **kwargs):
     _patch = patch.object(cls, prop_name, new_callable=PropertyMock, **kwargs)
     request.addfinalizer(_patch.stop)
     return _patch.start()
+
+
+def on_ci():
+    # GitHub Actions, Travis and AppVeyor have "CI"
+    return "CI" in os.environ
+
+
+def is_win32():
+    return sys.platform.startswith("win32")
 
 
 class PILImageMock:
