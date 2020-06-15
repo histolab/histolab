@@ -264,7 +264,26 @@ class RandomTiler(Tiler):
             if valid_tile_counter > self.n_tiles:
                 break
 
-    def _tile_filename(self, tile_wsi_coords, tiles_counter):
+    def _tile_filename(
+        self, tile_wsi_coords: CoordinatePair, tiles_counter: int
+    ) -> str:
+        """Return the tile filename according to its 0-level coordinates and a counter.
+
+        Parameters
+        ----------
+        tile_wsi_coords : CoordinatePair
+            0-level coordinates of the slide the tile has been extracted from.
+        tiles_counter : int
+            Counter of extracted tiles.
+
+        Returns
+        -------
+        str
+            Tile filename, according to the format
+            `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}"
+            "-{y_br_wsi}{suffix}`
+        """
+
         x_ul_wsi, y_ul_wsi, x_br_wsi, y_br_wsi = tile_wsi_coords
         tile_filename = (
             f"{self.prefix}tile_{tiles_counter}_level{self.level}_{x_ul_wsi}-{y_ul_wsi}"
