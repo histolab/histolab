@@ -156,6 +156,56 @@ class RgbToHed(object):
         return self.__class__.__name__ + "()"
 
 
+class HematoxylinChannel(object):
+    """Obtain Hematoxylin channel from RGB image.
+
+    Input image is first converted into HED space and the the hematoxylin channel is
+    rescaled for increased contrast.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Greyscale image corresponding to input image with Hematoxylin channel enhanced.
+    """
+
+    def __call__(self, img):
+        hematoxylin = F.hematoxylin_channel(img)
+        return hematoxylin
+
+    def __repr__(self):
+        return self.__class__.__name__ + "()"
+
+
+class EosinChannel(object):
+    """Obtain Eosin channel from RGB image.
+
+    Input image is first converted into HED space and the the Eosin channel is
+    rescaled for increased contrast.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Greyscale image corresponding to input image with Eosin channel enhanced.
+    """
+
+    def __call__(self, img):
+        eosin = F.eosin_channel(img)
+        return eosin
+
+    def __repr__(self):
+        return self.__class__.__name__ + "()"
+
+
 class RgbToHsv(object):
     """Convert RGB channels to HSV channels.
 

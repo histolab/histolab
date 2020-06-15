@@ -46,6 +46,32 @@ class DescribeImageFilters(object):
         F_rgb_to_hed.assert_called_once_with(image)
         assert type(rgb_to_hed(image)) == PIL.Image.Image
 
+    def it_calls_hematoxylin_channel_functional(self, request):
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        F_hematoxylin_channel = function_mock(
+            request, "src.histolab.filters.image_filters_functional.hematoxylin_channel"
+        )
+        F_hematoxylin_channel.return_value = image
+        hematoxylin_channel = imf.HematoxylinChannel()
+
+        hematoxylin_channel(image)
+
+        F_hematoxylin_channel.assert_called_once_with(image)
+        assert type(hematoxylin_channel(image)) == PIL.Image.Image
+
+    def it_calls_eosin_channel_functional(self, request):
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        F_eosin_channel = function_mock(
+            request, "src.histolab.filters.image_filters_functional.eosin_channel"
+        )
+        F_eosin_channel.return_value = image
+        eosin_channel = imf.EosinChannel()
+
+        eosin_channel(image)
+
+        F_eosin_channel.assert_called_once_with(image)
+        assert type(eosin_channel(image)) == PIL.Image.Image
+
     def it_calls_rgb_to_hsv_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_rgb_to_hsv = function_mock(
