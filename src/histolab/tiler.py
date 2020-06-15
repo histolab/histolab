@@ -93,7 +93,7 @@ class RandomTiler(Tiler):
     @tile_size.setter
     def tile_size(self, tile_size_: Tuple[int, int]):
         if tile_size_[0] < 1 or tile_size_[1] < 1:
-            raise ValueError(f"Tile size cannot be negative ({tile_size_})")
+            raise ValueError(f"Tile size must be greater than 0 ({tile_size_})")
         self._valid_tile_size = tile_size_
 
     @property
