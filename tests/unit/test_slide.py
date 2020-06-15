@@ -24,10 +24,10 @@ from ..unitutil import (
     function_mock,
     initializer_mock,
     instance_mock,
-    method_mock,
-    property_mock,
-    on_ci,
     is_win32,
+    method_mock,
+    on_ci,
+    property_mock,
 )
 
 
@@ -426,11 +426,14 @@ class Describe_Slide(object):
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
+
         slide.save_thumbnail()
+
         assert ImageShow.show(PIL.Image.open(slide.thumbnail_path))
 
     def but_it_raises_error_when_it_doesnt_exist(self):
         slide = Slide("a/b", "processed")
+
         with pytest.raises(FileNotFoundError) as err:
             slide.show()
 
@@ -439,6 +442,19 @@ class Describe_Slide(object):
             == "Cannot display the slide thumbnail:[Errno 2] No such file or "
             "directory: 'processed/thumbnails/b.png'"
         )
+
+    def it_knows_if_coords_are_valid(self, request, valid_coords_fixture, tmpdir):
+        coords, expected_result = valid_coords_fixture
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+
+        _are_valid = slide._are_valid_coords(coords)
+
+        assert type(_are_valid) == bool
+        assert _are_valid == expected_result
 
     # fixtures -------------------------------------------------------
 
@@ -555,6 +571,17 @@ class Describe_Slide(object):
     def slide_name_fixture(self, request):
         slide_path, expceted_value = request.param
         return slide_path, expceted_value
+
+    @pytest.fixture(
+        params=[
+            (CoordinatePair(0, 128, 0, 128), True),
+            (CoordinatePair(800000, 90000, 8000010, 90010), False),
+            (CoordinatePair(800000, 90000, -1, 90010), False),
+        ]
+    )
+    def valid_coords_fixture(self, request):
+        coords, expected_result = request.param
+        return coords, expected_result
 
     # fixture components ---------------------------------------------
 

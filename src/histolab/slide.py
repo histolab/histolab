@@ -134,12 +134,7 @@ class Slide(object):
             Image containing the selected tile
         """
 
-        if (
-            coords.x_ul >= self.dimensions[0]
-            or coords.x_br >= self.dimensions[0]
-            or coords.y_ul >= self.dimensions[1]
-            or coords.y_br >= self.dimensions[1]
-        ):
+        if not self._are_valid_coords(coords):
             # OpenSlide doesn't complain if the coordinates for extraction are wrong,
             # but it returns an odd image.
             raise ValueError(
@@ -247,6 +242,26 @@ class Slide(object):
         return thumb_path
 
     # ---private interface methods and properties---
+
+    def _are_valid_coords(self, coords: CoordinatePair) -> bool:
+        """Check if ``coords`` are valid 0-level coordinates.
+
+        Parameters
+        ----------
+        coords : CoordinatePair
+            Coordinates at level 0 to check
+
+        Returns
+        -------
+        bool
+            True if the coordinates are valid, False otherwise
+        """
+        return (
+            0 <= coords.x_ul < self.dimensions[0]
+            and 0 <= coords.x_br < self.dimensions[0]
+            and 0 <= coords.y_ul < self.dimensions[1]
+            and 0 <= coords.y_br < self.dimensions[1]
+        )
 
     def _biggest_regions(self, regions: List[Region], n: int = 1) -> List[Region]:
         """Return the biggest ``n`` regions.
