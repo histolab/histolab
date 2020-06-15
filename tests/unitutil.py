@@ -101,6 +101,10 @@ class PILImageMock:
         "RGBA", size=(50, 50), color=(155, 0, 0)
     )
 
+    DIMS_50X50_RGB_RANDOM_COLOR = PIL.Image.fromarray(
+        (np.random.rand(500, 500, 3) * 255).astype("uint8")
+    ).convert("RGB")
+
 
 class NpArrayMock:
     ONES_30X30_UINT8 = np.ones([30, 30], dtype="uint8")
