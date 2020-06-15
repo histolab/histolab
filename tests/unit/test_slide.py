@@ -9,6 +9,7 @@ import openslide
 import PIL
 import pytest
 from matplotlib.figure import Figure as matplotlib_figure
+from PIL import ImageShow
 
 from src.histolab.filters.image_filters import Compose
 from src.histolab.slide import Slide, SlideSet
@@ -414,21 +415,17 @@ class Describe_Slide(object):
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
         slide.save_thumbnail()
-        assert slide.show()
+        assert ImageShow.show(PIL.Image.open(slide.thumbnail_path))
 
-    def but_it_raises_error_when_it_doesnt_exist(self, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+    def but_it_raises_error_when_it_doesnt_exist(self):
+        slide = Slide("a/b", "processed")
         with pytest.raises(Exception) as err:
             slide.show()
 
         assert (
             str(err.value)
             == "Cannot display the slide thumbnail:[Errno 2] No such file or "
-            "directory: 'processed/thumbnails/mywsi.png'"
+            "directory: 'processed/thumbnails/b.png'"
         )
 
     # fixtures -------------------------------------------------------
