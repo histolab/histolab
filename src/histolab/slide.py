@@ -165,6 +165,17 @@ class Slide(object):
         img_path = self._breadcumb(self._processed_path, scale_factor)
         return img_path
 
+    def show(self) -> None:
+        """Display the slide thumbnail.
+
+        NOTE: A new window of your OS image viewer will be opened.
+        """
+        try:
+            thumbnail = PIL.Image.open(self.thumbnail_path)
+            thumbnail.show()
+        except Exception as e:
+            raise Exception(f"Cannot display the slide thumbnail:{e}")
+
     @lazyproperty
     def thumbnail_path(self) -> str:
         """Returns thumbnail image path.
