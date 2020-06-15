@@ -23,7 +23,7 @@ class Describe_RandomTiler(object):
             RandomTiler((512, -1), 10, 0)
 
         assert isinstance(err.value, ValueError)
-        assert str(err.value) == "Tile size cannot be negative ((512, -1))"
+        assert str(err.value) == "Tile size must be greater than 0 ((512, -1))"
 
     def or_it_has_not_available_level_value(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
