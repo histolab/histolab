@@ -5,7 +5,7 @@ import pytest
 from src.histolab.slide import Slide
 from src.histolab.tiler import RandomTiler, Tiler
 
-from ..unitutil import ANY, PILImageMock, class_mock, initializer_mock
+from ..unitutil import ANY, PILImageMock, initializer_mock
 
 
 class Describe_RandomTiler(object):
@@ -55,7 +55,3 @@ class Describe_RandomTiler(object):
             str(err.value)
             == "The maximum number of iterations (3) must be grater than or equal to the maximum number of tiles (10)."
         )
-
-    @pytest.fixture
-    def Slide_(self, request):
-        return class_mock(request, "src.histolab.slide.Slide")
