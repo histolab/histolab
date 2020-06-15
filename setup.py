@@ -30,7 +30,7 @@ install_requires = [
     "numpy",
     "openslide-python",
     "Pillow",
-    "scikit-image==0.16.2",
+    "scikit-image",
     "scipy",
 ]
 

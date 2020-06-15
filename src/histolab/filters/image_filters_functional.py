@@ -78,8 +78,15 @@ def rgb_to_hed(img: Image.Image) -> Image.Image:
         Image in HED space
     """
     if img.mode not in ["RGB", "RGBA"]:
-        raise Exception("Input image must be RGB or RGBA")
-    img_arr = np.array(img)
+        raise Exception("Input image must be RGB.")
+    if img.mode == "RGBA":
+        img_arr = np.array(sk_color.rgba2rgb(img))
+        warn(
+            "Input image must be RGB. "
+            "NOTE: the image will be converted to RGB before HED conversion."
+        )
+    else:
+        img_arr = np.array(img)
     hed_arr = sk_color.rgb2hed(img_arr)
     hed = np_to_pil(hed_arr)
 
@@ -186,7 +193,7 @@ def adaptive_equalization(
         image with contrast enhanced by adaptive equalization.
     """
     if not (isinstance(nbins, int) and nbins > 0):
-        raise ValueError("Number of histogram bins must be positive integer")
+        raise ValueError("Number of histogram bins must be a positive integer")
     img_arr = np.array(img)
     adapt_equ = sk_exposure.equalize_adapthist(img_arr, nbins, clip_limit)
     adapt_equ = np_to_pil(adapt_equ)
