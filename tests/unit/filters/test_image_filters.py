@@ -5,7 +5,7 @@ import PIL
 
 from src.histolab.filters import image_filters as imf
 
-from ..unitutil import NpArrayMock, PILImageMock, function_mock
+from ...unitutil import NpArrayMock, PILImageMock, function_mock
 
 
 class DescribeImageFilters(object):

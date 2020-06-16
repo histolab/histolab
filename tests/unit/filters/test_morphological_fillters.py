@@ -5,8 +5,8 @@ import skimage.morphology
 
 from src.histolab.filters import morphological_filters as mof
 
-from ..unitutil import NpArrayMock, function_mock
-from ..base import IMAGE1_RGB, IMAGE2_RGBA
+from ...unitutil import NpArrayMock, function_mock
+from ...base import IMAGE1_RGB, IMAGE2_RGBA
 
 
 class DescribeMorphologicalFilters(object):
@@ -27,7 +27,7 @@ class DescribeMorphologicalFilters(object):
     def it_calls_remove_small_holes_filter_functional(self, request):
         img_arr = IMAGE2_RGBA
         F_remove_small_holes = function_mock(
-            request, "skimage.morphology.remove_small_holes",
+            request, "skimage.morphology.remove_small_holes"
         )
         F_remove_small_holes.return_value = img_arr
         remove_small_holes = mof.RemoveSmallHoles()
@@ -41,7 +41,7 @@ class DescribeMorphologicalFilters(object):
         mask_arr = NpArrayMock.ONES_500X500X4_BOOL
         disk = skimage.morphology.disk(5)
         F_binary_erosion = function_mock(
-            request, "scipy.ndimage.morphology.binary_erosion",
+            request, "scipy.ndimage.morphology.binary_erosion"
         )
         F_binary_erosion.return_value = mask_arr
 
@@ -60,7 +60,7 @@ class DescribeMorphologicalFilters(object):
         mask_arr = NpArrayMock.ONES_500X500X4_BOOL
         disk = skimage.morphology.disk(5)
         F_binary_dilation = function_mock(
-            request, "scipy.ndimage.morphology.binary_dilation",
+            request, "scipy.ndimage.morphology.binary_dilation"
         )
         F_binary_dilation.return_value = mask_arr
 
@@ -79,7 +79,7 @@ class DescribeMorphologicalFilters(object):
         mask_arr = NpArrayMock.ONES_500X500X4_BOOL
         disk = skimage.morphology.disk(3)
         F_binary_opening = function_mock(
-            request, "scipy.ndimage.morphology.binary_opening",
+            request, "scipy.ndimage.morphology.binary_opening"
         )
         F_binary_opening.return_value = mask_arr
 
@@ -98,7 +98,7 @@ class DescribeMorphologicalFilters(object):
         mask_arr = NpArrayMock.ONES_500X500X4_BOOL
         disk = skimage.morphology.disk(3)
         F_binary_closing = function_mock(
-            request, "scipy.ndimage.morphology.binary_closing",
+            request, "scipy.ndimage.morphology.binary_closing"
         )
         F_binary_closing.return_value = mask_arr
 
