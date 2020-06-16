@@ -130,7 +130,7 @@ class Slide(object):
         Parameters
         ----------
         coords : CoordinatePair
-            Coordinates in the first level (0)
+            Coordinates at level 0
         level : int
             Level from which to extract the tile
 
