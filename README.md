@@ -25,7 +25,7 @@
 * [Contribution guidelines](#contribution-guidelines)
 
 
-## Motivation :meeseeks:
+## Motivation 
 The histo-pathological analysis of tissue sections is the gold standard to assess the presence of many complex diseases, such as tumors, and understand their nature. 
 In daily practice, pathologists usually perform microscopy examination of tissue slides considering a limited number of regions and the clinical evaulation relies on several factors such as nuclei morphology, cell distribution, and color (staining): this process is time consuming, could lead to information loss, and suffers from inter-observer variability.
 
@@ -39,24 +39,24 @@ The aim of this project is to provide a tool for WSI processing in a reproducibl
 
 ## Getting Started
 
-### Prerequisites :hatching_chick:
+### Prerequisites 
 
 HistoLab has only one sistem-wide dependency: OpenSlide.
 
 You can download and install it from [OpenSlide](https://openslide.org/download/) according to your operating system.
 
 
-### Installation :hatched_chick:
+### Installation 
 
 ```
 pip install histolab
 ```
 
-### Quickstart :chicken:
+### Quickstart 
 
 COMING SOON!
 
-## Versioning
+## Versioning <img align="left" width="50" height="50" src="stickers/rick-and-morty-portal.png">
 
 We use [PEP 440](https://www.python.org/dev/peps/pep-0440/) for versioning. 
 
