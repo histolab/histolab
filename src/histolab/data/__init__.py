@@ -6,7 +6,7 @@
 
 import os
 import shutil
-from typing import Union
+from typing import Tuple
 
 import openslide
 
@@ -210,7 +210,7 @@ if has_pooch:
     _init_pooch()
 
 
-def _load_svs(f: str) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
+def _load_svs(f: str) -> Tuple[openslide.OpenSlide, str]:
     """Load an image file located in the data directory.
 
     Parameters
@@ -235,10 +235,10 @@ def _load_svs(f: str) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
         raise openslide.OpenSlideError(
             "Your wsi has something broken inside, a doctor is needed"
         )
-    return svs
+    return svs, _fetch(f)
 
 
-def cmu_small_region() -> Union[openslide.OpenSlide, openslide.ImageSlide]:
+def cmu_small_region() -> Tuple[openslide.OpenSlide, str]:
     """Carnegie Mellon University MRXS sample tissue
 
     Licensed under a CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
@@ -251,9 +251,7 @@ def cmu_small_region() -> Union[openslide.OpenSlide, openslide.ImageSlide]:
     return _load_svs("data/cmu_small_region.svs")
 
 
-def aorta_tissue() -> Union[
-    openslide.OpenSlide, openslide.ImageSlide
-]:  # pragma: no cover
+def aorta_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """Aorta tissue, brightfield, JPEG 2000, YCbCr
 
     This image is avaliable here
@@ -269,9 +267,7 @@ def aorta_tissue() -> Union[
     return _load_svs("aperio/JP2K-33003-1.svs")
 
 
-def heart_tissue() -> Union[
-    openslide.OpenSlide, openslide.ImageSlide
-]:  # pragma: no cover
+def heart_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """Heart tissue, brightfield, JPEG 2000, YCbCr
 
     This image is avaliable here
@@ -287,9 +283,7 @@ def heart_tissue() -> Union[
     return _load_svs("aperio/JP2K-33003-2.svs")
 
 
-def breast_tissue() -> Union[
-    openslide.OpenSlide, openslide.ImageSlide
-]:  # pragma: no cover
+def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """Breast tissue, TCGA
 
     This image is avaliable here
@@ -307,8 +301,8 @@ def breast_tissue() -> Union[
     return _load_svs("tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8")
 
 
-def breast_tissue_diagnostic_green_pen() -> Union[
-    openslide.OpenSlide, openslide.ImageSlide
+def breast_tissue_diagnostic_green_pen() -> Tuple[
+    openslide.OpenSlide, str
 ]:  # pragma: no cover
     """Breast tissue, TCGA. Diagnostic slide with green pen.
 
@@ -327,8 +321,8 @@ def breast_tissue_diagnostic_green_pen() -> Union[
     return _load_svs("tcga/breast/da36d3aa-9b19-492a-af4f-cc028a926d96")
 
 
-def breast_tissue_diagnostic_red_pen() -> Union[
-    openslide.OpenSlide, openslide.ImageSlide
+def breast_tissue_diagnostic_red_pen() -> Tuple[
+    openslide.OpenSlide, str
 ]:  # pragma: no cover
     """Breast tissue, TCGA. Diagnostic slide with red pen.
 
@@ -347,8 +341,8 @@ def breast_tissue_diagnostic_red_pen() -> Union[
     return _load_svs("tcga/breast/f8b4cee6-9149-45b4-ae53-82b0547e1e34")
 
 
-def breast_tissue_diagnostic_black_pen() -> Union[
-    openslide.OpenSlide, openslide.ImageSlide
+def breast_tissue_diagnostic_black_pen() -> Tuple[
+    openslide.OpenSlide, str
 ]:  # pragma: no cover
     """Breast tissue, TCGA. Diagnostic slide with black pen.
 
