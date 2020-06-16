@@ -37,7 +37,7 @@ However, processing WSIs is far from being trivial. First of all, WSIs can be st
 
 The aim of this project is to provide a tool for WSI processing in a reproducible environment to support clinical and scientific research. HistoLab is designed to handle WSIs, automatically detect the tissue, and retrieve informative tiles, and it can thus be integrated in a deep learning pipeline.
 
-## Getting Started
+## Getting Started <img align="lef" width="30" height="30" src="stickers/show-me-what-you-got.png">
 
 ### Prerequisites 
 
@@ -56,26 +56,26 @@ pip install histolab
 
 COMING SOON!
 
-## Versioning <img align="left" width="50" height="50" src="stickers/rick-and-morty-portal.png">
+## Versioning <img align="lef" width="30" height="30" src="stickers/rick-and-morty-portal.png">
 
 We use [PEP 440](https://www.python.org/dev/peps/pep-0440/) for versioning. 
 
-## Authors :woman_technologist: :technologist: 
+## Authors <img align="lef" width="30" height="30" src="stickers/unity.png">
 
 * **[Alessia Marcolini](https://github.com/alessiamarcolini)** 
 * **[Ernesto Arbitrio](https://github.com/ernestoarbitrio)**
 * **[Nicole Bussola](https://gitlab.fbk.eu/bussola)**
 
 
-## License
+## License <img align="lef" width="30" height="30" src="stickers/cornelius.jpeg">
 
 This project is licensed under `Apache License  Version 2.0` - see the [LICENSE.txt](https://github.com/MPBA/histolab/blob/master/LICENSE.txt) file for details
 
-## Roadmap
+## Roadmap <img align="lef" width="30" height="30" src="stickers/meeseeks.png">
 
 [Open issues](https://github.com/MPBA/histolab/issues)
 
-## Acknowledgements
+## Acknowledgements <img align="lef" width="30" height="30" src="stickers/poopy.png">
 
 * [https://github.com/deroneriksson](https://github.com/deroneriksson)
 
