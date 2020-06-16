@@ -43,11 +43,11 @@ class Describe_RandomTiler(object):
         slide = Slide(slide_path, "processed")
         random_tiler = RandomTiler((512, 512), 10, 3)
 
-        with pytest.raises(IndexError) as err:
+        with pytest.raises(ValueError) as err:
             random_tiler.extract(slide)
 
-        assert isinstance(err.value, IndexError)
-        assert str(err.value) == "tuple index out of range"
+        assert isinstance(err.value, ValueError)
+        assert str(err.value) == "Level 3 not available. Number of available levels: 1"
 
     def or_it_has_negative_level_value(self, request):
         with pytest.raises(ValueError) as err:
