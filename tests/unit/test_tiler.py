@@ -1,6 +1,7 @@
 import os
 from unittest.mock import call
 
+import numpy as np
 import pytest
 
 from src.histolab.slide import Slide
@@ -109,7 +110,7 @@ class Describe_RandomTiler(object):
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
         _box_mask_lvl = method_mock(request, RandomTiler, "box_mask_lvl")
-        _box_mask_lvl.return_value = NpArrayMock.ONES_500X500X4_BOOL
+        _box_mask_lvl.return_value = NpArrayMock.ONES_500X500_BOOL
         _tile_size = property_mock(request, RandomTiler, "tile_size")
         _tile_size.return_value = (128, 128)
         _np_random_choice1 = function_mock(request, "numpy.random.choice")
@@ -130,6 +131,33 @@ class Describe_RandomTiler(object):
             reference_size=(500, 500),
             target_size=(500, 500),
         )
+
+    @pytest.mark.parametrize(
+        "check_tissue, expected_box",
+        (
+            (False, NpArrayMock.ONES_500X500_BOOL),
+            (True, NpArrayMock.RANDOM_500X500_BOOL),
+        ),
+    )
+    def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        _biggest_tissue_box_mask = property_mock(
+            request, Slide, "biggest_tissue_box_mask"
+        )
+        if check_tissue:
+            _biggest_tissue_box_mask.return_value = expected_box
+        random_tiler = RandomTiler((128, 128), 10, 0, check_tissue=check_tissue)
+
+        box_mask = random_tiler.box_mask(slide)
+
+        if check_tissue:
+            _biggest_tissue_box_mask.assert_called_once_with()
+        assert type(box_mask) == np.ndarray
+        np.testing.assert_array_almost_equal(box_mask, expected_box)
 
     # fixtures -------------------------------------------------------
 
