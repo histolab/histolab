@@ -463,12 +463,12 @@ class Describe_Slide(object):
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
-        with pytest.raises(IndexError) as err:
+        with pytest.raises(ValueError) as err:
             slide.level_dimensions(level=3)
 
-        assert str(err.value) == "No level: 3 for this slide"
+        assert str(err.value) == "Level 3 not available. Number of available levels: 1"
 
-    def it_knows_if_coords_are_valid(self, request, valid_coords_fixture, tmpdir):
+    def it_knows_if_coords_are_valid(self, valid_coords_fixture, tmpdir):
         coords, expected_result = valid_coords_fixture
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
