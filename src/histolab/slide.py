@@ -92,7 +92,13 @@ class Slide(object):
         -------
         dimensions : tuple(width, height)
         """
-        return self._wsi.level_dimensions[level]
+        try:
+            return self._wsi.level_dimensions[level]
+        except IndexError:
+            raise ValueError(
+                f"Level {level} not available. Number of available levels: "
+                f"{len(self._wsi.level_dimensions)}"
+            )
 
     @lazyproperty
     @lru_cache(maxsize=100)
