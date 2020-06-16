@@ -251,7 +251,7 @@ def kmeans_segmentation(
     """
     img_arr = np.array(img)
     labels = sk_segmentation.slic(img_arr, compactness, n_segments, start_label=0)
-    kmeans_segmentation = sk_color.label2rgb(labels, img_arr, kind="avg")
+    kmeans_segmentation = sk_color.label2rgb(labels, img_arr, kind="avg", bg_label=-1)
     return np_to_pil(kmeans_segmentation)
 
 
@@ -290,7 +290,7 @@ def rag_threshold(
     labels = sk_segmentation.slic(img_arr, compactness, n_segments, start_label=0)
     g = sk_future.graph.rag_mean_color(img_arr, labels)
     labels2 = sk_future.graph.cut_threshold(labels, g, threshold)
-    rag = sk_color.label2rgb(labels2, img_arr, kind="avg")
+    rag = sk_color.label2rgb(labels2, img_arr, kind="avg", bg_label=-1)
     return np_to_pil(rag)
 
 
