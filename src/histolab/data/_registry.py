@@ -11,6 +11,9 @@ registry = {
     "aperio/JP2K-33003-1.svs": "6205ccf75a8fa6c32df7c5c04b7377398971a490fb6b320d50d91f7ba6a0e6fd",
     "aperio/JP2K-33003-2.svs": "1a13cef86b55b51127cebd94a1f6069f7de494c98e3e708640d1ce7181d9e3fd",
     "tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8": "03f542afa2d70224d594b2cca33b99977a5c0e41b1a8d03471ab3cf62ea3c4b3",
+    "tcga/breast/da36d3aa-9b19-492a-af4f-cc028a926d96": "2172cca68a8b7722d281174a74c4f112d0f52fc71710d7d605f401731c783fc9",
+    "tcga/breast/f8b4cee6-9149-45b4-ae53-82b0547e1e34": "55c694262c4d44b342e08eb3ef2082eeb9e9deeb3cb445e4776419bb9fa7dc21",
+    "tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461": "95163831d9076bb5e5b21790933dee9535a3607ba35bd6ae425374a45ecb1ba6",
 }
 
 aperio_repo_url = "http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio"
@@ -20,6 +23,9 @@ registry_urls = {
     "aperio/JP2K-33003-1.svs": f"{aperio_repo_url}/JP2K-33003-1.svs",
     "aperio/JP2K-33003-2.svs": f"{aperio_repo_url}/JP2K-33003-2.svs",
     "tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8": f"{tcga_repo_url}/9c960533-2e58-4e54-97b2-8454dfb4b8c8",
+    "tcga/breast/da36d3aa-9b19-492a-af4f-cc028a926d96": f"{tcga_repo_url}/da36d3aa-9b19-492a-af4f-cc028a926d96",
+    "tcga/breast/f8b4cee6-9149-45b4-ae53-82b0547e1e34": f"{tcga_repo_url}/f8b4cee6-9149-45b4-ae53-82b0547e1e34",
+    "tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461": f"{tcga_repo_url}/31e248bf-ee24-4d18-bccb-47046fccb461",
 }
 
 legacy_registry = {
