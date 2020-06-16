@@ -60,7 +60,7 @@ COMING SOON!
 
 We use [PEP 440](https://www.python.org/dev/peps/pep-0440/) for versioning. 
 
-## Authors
+## Authors :technologist: 
 
 * **[Alessia Marcolini](https://github.com/alessiamarcolini)** 
 * **[Ernesto Arbitrio](https://github.com/ernestoarbitrio)**
