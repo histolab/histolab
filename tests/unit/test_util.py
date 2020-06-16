@@ -23,17 +23,33 @@ from tests.base import (
     SPARSE_COMPLEX_MASK,
 )
 
-from src.histolab.types import CoordinatePair
-from src.histolab.util import (
+from histolab.types import CoordinatePair
+from histolab.util import (
     apply_mask_image,
     lazyproperty,
     np_to_pil,
     polygon_to_mask_array,
     resize_mask,
     threshold_to_mask,
+    scale_coordinates,
 )
 
 from ..util import load_expectation
+
+
+@pytest.mark.parametrize(
+    "ref_coords, ref_size, target_size, expected_value",
+    (
+        (CoordinatePair(0, 2, 4, 5), (10, 10), (5, 5), (0, 1, 2, 2)),
+        (CoordinatePair(90, 112, 124, 125), (100, 100), (95, 95), (85, 106, 117, 118)),
+    ),
+)
+def test_scale_coordinates(ref_coords, ref_size, target_size, expected_value):
+    x_ul, y_ul, x_br, y_br = expected_value
+
+    scaled_coords = scale_coordinates(ref_coords, ref_size, target_size)
+
+    assert scaled_coords == CoordinatePair(x_ul, y_ul, x_br, y_br)
 
 
 @pytest.mark.parametrize(
