@@ -12,7 +12,7 @@ import pytest
 from matplotlib.figure import Figure as matplotlib_figure
 from PIL import ImageShow
 
-from src.histolab.filters.image_filters import Compose
+from histolab.filters.image_filters import Compose
 from src.histolab.slide import Slide, SlideSet
 from src.histolab.types import CoordinatePair, Region
 
@@ -302,6 +302,7 @@ class Describe_Slide(object):
             RemoveSmallHoles_(),
             RemoveSmallObjects_(),
         ]
+
         assert type(main_tissue_areas_mask_filters_) == Compose
 
     def it_knows_regions_from_binary_mask(self, request):
@@ -595,28 +596,28 @@ class Describe_Slide(object):
 
     @pytest.fixture
     def RgbToGrayscale_(self, request):
-        return class_mock(request, "src.histolab.filters.image_filters.RgbToGrayscale")
+        return class_mock(request, "histolab.filters.image_filters.RgbToGrayscale")
 
     @pytest.fixture
     def OtsuThreshold_(self, request):
-        return class_mock(request, "src.histolab.filters.image_filters.OtsuThreshold")
+        return class_mock(request, "histolab.filters.image_filters.OtsuThreshold")
 
     @pytest.fixture
     def BinaryDilation_(self, request):
         return class_mock(
-            request, "src.histolab.filters.morphological_filters.BinaryDilation"
+            request, "histolab.filters.morphological_filters.BinaryDilation"
         )
 
     @pytest.fixture
     def RemoveSmallHoles_(self, request):
         return class_mock(
-            request, "src.histolab.filters.morphological_filters.RemoveSmallHoles"
+            request, "histolab.filters.morphological_filters.RemoveSmallHoles"
         )
 
     @pytest.fixture
     def RemoveSmallObjects_(self, request):
         return class_mock(
-            request, "src.histolab.filters.morphological_filters.RemoveSmallObjects"
+            request, "histolab.filters.morphological_filters.RemoveSmallObjects"
         )
 
 
