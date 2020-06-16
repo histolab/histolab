@@ -231,7 +231,7 @@ class Slide(object):
         """
         try:
             thumbnail = PIL.Image.open(self.thumbnail_path)
-            thumbnail.show()  # pragma:nocover
+            thumbnail.show()  # pragma: no cover
         except FileNotFoundError as e:
             raise FileNotFoundError(f"Cannot display the slide thumbnail:{e}")
 
@@ -432,7 +432,7 @@ class Slide(object):
         except openslide.OpenSlideError:
             raise openslide.OpenSlideError(
                 "Your wsi has something broken inside, a doctor is needed"
-            )
+            )  # pragma: no cover
         except FileNotFoundError:
             raise FileNotFoundError("The wsi path resource doesn't exist")
         return slide
