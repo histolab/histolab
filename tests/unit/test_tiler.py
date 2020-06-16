@@ -81,6 +81,28 @@ class Describe_RandomTiler(object):
         assert isinstance(err.value, ValueError)
         assert str(err.value) == "Seed must be between 0 and 2**32 - 1"
 
+    @pytest.mark.parametrize(
+        "tile_size", ((512, 512), (128, 128), (10, 10)),
+    )
+    def it_knows_its_tile_size(self, request, tile_size):
+        random_tiler = RandomTiler(tile_size, 10, 0)
+
+        tile_size_ = random_tiler.tile_size
+
+        assert type(tile_size_) == tuple
+        assert tile_size_ == tile_size
+
+    @pytest.mark.parametrize(
+        "max_iter", (1000, 10, 3000),
+    )
+    def it_knows_its_max_iter(self, request, max_iter):
+        random_tiler = RandomTiler((128, 128), 10, 0, max_iter=max_iter)
+
+        max_iter_ = random_tiler.max_iter
+
+        assert type(max_iter_) == int
+        assert max_iter_ == max_iter
+
     def it_knows_its_tile_filename(self, request, tile_filename_fixture):
         (
             tile_size,
