@@ -419,7 +419,7 @@ class Describe_Slide(object):
 
     def but_it_raises_error_when_it_doesnt_exist(self):
         slide = Slide("a/b", "processed")
-        with pytest.raises(Exception) as err:
+        with pytest.raises(FileNotFoundError) as err:
             slide.show()
 
         assert (

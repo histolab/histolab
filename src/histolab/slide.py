@@ -173,8 +173,8 @@ class Slide(object):
         try:
             thumbnail = PIL.Image.open(self.thumbnail_path)
             thumbnail.show()
-        except Exception as e:
-            raise Exception(f"Cannot display the slide thumbnail:{e}")
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"Cannot display the slide thumbnail:{e}")
 
     @lazyproperty
     def thumbnail_path(self) -> str:
