@@ -231,7 +231,7 @@ class Slide(object):
         """
         try:
             thumbnail = PIL.Image.open(self.thumbnail_path)
-            thumbnail.show()
+            thumbnail.show()  # pragma:nocover
         except FileNotFoundError as e:
             raise FileNotFoundError(f"Cannot display the slide thumbnail:{e}")
 
