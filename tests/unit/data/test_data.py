@@ -13,5 +13,5 @@ def test_data_dir():
 
 def test_cmu_small_region():
     """ Test that "cmu_small_region" svs can be loaded. """
-    cmu_small_region = data.cmu_small_region()
+    cmu_small_region, path = data.cmu_small_region()
     assert cmu_small_region.dimensions == (2220, 2967)
