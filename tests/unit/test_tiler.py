@@ -1,4 +1,5 @@
 import os
+from unittest.mock import call
 
 import pytest
 
@@ -6,7 +7,15 @@ from src.histolab.slide import Slide
 from src.histolab.tiler import RandomTiler, Tiler
 from src.histolab.types import CoordinatePair
 
-from ..unitutil import ANY, PILImageMock, initializer_mock
+from ..unitutil import (
+    ANY,
+    NpArrayMock,
+    PILImageMock,
+    function_mock,
+    initializer_mock,
+    method_mock,
+    property_mock,
+)
 
 
 class Describe_RandomTiler(object):
@@ -90,7 +99,39 @@ class Describe_RandomTiler(object):
 
         _filename = random_tiler._tile_filename(tile_coords, tiles_counter)
 
+        assert type(_filename) == str
         assert _filename == expected_filename
+
+    def it_can_generate_random_coordinates(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        _box_mask_lvl = method_mock(request, RandomTiler, "box_mask_lvl")
+        _box_mask_lvl.return_value = NpArrayMock.ONES_500X500X4_BOOL
+        _tile_size = property_mock(request, RandomTiler, "tile_size")
+        _tile_size.return_value = (128, 128)
+        _np_random_choice1 = function_mock(request, "numpy.random.choice")
+        _np_random_choice1.return_value = 0
+        _np_random_choice2 = function_mock(request, "numpy.random.choice")
+        _np_random_choice2.return_value = 0
+        _scale_coordinates = function_mock(
+            request, "src.histolab.tiler.scale_coordinates"
+        )
+        random_tiler = RandomTiler((128, 128), 10, 0)
+
+        random_tiler._random_tile_coordinates(slide)
+
+        _box_mask_lvl.assert_called_once_with(random_tiler, slide)
+        _tile_size.assert_has_calls([call((128, 128))])
+        _scale_coordinates.assert_called_once_with(
+            reference_coords=CoordinatePair(x_ul=0, y_ul=0, x_br=128, y_br=128),
+            reference_size=(500, 500),
+            target_size=(500, 500),
+        )
+
+    # fixtures -------------------------------------------------------
 
     @pytest.fixture(
         params=(
