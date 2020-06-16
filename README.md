@@ -4,7 +4,7 @@
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/MPBA/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MPBA/histolab/context:python)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-# HistoLab
+<img width="390" alt="histolab" src="https://user-images.githubusercontent.com/4196091/84828232-048fcc00-b026-11ea-8caa-5c14bb8565bd.png">
 
 ### NOTE: WORK IN PROGRESS PROJECT
 
