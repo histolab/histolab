@@ -98,7 +98,7 @@ def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
 def hematoxylin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
     """Obtain Hematoxylin channel from RGB image.
 
-    Input image is first converted into HED space and the the hematoxylin channel is
+    Input image is first converted into HED space and the hematoxylin channel is
     rescaled for increased contrast.
 
     Parameters
@@ -121,7 +121,7 @@ def hematoxylin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
 def eosin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
     """Obtain Eosin channel from RGB image.
 
-    Input image is first converted into HED space and the the Eosin channel is
+    Input image is first converted into HED space and the Eosin channel is
     rescaled for increased contrast.
 
     Parameters
