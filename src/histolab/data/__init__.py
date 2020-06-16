@@ -6,7 +6,7 @@
 
 import os
 import shutil
-from typing import Tuple
+from typing import Union, Tuple
 
 import openslide
 
