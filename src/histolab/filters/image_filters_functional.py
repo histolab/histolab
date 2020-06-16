@@ -250,7 +250,7 @@ def kmeans_segmentation(
         color for that segment.
     """
     img_arr = np.array(img)
-    labels = sk_segmentation.slic(img_arr, compactness, n_segments)
+    labels = sk_segmentation.slic(img_arr, compactness, n_segments, start_label=0)
     kmeans_segmentation = sk_color.label2rgb(labels, img_arr, kind="avg")
     return np_to_pil(kmeans_segmentation)
 
@@ -287,7 +287,7 @@ def rag_threshold(
     if img.mode == "RGBA":
         raise ValueError("Input image cannot be RGBA")
     img_arr = np.array(img)
-    labels = sk_segmentation.slic(img_arr, compactness, n_segments)
+    labels = sk_segmentation.slic(img_arr, compactness, n_segments, start_label=0)
     g = sk_future.graph.rag_mean_color(img_arr, labels)
     labels2 = sk_future.graph.cut_threshold(labels, g, threshold)
     rag = sk_color.label2rgb(labels2, img_arr, kind="avg")
