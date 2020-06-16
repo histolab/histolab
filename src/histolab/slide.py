@@ -55,6 +55,12 @@ class Slide(object):
         self._path = path
         self._processed_path = processed_path
 
+    def __repr__(self):
+        return (
+            self.__class__.__name__
+            + f"(path={self._path}, processed_path={self._processed_path})"
+        )
+
     # ---public interface methods and properties---
 
     @lazyproperty
