@@ -4,6 +4,7 @@ import os
 from collections import namedtuple
 from unittest.mock import call
 
+import math
 import numpy as np
 import openslide
 import PIL
@@ -234,6 +235,18 @@ class Describe_Slide(object):
         assert _resample[0].width == 300
         assert _resample[0].height == 400
         assert _resample[0].mode == "RGB"
+
+    def it_resamples_with_the_correct_scale_factor(self, tmpdir, resampled_dims_):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        resampled_dims_.return_value = (500, 500, 15, 15)
+
+        _resample = slide._resample(32)
+
+        assert _resample[1].shape == (math.floor(500 / 32), math.floor(500 / 32), 3)
 
     def it_can_save_scaled_image(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
