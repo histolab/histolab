@@ -60,7 +60,7 @@ COMING SOON!
 
 We use [PEP 440](https://www.python.org/dev/peps/pep-0440/) for versioning. 
 
-## Authors <img align="lef" width="30" height="30" src="stickers/unity.png">
+## Authors <img align="lef" width="50" height="30" src="stickers/unity.png">
 
 * **[Alessia Marcolini](https://github.com/alessiamarcolini)** 
 * **[Ernesto Arbitrio](https://github.com/ernestoarbitrio)**
@@ -75,7 +75,7 @@ This project is licensed under `Apache License  Version 2.0` - see the [LICENSE.
 
 [Open issues](https://github.com/MPBA/histolab/issues)
 
-## Acknowledgements <img align="lef" width="30" height="30" src="stickers/poopy.png">
+## Acknowledgements <img align="lef" width="30" height="50" src="stickers/poopy.png">
 
 * [https://github.com/deroneriksson](https://github.com/deroneriksson)
 
