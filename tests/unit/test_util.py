@@ -6,6 +6,17 @@ import operator
 
 import numpy as np
 import pytest
+
+from histolab.types import CoordinatePair
+from histolab.util import (
+    apply_mask_image,
+    lazyproperty,
+    np_to_pil,
+    polygon_to_mask_array,
+    resize_mask,
+    scale_coordinates,
+    threshold_to_mask,
+)
 from tests.base import (
     IMAGE1_GREY,
     IMAGE1_RGB,
@@ -21,17 +32,6 @@ from tests.base import (
     IMAGE4_RGBA_WHITE,
     SPARSE_BASE_MASK,
     SPARSE_COMPLEX_MASK,
-)
-
-from histolab.types import CoordinatePair
-from histolab.util import (
-    apply_mask_image,
-    lazyproperty,
-    np_to_pil,
-    polygon_to_mask_array,
-    resize_mask,
-    threshold_to_mask,
-    scale_coordinates,
 )
 
 from ..util import load_expectation
