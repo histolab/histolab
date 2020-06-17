@@ -34,8 +34,9 @@ import PIL
 from matplotlib.figure import Figure as matplotlib_figure
 from skimage.measure import label, regionprops
 
-import histolab.filters.image_filters as imf
-import histolab.filters.morphological_filters as mof
+# import .filters.image_filters as imf
+from .filters import morphological_filters as mof
+from .filters import image_filters as imf
 
 from .tile import Tile
 from .types import CoordinatePair, Region
