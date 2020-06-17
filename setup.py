@@ -29,11 +29,11 @@ version = re.search('__version__ = "([^"]+)"', init_py).group(1)
 install_requires = [
     "matplotlib",
     "numpy",
-    "git+https://github.com/openslide/openslide-python.git",  # temp requirement
     "Pillow",
     "scikit-image",
     "scipy",
     "sparse",
+    "openslide-python @ https://github.com/openslide/openslide-python/archive/master.zip#egg=openslide-python-1.1.1",  # noqa
 ]
 
 test_requires = ["pytest", "coverage", "pytest-cov==2.8.1", "coveralls", "pytest-mpl"]
