@@ -5,5 +5,6 @@ pycodestyle
 toml
 twine
 sphinx
+sphinx-rtd-theme
 ipdb
 isort
