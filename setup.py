@@ -29,7 +29,7 @@ version = re.search('__version__ = "([^"]+)"', init_py).group(1)
 install_requires = [
     "matplotlib",
     "numpy",
-    "openslide-python",
+    "git+https://github.com/openslide/openslide-python.git",  # temp requirement
     "Pillow",
     "scikit-image",
     "scipy",
