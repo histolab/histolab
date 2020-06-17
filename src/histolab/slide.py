@@ -102,12 +102,12 @@ class Slide(object):
 
     @lazyproperty
     @lru_cache(maxsize=100)
-    def biggest_tissue_box_mask(self) -> sparse.COO:
+    def biggest_tissue_box_mask(self) -> sparse._coo.core.COO:
         """Returns the binary mask of the box containing the max area of tissue.
 
         Returns
         -------
-        mask: sparse.COO
+        mask: sparse._coo.core.COO
             Binary mask of the box containing the max area of tissue.
 
         """
