@@ -58,12 +58,6 @@ pip install histolab
 from histolab.data import breast_tissue, heart_tissue
 ```
 
-
-```python
-from PIL import Image
-from IPython.display import Image as show_image
-```
-
 **NB** To use the data module, you need to install ```pooch```.
 
 Each data function outputs the corresponding slide as an OpenSlide object, and the path where the slide has been saved:
@@ -174,8 +168,14 @@ random_tiles_extractor.extract(breast_slide)
 ![breast 001](https://user-images.githubusercontent.com/31658006/84955724-0f1a9600-b0f8-11ea-92c9-3236dd16bca8.png)
 
 ```python
-random_tiles_extractor = RandomTiler(tile_size=(512,512), n_tiles=6, level=0, seed=42, check_tissue=True, prefix='processed/heart_slide/')
-
+random_tiles_extractor = RandomTiler(
+    tile_size=(512, 512),
+    n_tiles=6,
+    level=0,
+    seed=42,
+    check_tissue=True,
+    prefix="processed/heart_slide/",
+)
 random_tiles_extractor.extract(heart_slide)
 ```
 
