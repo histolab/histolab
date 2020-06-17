@@ -22,22 +22,20 @@ Slide is the main API class for manipulating slide objects.
 """
 
 import math
+import ntpath
 import os
 import pathlib
 from typing import List, Tuple, Union
 
 import matplotlib.pyplot as plt
-import ntpath
 import numpy as np
 import openslide
 import PIL
 from matplotlib.figure import Figure as matplotlib_figure
 from skimage.measure import label, regionprops
 
-# import .filters.image_filters as imf
-from .filters import morphological_filters as mof
 from .filters import image_filters as imf
-
+from .filters import morphological_filters as mof
 from .tile import Tile
 from .types import CoordinatePair, Region
 from .util import (
