@@ -149,7 +149,7 @@ breast_slide.show()
 heart_slide.show()
 ```
 
-![caption](images/thumbnails.png)
+![thumbnails](https://user-images.githubusercontent.com/31658006/84955475-a4695a80-b0f7-11ea-83d5-db7668801219.png)
 
 ### Tiles extraction
 
@@ -175,8 +175,7 @@ random_tiles_extractor.extract(breast_slide)
     6 Random Tiles have been saved.
 
 
-![caption](images/breast.png)
-
+![breast 001](https://user-images.githubusercontent.com/31658006/84955724-0f1a9600-b0f8-11ea-92c9-3236dd16bca8.png)
 
 ```python
 random_tiles_extractor = RandomTiler(tile_size=(512,512), n_tiles=6, level=0, seed=42, check_tissue=True, prefix='processed/heart_slide/')
@@ -193,8 +192,7 @@ random_tiles_extractor.extract(heart_slide)
     	 Tile 6 saved: processed/heart_slide/tile_6_level0_13281-33895-13793-34407.png
     6 Random Tiles have been saved.
 
-
-![caption](images/heart.png)
+![heart](https://user-images.githubusercontent.com/31658006/84955793-2c4f6480-b0f8-11ea-8970-592dc992d56d.png)
 
 
 ```python
