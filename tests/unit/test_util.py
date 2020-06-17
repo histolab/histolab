@@ -6,7 +6,19 @@ import operator
 
 import numpy as np
 import pytest
+
+from src.histolab.types import CoordinatePair
+from src.histolab.util import (
+    apply_mask_image,
+    lazyproperty,
+    np_to_pil,
+    polygon_to_mask_array,
+    resize_mask,
+    threshold_to_mask,
+)
 from tests.base import (
+    BASE_MASK,
+    COMPLEX_MASK,
     IMAGE1_GREY,
     IMAGE1_RGB,
     IMAGE1_RGBA,
@@ -19,20 +31,9 @@ from tests.base import (
     IMAGE4_GREY_WHITE,
     IMAGE4_RGB_WHITE,
     IMAGE4_RGBA_WHITE,
-    BASE_MASK,
-    COMPLEX_MASK,
 )
 
 from ..util import load_expectation
-from src.histolab.types import CoordinatePair
-from src.histolab.util import (
-    apply_mask_image,
-    lazyproperty,
-    np_to_pil,
-    polygon_to_mask_array,
-    threshold_to_mask,
-    resize_mask,
-)
 
 
 @pytest.mark.parametrize(
