@@ -22,15 +22,16 @@ Slide is the main API class for manipulating slide objects.
 """
 
 import math
-import ntpath
 import os
 import pathlib
 from typing import List, Tuple, Union
 
 import matplotlib.pyplot as plt
+import ntpath
 import numpy as np
 import openslide
 import PIL
+import sparse
 from matplotlib.figure import Figure as matplotlib_figure
 from skimage.measure import label, regionprops
 
@@ -101,12 +102,12 @@ class Slide(object):
 
     @lazyproperty
     @lru_cache(maxsize=100)
-    def biggest_tissue_box_mask(self) -> np.ndarray:
+    def biggest_tissue_box_mask(self) -> sparse.COO:
         """Returns the binary mask of the box containing the max area of tissue.
 
         Returns
         -------
-        mask: np.ndarray
+        mask: sparse.COO
             Binary mask of the box containing the max area of tissue.
 
         """
@@ -121,7 +122,8 @@ class Slide(object):
         thumb_bbox_mask = polygon_to_mask_array(
             (1000, 1000), biggest_region_coordinates
         )
-        return resize_mask(thumb_bbox_mask, self.dimensions)
+        thumb_bbox_mask_sparse = sparse.COO(thumb_bbox_mask)
+        return resize_mask(thumb_bbox_mask_sparse, self.dimensions)
 
     def extract_tile(self, coords: CoordinatePair, level: int) -> Tile:
         """Extract a tile of the image at the selected level.
