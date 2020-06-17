@@ -3,6 +3,7 @@ from unittest.mock import call
 
 import numpy as np
 import pytest
+import sparse
 
 from src.histolab.slide import Slide
 from src.histolab.tiler import RandomTiler, Tiler
@@ -10,8 +11,8 @@ from src.histolab.types import CoordinatePair
 
 from ..unitutil import (
     ANY,
-    NpArrayMock,
     PILImageMock,
+    SparseArrayMock,
     function_mock,
     initializer_mock,
     method_mock,
@@ -132,7 +133,7 @@ class Describe_RandomTiler(object):
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
         _box_mask_lvl = method_mock(request, RandomTiler, "box_mask_lvl")
-        _box_mask_lvl.return_value = NpArrayMock.ONES_500X500_BOOL
+        _box_mask_lvl.return_value = SparseArrayMock.ONES_500X500_BOOL
         _tile_size = property_mock(request, RandomTiler, "tile_size")
         _tile_size.return_value = (128, 128)
         _np_random_choice1 = function_mock(request, "numpy.random.choice")
@@ -157,8 +158,8 @@ class Describe_RandomTiler(object):
     @pytest.mark.parametrize(
         "check_tissue, expected_box",
         (
-            (False, NpArrayMock.ONES_500X500_BOOL),
-            (True, NpArrayMock.RANDOM_500X500_BOOL),
+            (False, SparseArrayMock.ONES_500X500_BOOL),
+            (True, SparseArrayMock.RANDOM_500X500_BOOL),
         ),
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
@@ -178,8 +179,8 @@ class Describe_RandomTiler(object):
 
         if check_tissue:
             _biggest_tissue_box_mask.assert_called_once_with()
-        assert type(box_mask) == np.ndarray
-        np.testing.assert_array_almost_equal(box_mask, expected_box)
+        assert type(box_mask) == sparse._coo.core.COO
+        np.testing.assert_array_almost_equal(box_mask.todense(), expected_box.todense())
 
     # fixtures -------------------------------------------------------
 

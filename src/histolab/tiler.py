@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Tuple
 
 import numpy as np
+import sparse
 
 from .slide import Slide
 from .tile import Tile
@@ -120,7 +121,7 @@ class RandomTiler(Tiler):
         self._valid_max_iter = max_iter_
 
     @lru_cache(maxsize=100)
-    def box_mask(self, slide: Slide) -> np.ndarray:
+    def box_mask(self, slide: Slide) -> sparse._coo.core.COO:
         """Return binary mask at level 0 of the box to consider for tiles extraction.
 
         If `check_tissue` attribute is True, the mask pixels set to True will be the
@@ -134,17 +135,17 @@ class RandomTiler(Tiler):
 
         Returns
         -------
-        np.ndarray
+        sparse._coo.core.COO
             Extraction mask at level 0
         """
 
         if self.check_tissue:
             return slide.biggest_tissue_box_mask
         else:
-            return np.ones(slide.dimensions[::-1], dtype="bool")
+            return sparse.ones(slide.dimensions[::-1], dtype=bool)
 
     @lru_cache(maxsize=100)
-    def box_mask_lvl(self, slide: Slide) -> np.ndarray:
+    def box_mask_lvl(self, slide: Slide) -> sparse._coo.core.COO:
         """Return binary mask at target level of the box to consider for the extraction.
 
         If ``check_tissue`` attribute is True, the mask pixels set to True will be the
@@ -158,7 +159,7 @@ class RandomTiler(Tiler):
 
         Returns
         -------
-        np.ndarray
+        sparse._coo.core.COO
             Extraction mask at target level
         """
 
@@ -204,8 +205,8 @@ class RandomTiler(Tiler):
         box_mask_lvl = self.box_mask_lvl(slide)
         tile_w_lvl, tile_h_lvl = self.tile_size
 
-        x_ul_lvl = np.random.choice(np.where(box_mask_lvl)[1])
-        y_ul_lvl = np.random.choice(np.where(box_mask_lvl)[0])
+        x_ul_lvl = np.random.choice(sparse.where(box_mask_lvl)[1])
+        y_ul_lvl = np.random.choice(sparse.where(box_mask_lvl)[0])
 
         x_br_lvl = x_ul_lvl + tile_w_lvl
         y_br_lvl = y_ul_lvl + tile_h_lvl

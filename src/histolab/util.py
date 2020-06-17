@@ -23,6 +23,7 @@ from itertools import filterfalse as ifilterfalse
 from typing import Tuple
 
 import numpy as np
+import sparse
 from PIL import Image, ImageDraw
 
 from .types import CoordinatePair
@@ -138,29 +139,30 @@ def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
 
     img = Image.new("L", dims, 0)
     ImageDraw.Draw(img).polygon(poly_vertices, outline=1, fill=1)
-    return np.array(img)
+    return np.array(img).astype(bool)
 
 
 def resize_mask(
-    input_mask: np.ndarray, target_dimensions: Tuple[int, int]
-) -> np.ndarray:
+    input_mask: sparse._coo.core.COO, target_dimensions: Tuple[int, int]
+) -> sparse._coo.core.COO:
     """Resize mask to ``target_dimensions``.
 
     Parameters
     ----------
-    input_mask : np.ndarray
+    input_mask : sparse.COO
         Input mask
     target_dimensions : List[int, int]
         Dimensions of the resized mask
 
     Returns
     -------
-    np.ndarray
+    sparse._coo.core.COO
         Resized mask
     """
-    input_mask_img = Image.fromarray(input_mask)
+    input_mask_img = Image.fromarray(input_mask.todense())
     resized_mask_img = input_mask_img.resize(target_dimensions)
-    return np.array(resized_mask_img)
+    resized_mask_arr = np.array(resized_mask_img).astype(bool)
+    return sparse.COO(resized_mask_arr)
 
 
 def apply_mask_image(img: Image.Image, mask: np.ndarray) -> Image.Image:

@@ -2,6 +2,7 @@
 
 import os
 import re
+
 import setuptools
 
 
@@ -32,6 +33,7 @@ install_requires = [
     "Pillow",
     "scikit-image",
     "scipy",
+    "sparse",
 ]
 
 test_requires = ["pytest", "coverage", "pytest-cov==2.8.1", "coveralls", "pytest-mpl"]

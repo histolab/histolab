@@ -6,19 +6,7 @@ import operator
 
 import numpy as np
 import pytest
-
-from src.histolab.types import CoordinatePair
-from src.histolab.util import (
-    apply_mask_image,
-    lazyproperty,
-    np_to_pil,
-    polygon_to_mask_array,
-    resize_mask,
-    threshold_to_mask,
-)
 from tests.base import (
-    BASE_MASK,
-    COMPLEX_MASK,
     IMAGE1_GREY,
     IMAGE1_RGB,
     IMAGE1_RGBA,
@@ -31,6 +19,18 @@ from tests.base import (
     IMAGE4_GREY_WHITE,
     IMAGE4_RGB_WHITE,
     IMAGE4_RGBA_WHITE,
+    SPARSE_BASE_MASK,
+    SPARSE_COMPLEX_MASK,
+)
+
+from src.histolab.types import CoordinatePair
+from src.histolab.util import (
+    apply_mask_image,
+    lazyproperty,
+    np_to_pil,
+    polygon_to_mask_array,
+    resize_mask,
+    threshold_to_mask,
 )
 
 from ..util import load_expectation
@@ -195,15 +195,15 @@ def test_util_polygon_to_mask_array(dims, vertices, expected_array):
 @pytest.mark.parametrize(
     "mask_array, target_dims, expected_array",
     (
-        (BASE_MASK, (2, 2), "mask-arrays/resized-base-mask"),
-        (COMPLEX_MASK, (5, 5), "mask-arrays/resized-complex-mask"),
+        (SPARSE_BASE_MASK, (2, 2), "sparse-mask-arrays/resized-base-mask"),
+        (SPARSE_COMPLEX_MASK, (5, 5), "sparse-mask-arrays/resized-complex-mask"),
     ),
 )
 def test_util_resize_mask(mask_array, target_dims, expected_array):
     resized_mask = resize_mask(mask_array, target_dims)
 
     np.testing.assert_array_almost_equal(
-        resized_mask, load_expectation(expected_array, "npy")
+        resized_mask.todense(), load_expectation(expected_array, "npz").todense()
     )
 
 

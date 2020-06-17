@@ -1,10 +1,10 @@
 # encoding: utf-8
 
+import math
 import os
 from collections import namedtuple
 from unittest.mock import call
 
-import math
 import numpy as np
 import openslide
 import PIL
@@ -416,7 +416,9 @@ class Describe_Slide(object):
         polygon_to_mask_array_.assert_called_once_with(
             (1000, 1000), CoordinatePair(x_ul=0, y_ul=0, x_br=2, y_br=2)
         )
-        np.testing.assert_almost_equal(biggest_mask_tissue_box, np.zeros((500, 500)))
+        np.testing.assert_almost_equal(
+            biggest_mask_tissue_box.todense(), np.zeros((500, 500))
+        )
 
     @pytest.mark.skipif(
         not on_ci() or is_win32(), reason="Only run on CIs; hangs on Windows CIs"
