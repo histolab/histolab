@@ -35,13 +35,13 @@ Whole Slide Images (WSIs), namely the translation of tissue slides from glass to
 
 However, processing WSIs is far from being trivial. First of all, WSIs can be stored in different proprietary formats, according to the scanner used to digitalize the slides, and a standard protocol is still missing. WSIs can also present artifacts, such as shadows, mold, or annotations (pen marks) that are not useful. Moreover, giving their dimensions, it is not possible to process a WSI all at once, or, for example, to feed a neural network: it is necessary to crop smaller regions of tissues (tiles), which in turns require a tissue detection step.  
 
-The aim of this project is to provide a tool for WSI processing in a reproducible environment to support clinical and scientific research. HistoLab is designed to handle WSIs, automatically detect the tissue, and retrieve informative tiles, and it can thus be integrated in a deep learning pipeline.
+The aim of this project is to provide a tool for WSI processing in a reproducible environment to support clinical and scientific research. Histolab is designed to handle WSIs, automatically detect the tissue, and retrieve informative tiles, and it can thus be integrated in a deep learning pipeline.
 
 ## Getting Started 
 
 ### Prerequisites 
 
-HistoLab has only one sistem-wide dependency: OpenSlide.
+Histolab has only one sistem-wide dependency: OpenSlide.
 
 You can download and install it from [OpenSlide](https://openslide.org/download/) according to your operating system.
 
@@ -63,17 +63,6 @@ from histolab.data import breast_tissue, heart_tissue
 from PIL import Image
 from IPython.display import Image as show_image
 ```
-
-The module ```data``` contains some WSIs retrieved from the [TCGA data portal](https://portal.gdc.cancer.gov/) and [OpenSlide test data](http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/), to be used as examples. The available images are H&E tissue sections stored in .svs format:
-* ```aorta_tissue```: Aorta tissue slide (OpenSlide)
-* ```heart_tissue```: Heart tissue slide (OpenSlide)
-* ```cmu_small_region```: Tissue region with a single pyramid level (OpenSlide)
-* ```breast_tissue```: Breast invasive carcinoma (TCGA-BRCA)tissue slide 
-* ```breast_tissue_diagnostic_green_pen```: Breast invasive carcinoma (TCGA-BRCA) diagnostic slide with green pen marks
-* ```breast_tissue_diagnostic_red_pen```: Breast invasive carcinoma (TCGA-BRCA) diagnostic slide with red pen marks
-* ```breast_tissue_diagnostic_black_pen```: Breast invasive carcinoma (TCGA-BRCA) diagnostic slide with black pen marks
-
-The slides will automatically be downloaded and saved in a temporary cached directory in your local machine.
 
 **NB** To use the data module, you need to install ```pooch```.
 
@@ -153,14 +142,21 @@ heart_slide.show()
 
 ### Tiles extraction
 
-Now that your slide object is defined, you can automatically extract the tiles. ```RandomTiler``` method crops random tiles from the slide.
+Now that your ```Slide``` object is defined, you can automatically extract the tiles. A ```RandomTiler``` object crops random tiles from the slide.
 You need to specify the size you want your tiles, the number of tiles to crop, and the level of magnification. If ```check_tissue``` is True, the exracted tiles are taken by default from the **biggest tissue region detected** in the slide, and the tiles are saved only if they have at least 80% of tissue inside.
 
 
 ```python
 from histolab.tiler import RandomTiler
 
-random_tiles_extractor = RandomTiler(tile_size=(512,512), n_tiles=6, level=2, seed=42, check_tissue=True, prefix='processed/breast_slide/')
+random_tiles_extractor = RandomTiler(
+    tile_size=(512, 512),
+    n_tiles=6,
+    level=2,
+    seed=42,
+    check_tissue=True,
+    prefix="processed/breast_slide/",
+)
 
 random_tiles_extractor.extract(breast_slide)
 ```
@@ -193,11 +189,6 @@ random_tiles_extractor.extract(heart_slide)
     6 Random Tiles have been saved.
 
 ![heart](https://user-images.githubusercontent.com/31658006/84955793-2c4f6480-b0f8-11ea-8970-592dc992d56d.png)
-
-
-```python
-
-```
 
 ## Versioning 
 
