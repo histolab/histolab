@@ -2,6 +2,8 @@ Image Filters Functional
 ====================================
 
 .. toctree::
+
+.. toctree::
    :caption: Filters
    :maxdepth: 2
 
