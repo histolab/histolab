@@ -4,7 +4,7 @@ histolab
 .. image:: https://user-images.githubusercontent.com/4196091/84828232-048fcc00-b026-11ea-8caa-5c14bb8565bd.png
    :alt: Logo
    :align: center
-   :width: 40em 
+   :width: 40em
 
 
 The aim of this project is to provide a tool for WSI processing in a reproducible environment to support clinical and
@@ -75,7 +75,7 @@ If you want to contribute to Histolab, be sure to review the `contribution guide
 
 .. toctree::
   :hidden:
-  
+
   quickstart
 
 .. toctree::
