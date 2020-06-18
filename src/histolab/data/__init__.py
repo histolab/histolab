@@ -284,7 +284,7 @@ def heart_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
 
 
 def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
-    """Breast tissue, TCGA
+    """Breast tissue, TCGA-BRCA dataset
 
     This image is avaliable here
     https://portal.gdc.cancer.gov/files/9c960533-2e58-4e54-97b2-8454dfb4b8c8
@@ -301,10 +301,29 @@ def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     return _load_svs("tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8")
 
 
+def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
+    """Prostate tissue, TCGA-
+
+    This image is avaliable here
+    https://portal.gdc.cancer.gov/files/6b725022-f1d5-4672-8c6c-de8140345210
+    or through the API
+    https://api.gdc.cancer.gov/data/6b725022-f1d5-4672-8c6c-de8140345210
+
+
+    Access: open
+
+    Returns
+    -------
+    prostate_tissue : OpenSlide object
+        Prostate tissue Whole-Slide-Image
+    """
+    return _load_svs("tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210")
+
+
 def breast_tissue_diagnostic_green_pen() -> Tuple[
     openslide.OpenSlide, str
 ]:  # pragma: no cover
-    """Breast tissue, TCGA. Diagnostic slide with green pen.
+    """Breast tissue, TCGA-BRCA dataset. Diagnostic slide with green pen.
 
     This image is avaliable here
     https://portal.gdc.cancer.gov/files/da36d3aa-9b19-492a-af4f-cc028a926d96
@@ -324,7 +343,7 @@ def breast_tissue_diagnostic_green_pen() -> Tuple[
 def breast_tissue_diagnostic_red_pen() -> Tuple[
     openslide.OpenSlide, str
 ]:  # pragma: no cover
-    """Breast tissue, TCGA. Diagnostic slide with red pen.
+    """Breast tissue, TCGA-BRCA dataset. Diagnostic slide with red pen.
 
     This image is avaliable here
     https://portal.gdc.cancer.gov/files/f8b4cee6-9149-45b4-ae53-82b0547e1e34
@@ -344,7 +363,7 @@ def breast_tissue_diagnostic_red_pen() -> Tuple[
 def breast_tissue_diagnostic_black_pen() -> Tuple[
     openslide.OpenSlide, str
 ]:  # pragma: no cover
-    """Breast tissue, TCGA. Diagnostic slide with black pen.
+    """Breast tissue, TCGA-BRCA dataset. Diagnostic slide with black pen.
 
     This image is avaliable here
     https://portal.gdc.cancer.gov/files/31e248bf-ee24-4d18-bccb-47046fccb461
