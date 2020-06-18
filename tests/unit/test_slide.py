@@ -176,6 +176,17 @@ class Describe_Slide(object):
         assert type(resampled_array) == np.ndarray
         assert resampled_array.shape == (400, 300, 3)
 
+    def it_knows_its_thumbnail_size(self, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+
+        thumb_size = slide._thumbnail_size
+
+        assert thumb_size == (500, 500)
+
     def it_creates_a_correct_slide_object(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0
