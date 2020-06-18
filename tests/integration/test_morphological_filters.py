@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-import src.histolab.filters.morphological_filters_functional as mof
+import histolab.filters.morphological_filters_functional as mof
 
 from ..fixtures import NPY
 from ..util import load_expectation

@@ -5,9 +5,9 @@ import numpy as np
 import pytest
 import sparse
 
-from src.histolab.slide import Slide
-from src.histolab.tiler import RandomTiler, Tiler
-from src.histolab.types import CoordinatePair
+from histolab.slide import Slide
+from histolab.tiler import RandomTiler, Tiler
+from histolab.types import CoordinatePair
 
 from ..unitutil import (
     ANY,
@@ -82,9 +82,7 @@ class Describe_RandomTiler(object):
         assert isinstance(err.value, ValueError)
         assert str(err.value) == "Seed must be between 0 and 2**32 - 1"
 
-    @pytest.mark.parametrize(
-        "tile_size", ((512, 512), (128, 128), (10, 10)),
-    )
+    @pytest.mark.parametrize("tile_size", ((512, 512), (128, 128), (10, 10)))
     def it_knows_its_tile_size(self, request, tile_size):
         random_tiler = RandomTiler(tile_size, 10, 0)
 
@@ -93,9 +91,7 @@ class Describe_RandomTiler(object):
         assert type(tile_size_) == tuple
         assert tile_size_ == tile_size
 
-    @pytest.mark.parametrize(
-        "max_iter", (1000, 10, 3000),
-    )
+    @pytest.mark.parametrize("max_iter", (1000, 10, 3000))
     def it_knows_its_max_iter(self, request, max_iter):
         random_tiler = RandomTiler((128, 128), 10, 0, max_iter=max_iter)
 
@@ -118,7 +114,7 @@ class Describe_RandomTiler(object):
             expected_filename,
         ) = tile_filename_fixture
         random_tiler = RandomTiler(
-            tile_size, n_tiles, level, seed, check_tissue, prefix, suffix,
+            tile_size, n_tiles, level, seed, check_tissue, prefix, suffix
         )
 
         _filename = random_tiler._tile_filename(tile_coords, tiles_counter)
@@ -140,9 +136,7 @@ class Describe_RandomTiler(object):
         _np_random_choice1.return_value = 0
         _np_random_choice2 = function_mock(request, "numpy.random.choice")
         _np_random_choice2.return_value = 0
-        _scale_coordinates = function_mock(
-            request, "src.histolab.tiler.scale_coordinates"
-        )
+        _scale_coordinates = function_mock(request, "histolab.tiler.scale_coordinates")
         random_tiler = RandomTiler((128, 128), 10, 0)
 
         random_tiler._random_tile_coordinates(slide)

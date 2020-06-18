@@ -2,7 +2,7 @@
 
 import os
 
-import src.histolab.data as data
+import histolab.data as data
 
 
 def test_data_dir():
