@@ -9,7 +9,6 @@ import numpy as np
 import openslide
 import PIL
 import pytest
-from matplotlib.figure import Figure as matplotlib_figure
 from PIL import ImageShow
 
 from histolab.filters.image_filters import Compose
@@ -880,31 +879,6 @@ class Describe_Slideset(object):
 
         assert _min_size_slide == {"slide": "mywsi2", "size": 2500}
 
-    def it_knows_its_dimensions_stats(self, total_slides_prop, tmpdir):
-        total_slides_prop.return_value = 2
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.svs"), "TIFF")
-        image2 = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0
-        image2.save(os.path.join(tmp_path_, "mywsi2.svs"), "TIFF")
-        slideset = SlideSet(tmp_path_, "proc", [".svs"])
-
-        dimensions_stats = slideset._dimensions_stats
-
-        expected_value = {
-            "no_of_slides": 2,
-            "max_width": {"slide": "mywsi", "width": 500},
-            "max_height": {"slide": "mywsi", "height": 500},
-            "max_size": {"slide": "mywsi", "size": 250000},
-            "min_width": {"slide": "mywsi2", "width": 50},
-            "min_height": {"slide": "mywsi2", "height": 50},
-            "min_size": {"slide": "mywsi2", "size": 2500},
-            "avg_width": 275.0,
-            "avg_height": 275.0,
-            "avg_size": 126250.0,
-        }
-        assert dimensions_stats == expected_value
-
     def it_can_save_scaled_slides(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         slide1 = instance_mock(request, Slide)
@@ -942,23 +916,18 @@ class Describe_Slideset(object):
 
         slides_stats = slideset.slides_stats
 
-        assert slides_stats[0] == slideset._dimensions_stats
-        assert type(slides_stats[1]) == matplotlib_figure
-
-    @pytest.mark.mpl_image_compare(baseline_dir="../fixtures/mpl-baseline-images")
-    def test_generates_a_correct_plot_figure(
-        self, request, total_slides_prop, _slides_dimensions_list_prop
-    ):
-        dimensions_stats = property_mock(request, SlideSet, "_dimensions_stats")
-        dimensions_stats.return_vaulue = {"a": 1}
-        total_slides_prop.return_value = 2
-        _slides_dimensions_list_prop.return_value = ((100, 200), (200, 300))
-
-        slideset = SlideSet(None, None, [".svs"])
-
-        slides_stats_chart = slideset.slides_stats[1]
-
-        return slides_stats_chart
+        assert slides_stats == {
+            "no_of_slides": 2,
+            "max_width": {"slide": "mywsi", "width": 500},
+            "max_height": {"slide": "mywsi", "height": 500},
+            "max_size": {"slide": "mywsi", "size": 250000},
+            "min_width": {"slide": "mywsi2", "width": 50},
+            "min_height": {"slide": "mywsi2", "height": 50},
+            "min_size": {"slide": "mywsi2", "size": 2500},
+            "avg_width": 275.0,
+            "avg_height": 275.0,
+            "avg_size": 126250.0,
+        }
 
     # fixture components ---------------------------------------------
 

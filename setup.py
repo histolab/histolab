@@ -27,7 +27,6 @@ readme = ascii_bytes_from(thisdir, "README.md")
 version = re.search('__version__ = "([^"]+)"', init_py).group(1)
 
 install_requires = [
-    "matplotlib",
     "numpy",
     "Pillow",
     "scikit-image",
@@ -36,7 +35,7 @@ install_requires = [
     "openslide-python==1.1.1",
 ]
 
-test_requires = ["pytest", "coverage", "pytest-cov==2.8.1", "coveralls", "pytest-mpl"]
+test_requires = ["pytest", "coverage", "pytest-cov==2.8.1", "coveralls"]
 
 setuptools.setup(
     name="histolab",

@@ -24,7 +24,7 @@ before_script:
 # command to run tests
 script:
   - flake8 .
-  - pytest --mpl --cov=histolab
+  - pytest --cov=histolab
 
 after_success:
   - coveralls
