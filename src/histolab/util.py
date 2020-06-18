@@ -23,15 +23,16 @@ from itertools import filterfalse as ifilterfalse
 from typing import Tuple
 
 import numpy as np
+import PIL
+import PIL.ImageDraw
 import sparse
-from PIL import Image, ImageDraw
 
 from .types import CoordinatePair
 
 warn = functools.partial(warnings.warn, stacklevel=2)
 
 
-def np_to_pil(np_img: np.ndarray) -> Image.Image:
+def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
     """Convert a NumPy array to a PIL Image.
 
     Parameters
@@ -56,7 +57,7 @@ def np_to_pil(np_img: np.ndarray) -> Image.Image:
         "float64": _transform_float(np_img),
     }
     image_array = types_factory.get(str(np_img.dtype), np_img.astype(np.uint8))
-    return Image.fromarray(image_array)
+    return PIL.Image.fromarray(image_array)
 
 
 def scale_coordinates(
@@ -90,13 +91,13 @@ def scale_coordinates(
 
 
 def threshold_to_mask(
-    img: Image.Image, threshold: float, relate: operator
+    img: PIL.Image.Image, threshold: float, relate: operator
 ) -> np.ndarray:
     """Mask image with pixel according to the threshold value.
 
     Parameters
     ----------
-    img: Image.Image
+    img: PIL.Image.Image
         Input image
     threshold: float
         The threshold value to exceed.
@@ -137,8 +138,8 @@ def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
         (vertices.x_br, vertices.y_ul),
     ]
 
-    img = Image.new("L", dims, 0)
-    ImageDraw.Draw(img).polygon(poly_vertices, outline=1, fill=1)
+    img = PIL.Image.new("L", dims, 0)
+    PIL.ImageDraw.Draw(img).polygon(poly_vertices, outline=1, fill=1)
     return np.array(img).astype(bool)
 
 
@@ -159,25 +160,25 @@ def resize_mask(
     sparse._coo.core.COO
         Resized mask
     """
-    input_mask_img = Image.fromarray(input_mask.todense())
+    input_mask_img = PIL.Image.fromarray(input_mask.todense())
     resized_mask_img = input_mask_img.resize(target_dimensions)
     resized_mask_arr = np.array(resized_mask_img).astype(bool)
     return sparse.COO(resized_mask_arr)
 
 
-def apply_mask_image(img: Image.Image, mask: np.ndarray) -> Image.Image:
+def apply_mask_image(img: PIL.Image.Image, mask: np.ndarray) -> PIL.Image.Image:
     """Mask image with the provided binary mask.
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image
     mask : np.ndarray
         Binary mask
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Image with the mask applied
     """
     img_arr = np.array(img)
