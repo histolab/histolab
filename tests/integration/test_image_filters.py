@@ -126,15 +126,10 @@ def test_hematoxylin_channel_filter_with_rgb_image():
         "pil-images-rgb/tcga-lung-rgb-hematoxylin-channel", type_="png"
     )
 
-    hematoxylin_img = imf.hematoxylin_channel(img)
+    h_channel = imf.hematoxylin_channel(img)
 
-    np.testing.assert_array_almost_equal(
-        np.array(hematoxylin_img), np.array(expected_value)
-    )
-    assert (
-        np.unique(np.array(ImageChops.difference(hematoxylin_img, expected_value)))[0]
-        == 0
-    )
+    np.testing.assert_array_almost_equal(np.array(h_channel), np.array(expected_value))
+    assert np.unique(np.array(ImageChops.difference(h_channel, expected_value)))[0] == 0
 
 
 def test_hematoxylin_channel_filter_with_rgba_image():
@@ -157,7 +152,7 @@ def test_hematoxylin_channel_filter_with_rgba_image():
 def test_hematoxylin_channel_raises_exception_on_gs_image():
     gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
 
-    with pytest.raises(Exception) as err:
+    with pytest.raises(ValueError) as err:
         imf.hematoxylin_channel(gs_img)
 
     assert isinstance(err.value, Exception)
@@ -191,7 +186,7 @@ def test_eosin_channel_filter_with_rgba_image():
 def test_eosin_channel_raises_exception_on_gs_image():
     gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
 
-    with pytest.raises(Exception) as err:
+    with pytest.raises(ValueError) as err:
         imf.eosin_channel(gs_img)
 
     assert isinstance(err.value, Exception)
