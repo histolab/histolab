@@ -421,13 +421,50 @@ class Slide(object):
     def _resampled_dimensions(
         self, scale_factor: int = 32
     ) -> Tuple[int, int, int, int]:
+        """Scale the slide dimensions of a specified factor.
+
+        Parameters
+        ---------
+        scale_factor : int, 32 by default
+            Image scaling factor
+
+        Returns
+        tuple
+            Original slide dimensions and scaled dimensions
+        """
         large_w, large_h = self.dimensions
         new_w = math.floor(large_w / scale_factor)
         new_h = math.floor(large_h / scale_factor)
         return large_w, large_h, new_w, new_h
 
     @lazyproperty
-    def _thumbnail_size(self) -> Tuple[int, int]:
+    def _thumbnail_size(self) -> Tuple:
+        r"""Compute the thumbnail size proportionally to the slide dimensions.
+
+        If the size of the slide is (v, m) where v has magnitude w and m has magnitude
+        n, that is,
+
+        .. math::
+
+            \left\lceil{\\log_{10}(v)}\right\rceil = w
+
+        and
+
+        .. math::
+
+            \left\lceil{\log_{10}(m)}\right\rceil = n
+
+        then the thumbnail size is computed as:
+
+        .. math::
+
+            \big(\frac{v}{10^{w-2}},\frac{v}{10^{n-2}}\big)
+
+        Returns
+        -------
+        Tuple
+            Thumbnail size
+        """
         return tuple(
             [
                 int(s / np.power(10, math.ceil(math.log10(s)) - 3))

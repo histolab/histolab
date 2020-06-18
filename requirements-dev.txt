@@ -8,3 +8,4 @@ sphinx
 sphinx-rtd-theme
 ipdb
 isort
+sphinxcontrib-katex
