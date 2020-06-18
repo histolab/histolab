@@ -516,8 +516,8 @@ class FilterEntropy(object):
 
     Note that input must be 2D.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     img : PIL.Image.Image
         input 2-dimensional image
     neighborhood : int, optional

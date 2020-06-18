@@ -19,6 +19,7 @@
 import math
 import operator
 from functools import reduce
+from typing import Callable
 
 import numpy as np
 import PIL
@@ -501,7 +502,9 @@ def hysteresis_threshold_mask(
     return hyst_mask
 
 
-def otsu_threshold(img: PIL.Image.Image, relate: operator = operator.lt) -> np.ndarray:
+def otsu_threshold(
+    img: PIL.Image.Image, relate: Callable[..., bool] = operator.lt
+) -> np.ndarray:
     """Mask image based on pixel above Otsu threshold.
 
     Compute Otsu threshold on image as a NumPy array and return boolean mask
@@ -540,7 +543,7 @@ def filter_entropy(
     img: PIL.Image.Image,
     neighborhood: int = 9,
     threshold: float = 5.0,
-    relate: operator = operator.gt,
+    relate: Callable[..., bool] = operator.gt,
 ) -> np.ndarray:
     """Filter image based on entropy (complexity).
 
@@ -549,15 +552,15 @@ def filter_entropy(
 
     Note that input must be 2D.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     img : PIL.Image.Image
         input 2-dimensional image
     neighborhood : int, optional
         Neighborhood size (defines height and width of 2D array of 1's). Default is 9.
     threshold : float, optional
         Threshold value. Default is 5.0
-    relate : operator, optional
+    relate : callable operator, optional
         Operator to be used to compute the mask from the threshold. Default is
         operator.lt
 

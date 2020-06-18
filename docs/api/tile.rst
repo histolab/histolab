@@ -1,9 +1,9 @@
-Slide
+Tile
 ====================================
 
 .. toctree::
    :caption: API Reference
    :maxdepth: 2
 
-.. automodule:: src.histolab.slide
+.. automodule:: src.histolab.tile
     :members:

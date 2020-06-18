@@ -77,6 +77,8 @@ If you want to contribute to Histolab, be sure to review the `contribution guide
 
    api/slide
    api/filters
+   api/tile
+   api/tiler
    utils
 
 

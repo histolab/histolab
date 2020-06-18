@@ -16,11 +16,10 @@
 # limitations under the License.
 # ------------------------------------------------------------------------
 import functools
-import operator
 import warnings
 from collections import deque
 from itertools import filterfalse as ifilterfalse
-from typing import Tuple
+from typing import Tuple, Callable
 
 import numpy as np
 import PIL
@@ -91,7 +90,7 @@ def scale_coordinates(
 
 
 def threshold_to_mask(
-    img: PIL.Image.Image, threshold: float, relate: operator
+    img: PIL.Image.Image, threshold: float, relate: Callable[..., bool]
 ) -> np.ndarray:
     """Mask image with pixel according to the threshold value.
 
@@ -101,8 +100,8 @@ def threshold_to_mask(
         Input image
     threshold: float
         The threshold value to exceed.
-    relate: operator
-        Comparison operator between img and threshold
+    relate: callable operator
+        Comparison operator between img pixel values and threshold
 
     Returns
     -------
