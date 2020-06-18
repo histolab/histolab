@@ -20,12 +20,14 @@ sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
 
-project = "HistoLab"
-copyright = "2020, HistoLab"
+project = "histolab"
+copyright = "2020, histolab"
 author = "histolab"
 
 # The full version, including alpha/beta/rc tags
-release = "0.0.1a0"
+from histolab import __version__  # isort:skip # noqa: E402
+
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -56,6 +58,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
+html_logo = "logo.png"
+html_favicon = "favicon.png"
 html_theme_options = {
     "display_version": True,
     "prev_next_buttons_location": "bottom",
