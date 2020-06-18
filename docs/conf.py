@@ -105,3 +105,4 @@ html_static_path = ["_static"]
 add_module_names = False
 
 autodoc_mock_imports = ["openslide-python", "openslide"]
+master_doc = "index"
