@@ -100,7 +100,7 @@ Before starting contributing to Histolab, test that your local environment is up
 
 - Run the tests
  
-   `pytest --mpl tests/`
+   `pytest tests/`
 
 ## Code of Conduct
 
