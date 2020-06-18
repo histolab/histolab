@@ -1,8 +1,10 @@
+Overview
+====================================
 
 .. image:: https://user-images.githubusercontent.com/4196091/84828232-048fcc00-b026-11ea-8caa-5c14bb8565bd.png
    :alt: Logo
    :align: center
-   :width: 40em
+   :width: 40em 
 
 
 The aim of this project is to provide a tool for WSI processing in a reproducible environment to support clinical and
@@ -71,25 +73,7 @@ References
 .. toctree::
   :hidden:
 
-  readme
-  quickstart
-  contributing
-
 .. toctree::
    :caption: API Reference
    :maxdepth: 2
    :hidden:
-
-   api/slide
-   api/filters
-   api/tile
-   api/tiler
-   utils
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

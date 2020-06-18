@@ -59,7 +59,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
-html_logo = "logo.png"
+html_logo = "logo_histolab_white_t.png"
 html_favicon = "favicon.png"
 html_theme_options = {
     "display_version": True,

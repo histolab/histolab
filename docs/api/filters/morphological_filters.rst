@@ -2,6 +2,8 @@ Morphological Filters
 ====================================
 
 .. toctree::
+
+.. toctree::
    :caption: Filters
    :maxdepth: 2
 
