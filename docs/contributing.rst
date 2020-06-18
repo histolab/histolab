@@ -128,7 +128,7 @@ Before starting contributing to Histolab, test that your local environment is up
 * 
   Run the tests
 
-   ``pytest --mpl tests/``
+   ``pytest tests/``
 
 Code of Conduct
 ---------------
@@ -209,4 +209,3 @@ This Code of Conduct is adapted from the `Contributor Covenant <http://contribut
 available at `http://contributor-covenant.org/version/1/4 <http://contributor-covenant.org/version/1/4/>`_
 
 .. toctree::
-   :maxdepth: 2
