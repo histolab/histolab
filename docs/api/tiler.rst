@@ -2,6 +2,8 @@ Tiler
 ====================================
 
 .. toctree::
+
+.. toctree::
    :caption: API Reference
    :maxdepth: 2
 
