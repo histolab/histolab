@@ -104,4 +104,4 @@ html_context = {
 html_static_path = ["_static"]
 add_module_names = False
 
-autodoc_mock_imports = ["openslide-python"]
+autodoc_mock_imports = ["openslide-python", "openslide"]
