@@ -7,7 +7,7 @@ import ntpath
 
 from PIL import Image
 
-from src.histolab.slide import Slide
+from histolab.slide import Slide
 
 from ..fixtures import SVS
 from ..util import load_expectation

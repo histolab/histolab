@@ -2,7 +2,7 @@ import operator
 import pytest
 import numpy as np
 
-import src.histolab.filters.image_filters_functional as imf
+import histolab.filters.image_filters_functional as imf
 
 from PIL import ImageChops
 

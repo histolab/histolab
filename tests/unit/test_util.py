@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-"""Unit test suite for src.histolab.util module."""
+"""Unit test suite for histolab.util module."""
 
 import operator
 

@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 
-from src.histolab.filters.image_filters import Compose
-from src.histolab.tile import Tile
-from src.histolab.types import CoordinatePair
+from histolab.filters.image_filters import Compose
+from histolab.tile import Tile
+from histolab.types import CoordinatePair
 
 from ..unitutil import ANY, PILImageMock, class_mock, initializer_mock, property_mock
 
@@ -78,20 +78,20 @@ class Describe_Tile(object):
 
     @pytest.fixture
     def RgbToGrayscale_(self, request):
-        return class_mock(request, "src.histolab.filters.image_filters.RgbToGrayscale")
+        return class_mock(request, "histolab.filters.image_filters.RgbToGrayscale")
 
     @pytest.fixture
     def OtsuThreshold_(self, request):
-        return class_mock(request, "src.histolab.filters.image_filters.OtsuThreshold")
+        return class_mock(request, "histolab.filters.image_filters.OtsuThreshold")
 
     @pytest.fixture
     def BinaryDilation_(self, request):
         return class_mock(
-            request, "src.histolab.filters.morphological_filters.BinaryDilation"
+            request, "histolab.filters.morphological_filters.BinaryDilation"
         )
 
     @pytest.fixture
     def BinaryFillHoles_(self, request):
         return class_mock(
-            request, "src.histolab.filters.morphological_filters.BinaryFillHoles"
+            request, "histolab.filters.morphological_filters.BinaryFillHoles"
         )
