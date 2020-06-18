@@ -16,7 +16,10 @@
 # limitations under the License.
 # ------------------------------------------------------------------------
 
-from PIL import ImageOps
+from typing import Any, List, Union
+
+import numpy as np
+import PIL
 
 from .. import util as U
 from . import image_filters_functional as F
@@ -31,10 +34,10 @@ class Compose(object):
         List of filters to compose
     """
 
-    def __init__(self, filters):
+    def __init__(self, filters: List[Any]) -> None:
         self.filters = filters
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
         for f in self.filters:
             img = f(img)
         return img
@@ -54,10 +57,10 @@ class ToPILImage(object):
         The image represented as PIL Image
     """
 
-    def __call__(self, np_img):
+    def __call__(self, np_img: np.ndarray) -> PIL.Image.Image:
         return U.np_to_pil(np_img)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -66,22 +69,25 @@ class ApplyMaskImage(object):
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image
     mask : np.ndarray
         Binary mask
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Image with the mask applied
     """
 
-    def __init__(self, img):
+    def __init__(self, img: PIL.Image.Image) -> None:
         self.img = img
 
-    def __call__(self, mask):
+    def __call__(self, mask: np.ndarray) -> PIL.Image.Image:
         return U.apply_mask_image(self.img, mask)
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "()"
 
 
 class Invert(object):
@@ -98,10 +104,10 @@ class Invert(object):
         Inverted image
     """
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.invert(img)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -119,10 +125,10 @@ class RgbToGrayscale(object):
         Grayscale image
     """
 
-    def __call__(self, img):
-        return ImageOps.grayscale(img)
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+        return PIL.ImageOps.grayscale(img)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -142,9 +148,59 @@ class RgbToHed(object):
         Image in HED space
     """
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         hed = F.rgb_to_hed(img)
         return hed
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "()"
+
+
+class HematoxylinChannel(object):
+    """Obtain Hematoxylin channel from RGB image.
+
+    Input image is first converted into HED space and the hematoxylin channel is
+    rescaled for increased contrast.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Greyscale image corresponding to input image with Hematoxylin channel enhanced.
+    """
+
+    def __call__(self, img):
+        hematoxylin = F.hematoxylin_channel(img)
+        return hematoxylin
+
+    def __repr__(self):
+        return self.__class__.__name__ + "()"
+
+
+class EosinChannel(object):
+    """Obtain Eosin channel from RGB image.
+
+    Input image is first converted into HED space and the Eosin channel is
+    rescaled for increased contrast.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Greyscale image corresponding to input image with Eosin channel enhanced.
+    """
+
+    def __call__(self, img):
+        eosin = F.eosin_channel(img)
+        return eosin
 
     def __repr__(self):
         return self.__class__.__name__ + "()"
@@ -166,11 +222,11 @@ class RgbToHsv(object):
         Image in HED space
     """
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         hsv = F.rgb_to_hsv(img)
         return hsv
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -183,10 +239,10 @@ class StretchContrast(object):
     ----------
     img: PIL.Image.Image
         Input image
-    low: int
-        Range low value (0 to 255).
-    high: int
-        Range high value (0 to 255).
+    low: int, optional
+        Range low value (0 to 255). Default is 40.
+    high: int, optional
+        Range high value (0 to 255). Default is 60
 
     Returns
     -------
@@ -194,15 +250,15 @@ class StretchContrast(object):
         Image with contrast enhanced.
     """
 
-    def __init__(self, low, high):
+    def __init__(self, low: int = 40, high: int = 60) -> None:
         self.low = low
         self.high = high
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         stretch_contrast = F.stretch_contrast(img, self.low, self.high)
         return stretch_contrast
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -216,8 +272,8 @@ class HistogramEqualization(object):
     ----------
     img : PIL.Image.Image
         Input image.
-    n_bins : int. optional (default is 256)
-        Number of histogram bins.
+    n_bins : int. optional
+        Number of histogram bins. Default is 256.
 
     Returns
     -------
@@ -225,14 +281,14 @@ class HistogramEqualization(object):
         Image with contrast enhanced by histogram equalization.
     """
 
-    def __init__(self, n_bins):
+    def __init__(self, n_bins: int = 256) -> None:
         self.n_bins = n_bins
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         hist_equ = F.histogram_equalization(img, self.n_bins)
         return hist_equ
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -246,10 +302,10 @@ class AdaptiveEqualization(object):
     ----------
     img : PIL.Image.Image
         Input image (gray or RGB)
-    nbins : int
-        Number of histogram bins.
-    clip_limit : float, optional (default is 0.01)
-        Clipping limit where higher value increases contrast.
+    nbins : int, optional
+        Number of histogram bins. Default is 256.
+    clip_limit : float, optional
+        Clipping limit where higher value increases contrast. Default is 0.01.
 
     Returns
     -------
@@ -257,15 +313,15 @@ class AdaptiveEqualization(object):
         Image with contrast enhanced by adaptive equalization.
     """
 
-    def __init__(self, n_bins, clip_limit):
+    def __init__(self, n_bins: int = 256, clip_limit: float = 0.01) -> None:
         self.n_bins = n_bins
         self.clip_limit = clip_limit
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         adaptive_equ = F.adaptive_equalization(img, self.n_bins, self.clip_limit)
         return adaptive_equ
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -281,8 +337,9 @@ class LocalEqualization(object):
     ---------
     img: PIL.Image.Image
         Input image. Notice that it must be 2D
-    disk_size: int, optional (default is 50)
-        Radius of the disk structuring element used for the local histograms
+    disk_size: int, optional
+        Radius of the disk structuring element used for the local histograms.
+        Default is 50
 
     Returns
     -------
@@ -290,31 +347,31 @@ class LocalEqualization(object):
         2D image with contrast enhanced using local equalization.
     """
 
-    def __init__(self, disk_size):
+    def __init__(self, disk_size: int = 50) -> None:
         self.disk_size = disk_size
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         local_equ = F.local_equalization(img, self.disk_size)
         return local_equ
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
 class KmeansSegmentation(object):
     """Segment an RGB image with K-means segmentation
 
-    By using K-means segmentation (color/space proximity) each segment is
-    colored based on the average color for that segment.
+    By using K-means segmentation (color/space proximity) each segment is colored based
+    on the average color for that segment.
 
     Parameters
     ---------
     img : PIL.Image.Image
         Input image
-    compactness : int, optional (default is 10)
-        Color proximity versus space proximity factor.
-    n_segments : int, optional (default is 800)
-        The number of segments.
+    compactness : float, optional
+        Color proximity versus space proximity factor. Default is 10.0.
+    n_segments : int, optional
+        The number of segments. Default is 800.
 
     Returns
     -------
@@ -323,17 +380,17 @@ class KmeansSegmentation(object):
         color for that segment.
     """
 
-    def __init__(self, compactness, n_segment):
+    def __init__(self, compactness: float = 10.0, n_segments: int = 800) -> None:
         self.compactness = compactness
-        self.n_segment = n_segment
+        self.n_segments = n_segments
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         kmeans_segmentation = F.kmeans_segmentation(
-            img, self.compactness, self.n_segment
+            img, self.compactness, self.n_segments
         )
         return kmeans_segmentation
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -348,12 +405,12 @@ class RagThreshold(object):
     ----------
     img : PIL.Image.Image
         Input image
-    compactness : int, optional (default is 10)
-        Color proximity versus space proximity factor.
-    n_segments :  int, optional (default is 800)
-        The number of segments.
-    threshold : int, optional (default is 9)
-        Threshold value for combining regions.
+    compactness : float, optional
+        Color proximity versus space proximity factor. Default is 10.0
+    n_segments : int, optional
+        The number of segments. Default is 800.
+    threshold : int, optional
+        Threshold value for combining regions. Default is 9.
 
     Returns
     -------
@@ -362,15 +419,17 @@ class RagThreshold(object):
         color for that segment (and similar segments have been combined).
     """
 
-    def __init__(self, compactness, n_segments, threshold):
+    def __init__(
+        self, compactness: float = 10.0, n_segments: int = 800, threshold: int = 9
+    ) -> PIL.Image.Image:
         self.compactness = compactness
         self.n_segments = n_segments
         self.threshold = threshold
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.rag_threshold(img, self.compactness, self.n_segments, self.threshold)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -381,10 +440,10 @@ class HysteresisThreshold(object):
     ----------
     img : PIL.Image.Image
         Input image
-    low : int, optional (default is 50)c
-        low threshold
-    high : int, optional (default is 100)
-        high threshold
+    low : int, optional
+        low threshold. Default is 50.
+    high : int, optional
+        high threshold. Default is 100
 
     Returns
     -------
@@ -392,14 +451,14 @@ class HysteresisThreshold(object):
         Image with the hysteresis threshold applied
     """
 
-    def __init__(self, low: int = 50, high: int = 50):
+    def __init__(self, low: int = 50, high: int = 100) -> None:
         self.low = low
         self.high = high
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.hysteresis_threshold(img, self.low, self.high)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -416,10 +475,10 @@ class HysteresisThresholdMask(object):
     ----------
     img : PIL.Image.Image
         Input image.
-    low : int, optional (default is 50)
-        low threshold
-    high : int, optional (default is 100)
-        high threshold
+    low : int, optional
+        low threshold. Default is 50.
+    high : int, optional
+        high threshold. Default is 100.
 
     Returns
     -------
@@ -427,17 +486,17 @@ class HysteresisThresholdMask(object):
         Boolean NumPy array where True represents a pixel above hysteresis threshold.
     """
 
-    def __init__(self, low, high):
+    def __init__(self, low: int = 50, high: int = 100) -> None:
         self.low = low
         self.high = high
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         hysteresis_threshold_mask = F.hysteresis_threshold_mask(
             img, self.low, self.high
         )
         return hysteresis_threshold_mask
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -460,10 +519,10 @@ class OtsuThreshold(object):
         Boolean NumPy array where True represents a pixel above Otsu threshold.
     """
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.otsu_threshold(img)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -479,9 +538,9 @@ class LocalOtsuThreshold(object):
     ----------
     img: PIL.Image.Image
         Input 2-dimensional image
-    disk_size :int, optional (default is 3)
-        Radius of the disk structuring element used to compute
-        the Otsu threshold for each pixel.
+    disk_size : float, optional
+        Radius of the disk structuring element used to compute the Otsu threshold for
+        each pixel. Default is 3.0
 
     Returns
     -------
@@ -489,13 +548,13 @@ class LocalOtsuThreshold(object):
         NumPy boolean array representing the mask based on local Otsu threshold
     """
 
-    def __init__(self, disk_size):
+    def __init__(self, disk_size: float = 3.0) -> None:
         self.disk_size = disk_size
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.local_otsu_threshold(img, self.disk_size)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -507,14 +566,14 @@ class FilterEntropy(object):
 
     Note that input must be 2D.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     img : PIL.Image.Image
         input 2-dimensional image
-    neighborhood : int, optional (default is 9)
-        Neighborhood size (defines height and width of 2D array of 1's).
-    threshold : int, optional (default is 9)
-        Threshold value.
+    neighborhood : int, optional
+        Neighborhood size (defines height and width of 2D array of 1's). Default is 9.
+    threshold : float, optional
+        Threshold value. Default is 5.0
 
     Returns
     -------
@@ -522,14 +581,14 @@ class FilterEntropy(object):
         NumPy boolean array where True represent a measure of complexity.
     """
 
-    def __init__(self, neighborhood, threshold):
+    def __init__(self, neighborhood: int = 9, threshold: float = 5.0) -> None:
         self.neighborhood = neighborhood
         self.threshold = threshold
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.filter_entropy(img, self.neighborhood, self.threshold)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -542,12 +601,12 @@ class CannyEdges(object):
     ----------
     img : PIL.Image.Image
         Input 2-dimensional image
-    sigma : float, optional (default is 1.0)
-        Width (std dev) of Gaussian.
-    low_threshold : float, optional (default is 0.0)
-        Low hysteresis threshold value.
-    high_threshold : float, optional (default is 25.0)
-        High hysteresis threshold value.
+    sigma : float, optional
+        Width (std dev) of Gaussian. Default is 1.0.
+    low_threshold : float, optional
+        Low hysteresis threshold value. Default is 0.0.
+    high_threshold : float, optional
+        High hysteresis threshold value. Default is 25.0.
 
     Returns
     -------
@@ -555,15 +614,20 @@ class CannyEdges(object):
         Boolean NumPy array representing Canny edge map.
     """
 
-    def __init__(self, sigma, low_threshold, high_threshold):
+    def __init__(
+        self,
+        sigma: float = 1.0,
+        low_threshold: float = 0.0,
+        high_threshold: float = 25.0,
+    ) -> None:
         self.sigma = sigma
         self.low_threshold = low_threshold
         self.high_threshold = high_threshold
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.canny_edges(img, self.sigma, self.low_threshold, self.high_threshold)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -577,9 +641,9 @@ class Grays(object):
     ----------
     img : PIL.Image.Image
         Input image
-    tolerance : int, optional (default is 15)
-        if difference between values is below this threshold,
-        values are considered similar and thus filtered out
+    tolerance : int, optional
+        if difference between values is below this threshold, values are considered
+        similar and thus filtered out. Default is 15.
 
     Returns
     -------
@@ -587,13 +651,13 @@ class Grays(object):
         Mask image where the grays values are masked out
     """
 
-    def __init__(self, tolerance):
+    def __init__(self, tolerance: int = 15) -> None:
         self.tolerance = tolerance
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.grays(img, self.tolerance)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -608,13 +672,14 @@ class GreenChannelFilter(object):
     ----------
     img : PIL.Image.Image
         Input RGB image
-    green_thresh : float, optional (default is 200.0)
-        Green channel threshold value (0 to 255).
+    green_thresh : int, optional
+        Green channel threshold value (0 to 255). Default is 200.
         If value is greater than green_thresh, mask out pixel.
-    avoid_overmask : bool, optional (default is True)
-        If True, avoid masking above the overmask_thresh percentage.
-    overmask_thresh : float, optional (default is 90.0)
-        If avoid_overmask is True, avoid masking above this percentage value.
+    avoid_overmask : bool, optional
+        If True, avoid masking above the overmask_thresh percentage. Default is True.
+    overmask_thresh : float, optional
+        If avoid_overmask is True, avoid masking above this percentage value. Default
+        is 90.
 
     Returns
     -------
@@ -623,17 +688,22 @@ class GreenChannelFilter(object):
         threshold have been masked out.
     """
 
-    def __init__(self, green_thresh, avoid_overmask, overmask_thresh):
+    def __init__(
+        self,
+        green_thresh: int = 200,
+        avoid_overmask: bool = True,
+        overmask_thresh: float = 90.0,
+    ) -> None:
         self.green_thresh = green_thresh
         self.avoid_overmask = avoid_overmask
         self.overmask_thresh = overmask_thresh
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.green_channel_filter(
             img, self.green_thresh, self.avoid_overmask, self.overmask_thresh
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -648,11 +718,11 @@ class RedFilter(object):
     ----------
     img : PIl.Image.Image
         Input RGB image
-    red_lower_thresh : float
+    red_lower_thresh : int
         Red channel lower threshold value.
-    green_upper_thresh : float
+    green_upper_thresh : int
         Green channel upper threshold value.
-    blue_upper_thresh : float
+    blue_upper_thresh : int
         Blue channel upper threshold value.
 
     Returns
@@ -661,15 +731,15 @@ class RedFilter(object):
         Boolean NumPy array representing the mask.
     """
 
-    def __init__(self, red_thresh, green_thresh, blue_thresh):
+    def __init__(self, red_thresh: int, green_thresh: int, blue_thresh: int) -> None:
         self.red_thresh = red_thresh
         self.green_thresh = green_thresh
         self.blue_thresh = blue_thresh
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.red_filter(img, self.red_thresh, self.green_thresh, self.blue_thresh)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -689,7 +759,7 @@ class RedPenFilter(object):
         Boolean NumPy array representing the mask with the pen marks filtered out.
     """
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image):
         return F.red_pen_filter(img)
 
     def __repr__(self):
@@ -746,14 +816,14 @@ class GreenPenFilter(object):
 
     Returns
     -------
-    np.ndarray
-        NumPy array representing the mask with the green pen marks filtered out.
+    PIL.Image.Image
+        Image the green pen marks filtered out.
     """
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.green_pen_filter(img)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -781,15 +851,15 @@ class BlueFilter(object):
         Boolean NumPy array representing the mask.
     """
 
-    def __init__(self, red_thresh, green_thresh, blue_thresh):
+    def __init__(self, red_thresh: int, green_thresh: int, blue_thresh: int):
         self.red_thresh = red_thresh
         self.green_thresh = green_thresh
         self.blue_thresh = blue_thresh
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.blue_filter(img, self.red_thresh, self.green_thresh, self.blue_thresh)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -810,10 +880,10 @@ class BluePenFilter(object):
         NumPy array representing the mask with the blue pen marks filtered out.
     """
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.blue_pen_filter(img)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 
@@ -834,8 +904,8 @@ class PenMarks(object):
         Boolean NumPy array representing the mask with the pen marks filtered out.
     """
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.pen_marks(img)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"

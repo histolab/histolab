@@ -19,8 +19,11 @@
 import math
 import operator
 from functools import reduce
+from typing import Callable
 
 import numpy as np
+import PIL
+import PIL.ImageOps
 import skimage.color as sk_color
 import skimage.exposure as sk_exposure
 import skimage.feature as sk_feature
@@ -28,53 +31,52 @@ import skimage.filters as sk_filters
 import skimage.future as sk_future
 import skimage.morphology as sk_morphology
 import skimage.segmentation as sk_segmentation
-from PIL import Image, ImageOps
 
 from ..util import apply_mask_image, np_to_pil, threshold_to_mask, warn
 from .util import mask_percent
 
 
-def invert(img: Image.Image) -> Image.Image:
+def invert(img: PIL.Image.Image) -> PIL.Image.Image:
     """Invert an image, i.e. take the complement of the correspondent array.
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Inverted image
     """
     if img.mode == "RGBA":
         r, g, b, a = img.split()
-        rgb_img = Image.merge("RGB", (r, g, b))
+        rgb_img = PIL.Image.merge("RGB", (r, g, b))
 
-        inverted_img_rgb = ImageOps.invert(rgb_img)
+        inverted_img_rgb = PIL.ImageOps.invert(rgb_img)
 
         r2, g2, b2 = inverted_img_rgb.split()
-        inverted_img = Image.merge("RGBA", (r2, g2, b2, a))
+        inverted_img = PIL.Image.merge("RGBA", (r2, g2, b2, a))
 
     else:
-        inverted_img = ImageOps.invert(img)
+        inverted_img = PIL.ImageOps.invert(img)
 
     return inverted_img
 
 
-def rgb_to_hed(img: Image.Image) -> Image.Image:
+def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
     """Convert RGB channels to HED channels.
 
     image color space (RGB) is converted to Hematoxylin-Eosin-Diaminobenzidine space.
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Image in HED space
     """
     if img.mode not in ["RGB", "RGBA"]:
@@ -93,21 +95,67 @@ def rgb_to_hed(img: Image.Image) -> Image.Image:
     return hed
 
 
-def rgb_to_hsv(img: Image.Image) -> Image.Image:
+def hematoxylin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
+    """Obtain Hematoxylin channel from RGB image.
+
+    Input image is first converted into HED space and the hematoxylin channel is
+    rescaled for increased contrast.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Greyscale image corresponding to input image with Hematoxylin channel enhanced.
+    """
+    if img.mode not in ["RGB", "RGBA"]:
+        raise ValueError("Input image must be RGB/RGBA.")
+    hematoxylin = np.array(rgb_to_hed(img))[:, :, 0]
+    hematoxylin = sk_exposure.rescale_intensity(hematoxylin)
+    return np_to_pil(hematoxylin)
+
+
+def eosin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
+    """Obtain Eosin channel from RGB image.
+
+    Input image is first converted into HED space and the Eosin channel is
+    rescaled for increased contrast.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Greyscale image corresponding to input image with Eosin channel enhanced.
+    """
+    if img.mode not in ["RGB", "RGBA"]:
+        raise ValueError("Input image must be RGB/RGBA.")
+    eosin = np.array(rgb_to_hed(img))[:, :, 1]
+    eosin = sk_exposure.rescale_intensity(eosin)
+    return np_to_pil(eosin)
+
+
+def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
     """Convert RGB channels to HSV channels.
 
-     image color space (RGB) is converted to Hue - Saturation - Value (HSV) space.
+    image color space (RGB) is converted to Hue - Saturation - Value (HSV) space.
 
-     Parameters
-     ----------
-     img : Image.Image
-          Input image
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
 
-     Returns
-     -------
-     Image.Image
-         Image in HED space
-     """
+    Returns
+    -------
+    PIL.Image.Image
+        Image in HED space
+    """
     if img.mode != "RGB":
         raise Exception("Input image must be RGB")
     img_arr = np.array(img)
@@ -119,23 +167,25 @@ def rgb_to_hsv(img: Image.Image) -> Image.Image:
 # TODO setup logger warning + greyscale --> invert ---> contrast stretch
 
 
-def stretch_contrast(img: Image.Image, low: int = 40, high: int = 60) -> Image.Image:
+def stretch_contrast(
+    img: PIL.Image.Image, low: int = 40, high: int = 60
+) -> PIL.Image.Image:
     """Increase image contrast.
 
     Th contrast in image is increased based on intensities in a specified range
 
     Parameters
     ----------
-    img: Image.Image
-         Input image
+    img: PIL.Image.Image
+        Input image
     low: int
-         Range low value (0 to 255).
+        Range low value (0 to 255). Default is 40.
     high: int
-        Range high value (0 to 255).
+        Range high value (0 to 255). Default is 60.
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
             Image with contrast enhanced.
     """
     if low not in range(256) or high not in range(256):
@@ -146,7 +196,7 @@ def stretch_contrast(img: Image.Image, low: int = 40, high: int = 60) -> Image.I
     return np_to_pil(stretch_contrast)
 
 
-def histogram_equalization(img: Image.Image, nbins: int = 256) -> Image.Image:
+def histogram_equalization(img: PIL.Image.Image, nbins: int = 256) -> PIL.Image.Image:
     """Increase image contrast using histogram equalization.
 
     The input image (gray or RGB) is filterd using histogram equalization to increase
@@ -154,10 +204,10 @@ def histogram_equalization(img: Image.Image, nbins: int = 256) -> Image.Image:
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image.
-    nbins : iny. optional (default is 256)
-        Number of histogram bins.
+    nbins : int. optional
+        Number of histogram bins. Default is 256.
 
     Returns
     -------
@@ -171,8 +221,8 @@ def histogram_equalization(img: Image.Image, nbins: int = 256) -> Image.Image:
 
 
 def adaptive_equalization(
-    img: Image.Image, nbins: int = 256, clip_limit: float = 0.01
-) -> Image.Image:
+    img: PIL.Image.Image, nbins: int = 256, clip_limit: float = 0.01
+) -> PIL.Image.Image:
     """Increase image contrast using adaptive equalization.
 
     Contrast in local region of input image (gray or RGB) is increased using
@@ -180,16 +230,16 @@ def adaptive_equalization(
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image (gray or RGB)
     nbins : int
-        Number of histogram bins.
-    clip_limit : float, optional (default is 0.01)
-        Clipping limit where higher value increases contrast.
+        Number of histogram bins. Default is 256.
+    clip_limit : float, optional
+        Clipping limit where higher value increases contrast. Default is 0.01
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         image with contrast enhanced by adaptive equalization.
     """
     if not (isinstance(nbins, int) and nbins > 0):
@@ -200,21 +250,22 @@ def adaptive_equalization(
     return adapt_equ
 
 
-def local_equalization(img: Image.Image, disk_size: int = 50) -> Image.Image:
+def local_equalization(img: PIL.Image.Image, disk_size: int = 50) -> PIL.Image.Image:
     """Filter gray image using local equalization.
 
     Local equalization method uses local histograms based on a disk structuring element.
 
     Parameters
     ---------
-    img: Image.Image
+    img: PIL.Image.Image
         Input image. Notice that it must be 2D
-    disk_size: int, optional (default is 50)
-        Radius of the disk structuring element used for the local histograms
+    disk_size: int, optional
+        Radius of the disk structuring element used for the local histograms. Default is
+        50.
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         2D image with contrast enhanced using local equalization.
     """
 
@@ -227,8 +278,8 @@ def local_equalization(img: Image.Image, disk_size: int = 50) -> Image.Image:
 
 
 def kmeans_segmentation(
-    img: Image.Image, compactness: float = 10.0, n_segments: int = 800
-) -> Image.Image:
+    img: PIL.Image.Image, compactness: float = 10.0, n_segments: int = 800
+) -> PIL.Image.Image:
     """Segment an RGB image with K-means segmentation
 
     By using K-means segmentation (color/space proximity) each segment is
@@ -236,16 +287,16 @@ def kmeans_segmentation(
 
     Parameters
     ---------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image
-    compactness : float, optional (default is 10.0)
-        Color proximity versus space proximity factor.
-    n_segments : int, optional (default is 800)
-        The number of segments.
+    compactness : float, optional
+        Color proximity versus space proximity factor. Default is 10.0.
+    n_segments : int, optional
+        The number of segments. Default is 800.
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Image where each segment has been colored based on the average
         color for that segment.
     """
@@ -256,11 +307,11 @@ def kmeans_segmentation(
 
 
 def rag_threshold(
-    img: Image.Image,
+    img: PIL.Image.Image,
     compactness: float = 10.0,
     n_segments: int = 800,
     threshold: int = 9,
-) -> Image.Image:
+) -> PIL.Image.Image:
     """Combine similar K-means segmented regions based on threshold value.
 
     Segment an image with K-means, build region adjacency graph based on
@@ -269,18 +320,18 @@ def rag_threshold(
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image
-    compactness : float, optional (default is 10.0)
-        Color proximity versus space proximity factor.
-    n_segments :  int, optional (default is 800)
-        The number of segments.
-    threshold : int, optional (default is 9)
-        Threshold value for combining regions.
+    compactness : float, optional
+        Color proximity versus space proximity factor. Default is 10.0.
+    n_segments :  int, optional
+        The number of segments. Default is 800.
+    threshold : int, optional
+        Threshold value for combining regions. Default is 9.
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Each segment has been colored based on the average
         color for that segment (and similar segments have been combined).
     """
@@ -295,22 +346,22 @@ def rag_threshold(
 
 
 def hysteresis_threshold(
-    img: Image.Image, low: int = 50, high: int = 100
-) -> Image.Image:
+    img: PIL.Image.Image, low: int = 50, high: int = 100
+) -> PIL.Image.Image:
     """Apply two-level (hysteresis) threshold to an image.
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image
-    low : int, optional (default is 50)c
-        low threshold
-    high : int, optional (default is 100)
-        high threshold
+    low : int, optional
+        low threshold. Default is 50.
+    high : int, optional
+        high threshold. Default is 100.
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Image with the hysteresis threshold applied
     """
     # TODO: warning grayscale input image (skimage doc)
@@ -321,7 +372,9 @@ def hysteresis_threshold(
     return img_out
 
 
-def local_otsu_threshold(img: Image.Image, disk_size: float = 3.0) -> Image.Image:
+def local_otsu_threshold(
+    img: PIL.Image.Image, disk_size: float = 3.0
+) -> PIL.Image.Image:
     """Mask image based on local Otsu threshold.
 
     Compute local Otsu threshold for each pixel and return boolean mask
@@ -331,15 +384,15 @@ def local_otsu_threshold(img: Image.Image, disk_size: float = 3.0) -> Image.Imag
 
     Parameters
     ----------
-    img: Image.Image
+    img: PIL.Image.Image
         Input 2-dimensional image
-    disk_size : float, optional (default is 3.0)
+    disk_size : float, optional
         Radius of the disk structuring element used to compute
-        the Otsu threshold for each pixel.
+        the Otsu threshold for each pixel. Default is 3.0.
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Resulting image where local Otsu threshold values have been
         applied to original image.
     """
@@ -353,7 +406,7 @@ def local_otsu_threshold(img: Image.Image, disk_size: float = 3.0) -> Image.Imag
     return np_to_pil(local_otsu)
 
 
-def red_pen_filter(img: Image.Image) -> Image.Image:
+def red_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
     """Filter out red pen marks on diagnostic slides.
 
     The resulting mask is a composition of red filters with different thresholds
@@ -361,12 +414,12 @@ def red_pen_filter(img: Image.Image) -> Image.Image:
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image.
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Input image with the pen marks filtered out.
     """
     parameters = [
@@ -385,7 +438,7 @@ def red_pen_filter(img: Image.Image) -> Image.Image:
     return apply_mask_image(img, red_pen_filter_img)
 
 
-def green_pen_filter(img: Image.Image) -> Image.Image:
+def green_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
     """Filter out green pen marks from a diagnostic slide.
 
     The resulting mask is a composition of green filters with different thresholds
@@ -393,12 +446,12 @@ def green_pen_filter(img: Image.Image) -> Image.Image:
 
     Parameters
     ---------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Input image with the green pen marks filtered out.
     """
     parameters = [
@@ -425,7 +478,7 @@ def green_pen_filter(img: Image.Image) -> Image.Image:
     return apply_mask_image(img, green_pen_filter_img)
 
 
-def blue_pen_filter(img: Image.Image) -> Image.Image:
+def blue_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
     """Filter out blue pen marks from a diagnostic slide.
 
     The resulting mask is a composition of green filters with different thresholds
@@ -433,12 +486,12 @@ def blue_pen_filter(img: Image.Image) -> Image.Image:
 
     Parameters
     ---------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image
 
     Returns
     -------
-    Image.Image
+    PIL.Image.Image
         Input image with the blue pen marks filtered out.
     """
     parameters = [
@@ -466,7 +519,7 @@ def blue_pen_filter(img: Image.Image) -> Image.Image:
 
 
 def hysteresis_threshold_mask(
-    img: Image.Image, low: int = 50, high: int = 100
+    img: PIL.Image.Image, low: int = 50, high: int = 100
 ) -> np.ndarray:
     """Mask an image using hysteresis threshold
 
@@ -475,27 +528,29 @@ def hysteresis_threshold_mask(
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image.
-    low : int, optional (default is 50)
-        low threshold
-    high : int, optional (default is 100)
-         high threshold
+    low : int, optional
+        low threshold. Default is 50.
+    high : int, optional
+        high threshold. Default is 100.
 
     Returns
     -------
     np.ndarray
-     Boolean NumPy array where True represents a pixel above Otsu threshold.
+        Boolean NumPy array where True represents a pixel above Otsu threshold.
     """
     if low is None or high is None:
         raise ValueError("thresholds cannot be None")
-    gs = ImageOps.grayscale(img)
+    gs = PIL.ImageOps.grayscale(img)
     comp = invert(gs)
     hyst_mask = sk_filters.apply_hysteresis_threshold(np.array(comp), low, high)
     return hyst_mask
 
 
-def otsu_threshold(img: Image.Image, relate: operator = operator.lt) -> np.ndarray:
+def otsu_threshold(
+    img: PIL.Image.Image, relate: Callable[..., bool] = operator.lt
+) -> np.ndarray:
     """Mask image based on pixel above Otsu threshold.
 
     Compute Otsu threshold on image as a NumPy array and return boolean mask
@@ -505,8 +560,11 @@ def otsu_threshold(img: Image.Image, relate: operator = operator.lt) -> np.ndarr
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input image.
+    relate : operator, optional
+        Operator to be used to compute the mask from the threshold. Default is
+        operator.lt
 
     Returns
     -------
@@ -514,7 +572,7 @@ def otsu_threshold(img: Image.Image, relate: operator = operator.lt) -> np.ndarr
         Boolean NumPy array where True represents a pixel above Otsu threshold.
     """
     if img.mode in ["RGB", "RGBA"]:
-        image = ImageOps.grayscale(img)
+        image = PIL.ImageOps.grayscale(img)
         warn(
             "otsu_threshold is expected to work correctly only for grayscale images."
             "NOTE: the image will be converted to greyscale before applying Otsu"
@@ -528,10 +586,10 @@ def otsu_threshold(img: Image.Image, relate: operator = operator.lt) -> np.ndarr
 
 
 def filter_entropy(
-    img: Image.Image,
+    img: PIL.Image.Image,
     neighborhood: int = 9,
     threshold: float = 5.0,
-    relate: operator = operator.gt,
+    relate: Callable[..., bool] = operator.gt,
 ) -> np.ndarray:
     """Filter image based on entropy (complexity).
 
@@ -540,14 +598,17 @@ def filter_entropy(
 
     Note that input must be 2D.
 
-    Parameters:
-    -----------
-    img : Image.Image
+    Parameters
+    ----------
+    img : PIL.Image.Image
         input 2-dimensional image
-    neighborhood : float, optional (default is 9)
-        Neighborhood size (defines height and width of 2D array of 1's).
-    threshold : int, optional (default is 5.0)
-        Threshold value.
+    neighborhood : int, optional
+        Neighborhood size (defines height and width of 2D array of 1's). Default is 9.
+    threshold : float, optional
+        Threshold value. Default is 5.0
+    relate : callable operator, optional
+        Operator to be used to compute the mask from the threshold. Default is
+        operator.lt
 
     Returns
     -------
@@ -563,7 +624,7 @@ def filter_entropy(
 
 # input of canny filter is a greyscale
 def canny_edges(
-    img: Image.Image,
+    img: PIL.Image.Image,
     sigma: float = 1.0,
     low_threshold: float = 0.0,
     high_threshold: float = 25.0,
@@ -574,14 +635,14 @@ def canny_edges(
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input 2-dimensional image
-    sigma : float, optional (default is 1.0)
-        Width (std dev) of Gaussian.
-    low_threshold : float, optional (default is 0.0)
-        Low hysteresis threshold value.
-    high_threshold : float, optional (default is 25.0)
-        High hysteresis threshold value.
+    sigma : float, optional
+        Width (std dev) of Gaussian. Default is 1.0.
+    low_threshold : float, optional
+        Low hysteresis threshold value. Default is 0.0.
+    high_threshold : float, optional
+        High hysteresis threshold value. Default is 25.0.
 
     Returns
     -------
@@ -595,24 +656,26 @@ def canny_edges(
     return canny_edges
 
 
-def grays(img: Image.Image, tolerance: int = 15) -> np.ndarray:
+def grays(img: PIL.Image.Image, tolerance: int = 15) -> np.ndarray:
     """Filter out gray pixels in RGB image.
 
-     Grey pixels are those pixels where the red, green, and blue channel values
-     are similar, i.e. under a specified tolerance.
+    Grey pixels are those pixels where the red, green, and blue channel values
+    are similar, i.e. under a specified tolerance.
 
-     Parameters
-     ----------
-     img : Image.Image
-         Input image
-     tolerance : int, optional (default is 15)
-         if difference between values is below this threshold,
-         values are considered similar and thus filtered out
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
+    tolerance : int, optional
+        if difference between values is below this threshold,
+        values are considered similar and thus filtered out. Default is 15.
 
-     Returns
-     -------
-     Image.Image
-         Mask image where the grays values are masked out"""
+    Returns
+    -------
+    PIL.Image.Image
+        Mask image where the grays values are masked out
+    """
+
     if np.array(img).ndim != 3:
         raise ValueError("Input must be 3D.")
     # TODO: class image mode exception: raise exception if not RGB(A)
@@ -625,7 +688,7 @@ def grays(img: Image.Image, tolerance: int = 15) -> np.ndarray:
 
 
 def green_channel_filter(
-    img: Image.Image,
+    img: PIL.Image.Image,
     green_thresh: int = 200,
     avoid_overmask: bool = True,
     overmask_thresh: float = 90.0,
@@ -638,15 +701,16 @@ def green_channel_filter(
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image
-    green_thresh : float, optional (default is 200.0)
-        Green channel threshold value (0 to 255).
+    green_thresh : int, optional
+        Green channel threshold value (0 to 255). Default is 200.
         If value is greater than green_thresh, mask out pixel.
-    avoid_overmask : bool, optional (default is True)
-        If True, avoid masking above the overmask_thresh percentage.
-    overmask_thresh : float, optional (default is 90.0)
-        If avoid_overmask is True, avoid masking above this percentage value.
+    avoid_overmask : bool, optional
+        If True, avoid masking above the overmask_thresh percentage. Default is True.
+    overmask_thresh : float, optional
+        If avoid_overmask is True, avoid masking above this percentage value. Default is
+        90.0
 
     Returns
     -------
@@ -669,7 +733,7 @@ def green_channel_filter(
 
 
 def red_filter(
-    img: Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
+    img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
 ) -> np.ndarray:
     """Mask reddish colors in an RGB image.
 
@@ -679,13 +743,13 @@ def red_filter(
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image
-    red_thresh : float
+    red_thresh : int
         Red channel lower threshold value.
-    green_thresh : float
+    green_thresh : int
         Green channel upper threshold value.
-    blue_thresh : float
+    blue_thresh : int
         Blue channel upper threshold value.
 
     Returns
@@ -709,7 +773,7 @@ def red_filter(
 
 
 def green_filter(
-    img: Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
+    img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
 ) -> np.ndarray:
     """Filter out greenish colors in an RGB image.
     The mask is based on a pixel being above a red channel threshold value, below a
@@ -720,7 +784,7 @@ def green_filter(
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         RGB input image.
     red_thresh : int
         Red channel upper threshold value.
@@ -750,7 +814,7 @@ def green_filter(
 
 
 def blue_filter(
-    img: Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
+    img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
 ) -> np.ndarray:
     """Filter out blueish colors in an RGB image.
 
@@ -760,7 +824,7 @@ def blue_filter(
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image
     red_thresh : int
         Red channel lower threshold value.
@@ -788,7 +852,7 @@ def blue_filter(
     return blue_filter_mask
 
 
-def pen_marks(img: Image.Image) -> np.ndarray:
+def pen_marks(img: PIL.Image.Image) -> np.ndarray:
     """Filter out pen marks from a diagnostic slide.
 
     Pen marks are removed by applying Otsu threshold on the H channel of the image
@@ -796,7 +860,7 @@ def pen_marks(img: Image.Image) -> np.ndarray:
 
     Parameters
     ---------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image
 
     Returns

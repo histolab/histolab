@@ -6,25 +6,28 @@
 
 # -- Path setup --------------------------------------------------------------
 
+import datetime
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
 import sys
-import datetime
 
 sys.path.insert(0, os.path.abspath(".."))
 
 
 # -- Project information -----------------------------------------------------
 
-project = "HistoLab"
-copyright = "2020, HistoLab"
+project = "histolab"
+copyright = "2020, histolab"
 author = "histolab"
 
 # The full version, including alpha/beta/rc tags
-release = "0.0.1a0"
+from histolab import __version__  # isort:skip # noqa: E402
+
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -38,6 +41,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_rtd_theme",
+    "sphinxcontrib.katex",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -55,6 +59,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
+html_logo = "logo.png"
+html_favicon = "favicon.png"
 html_theme_options = {
     "display_version": True,
     "prev_next_buttons_location": "bottom",
@@ -79,3 +85,4 @@ html_context = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+add_module_names = False

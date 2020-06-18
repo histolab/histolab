@@ -1,8 +1,14 @@
-Welcome to HistoLab's documentation!
-====================================
+histolab
+========
+
+.. image:: https://user-images.githubusercontent.com/4196091/84828232-048fcc00-b026-11ea-8caa-5c14bb8565bd.png
+   :alt: Logo
+   :align: center
+   :width: 40em
+
 
 The aim of this project is to provide a tool for WSI processing in a reproducible environment to support clinical and
-scientific research. HistoLab is designed to handle WSIs, automatically detect the tissue, and retrieve informative
+scientific research. histolab is designed to handle WSIs, automatically detect the tissue, and retrieve informative
 tiles, and it can thus be integrated in a deep learning pipeline.
 
 Motivation
@@ -33,19 +39,16 @@ smaller regions of tissues (tiles), which in turns require a tissue detection st
 Installation
 --------------
 
-The HistoLab package can be installed by using::
+The histolab package can be installed by using::
 
   pip install histolab
 
 Prerequisites
 *************
-HistoLab has only one sistem-wide dependency: `OpenSlide`.
+histolab has only one sistem-wide dependency: `OpenSlide`.
 
 You can download and install it from https://openslide.org/download/ according to your operating system.
 
-QuickStart
-----------
-TODO
 
 Authors
 *******
@@ -71,12 +74,19 @@ Contribution guidelines
 If you want to contribute to Histolab, be sure to review the `contribution guidelines <https://github.com/MPBA/histolab/blob/master/CONTRIBUTING.txt>`_.
 
 .. toctree::
+  :hidden:
+
+  quickstart
+
+.. toctree::
    :caption: API Reference
    :maxdepth: 2
    :hidden:
 
    api/slide
    api/filters
+   api/tile
+   api/tiler
    utils
 
 

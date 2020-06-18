@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Union
 
 import numpy as np
-from PIL import Image
+import PIL
 
 from .filters import image_filters as imf
 from .filters import morphological_filters as mof
@@ -14,7 +14,9 @@ from .util import lazyproperty
 class Tile:
     """Provide Tile object representing a tile generated from a Slide object.
 
-    image : Image.Image
+    Arguments
+    ---------
+    image : PIL.Image.Image
         Image describing the tile
     coords : CoordinatePair
         Level 0 Coordinates of the Slide from which the tile was extracted
@@ -22,13 +24,13 @@ class Tile:
         Level of tile extraction, by default 0
     """
 
-    def __init__(self, image: Image.Image, coords: CoordinatePair, level: int = 0):
+    def __init__(self, image: PIL.Image.Image, coords: CoordinatePair, level: int = 0):
         self._image = image
         self._level = level
         self._coords = coords
 
     @lazyproperty
-    def image(self) -> Image.Image:
+    def image(self) -> PIL.Image.Image:
         return self._image
 
     @lazyproperty
@@ -57,8 +59,8 @@ class Tile:
         -------
         enough_tissue : bool
             Whether the image has enough tissue, i.e. if the proportion of tissue
-            over the total area of the image is more than ``threshold`` and the image
-            variance after morphological operations is more than
+            over the total area of the image is more than ``tissue_percent`` and the
+            image variance after morphological operations is more than
             ``near_zero_var_threshold``.
         """
 

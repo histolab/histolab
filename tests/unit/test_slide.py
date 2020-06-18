@@ -12,9 +12,9 @@ import pytest
 from matplotlib.figure import Figure as matplotlib_figure
 from PIL import ImageShow
 
-from src.histolab.filters.image_filters import Compose
-from src.histolab.slide import Slide, SlideSet
-from src.histolab.types import CoordinatePair, Region
+from histolab.filters.image_filters import Compose
+from histolab.slide import Slide, SlideSet
+from histolab.types import CoordinatePair, Region
 
 from ..unitutil import (
     ANY,
@@ -176,6 +176,17 @@ class Describe_Slide(object):
         assert type(resampled_array) == np.ndarray
         assert resampled_array.shape == (400, 300, 3)
 
+    def it_knows_its_thumbnail_size(self, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+
+        thumb_size = slide._thumbnail_size
+
+        assert thumb_size == (500, 500)
+
     def it_creates_a_correct_slide_object(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0
@@ -307,8 +318,8 @@ class Describe_Slide(object):
 
     def it_knows_regions_from_binary_mask(self, request):
         binary_mask = np.array([[True, False], [True, True]])
-        label = function_mock(request, "src.histolab.slide.label")
-        regionprops = function_mock(request, "src.histolab.slide.regionprops")
+        label = function_mock(request, "histolab.slide.label")
+        regionprops = function_mock(request, "histolab.slide.regionprops")
         RegionProps = namedtuple("RegionProps", ("area", "bbox", "centroid"))
         regions_props = [
             RegionProps(3, (0, 0, 2, 2), (0.6666666666666666, 0.3333333333333333))
@@ -391,19 +402,19 @@ class Describe_Slide(object):
             ]
         )
         regions_from_binary_mask = function_mock(
-            request, "src.histolab.slide.Slide._regions_from_binary_mask"
+            request, "histolab.slide.Slide._regions_from_binary_mask"
         )
         regions_from_binary_mask.return_value = regions
         biggest_regions_ = function_mock(
-            request, "src.histolab.slide.Slide._biggest_regions"
+            request, "histolab.slide.Slide._biggest_regions"
         )
         biggest_regions_.return_value = regions
         region_coordinates_ = function_mock(
-            request, "src.histolab.slide.Slide._region_coordinates"
+            request, "histolab.slide.Slide._region_coordinates"
         )
         region_coordinates_.return_values = CoordinatePair(0, 0, 2, 2)
         polygon_to_mask_array_ = function_mock(
-            request, "src.histolab.util.polygon_to_mask_array"
+            request, "histolab.util.polygon_to_mask_array"
         )
         polygon_to_mask_array_(
             (1000, 1000), CoordinatePair(0, 0, 2, 2)
@@ -620,28 +631,28 @@ class Describe_Slide(object):
 
     @pytest.fixture
     def RgbToGrayscale_(self, request):
-        return class_mock(request, "src.histolab.filters.image_filters.RgbToGrayscale")
+        return class_mock(request, "histolab.filters.image_filters.RgbToGrayscale")
 
     @pytest.fixture
     def OtsuThreshold_(self, request):
-        return class_mock(request, "src.histolab.filters.image_filters.OtsuThreshold")
+        return class_mock(request, "histolab.filters.image_filters.OtsuThreshold")
 
     @pytest.fixture
     def BinaryDilation_(self, request):
         return class_mock(
-            request, "src.histolab.filters.morphological_filters.BinaryDilation"
+            request, "histolab.filters.morphological_filters.BinaryDilation"
         )
 
     @pytest.fixture
     def RemoveSmallHoles_(self, request):
         return class_mock(
-            request, "src.histolab.filters.morphological_filters.RemoveSmallHoles"
+            request, "histolab.filters.morphological_filters.RemoveSmallHoles"
         )
 
     @pytest.fixture
     def RemoveSmallObjects_(self, request):
         return class_mock(
-            request, "src.histolab.filters.morphological_filters.RemoveSmallObjects"
+            request, "histolab.filters.morphological_filters.RemoveSmallObjects"
         )
 
 
@@ -965,4 +976,4 @@ class Describe_Slideset(object):
 
     @pytest.fixture
     def Slide_(self, request):
-        return class_mock(request, "src.histolab.slide.Slide")
+        return class_mock(request, "histolab.slide.Slide")

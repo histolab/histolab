@@ -3,7 +3,7 @@
 import numpy as np
 import skimage.morphology
 
-from src.histolab.filters import morphological_filters as mof
+from histolab.filters import morphological_filters as mof
 
 from ...unitutil import NpArrayMock, function_mock
 from ...base import IMAGE1_RGB, IMAGE2_RGBA
@@ -14,7 +14,7 @@ class DescribeMorphologicalFilters(object):
         img_arr = IMAGE1_RGB
         F_remove_small_objects = function_mock(
             request,
-            "src.histolab.filters.morphological_filters_functional.remove_small_objects",
+            "histolab.filters.morphological_filters_functional.remove_small_objects",
         )
         F_remove_small_objects.return_value = img_arr
         remove_small_objects = mof.RemoveSmallObjects()

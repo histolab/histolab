@@ -2,7 +2,7 @@ import operator
 import pytest
 import numpy as np
 
-import src.histolab.filters.image_filters_functional as imf
+import histolab.filters.image_filters_functional as imf
 
 from PIL import ImageChops
 
@@ -118,6 +118,79 @@ def test_rgb_to_hed_raises_exception_on_gs_image():
 
     assert isinstance(err.value, Exception)
     assert str(err.value) == "Input image must be RGB."
+
+
+def test_hematoxylin_channel_filter_with_rgb_image():
+    img = RGB.TCGA_LUNG_RGB
+    expected_value = load_expectation(
+        "pil-images-rgb/tcga-lung-rgb-hematoxylin-channel", type_="png"
+    )
+
+    h_channel = imf.hematoxylin_channel(img)
+
+    np.testing.assert_array_almost_equal(np.array(h_channel), np.array(expected_value))
+    assert np.unique(np.array(ImageChops.difference(h_channel, expected_value)))[0] == 0
+
+
+def test_hematoxylin_channel_filter_with_rgba_image():
+    img = RGBA.TCGA_LUNG
+    expected_value = load_expectation(
+        "pil-images-rgba/tcga-lung-hematoxylin-channel", type_="png"
+    )
+
+    hematoxylin_img = imf.hematoxylin_channel(img)
+
+    np.testing.assert_array_almost_equal(
+        np.array(hematoxylin_img), np.array(expected_value)
+    )
+    assert (
+        np.unique(np.array(ImageChops.difference(hematoxylin_img, expected_value)))[0]
+        == 0
+    )
+
+
+def test_hematoxylin_channel_raises_exception_on_gs_image():
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+
+    with pytest.raises(ValueError) as err:
+        imf.hematoxylin_channel(gs_img)
+
+    assert isinstance(err.value, Exception)
+    assert str(err.value) == "Input image must be RGB/RGBA."
+
+
+def test_eosin_channel_filter_with_rgb_image():
+    img = RGB.TCGA_LUNG_RGB
+    expected_value = load_expectation(
+        "pil-images-rgb/tcga-lung-rgb-eosin-channel", type_="png"
+    )
+
+    eosin_img = imf.eosin_channel(img)
+
+    np.testing.assert_array_almost_equal(np.array(eosin_img), np.array(expected_value))
+    assert np.unique(np.array(ImageChops.difference(eosin_img, expected_value)))[0] == 0
+
+
+def test_eosin_channel_filter_with_rgba_image():
+    img = RGBA.TCGA_LUNG
+    expected_value = load_expectation(
+        "pil-images-rgba/tcga-lung-eosin-channel", type_="png"
+    )
+
+    eosin_img = imf.eosin_channel(img)
+
+    np.testing.assert_array_almost_equal(np.array(eosin_img), np.array(expected_value))
+    assert np.unique(np.array(ImageChops.difference(eosin_img, expected_value)))[0] == 0
+
+
+def test_eosin_channel_raises_exception_on_gs_image():
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+
+    with pytest.raises(ValueError) as err:
+        imf.eosin_channel(gs_img)
+
+    assert isinstance(err.value, Exception)
+    assert str(err.value) == "Input image must be RGB/RGBA."
 
 
 @pytest.mark.parametrize(
