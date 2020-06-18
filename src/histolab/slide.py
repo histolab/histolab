@@ -26,13 +26,11 @@ import os
 import pathlib
 from typing import List, Tuple, Union
 
-import matplotlib.pyplot as plt
 import ntpath
 import numpy as np
 import openslide
 import PIL
 import sparse
-from matplotlib.figure import Figure as matplotlib_figure
 from skimage.measure import label, regionprops
 
 from .filters import image_filters as imf
@@ -48,11 +46,6 @@ from .util import (
 )
 
 IMG_EXT = "png"
-THUMBNAIL_SIZE = 1000
-
-# needed for matplotlib
-# TODO: can we get rid of this shit?
-plt.ioff()
 
 
 class Slide(object):
@@ -211,7 +204,7 @@ class Slide(object):
         """Save a thumbnail in the correct path"""
         os.makedirs(self._processed_path, exist_ok=True)
 
-        img = self._wsi.get_thumbnail((THUMBNAIL_SIZE, THUMBNAIL_SIZE))
+        img = self._wsi.get_thumbnail(self._thumbnail_size)
 
         folder = os.path.dirname(self.thumbnail_path)
         pathlib.Path(folder).mkdir(exist_ok=True)
@@ -330,6 +323,10 @@ class Slide(object):
                 f"{new_h}.{IMG_EXT}",
             )
         return final_path
+
+    @lazyproperty
+    def _extension(self) -> str:
+        return os.path.splitext(self._path)[1]
 
     @lazyproperty
     def _main_tissue_areas_mask_filters(self) -> imf.Compose:
@@ -492,10 +489,6 @@ class Slide(object):
             raise FileNotFoundError("The wsi path resource doesn't exist")
         return slide
 
-    @lazyproperty
-    def _extension(self) -> str:
-        return os.path.splitext(self._path)[1]
-
 
 class SlideSet(object):
     """Slideset object. It is considered a collection of Slides."""
@@ -557,48 +550,25 @@ class SlideSet(object):
         ]
 
     @lazyproperty
-    def slides_stats(self) -> Tuple[dict, matplotlib_figure]:
+    def slides_stats(self) -> dict:
         """Retrieve statistic/graphs of slides files contained in the dataset.
 
         Returns
         ----------
         basic_stats: dict of slides stats e.g. min_size, avg_size, etc...
-        figure: matplotlib.figure.Figure
         """
-        basic_stats = self._dimensions_stats
-
-        x, y = zip(*self._slides_dimensions_list)
-        colors = np.random.rand(self.total_slides)
-        sizes = 8 * self.total_slides
-
-        figure, axs = plt.subplots(ncols=2, nrows=2, constrained_layout=True)
-
-        axs[0, 0].scatter(x, y, s=sizes, c=colors, alpha=0.7, cmap="prism")
-        axs[0, 0].set_title("SVS Image Sizes (Labeled with slide name)")
-        axs[0, 0].set_xlabel("width (pixels)")
-        axs[0, 0].set_ylabel("height (pixels)")
-        for i, s in enumerate(self.slides):
-            axs[0, 1].annotate(s.name, (x[i], y[i]))
-
-        area = [w * h / 1e6 for (w, h) in self._slides_dimensions_list]
-        axs[0, 1].hist(area, bins=64)
-        axs[0, 1].set_title("Distribution of image sizes in millions of pixels")
-        axs[0, 1].set_xlabel("width x height (M of pixels)")
-        axs[0, 1].set_ylabel("# images")
-
-        whratio = [w / h for (w, h) in self._slides_dimensions_list]
-        axs[1, 0].hist(whratio, bins=64)
-        axs[1, 0].set_title("Image shapes (width to height)")
-        axs[1, 0].set_xlabel("width to height ratio")
-        axs[1, 0].set_ylabel("# images")
-
-        hwratio = [h / w for (w, h) in self._slides_dimensions_list]
-        axs[1, 1].hist(hwratio, bins=64)
-        axs[1, 1].set_title("Image shapes (height to width)")
-        axs[1, 1].set_xlabel("height to width ratio")
-        axs[1, 1].set_ylabel("# images")
-
-        return basic_stats, figure
+        return {
+            "no_of_slides": self.total_slides,
+            "max_width": self._max_width_slide,
+            "max_height": self._max_height_slide,
+            "max_size": self._max_size_slide,
+            "min_width": self._min_width_slide,
+            "min_height": self._min_height_slide,
+            "min_size": self._min_size_slide,
+            "avg_width": self._avg_width_slide,
+            "avg_height": self._avg_height_slide,
+            "avg_size": self._avg_size_slide,
+        }
 
     @lazyproperty
     def total_slides(self) -> int:
@@ -624,21 +594,6 @@ class SlideSet(object):
     @lazyproperty
     def _avg_size_slide(self) -> float:
         return sum(d["size"] for d in self._slides_dimensions) / self.total_slides
-
-    @lazyproperty
-    def _dimensions_stats(self) -> dict:
-        return {
-            "no_of_slides": self.total_slides,
-            "max_width": self._max_width_slide,
-            "max_height": self._max_height_slide,
-            "max_size": self._max_size_slide,
-            "min_width": self._min_width_slide,
-            "min_height": self._min_height_slide,
-            "min_size": self._min_size_slide,
-            "avg_width": self._avg_width_slide,
-            "avg_height": self._avg_height_slide,
-            "avg_size": self._avg_size_slide,
-        }
 
     @lazyproperty
     def _max_height_slide(self) -> dict:
