@@ -119,8 +119,7 @@ class Slide(object):
             Binary mask of the box containing the max area of tissue.
 
         """
-
-        thumb = self._wsi.get_thumbnail((1000, 1000))
+        thumb = self._wsi.get_thumbnail(self._thumbnail_size)
         filters = self._main_tissue_areas_mask_filters
 
         thumb_mask = filters(thumb)
@@ -128,7 +127,7 @@ class Slide(object):
         biggest_region = self._biggest_regions(regions, n=1)[0]
         biggest_region_coordinates = self._region_coordinates(biggest_region)
         thumb_bbox_mask = polygon_to_mask_array(
-            (1000, 1000), biggest_region_coordinates
+            self._thumbnail_size, biggest_region_coordinates
         )
         thumb_bbox_mask_sparse = sparse.COO(thumb_bbox_mask)
         return resize_mask(thumb_bbox_mask_sparse, self.dimensions)
@@ -426,6 +425,15 @@ class Slide(object):
         new_w = math.floor(large_w / scale_factor)
         new_h = math.floor(large_h / scale_factor)
         return large_w, large_h, new_w, new_h
+
+    @lazyproperty
+    def _thumbnail_size(self) -> Tuple[int, int]:
+        return tuple(
+            [
+                int(s / np.power(10, math.ceil(math.log10(s)) - 3))
+                for s in self.dimensions
+            ]
+        )
 
     @lazyproperty
     def _wsi(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
