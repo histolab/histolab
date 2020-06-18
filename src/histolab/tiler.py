@@ -19,24 +19,24 @@ class Tiler(ABC):
 class RandomTiler(Tiler):
     """Extractor of random tiles from a Slide, at the given level, with the given size.
 
-    Attributes
-    ----------
+    Arguments
+    ---------
     tile_size : tuple of int
         (width, height) of the extracted tiles.
     n_tiles : int
         Maximum number of tiles to extract.
-    level : int
+    level : int, optional
         Level from which extract the tiles. Default is 0.
-    seed : int
+    seed : int, optional
         Seed for RandomState. Must be convertible to 32 bit unsigned integers. Default
         is 7.
-    check_tissue : bool
+    check_tissue : bool, optional
         Whether to check if the tile has enough tissue to be saved. Default is True.
-    prefix : str
+    prefix : str, optional
         Prefix to be added to the tile filename. Default is an empty string.
-    suffix : str
+    suffix : str, optional
         Suffix to be added to the tile filename. Default is '.png'
-    max_iter : int
+    max_iter : int, optional
         Maximum number of iterations performed when searching for eligible (if
         ``check_tissue=True``) tiles. Must be grater than or equal to ``n_tiles``.
     """
@@ -52,29 +52,6 @@ class RandomTiler(Tiler):
         suffix: str = ".png",
         max_iter: int = 1e4,
     ):
-        """RandomTiler constructor.
-
-        Parameters
-        ----------
-        tile_size : tuple of int
-            (width, height) of the extracted tiles.
-        n_tiles : int
-            Maximum number of tiles to extract.
-        level : int
-            Level from which extract the tiles. Default is 0.
-        seed : int
-            Seed for RandomState. Must be convertible to 32 bit unsigned integers.
-            Default is 7.
-        check_tissue : bool
-            Whether to check if the tile has enough tissue to be saved. Default is True.
-        prefix : str
-            Prefix to be added to the tile filename. Default is an empty string.
-        suffix : str
-            Suffix to be added to the tile filename. Default is '.png'
-        max_iter : int
-            Maximum number of iterations performed when searching for eligible (if
-            ``check_tissue=True``) tiles. Must be grater than or equal to ``n_tiles``.
-        """
 
         super().__init__()
 

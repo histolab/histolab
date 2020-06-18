@@ -14,6 +14,8 @@ from .util import lazyproperty
 class Tile:
     """Provide Tile object representing a tile generated from a Slide object.
 
+    Arguments
+    ---------
     image : PIL.Image.Image
         Image describing the tile
     coords : CoordinatePair
@@ -57,8 +59,8 @@ class Tile:
         -------
         enough_tissue : bool
             Whether the image has enough tissue, i.e. if the proportion of tissue
-            over the total area of the image is more than ``threshold`` and the image
-            variance after morphological operations is more than
+            over the total area of the image is more than ``tissue_percent`` and the
+            image variance after morphological operations is more than
             ``near_zero_var_threshold``.
         """
 

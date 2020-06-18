@@ -56,7 +56,15 @@ plt.ioff()
 
 
 class Slide(object):
-    """Provides Slide objects and expose property and methods."""
+    """Provide Slide objects and expose property and methods.
+
+    Arguments
+    ---------
+    path : str
+        Path where the WSI is saved.
+    processed_path : str
+        Path where thumbnails and scaled images will be saved to.
+    """
 
     def __init__(self, path: str, processed_path: str) -> None:
         self._path = path
@@ -72,7 +80,7 @@ class Slide(object):
 
     @lazyproperty
     def dimensions(self) -> Tuple[int, int]:
-        """Returns the slide dimensions (w,h)
+        """Return the slide dimensions (w,h) at level 0.
 
         Returns
         -------
@@ -81,7 +89,7 @@ class Slide(object):
         return self._wsi.dimensions
 
     def level_dimensions(self, level: int = 0) -> Tuple[int, int]:
-        """Returns the slide dimensions (w,h) at the specified level
+        """Return the slide dimensions (w,h) at the specified level
 
         Parameters
         ---------
@@ -90,7 +98,7 @@ class Slide(object):
 
         Returns
         -------
-        dimensions : tuple(width, height)
+        dimensions : tuple (width, height)
         """
         try:
             return self._wsi.level_dimensions[level]
@@ -103,7 +111,7 @@ class Slide(object):
     @lazyproperty
     @lru_cache(maxsize=100)
     def biggest_tissue_box_mask(self) -> sparse._coo.core.COO:
-        """Returns the binary mask of the box containing the max area of tissue.
+        """Return the binary mask of the box containing the max area of tissue.
 
         Returns
         -------
@@ -131,14 +139,14 @@ class Slide(object):
         Parameters
         ----------
         coords : CoordinatePair
-            Coordinates at level 0
+            Coordinates at level 0 from which to extract the tile.
         level : int
-            Level from which to extract the tile
+            Level from which to extract the tile.
 
         Returns
         -------
         tile : Tile
-            Image containing the selected tile
+            Image containing the selected tile.
         """
 
         if not self._are_valid_coords(coords):
@@ -166,7 +174,7 @@ class Slide(object):
 
     @lazyproperty
     def name(self) -> str:
-        """Retrieves the slide name without extension.
+        """Retrieve the slide name without extension.
 
         Returns
         -------
@@ -175,15 +183,16 @@ class Slide(object):
         return ntpath.basename(self._path).split(".")[0]
 
     def resampled_array(self, scale_factor: int = 32) -> np.array:
-        """Retrieves the resampled array from the original slide
+        """Retrieve the resampled array from the original slide
 
         Parameters
         ----------
-        scale_factor : int, 32 by default
-            Image scaling factor
+        scale_factor : int, optional
+            Image scaling factor. Default is 32.
         Returns
         ----------
-        resampled_array: np.array
+        resampled_array: np.ndarray
+            Resampled array
         """
         return self._resample(scale_factor)[1]
 
@@ -192,8 +201,8 @@ class Slide(object):
 
         Parameters
         ----------
-        scale_factor : int, 32 by default
-            Image scaling factor
+        scale_factor : int, optional
+            Image scaling factor. Default is 32.
         """
         os.makedirs(self._processed_path, exist_ok=True)
         img = self._resample(scale_factor)[0]
@@ -210,12 +219,12 @@ class Slide(object):
         img.save(self.thumbnail_path)
 
     def scaled_image_path(self, scale_factor: int = 32) -> str:
-        """Returns slide image path.
+        """Return slide image path.
 
         Parameters
         ----------
-        scale_factor : int, 32 by default
-            Image scaling factor
+        scale_factor : int, optional
+            Image scaling factor. Default is 32.
 
         Returns
         -------
@@ -237,7 +246,7 @@ class Slide(object):
 
     @lazyproperty
     def thumbnail_path(self) -> str:
-        """Returns thumbnail image path.
+        """Return thumbnail image path.
 
         Returns
         -------
@@ -443,7 +452,7 @@ class Slide(object):
 
 
 class SlideSet(object):
-    """Slideset object. It is considered a collection of slides."""
+    """Slideset object. It is considered a collection of Slides."""
 
     def __init__(
         self, slides_path: str, processed_path: str, valid_extensions: list
@@ -459,10 +468,11 @@ class SlideSet(object):
 
         Parameters
         ----------
-        scale_factor: int, 32 by default
-            Image scaling factor
-        n: int,
-            first n slides in dataset folder to rescale and save
+        scale_factor: int, optional
+            Image scaling factor. Default is 32.
+        n: int, optional
+            First n slides in dataset folder to rescale and save. Default is 0, meaning
+            that all the slides will be saved.
         """
         os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
@@ -474,10 +484,11 @@ class SlideSet(object):
 
         Parameters
         ----------
-        n: int
-            first n slides in dataset folder
-        scale_factor : int, 32 by default
-            Image scaling factor
+        n: int. optional
+            First n slides in dataset folder. Default is 0, meaning that the thumbnails
+            of all the slides will be saved.
+        scale_factor : int, optional
+            Image scaling factor. Default is 32.
         """
         # TODO: add logger n>total_slide and log thumbnails names
         os.makedirs(self._processed_path, exist_ok=True)
@@ -501,7 +512,7 @@ class SlideSet(object):
 
     @lazyproperty
     def slides_stats(self) -> Tuple[dict, matplotlib_figure]:
-        """Retrieve statistic/graphs of slides files contained in the dataset
+        """Retrieve statistic/graphs of slides files contained in the dataset.
 
         Returns
         ----------
@@ -545,11 +556,12 @@ class SlideSet(object):
 
     @lazyproperty
     def total_slides(self) -> int:
-        """Number of slides within the slideset
+        """Number of slides within the slideset.
 
         Returns
         ----------
-        n: int, number of slides
+        n: int
+            Number of slides.
         """
         return len(self.slides)
 
