@@ -429,6 +429,7 @@ class Slide(object):
             Image scaling factor
 
         Returns
+        -------
         tuple
             Original slide dimensions and scaled dimensions
         """
