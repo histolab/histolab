@@ -1,0 +1,4 @@
+histolab
+sphinx
+sphinx-rtd-theme
+sphinxcontrib-katex
