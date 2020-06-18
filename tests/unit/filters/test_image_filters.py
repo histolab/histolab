@@ -49,7 +49,7 @@ class DescribeImageFilters(object):
     def it_calls_hematoxylin_channel_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_hematoxylin_channel = function_mock(
-            request, "src.histolab.filters.image_filters_functional.hematoxylin_channel"
+            request, "histolab.filters.image_filters_functional.hematoxylin_channel"
         )
         F_hematoxylin_channel.return_value = image
         hematoxylin_channel = imf.HematoxylinChannel()
@@ -62,7 +62,7 @@ class DescribeImageFilters(object):
     def it_calls_eosin_channel_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_eosin_channel = function_mock(
-            request, "src.histolab.filters.image_filters_functional.eosin_channel"
+            request, "histolab.filters.image_filters_functional.eosin_channel"
         )
         F_eosin_channel.return_value = image
         eosin_channel = imf.EosinChannel()
