@@ -148,10 +148,11 @@ class Tile:
         rgb2grey = imf.RgbToGrayscale()
         image_gray = rgb2grey(self._image)
         image_gray_arr = np.array(image_gray)
+        image_gray_arr = image_gray_arr / 255
 
         return (
-            np.mean(image_gray_arr.ravel()) < 0.9
-            and np.std(image_gray_arr.ravel()) > 0.09
+            np.mean(image_gray_arr.ravel()) > 0.9
+            and np.std(image_gray_arr.ravel()) < 0.09
         )
 
     def _has_tissue_more_than_percent(self, tissue_percent: float = 80.0) -> bool:

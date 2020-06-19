@@ -3,8 +3,8 @@
 """SVS source files loader for testing purposes."""
 
 import os
-import numpy as np
 
+import numpy as np
 from PIL import Image
 
 
@@ -88,3 +88,4 @@ RGBA = LazyPILResponseLoader("./pil-images-rgba")
 RGB = LazyPILResponseLoader("./pil-images-rgb")
 GS = LazyPILResponseLoader("./pil-images-gs")
 NPY = LazyNPYResponseLoader("./mask-arrays")
+TILES = LazyPILResponseLoader("./tiles")
