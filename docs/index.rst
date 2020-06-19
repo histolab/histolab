@@ -39,7 +39,6 @@ Installation
 
 The histolab package can be installed by using::
 
-   pip install setuptools==45
    pip install histolab
 
 
