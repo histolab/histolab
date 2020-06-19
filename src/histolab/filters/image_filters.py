@@ -368,10 +368,10 @@ class KmeansSegmentation(object):
     ---------
     img : PIL.Image.Image
         Input image
-    compactness : float, optional
-        Color proximity versus space proximity factor. Default is 10.0.
     n_segments : int, optional
         The number of segments. Default is 800.
+    compactness : float, optional
+        Color proximity versus space proximity factor. Default is 10.0.
 
     Returns
     -------
@@ -380,13 +380,13 @@ class KmeansSegmentation(object):
         color for that segment.
     """
 
-    def __init__(self, compactness: float = 10.0, n_segments: int = 800) -> None:
-        self.compactness = compactness
+    def __init__(self, n_segments: int = 800, compactness: float = 10.0) -> None:
         self.n_segments = n_segments
+        self.compactness = compactness
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         kmeans_segmentation = F.kmeans_segmentation(
-            img, self.compactness, self.n_segments
+            img, self.n_segments, self.compactness
         )
         return kmeans_segmentation
 

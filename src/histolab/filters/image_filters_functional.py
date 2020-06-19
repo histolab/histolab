@@ -278,7 +278,7 @@ def local_equalization(img: PIL.Image.Image, disk_size: int = 50) -> PIL.Image.I
 
 
 def kmeans_segmentation(
-    img: PIL.Image.Image, compactness: float = 10.0, n_segments: int = 800
+    img: PIL.Image.Image, n_segments: int = 800, compactness: float = 10.0
 ) -> PIL.Image.Image:
     """Segment an RGB image with K-means segmentation
 
@@ -289,10 +289,10 @@ def kmeans_segmentation(
     ---------
     img : PIL.Image.Image
         Input image
-    compactness : float, optional
-        Color proximity versus space proximity factor. Default is 10.0.
     n_segments : int, optional
         The number of segments. Default is 800.
+    compactness : float, optional
+        Color proximity versus space proximity factor. Default is 10.0.
 
     Returns
     -------
@@ -301,7 +301,7 @@ def kmeans_segmentation(
         color for that segment.
     """
     img_arr = np.array(img)
-    labels = sk_segmentation.slic(img_arr, compactness, n_segments, start_label=0)
+    labels = sk_segmentation.slic(img_arr, n_segments, compactness, start_label=0)
     kmeans_segmentation = sk_color.label2rgb(labels, img_arr, kind="avg", bg_label=-1)
     return np_to_pil(kmeans_segmentation)
 
