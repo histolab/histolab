@@ -32,7 +32,7 @@ install_requires = [
     "scikit-image",
     "scipy",
     "sparse",
-    "openslide-python==1.1.1",
+    "openslide-python @ https://github.com/openslide/openslide-python/archive/master.zip",
 ]
 
 test_requires = ["pytest", "coverage", "pytest-cov==2.8.1", "coveralls"]
@@ -49,9 +49,6 @@ setuptools.setup(
     url="https://github.com/MPBA/histolab",
     download_url="https://pypi.python.org/pypi/histolab",
     install_requires=install_requires,
-    dependency_links=[
-        "https://github.com/openslide/openslide-python/archive/master.zip#egg=openslide-python-1.1.1"  # noqa
-    ],
     tests_require=test_requires,
     extras_require={"testing": test_requires},
     packages=setuptools.find_packages("src", exclude=["tests"]),
