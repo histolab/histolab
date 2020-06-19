@@ -32,8 +32,7 @@ install_requires = [
     "scikit-image",
     "scipy",
     "sparse",
-    "openslide-python",
-    "setuptools==45",
+    "openslide-wrapper",
 ]
 
 test_requires = ["pytest", "coverage", "pytest-cov==2.8.1", "coveralls"]
