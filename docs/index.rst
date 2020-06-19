@@ -39,7 +39,9 @@ Installation
 
 The histolab package can be installed by using::
 
-  pip install histolab
+   pip install setuptools==45
+   pip install histolab
+
 
 Prerequisites
 *************
@@ -47,6 +49,8 @@ histolab has only one sistem-wide dependency: `OpenSlide`.
 
 You can download and install it from https://openslide.org/download/ according to your operating system.
 
+.. note::
+    NOTE: openslide-python requires setuptools==45. At the moment, the above is the only way to install histolab, we are working on it!
 
 Authors
 *******
