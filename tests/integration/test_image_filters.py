@@ -502,7 +502,7 @@ def test_kmeans_segmentation_filter_on_rgba_image():
         "pil-images-rgba/diagnostic-slide-thumb-kmeans-segmentation", type_="png"
     )
 
-    kmeans_segmentation_img = imf.kmeans_segmentation(rgba_img, 20.6, 300)
+    kmeans_segmentation_img = imf.kmeans_segmentation(rgba_img, 800, 10)
 
     np.testing.assert_array_almost_equal(
         np.array(kmeans_segmentation_img), np.array(expected_value)
@@ -535,7 +535,7 @@ def test_kmeans_segmentation_filter_on_rgba_image():
 def test_kmeans_segmentation_filter_on_rgb_image(pil_image, expected_image):
     expected_value = load_expectation(expected_image, type_="png")
 
-    kmeans_segmentation_img = imf.kmeans_segmentation(pil_image, 20.6, 300)
+    kmeans_segmentation_img = imf.kmeans_segmentation(pil_image, 800, 10)
 
     np.testing.assert_array_almost_equal(
         np.array(kmeans_segmentation_img), np.array(expected_value)
@@ -554,7 +554,7 @@ def test_kmeans_segmentation_filter_on_gs_image():
         "pil-images-gs/diagnostic-slide-thumb-gs-kmeans-segmentation", type_="png"
     )
 
-    kmeans_segmentation_img = imf.kmeans_segmentation(gs_img, 20.6, 300)
+    kmeans_segmentation_img = imf.kmeans_segmentation(gs_img, 800, 10)
 
     np.testing.assert_array_almost_equal(
         np.array(kmeans_segmentation_img), np.array(expected_value)
