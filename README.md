@@ -52,9 +52,7 @@ You can download and install it from [OpenSlide](https://openslide.org/download/
 
 ### Installation 
 
-NOTE: `openslide-python` requires `setuptools==45`, at the moment the only way to install histolab is:
 ```
-pip install setuptools==45
 pip install histolab
 ```
 
