@@ -13,9 +13,28 @@ import datetime
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.abspath(".."))
+
+
+def ascii_bytes_from(path, *paths):
+    """
+    Return the ASCII characters in the file specified by *path* and *paths*.
+    The file path is determined by concatenating *path* and any members of
+    *paths* with a directory separator in between.
+    """
+    file_path = os.path.join(path, *paths)
+    with open(file_path) as f:
+        ascii_bytes = f.read()
+    return ascii_bytes
+
+
+# read required text from files
+thisdir = os.path.dirname(__file__)
+init_py = ascii_bytes_from(thisdir, "..", "src", "histolab", "__init__.py")
+version = re.search('__version__ = "([^"]+)"', init_py).group(1)
 
 
 # -- Project information -----------------------------------------------------
@@ -25,9 +44,7 @@ copyright = "2020, histolab"
 author = "histolab"
 
 # The full version, including alpha/beta/rc tags
-from histolab import __version__  # isort:skip # noqa: E402
-
-release = __version__
+release = version
 
 
 # -- General configuration ---------------------------------------------------
@@ -86,3 +103,6 @@ html_context = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 add_module_names = False
+
+autodoc_mock_imports = ["openslide-python", "openslide"]
+master_doc = "index"

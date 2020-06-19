@@ -1,5 +1,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/MPBA/histolab/badge.svg?branch=master)](https://coveralls.io/github/MPBA/histolab?branch=master)
 [![Build Status](https://travis-ci.com/MPBA/histolab.svg?branch=master)](https://travis-ci.com/MPBA/histolab)
+[![Documentation Status](https://readthedocs.org/projects/histolab/badge/?version=latest)](https://histolab.readthedocs.io/en/latest/?badge=latest)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/MPBA/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MPBA/histolab/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/MPBA/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MPBA/histolab/context:python)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -54,6 +55,10 @@ You can download and install it from [OpenSlide](https://openslide.org/download/
 ```
 pip install histolab
 ```
+
+### Documentation
+
+Read the full documentation here https://histolab.readthedocs.io/en/latest/.
 
 ### Quickstart 
 
