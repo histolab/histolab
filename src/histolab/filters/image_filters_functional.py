@@ -308,8 +308,8 @@ def kmeans_segmentation(
 
 def rag_threshold(
     img: PIL.Image.Image,
-    compactness: float = 10.0,
     n_segments: int = 800,
+    compactness: float = 10.0,
     threshold: int = 9,
 ) -> PIL.Image.Image:
     """Combine similar K-means segmented regions based on threshold value.
@@ -322,10 +322,10 @@ def rag_threshold(
     ----------
     img : PIL.Image.Image
         Input image
-    compactness : float, optional
-        Color proximity versus space proximity factor. Default is 10.0.
     n_segments :  int, optional
         The number of segments. Default is 800.
+    compactness : float, optional
+        Color proximity versus space proximity factor. Default is 10.0.
     threshold : int, optional
         Threshold value for combining regions. Default is 9.
 
@@ -338,7 +338,7 @@ def rag_threshold(
     if img.mode == "RGBA":
         raise ValueError("Input image cannot be RGBA")
     img_arr = np.array(img)
-    labels = sk_segmentation.slic(img_arr, compactness, n_segments, start_label=0)
+    labels = sk_segmentation.slic(img_arr, n_segments, compactness, start_label=0)
     g = sk_future.graph.rag_mean_color(img_arr, labels)
     labels2 = sk_future.graph.cut_threshold(labels, g, threshold)
     rag = sk_color.label2rgb(labels2, img_arr, kind="avg", bg_label=-1)

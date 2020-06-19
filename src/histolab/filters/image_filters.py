@@ -405,10 +405,10 @@ class RagThreshold(object):
     ----------
     img : PIL.Image.Image
         Input image
-    compactness : float, optional
-        Color proximity versus space proximity factor. Default is 10.0
     n_segments : int, optional
         The number of segments. Default is 800.
+    compactness : float, optional
+        Color proximity versus space proximity factor. Default is 10.0
     threshold : int, optional
         Threshold value for combining regions. Default is 9.
 
@@ -420,14 +420,14 @@ class RagThreshold(object):
     """
 
     def __init__(
-        self, compactness: float = 10.0, n_segments: int = 800, threshold: int = 9
+        self, n_segments: int = 800, compactness: float = 10.0, threshold: int = 9
     ) -> PIL.Image.Image:
-        self.compactness = compactness
         self.n_segments = n_segments
+        self.compactness = compactness
         self.threshold = threshold
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
-        return F.rag_threshold(img, self.compactness, self.n_segments, self.threshold)
+        return F.rag_threshold(img, self.n_segments, self.compactness, self.threshold)
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
