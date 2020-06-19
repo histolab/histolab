@@ -10,11 +10,8 @@ If you haven’t already, install the ``histolab`` library:
 
 .. code-block:: bash
 
-   pip install setuptools==45
    pip install histolab
 
-.. note::
-    openslide-python requires setuptools==45. At the moment, the above is the only way to install histolab, we are working on it!
 
 First things first, let's import some data to work with, for example a breast tissue slide and a heart tissue slide:
 

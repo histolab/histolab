@@ -35,7 +35,7 @@ it is not possible to process a WSI all at once, or, for example, to feed a neur
 smaller regions of tissues (tiles), which in turns require a tissue detection step.
 
 Installation
---------------
+************
 
 The histolab package can be installed by using::
 
@@ -47,9 +47,6 @@ Prerequisites
 histolab has only one sistem-wide dependency: `OpenSlide`.
 
 You can download and install it from https://openslide.org/download/ according to your operating system.
-
-.. note::
-    NOTE: openslide-python requires setuptools==45. At the moment, the above is the only way to install histolab, we are working on it!
 
 Authors
 *******
@@ -77,6 +74,7 @@ References
   readme
   quickstart
   contributing
+  changelog
 
 .. toctree::
    :caption: API Reference
