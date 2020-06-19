@@ -587,7 +587,7 @@ def test_kmeans_segmentation_filter_on_gs_image():
 def test_rag_threshold_filter_on_rgb_image(pil_image, expected_image):
     expected_value = load_expectation(expected_image, type_="png")
 
-    rag_threshold_img = imf.rag_threshold(pil_image, 20.6, 650, 15)
+    rag_threshold_img = imf.rag_threshold(pil_image, 650, 20.6, 9)
 
     np.testing.assert_array_almost_equal(
         np.array(rag_threshold_img), np.array(expected_value)
@@ -604,7 +604,7 @@ def test_rag_threshold_filter_on_gs_image():
         "pil-images-gs/diagnostic-slide-thumb-gs-rag-threshold", type_="png"
     )
 
-    rag_threshold_img = imf.rag_threshold(gs_img, 20.6, 650, 15)
+    rag_threshold_img = imf.rag_threshold(gs_img, 650, 20.6, 15)
 
     np.testing.assert_array_almost_equal(
         np.array(rag_threshold_img), np.array(expected_value)
