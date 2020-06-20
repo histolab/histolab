@@ -1,8 +1,9 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Tuple
 
 import numpy as np
 import sparse
+from typing_extensions import Protocol
 
 from .slide import Slide
 from .tile import Tile
@@ -10,10 +11,84 @@ from .types import CoordinatePair
 from .util import lru_cache, resize_mask, scale_coordinates
 
 
-class Tiler(ABC):
+class Tiler(Protocol):
+
+    level: int
+    tile_size: int
+
+    @lru_cache(maxsize=100)
+    def box_mask(self, slide: Slide) -> sparse._coo.core.COO:
+        """Return binary mask at level 0 of the box to consider for tiles extraction.
+
+        If `check_tissue` attribute is True, the mask pixels set to True will be the
+        ones corresponding to the tissue box. Otherwise, all the mask pixels will be set
+        to True.
+
+        Parameters
+        ----------
+        slide : Slide
+            The Slide from which to extract the extraction mask
+
+        Returns
+        -------
+        sparse._coo.core.COO
+            Extraction mask at level 0
+        """
+
+        if self.check_tissue:
+            return slide.biggest_tissue_box_mask
+        else:
+            return sparse.ones(slide.dimensions[::-1], dtype=bool)
+
+    @lru_cache(maxsize=100)
+    def box_mask_lvl(self, slide: Slide) -> sparse._coo.core.COO:
+        """Return binary mask at target level of the box to consider for the extraction.
+
+        If ``check_tissue`` attribute is True, the mask pixels set to True will be the
+        ones corresponding to the tissue box. Otherwise, all the mask pixels will be set
+        to True.
+
+        Parameters
+        ----------
+        slide : Slide
+            The Slide from which to extract the extraction mask
+
+        Returns
+        -------
+        sparse._coo.core.COO
+            Extraction mask at target level
+        """
+
+        box_mask_wsi = self.box_mask(slide)
+
+        if self.level != 0:
+            return resize_mask(
+                box_mask_wsi, target_dimensions=slide.level_dimensions(self.level),
+            )
+        else:
+            return box_mask_wsi
+
     @abstractmethod
     def extract(self, slide: Slide):
         raise NotImplementedError
+
+
+class GridTiler(Tiler):
+    def __init__(
+        self,
+        tile_size: Tuple[int, int],
+        level: int = 0,
+        check_tissue: bool = True,
+        pixel_overlap: int = 0,
+        prefix: str = "",
+        suffix: str = ".png",
+    ):
+        self.tile_size = tile_size
+        self.level = level
+        self.check_tissue = check_tissue
+        self.pixel_overlap = pixel_overlap
+        self.prefix = prefix
+        self.suffix = suffix
 
 
 class RandomTiler(Tiler):
@@ -96,51 +171,6 @@ class RandomTiler(Tiler):
                 f"equal to the maximum number of tiles ({self.n_tiles})."
             )
         self._valid_max_iter = max_iter_
-
-    @lru_cache(maxsize=100)
-    def box_mask(self, slide: Slide) -> sparse._coo.core.COO:
-        """Return binary mask at level 0 of the box to consider for tiles extraction.
-
-        The mask pixels set to True will be the ones corresponding to the tissue box.
-
-        Parameters
-        ----------
-        slide : Slide
-            The Slide from which to extract the extraction mask
-
-        Returns
-        -------
-        sparse._coo.core.COO
-            Extraction mask at level 0
-        """
-
-        return slide.biggest_tissue_box_mask
-
-    @lru_cache(maxsize=100)
-    def box_mask_lvl(self, slide: Slide) -> sparse._coo.core.COO:
-        """Return binary mask at target level of the box to consider for the extraction.
-
-        The mask pixels set to True will be the ones corresponding to the tissue box.
-
-        Parameters
-        ----------
-        slide : Slide
-            The Slide from which to extract the extraction mask
-
-        Returns
-        -------
-        sparse._coo.core.COO
-            Extraction mask at target level
-        """
-
-        box_mask_wsi = self.box_mask(slide)
-
-        if self.level != 0:
-            return resize_mask(
-                box_mask_wsi, target_dimensions=slide.level_dimensions(self.level),
-            )
-        else:
-            return box_mask_wsi
 
     def extract(self, slide: Slide):
         """Extract tiles consuming `random_tiles_generator` and save them to disk,
@@ -261,7 +291,3 @@ class RandomTiler(Tiler):
         )
 
         return tile_filename
-
-
-class GridTiler(Tiler):
-    pass
