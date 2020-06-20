@@ -33,6 +33,7 @@ install_requires = [
     "scipy",
     "sparse",
     "openslide-wrapper",
+    "typing_extensions",
 ]
 
 test_requires = ["pytest", "coverage", "pytest-cov==2.8.1", "coveralls"]
