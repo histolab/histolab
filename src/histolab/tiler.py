@@ -91,6 +91,20 @@ class GridTiler(Tiler):
         self.prefix = prefix
         self.suffix = suffix
 
+    def _grid_tiles_generator(self, slide: Slide) -> (Tile, CoordinatePair):
+        box_mask_lvl = self.box_mask_lvl(slide)
+        tile_w_lvl, tile_h_lvl = self.tile_size
+
+        valid_tile_counter = 0
+
+        min_x_ul_lvl = sparse.where(box_mask_lvl)[0].min()
+        min_y_ul_lvl = sparse.where(box_mask_lvl)[1].min()
+        max_y_br_lvl = sparse.where(box_mask_lvl)[0].max()
+        max_y_br_lvl = sparse.where(box_mask_lvl)[1].max()
+
+    def extract(self, slide: Slide):
+        pass
+
 
 class RandomTiler(Tiler):
     """Extractor of random tiles from a Slide, at the given level, with the given size.
