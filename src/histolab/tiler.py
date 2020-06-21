@@ -8,7 +8,13 @@ from typing_extensions import Protocol, runtime_checkable
 from .slide import Slide
 from .tile import Tile
 from .types import CoordinatePair
-from .util import lru_cache, resize_mask, scale_coordinates
+from .util import (
+    lru_cache,
+    region_coordinates,
+    regions_from_binary_mask,
+    resize_mask,
+    scale_coordinates,
+)
 
 
 @runtime_checkable
@@ -91,16 +97,50 @@ class GridTiler(Tiler):
         self.prefix = prefix
         self.suffix = suffix
 
-    def _grid_tiles_generator(self, slide: Slide) -> (Tile, CoordinatePair):
+    def _grid_coordinates_generator(self, slide: Slide) -> CoordinatePair:
+        """Generate Coordinates at level 0 of tiles arranged in a grid within the box.
+
+        Parameters
+        ----------
+        slide : Slide
+            Slide from which to calculate the coordinates. Needed to calculate the box.
+
+        Yields
+        -------
+        Iterator[CoordinatePair]
+            Iterator of tiles CoordinatePair
+        """
         box_mask_lvl = self.box_mask_lvl(slide)
         tile_w_lvl, tile_h_lvl = self.tile_size
 
-        valid_tile_counter = 0
+        regions = regions_from_binary_mask(box_mask_lvl.todense())
+        for region in regions:  # at the moment there is only one region
+            bbox_coordinates = region_coordinates(region)
 
-        min_x_ul_lvl = sparse.where(box_mask_lvl)[0].min()
-        min_y_ul_lvl = sparse.where(box_mask_lvl)[1].min()
-        max_y_br_lvl = sparse.where(box_mask_lvl)[0].max()
-        max_y_br_lvl = sparse.where(box_mask_lvl)[1].max()
+            n_tiles_row = (bbox_coordinates.x_br - bbox_coordinates.x_ul) // tile_w_lvl
+            n_tiles_column = (
+                bbox_coordinates.y_br - bbox_coordinates.y_ul
+            ) // tile_h_lvl
+
+            x_ul_lvl_offset = bbox_coordinates.x_ul
+            y_ul_lvl_offset = bbox_coordinates.y_ul
+
+            for i in range(n_tiles_row):
+                for j in range(n_tiles_column):
+                    x_ul_lvl = x_ul_lvl_offset + tile_w_lvl * j
+                    y_ul_lvl = y_ul_lvl_offset + tile_h_lvl * i
+
+                    x_br_lvl = x_ul_lvl + tile_w_lvl
+                    y_br_lvl = y_ul_lvl + tile_h_lvl
+
+                    tile_wsi_coords = scale_coordinates(
+                        reference_coords=CoordinatePair(
+                            x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl
+                        ),
+                        reference_size=slide.level_dimensions(level=self.level),
+                        target_size=slide.level_dimensions(level=0),
+                    )
+                    yield tile_wsi_coords
 
     def extract(self, slide: Slide):
         pass
