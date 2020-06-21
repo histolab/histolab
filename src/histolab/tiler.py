@@ -3,7 +3,7 @@ from typing import Tuple
 
 import numpy as np
 import sparse
-from typing_extensions import Protocol
+from typing_extensions import Protocol, runtime_checkable
 
 from .slide import Slide
 from .tile import Tile
@@ -11,6 +11,7 @@ from .types import CoordinatePair
 from .util import lru_cache, resize_mask, scale_coordinates
 
 
+@runtime_checkable
 class Tiler(Protocol):
 
     level: int
