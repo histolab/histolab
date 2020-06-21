@@ -19,14 +19,15 @@ import functools
 import warnings
 from collections import deque
 from itertools import filterfalse as ifilterfalse
-from typing import Tuple, Callable
+from typing import Callable, List, Tuple
 
 import numpy as np
 import PIL
 import PIL.ImageDraw
 import sparse
+from skimage.measure import label, regionprops
 
-from .types import CoordinatePair
+from .types import CoordinatePair, Region
 
 warn = functools.partial(warnings.warn, stacklevel=2)
 
@@ -140,6 +141,28 @@ def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
     img = PIL.Image.new("L", dims, 0)
     PIL.ImageDraw.Draw(img).polygon(poly_vertices, outline=1, fill=1)
     return np.array(img).astype(bool)
+
+
+def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
+    """Calculate regions properties from a binary mask.
+
+        Parameters
+        ----------
+        binary_mask : np.ndarray
+            Binary mask from which to extract the regions
+
+        Returns
+        -------
+        List[Region]
+            Properties for all the regions present in the binary mask
+        """
+
+    thumb_labeled_regions = label(binary_mask)
+    regions = [
+        Region(index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid)
+        for i, rp in enumerate(regionprops(thumb_labeled_regions))
+    ]
+    return regions
 
 
 def resize_mask(

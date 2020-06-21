@@ -14,6 +14,7 @@ from PIL import ImageShow
 from histolab.filters.image_filters import Compose
 from histolab.slide import Slide, SlideSet
 from histolab.types import CoordinatePair, Region
+from histolab.util import regions_from_binary_mask
 
 from ..unitutil import (
     ANY,
@@ -317,8 +318,8 @@ class Describe_Slide(object):
 
     def it_knows_regions_from_binary_mask(self, request):
         binary_mask = np.array([[True, False], [True, True]])
-        label = function_mock(request, "histolab.slide.label")
-        regionprops = function_mock(request, "histolab.slide.regionprops")
+        label = function_mock(request, "histolab.util.label")
+        regionprops = function_mock(request, "histolab.util.regionprops")
         RegionProps = namedtuple("RegionProps", ("area", "bbox", "centroid"))
         regions_props = [
             RegionProps(3, (0, 0, 2, 2), (0.6666666666666666, 0.3333333333333333))
@@ -327,7 +328,7 @@ class Describe_Slide(object):
         label(binary_mask).return_value = [[0, 1], [1, 1]]
         slide = Slide("/a/b", "c/d")
 
-        regions_from_binary_mask_ = slide._regions_from_binary_mask(binary_mask)
+        regions_from_binary_mask_ = regions_from_binary_mask(binary_mask)
 
         regionprops.assert_called_once_with(label(binary_mask))
         assert type(regions_from_binary_mask_) == list
@@ -401,7 +402,7 @@ class Describe_Slide(object):
             ]
         )
         regions_from_binary_mask = function_mock(
-            request, "histolab.slide.Slide._regions_from_binary_mask"
+            request, "histolab.slide.regions_from_binary_mask"
         )
         regions_from_binary_mask.return_value = regions
         biggest_regions_ = function_mock(
