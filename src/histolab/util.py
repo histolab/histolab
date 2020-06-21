@@ -146,16 +146,16 @@ def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
 def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     """Calculate regions properties from a binary mask.
 
-        Parameters
-        ----------
-        binary_mask : np.ndarray
-            Binary mask from which to extract the regions
+    Parameters
+    ----------
+    binary_mask : np.ndarray
+        Binary mask from which to extract the regions
 
-        Returns
-        -------
-        List[Region]
-            Properties for all the regions present in the binary mask
-        """
+    Returns
+    -------
+    List[Region]
+        Properties for all the regions present in the binary mask
+    """
 
     thumb_labeled_regions = label(binary_mask)
     regions = [
@@ -163,6 +163,23 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
         for i, rp in enumerate(regionprops(thumb_labeled_regions))
     ]
     return regions
+
+
+def region_coordinates(region: Region) -> CoordinatePair:
+    """Extract bbox coordinates from the region.
+
+    Parameters
+    ----------
+    region : Region
+        Region from which to extract the coordinates of the bbox
+
+    Returns
+    -------
+    CoordinatePair
+        Coordinates of the bbox
+    """
+    y_ul, x_ul, y_br, x_br = region.bbox
+    return CoordinatePair(x_ul, y_ul, x_br, y_br)
 
 
 def resize_mask(

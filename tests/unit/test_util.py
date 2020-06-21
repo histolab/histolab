@@ -6,17 +6,6 @@ import operator
 
 import numpy as np
 import pytest
-
-from histolab.types import CoordinatePair
-from histolab.util import (
-    apply_mask_image,
-    lazyproperty,
-    np_to_pil,
-    polygon_to_mask_array,
-    resize_mask,
-    scale_coordinates,
-    threshold_to_mask,
-)
 from tests.base import (
     IMAGE1_GREY,
     IMAGE1_RGB,
@@ -32,6 +21,18 @@ from tests.base import (
     IMAGE4_RGBA_WHITE,
     SPARSE_BASE_MASK,
     SPARSE_COMPLEX_MASK,
+)
+
+from histolab.types import CoordinatePair, Region
+from histolab.util import (
+    apply_mask_image,
+    lazyproperty,
+    np_to_pil,
+    polygon_to_mask_array,
+    region_coordinates,
+    resize_mask,
+    scale_coordinates,
+    threshold_to_mask,
 )
 
 from ..util import load_expectation
@@ -221,6 +222,13 @@ def test_util_resize_mask(mask_array, target_dims, expected_array):
     np.testing.assert_array_almost_equal(
         resized_mask.todense(), load_expectation(expected_array, "npz").todense()
     )
+
+
+def test_region_coordinates():
+    region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5))
+    region_coords_ = region_coordinates(region)
+
+    assert region_coords_ == CoordinatePair(x_ul=1, y_ul=0, x_br=2, y_br=1)
 
 
 # fixtures ---------------------------------------------
