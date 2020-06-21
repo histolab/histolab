@@ -326,7 +326,6 @@ class Describe_Slide(object):
         ]
         regionprops.return_value = regions_props
         label(binary_mask).return_value = [[0, 1], [1, 1]]
-        slide = Slide("/a/b", "c/d")
 
         regions_from_binary_mask_ = regions_from_binary_mask(binary_mask)
 
@@ -365,14 +364,6 @@ class Describe_Slide(object):
 
         assert str(err.value) == f"n should be between 1 and {len(regions)}, got {n}"
 
-    def it_knows_its_region_coordinates(self):
-        region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5))
-        slide = Slide("a/b", "c/d")
-
-        region_coords_ = slide._region_coordinates(region)
-
-        assert region_coords_ == CoordinatePair(x_ul=1, y_ul=0, x_br=2, y_br=1)
-
     def it_knows_its_biggest_tissue_box_mask(
         self,
         request,
@@ -410,7 +401,7 @@ class Describe_Slide(object):
         )
         biggest_regions_.return_value = regions
         region_coordinates_ = function_mock(
-            request, "histolab.slide.Slide._region_coordinates"
+            request, "histolab.slide.region_coordinates"
         )
         region_coordinates_.return_values = CoordinatePair(0, 0, 2, 2)
         polygon_to_mask_array_ = function_mock(
@@ -422,7 +413,7 @@ class Describe_Slide(object):
 
         biggest_mask_tissue_box = slide.biggest_tissue_box_mask
 
-        region_coordinates_.assert_called_once_with(slide, regions[0])
+        region_coordinates_.assert_called_once_with(regions[0])
         biggest_regions_.assert_called_once_with(slide, regions, n=1)
         polygon_to_mask_array_.assert_called_once_with(
             (1000, 1000), CoordinatePair(x_ul=0, y_ul=0, x_br=2, y_br=2)
