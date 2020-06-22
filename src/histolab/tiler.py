@@ -125,6 +125,27 @@ class GridTiler(Tiler):
         self.prefix = prefix
         self.suffix = suffix
 
+    def extract(self, slide: Slide):
+        """Extract tiles arranged in a grid and save them to disk, following this
+        filename pattern:
+        `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
+
+        Parameters
+        ----------
+        slide : Slide
+            Slide from which to extract the tiles
+        """
+        grid_tiles = self._grid_tiles_generator(slide)
+
+        tiles_counter = 0
+
+        for tiles_counter, (tile, tile_wsi_coords) in enumerate(grid_tiles):
+            tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
+            tile.save(tile_filename)
+            print(f"\t Tile {tiles_counter} saved: {tile_filename}")
+
+        print(f"{tiles_counter+1} Grid Tiles have been saved.")
+
     def _grid_coordinates_generator(self, slide: Slide) -> CoordinatePair:
         """Generate Coordinates at level 0 of tiles arranged in a grid within the box.
 
@@ -136,7 +157,7 @@ class GridTiler(Tiler):
         Yields
         -------
         Iterator[CoordinatePair]
-            Iterator of tiles CoordinatePair
+            Iterator of tiles' CoordinatePair
         """
         box_mask_lvl = self.box_mask_lvl(slide)
         tile_w_lvl, tile_h_lvl = self.tile_size
@@ -145,12 +166,8 @@ class GridTiler(Tiler):
         for region in regions:  # at the moment there is only one region
             bbox_coordinates = region_coordinates(region)
 
-            n_tiles_row = (bbox_coordinates.x_br - bbox_coordinates.x_ul) // (
-                tile_w_lvl - self.pixel_overlap
-            )
-            n_tiles_column = (bbox_coordinates.y_br - bbox_coordinates.y_ul) // (
-                tile_h_lvl - self.pixel_overlap
-            )
+            n_tiles_row = self._n_tiles_row(bbox_coordinates)
+            n_tiles_column = self._n_tiles_column(bbox_coordinates)
 
             x_ul_lvl_offset = bbox_coordinates.x_ul
             y_ul_lvl_offset = bbox_coordinates.y_ul
@@ -178,8 +195,44 @@ class GridTiler(Tiler):
                     )
                     yield tile_wsi_coords
 
-    def extract(self, slide: Slide):
-        pass
+    def _grid_tiles_generator(self, slide: Slide) -> (Tile, CoordinatePair):
+        """Generator of tiles arranged in a grid.
+
+        Parameters
+        ----------
+        slide : Slide
+            Slide from which to extract the tiles
+
+        Yields
+        -------
+        Tile
+            Extracted tile
+        CoordinatePair
+            Coordinates of the slide at level 0 from which the tile has been extracted
+        """
+        valid_tile_counter = 0
+
+        grid_coordinates_generator = self._grid_coordinates_generator(slide)
+        for coords in grid_coordinates_generator:
+            print(coords)
+            try:
+                tile = slide.extract_tile(coords, self.level)
+            except ValueError as err:
+                print(err)
+
+            if not self.check_tissue or tile.has_enough_tissue():
+                yield tile, coords,
+                valid_tile_counter += 1
+
+    def _n_tiles_column(self, bbox_coordinates):
+        return (bbox_coordinates.y_br - bbox_coordinates.y_ul) // (
+            self.tile_size[1] - self.pixel_overlap
+        )
+
+    def _n_tiles_row(self, bbox_coordinates):
+        return (bbox_coordinates.x_br - bbox_coordinates.x_ul) // (
+            self.tile_size[0] - self.pixel_overlap
+        )
 
 
 class RandomTiler(Tiler):
@@ -264,9 +317,13 @@ class RandomTiler(Tiler):
         self._valid_max_iter = max_iter_
 
     def extract(self, slide: Slide):
-        """Extract tiles consuming `random_tiles_generator` and save them to disk,
-        following this filename pattern:
+        """Extract random tiles and save them to disk, following this filename pattern:
         `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
+
+        Parameters
+        ----------
+        slide : Slide
+            Slide from which to extract the tiles
         """
 
         np.random.seed(self.seed)
@@ -354,31 +411,3 @@ class RandomTiler(Tiler):
 
             if valid_tile_counter >= self.n_tiles:
                 break
-
-    def _tile_filename(
-        self, tile_wsi_coords: CoordinatePair, tiles_counter: int
-    ) -> str:
-        """Return the tile filename according to its 0-level coordinates and a counter.
-
-        Parameters
-        ----------
-        tile_wsi_coords : CoordinatePair
-            0-level coordinates of the slide the tile has been extracted from.
-        tiles_counter : int
-            Counter of extracted tiles.
-
-        Returns
-        -------
-        str
-            Tile filename, according to the format
-            `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}"
-            "-{y_br_wsi}{suffix}`
-        """
-
-        x_ul_wsi, y_ul_wsi, x_br_wsi, y_br_wsi = tile_wsi_coords
-        tile_filename = (
-            f"{self.prefix}tile_{tiles_counter}_level{self.level}_{x_ul_wsi}-{y_ul_wsi}"
-            f"-{x_br_wsi}-{y_br_wsi}{self.suffix}"
-        )
-
-        return tile_filename
