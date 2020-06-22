@@ -1,5 +1,5 @@
-[![Coverage Status](https://coveralls.io/repos/github/MPBA/histolab/badge.svg?branch=master)](https://coveralls.io/github/MPBA/histolab?branch=master)
-[![Build Status](https://travis-ci.com/MPBA/histolab.svg?branch=master)](https://travis-ci.com/MPBA/histolab)
+[![Coverage Status](https://coveralls.io/repos/github/histolab/histolab/badge.svg?branch=master)](https://coveralls.io/github/histolab/histolab?branch=master)
+[![Build Status](https://travis-ci.com/histolab/histolab.svg?branch=master)](https://travis-ci.com/histolab/histolab)
 [![Documentation Status](https://readthedocs.org/projects/histolab/badge/?version=latest)](https://histolab.readthedocs.io/en/latest/?badge=latest)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/MPBA/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MPBA/histolab/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/MPBA/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MPBA/histolab/context:python)
