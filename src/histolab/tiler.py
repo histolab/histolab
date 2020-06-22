@@ -125,6 +125,26 @@ class GridTiler(Tiler):
         self.prefix = prefix
         self.suffix = suffix
 
+    @property
+    def tile_size(self) -> Tuple[int, int]:
+        return self._valid_tile_size
+
+    @tile_size.setter
+    def tile_size(self, tile_size_: Tuple[int, int]):
+        if tile_size_[0] < 1 or tile_size_[1] < 1:
+            raise ValueError(f"Tile size must be greater than 0 ({tile_size_})")
+        self._valid_tile_size = tile_size_
+
+    @property
+    def level(self) -> int:
+        return self._valid_level
+
+    @level.setter
+    def level(self, level_: int):
+        if level_ < 0:
+            raise ValueError(f"Level cannot be negative ({level_})")
+        self._valid_level = level_
+
     def extract(self, slide: Slide):
         """Extract tiles arranged in a grid and save them to disk, following this
         filename pattern:
@@ -176,12 +196,9 @@ class GridTiler(Tiler):
                 for j in range(n_tiles_column):
                     x_ul_lvl = x_ul_lvl_offset + tile_w_lvl * j - self.pixel_overlap
                     y_ul_lvl = y_ul_lvl_offset + tile_h_lvl * i - self.pixel_overlap
-                    x_ul_lvl = (
-                        x_ul_lvl if x_ul_lvl >= x_ul_lvl_offset else x_ul_lvl_offset
-                    )
-                    y_ul_lvl = (
-                        y_ul_lvl if y_ul_lvl >= y_ul_lvl_offset else y_ul_lvl_offset
-                    )
+
+                    x_ul_lvl = self._valid_coord(x_ul_lvl, x_ul_lvl_offset)
+                    y_ul_lvl = self._valid_coord(y_ul_lvl, y_ul_lvl_offset)
 
                     x_br_lvl = x_ul_lvl + tile_w_lvl
                     y_br_lvl = y_ul_lvl + tile_h_lvl
@@ -219,6 +236,7 @@ class GridTiler(Tiler):
                 tile = slide.extract_tile(coords, self.level)
             except ValueError as err:
                 print(err)
+                continue
 
             if not self.check_tissue or tile.has_enough_tissue():
                 yield tile, coords,
@@ -233,6 +251,9 @@ class GridTiler(Tiler):
         return (bbox_coordinates.x_br - bbox_coordinates.x_ul) // (
             self.tile_size[0] - self.pixel_overlap
         )
+
+    def _valid_coord(self, ul_coord, ul_offset):
+        return ul_coord if ul_coord >= ul_offset else ul_offset
 
 
 class RandomTiler(Tiler):
