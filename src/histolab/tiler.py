@@ -234,8 +234,7 @@ class GridTiler(Tiler):
             print(coords)
             try:
                 tile = slide.extract_tile(coords, self.level)
-            except ValueError as err:
-                print(err)
+            except ValueError:
                 continue
 
             if not self.check_tissue or tile.has_enough_tissue():
