@@ -117,18 +117,26 @@ class GridTiler(Tiler):
         for region in regions:  # at the moment there is only one region
             bbox_coordinates = region_coordinates(region)
 
-            n_tiles_row = (bbox_coordinates.x_br - bbox_coordinates.x_ul) // tile_w_lvl
-            n_tiles_column = (
-                bbox_coordinates.y_br - bbox_coordinates.y_ul
-            ) // tile_h_lvl
+            n_tiles_row = (bbox_coordinates.x_br - bbox_coordinates.x_ul) // (
+                tile_w_lvl - self.pixel_overlap
+            )
+            n_tiles_column = (bbox_coordinates.y_br - bbox_coordinates.y_ul) // (
+                tile_h_lvl - self.pixel_overlap
+            )
 
             x_ul_lvl_offset = bbox_coordinates.x_ul
             y_ul_lvl_offset = bbox_coordinates.y_ul
 
             for i in range(n_tiles_row):
                 for j in range(n_tiles_column):
-                    x_ul_lvl = x_ul_lvl_offset + tile_w_lvl * j
-                    y_ul_lvl = y_ul_lvl_offset + tile_h_lvl * i
+                    x_ul_lvl = x_ul_lvl_offset + tile_w_lvl * j - self.pixel_overlap
+                    y_ul_lvl = y_ul_lvl_offset + tile_h_lvl * i - self.pixel_overlap
+                    x_ul_lvl = (
+                        x_ul_lvl if x_ul_lvl >= x_ul_lvl_offset else x_ul_lvl_offset
+                    )
+                    y_ul_lvl = (
+                        y_ul_lvl if y_ul_lvl >= y_ul_lvl_offset else y_ul_lvl_offset
+                    )
 
                     x_br_lvl = x_ul_lvl + tile_w_lvl
                     y_br_lvl = y_ul_lvl + tile_h_lvl
