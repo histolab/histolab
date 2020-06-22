@@ -91,7 +91,7 @@ html_theme_options = {
 }
 html_context = {
     "display_github": True,
-    "github_user": "MPBA",
+    "github_user": "histolab",
     "github_repo": "histolab",
     "github_version": "master/docs/",
     "author": "HistoLab Authors",
