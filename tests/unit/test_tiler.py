@@ -7,7 +7,7 @@ import sparse
 
 from histolab.slide import Slide
 from histolab.tile import Tile
-from histolab.tiler import RandomTiler, Tiler
+from histolab.tiler import GridTiler, RandomTiler, Tiler
 from histolab.types import CoordinatePair
 
 from ..unitutil import (
@@ -317,6 +317,154 @@ class Describe_RandomTiler(object):
             level,
             seed,
             check_tissue,
+            prefix,
+            suffix,
+            tile_coords,
+            tiles_counter,
+            expected_filename,
+        )
+
+
+class Describe_GridTiler(object):
+    def it_constructs_from_args(self, request):
+        _init = initializer_mock(request, GridTiler)
+
+        grid_tiler = GridTiler((512, 512), 2, True, 0, "", ".png",)
+
+        _init.assert_called_once_with(ANY, (512, 512), 2, True, 0, "", ".png")
+        assert isinstance(grid_tiler, GridTiler)
+        assert isinstance(grid_tiler, Tiler)
+
+    def but_it_has_wrong_tile_size_value(self, request):
+        with pytest.raises(ValueError) as err:
+            GridTiler((512, -1))
+
+        assert isinstance(err.value, ValueError)
+        assert str(err.value) == "Tile size must be greater than 0 ((512, -1))"
+
+    def or_it_has_not_available_level_value(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_50X50_RGB_RANDOM_COLOR
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        grid_tiler = GridTiler((512, 512), 3)
+
+        with pytest.raises(ValueError) as err:
+            grid_tiler.extract(slide)
+
+        assert isinstance(err.value, ValueError)
+        assert str(err.value) == "Level 3 not available. Number of available levels: 1"
+
+    def or_it_has_negative_level_value(self, request):
+        with pytest.raises(ValueError) as err:
+            GridTiler((512, 512), -1)
+
+        assert isinstance(err.value, ValueError)
+        assert str(err.value) == "Level cannot be negative (-1)"
+
+    @pytest.mark.parametrize("tile_size", ((512, 512), (128, 128), (10, 10)))
+    def it_knows_its_tile_size(self, request, tile_size):
+        grid_tiler = GridTiler(tile_size, 10, 0)
+
+        tile_size_ = grid_tiler.tile_size
+
+        assert type(tile_size_) == tuple
+        assert tile_size_ == tile_size
+
+    def it_knows_its_tile_filename(self, request, tile_filename_fixture):
+        (
+            tile_size,
+            level,
+            check_tissue,
+            pixel_overlap,
+            prefix,
+            suffix,
+            tile_coords,
+            tiles_counter,
+            expected_filename,
+        ) = tile_filename_fixture
+        grid_tiler = GridTiler(
+            tile_size, level, check_tissue, pixel_overlap, prefix, suffix
+        )
+
+        _filename = grid_tiler._tile_filename(tile_coords, tiles_counter)
+
+        assert type(_filename) == str
+        assert _filename == expected_filename
+
+    @pytest.mark.parametrize(
+        "check_tissue, expected_box",
+        (
+            (False, SparseArrayMock.ONES_500X500_BOOL),
+            (True, SparseArrayMock.RANDOM_500X500_BOOL),
+        ),
+    )
+    def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        _biggest_tissue_box_mask = property_mock(
+            request, Slide, "biggest_tissue_box_mask"
+        )
+        if check_tissue:
+            _biggest_tissue_box_mask.return_value = expected_box
+        grid_tiler = GridTiler((128, 128), 0, check_tissue=check_tissue)
+
+        box_mask = grid_tiler.box_mask(slide)
+
+        if check_tissue:
+            _biggest_tissue_box_mask.assert_called_once_with()
+        assert type(box_mask) == sparse._coo.core.COO
+        np.testing.assert_array_almost_equal(box_mask.todense(), expected_box.todense())
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture(
+        params=(
+            (
+                (512, 512),
+                3,
+                True,
+                0,
+                "",
+                ".png",
+                CoordinatePair(0, 512, 0, 512),
+                3,
+                "tile_3_level3_0-512-0-512.png",
+            ),
+            (
+                (512, 512),
+                0,
+                True,
+                0,
+                "folder/",
+                ".png",
+                CoordinatePair(4, 127, 4, 127),
+                10,
+                "folder/tile_10_level0_4-127-4-127.png",
+            ),
+        )
+    )
+    def tile_filename_fixture(self, request):
+        (
+            tile_size,
+            level,
+            check_tissue,
+            pixel_overlap,
+            prefix,
+            suffix,
+            tile_coords,
+            tiles_counter,
+            expected_filename,
+        ) = request.param
+        return (
+            tile_size,
+            level,
+            check_tissue,
+            pixel_overlap,
             prefix,
             suffix,
             tile_coords,
