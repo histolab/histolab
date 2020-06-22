@@ -72,7 +72,7 @@ def _create_image_fetcher():
         return None, legacy_data_dir
 
     pooch_version = __version__.replace(".dev", "+")
-    url = "https://github.com/MPBA/histolab/raw/{version}/histolab/"
+    url = "https://github.com/histolab/histolab/raw/{version}/histolab/"
 
     # Create a new friend to manage your sample data storage
     image_fetcher = pooch.create(

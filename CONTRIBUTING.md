@@ -59,7 +59,7 @@ Before working on your next contribution, make sure your local repository is up 
 
  1. Set the upstream remote. (You only have to do this once per project, not every time.)
 
-    `$ git remote add upstream git@github.com:MPBA/project-repo-name`
+    `$ git remote add upstream git@github.com:histolab/histolab`
 
  2. Switch to the local master branch.
 
