@@ -101,9 +101,7 @@ class RandomTiler(Tiler):
     def box_mask(self, slide: Slide) -> sparse._coo.core.COO:
         """Return binary mask at level 0 of the box to consider for tiles extraction.
 
-        If `check_tissue` attribute is True, the mask pixels set to True will be the
-        ones corresponding to the tissue box. Otherwise, all the mask pixels will be set
-        to True.
+        The mask pixels set to True will be the ones corresponding to the tissue box.
 
         Parameters
         ----------
@@ -116,18 +114,13 @@ class RandomTiler(Tiler):
             Extraction mask at level 0
         """
 
-        if self.check_tissue:
-            return slide.biggest_tissue_box_mask
-        else:
-            return sparse.ones(slide.dimensions[::-1], dtype=bool)
+        return slide.biggest_tissue_box_mask
 
     @lru_cache(maxsize=100)
     def box_mask_lvl(self, slide: Slide) -> sparse._coo.core.COO:
         """Return binary mask at target level of the box to consider for the extraction.
 
-        If ``check_tissue`` attribute is True, the mask pixels set to True will be the
-        ones corresponding to the tissue box. Otherwise, all the mask pixels will be set
-        to True.
+        The mask pixels set to True will be the ones corresponding to the tissue box.
 
         Parameters
         ----------
