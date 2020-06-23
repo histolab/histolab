@@ -152,7 +152,7 @@ class Describe_RandomTiler(object):
     @pytest.mark.parametrize(
         "check_tissue, expected_box",
         (
-            (False, SparseArrayMock.ONES_500X500_BOOL),
+            (False, SparseArrayMock.RANDOM_500X500_BOOL),
             (True, SparseArrayMock.RANDOM_500X500_BOOL),
         ),
     )
@@ -165,14 +165,12 @@ class Describe_RandomTiler(object):
         _biggest_tissue_box_mask = property_mock(
             request, Slide, "biggest_tissue_box_mask"
         )
-        if check_tissue:
-            _biggest_tissue_box_mask.return_value = expected_box
+        _biggest_tissue_box_mask.return_value = expected_box
         random_tiler = RandomTiler((128, 128), 10, 0, check_tissue=check_tissue)
 
         box_mask = random_tiler.box_mask(slide)
 
-        if check_tissue:
-            _biggest_tissue_box_mask.assert_called_once_with()
+        _biggest_tissue_box_mask.assert_called_once_with()
         assert type(box_mask) == sparse._coo.core.COO
         np.testing.assert_array_almost_equal(box_mask.todense(), expected_box.todense())
 
