@@ -485,56 +485,16 @@ class Describe_GridTiler(object):
         assert type(n_tiles_column) == int
         assert n_tiles_column == expected_n_tiles_column
 
-    @pytest.mark.parametrize(
-        "coords1, coords2, check_tissue, has_enough_tissue, expected_n_tiles",
-        (
-            (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
-                True,
-                [True, True],
-                2,
-            ),
-            (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
-                False,
-                [True, True],
-                2,
-            ),
-            (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
-                False,
-                [False, False],
-                2,
-            ),
-            (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
-                True,
-                [False, False],
-                0,
-            ),
-            (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
-                True,
-                [True, False],
-                1,
-            ),
-        ),
-    )
     def it_can_generate_grid_tiles(
-        self,
-        request,
-        tmpdir,
-        coords1,
-        coords2,
-        check_tissue,
-        has_enough_tissue,
-        expected_n_tiles,
+        self, request, tmpdir, grid_tiles_fixture,
     ):
+        (
+            coords1,
+            coords2,
+            check_tissue,
+            has_enough_tissue,
+            expected_n_tiles,
+        ) = grid_tiles_fixture
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -631,4 +591,59 @@ class Describe_GridTiler(object):
             tile_coords,
             tiles_counter,
             expected_filename,
+        )
+
+    @pytest.fixture(
+        params=(
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [True, True],
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                False,
+                [True, True],
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                False,
+                [False, False],
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [False, False],
+                0,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [True, False],
+                1,
+            ),
+        )
+    )
+    def grid_tiles_fixture(self, request):
+        (
+            coords1,
+            coords2,
+            check_tissue,
+            has_enough_tissue,
+            expected_n_tiles,
+        ) = request.param
+        return (
+            coords1,
+            coords2,
+            check_tissue,
+            has_enough_tissue,
+            expected_n_tiles,
         )
