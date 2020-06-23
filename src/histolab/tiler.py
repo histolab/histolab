@@ -255,12 +255,36 @@ class GridTiler(Tiler):
             if not self.check_tissue or tile.has_enough_tissue():
                 yield tile, coords
 
-    def _n_tiles_column(self, bbox_coordinates):
+    def _n_tiles_column(self, bbox_coordinates: CoordinatePair) -> int:
+        """Return the number of tiles which can be extracted in a column.
+
+        Parameters
+        ----------
+        bbox_coordinates : CoordinatePair
+            Coordinates of the tissue box
+
+        Returns
+        -------
+        int
+            Number of tiles which can be extracted in a column.
+        """
         return (bbox_coordinates.y_br - bbox_coordinates.y_ul) // (
             self.tile_size[1] - self.pixel_overlap
         )
 
-    def _n_tiles_row(self, bbox_coordinates):
+    def _n_tiles_row(self, bbox_coordinates: CoordinatePair) -> int:
+        """Return the number of tiles which can be extracted in a row.
+
+        Parameters
+        ----------
+        bbox_coordinates : CoordinatePair
+            Coordinates of the tissue box
+
+        Returns
+        -------
+        int
+            Number of tiles which can be extracted in a row.
+        """
         return (bbox_coordinates.x_br - bbox_coordinates.x_ul) // (
             self.tile_size[0] - self.pixel_overlap
         )
