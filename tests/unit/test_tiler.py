@@ -281,6 +281,11 @@ class Describe_RandomTiler(object):
     def it_knows_its_box_mask_lvl(
         self, request, tmpdir, level, box_mask, expected_box_mask_lvl
     ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
         _box_mask = method_mock(request, RandomTiler, "box_mask")
         _box_mask.return_value = box_mask
         random_tiler = RandomTiler((128, 128), 10, level)
@@ -433,14 +438,12 @@ class Describe_GridTiler(object):
         _biggest_tissue_box_mask = property_mock(
             request, Slide, "biggest_tissue_box_mask"
         )
-        if check_tissue:
-            _biggest_tissue_box_mask.return_value = expected_box
+        _biggest_tissue_box_mask.return_value = expected_box
         grid_tiler = GridTiler((128, 128), 0, check_tissue=check_tissue)
 
         box_mask = grid_tiler.box_mask(slide)
 
-        if check_tissue:
-            _biggest_tissue_box_mask.assert_called_once_with()
+        _biggest_tissue_box_mask.assert_called_once_with()
         assert type(box_mask) == sparse._coo.core.COO
         np.testing.assert_array_almost_equal(box_mask.todense(), expected_box.todense())
 
