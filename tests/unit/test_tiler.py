@@ -482,6 +482,59 @@ class Describe_GridTiler(object):
         assert type(n_tiles_column) == int
         assert n_tiles_column == expected_n_tiles_column
 
+    @pytest.mark.parametrize(
+        "coords, check_tissue, has_enough_tissue, expected_n_tiles",
+        (
+            (CoordinatePair(0, 10, 0, 10), True, True, 2),
+            (CoordinatePair(0, 10, 0, 10), False, True, 2),
+            (CoordinatePair(0, 10, 0, 10), False, False, 2),
+            (CoordinatePair(0, 10, 0, 10), True, False, 0),
+        ),
+    )
+    def it_can_generate_grid_tiles(
+        self, request, tmpdir, coords, check_tissue, has_enough_tissue, expected_n_tiles
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+        _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
+        _has_enough_tissue.return_value = has_enough_tissue
+        _grid_coordinates_generator = method_mock(
+            request, GridTiler, "_grid_coordinates_generator"
+        )
+        _grid_coordinates_generator.return_value = [coords, coords]
+        tile = Tile(image, coords)
+        _extract_tile.return_value = tile
+        grid_tiler = GridTiler((10, 10), level=0, check_tissue=check_tissue)
+
+        generated_tiles = list(grid_tiler._grid_tiles_generator(slide))
+
+        _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
+        _extract_tile.call_args_list == ([call(coords, 0), call(coords, 0)])
+        assert len(generated_tiles) == expected_n_tiles
+        if expected_n_tiles == 2:
+            assert generated_tiles == [(tile, coords), (tile, coords)]
+
+    def and_doesnt_raise_error_with_wrong_coordinates(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        coords = CoordinatePair(5800, 6000, 5800, 6000)
+        _grid_coordinates_generator = method_mock(
+            request, GridTiler, "_grid_coordinates_generator"
+        )
+        _grid_coordinates_generator.return_value = [coords]
+        grid_tiler = GridTiler((10, 10))
+        generated_tiles = list(grid_tiler._grid_tiles_generator(slide))
+
+        assert len(generated_tiles) == 0
+        _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
+
     # fixtures -------------------------------------------------------
 
     @pytest.fixture(
