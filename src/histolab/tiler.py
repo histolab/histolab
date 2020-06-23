@@ -227,19 +227,16 @@ class GridTiler(Tiler):
         CoordinatePair
             Coordinates of the slide at level 0 from which the tile has been extracted
         """
-        valid_tile_counter = 0
 
         grid_coordinates_generator = self._grid_coordinates_generator(slide)
         for coords in grid_coordinates_generator:
-            print(coords)
             try:
                 tile = slide.extract_tile(coords, self.level)
             except ValueError:
                 continue
 
             if not self.check_tissue or tile.has_enough_tissue():
-                yield tile, coords,
-                valid_tile_counter += 1
+                yield tile, coords
 
     def _n_tiles_column(self, bbox_coordinates):
         return (bbox_coordinates.y_br - bbox_coordinates.y_ul) // (
