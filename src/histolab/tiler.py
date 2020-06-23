@@ -183,13 +183,59 @@ class GridTiler(Tiler):
 
         print(f"{tiles_counter+1} Grid Tiles have been saved.")
 
+    def _grid_coordinates_from_bbox_coordinates(
+        self, bbox_coordinates: CoordinatePair, slide: Slide
+    ) -> CoordinatePair:
+        """Generate Coordinates at level 0 of grid tiles within a tissue box.
+
+        Parameters
+        ----------
+        bbox_coordinates: CoordinatePair
+            Coordinates of the tissue box from which to calculate the coordinates.
+        slide : Slide
+            Slide from which to calculate the coordinates.
+
+        Yields
+        -------
+        Iterator[CoordinatePair]
+            Iterator of tiles' CoordinatePair
+        """
+        tile_w_lvl, tile_h_lvl = self.tile_size
+
+        n_tiles_row = self._n_tiles_row(bbox_coordinates)
+        n_tiles_column = self._n_tiles_column(bbox_coordinates)
+
+        x_ul_lvl_offset = bbox_coordinates.x_ul
+        y_ul_lvl_offset = bbox_coordinates.y_ul
+
+        for i in range(n_tiles_row):
+            for j in range(n_tiles_column):
+                x_ul_lvl = x_ul_lvl_offset + tile_w_lvl * j - self.pixel_overlap
+                y_ul_lvl = y_ul_lvl_offset + tile_h_lvl * i - self.pixel_overlap
+
+                x_ul_lvl = np.clip(x_ul_lvl, x_ul_lvl_offset, None)
+                y_ul_lvl = np.clip(y_ul_lvl, y_ul_lvl_offset, None)
+
+                x_br_lvl = x_ul_lvl + tile_w_lvl
+                y_br_lvl = y_ul_lvl + tile_h_lvl
+
+                tile_wsi_coords = scale_coordinates(
+                    reference_coords=CoordinatePair(
+                        x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl
+                    ),
+                    reference_size=slide.level_dimensions(level=self.level),
+                    target_size=slide.level_dimensions(level=0),
+                )
+                yield tile_wsi_coords
+
     def _grid_coordinates_generator(self, slide: Slide) -> CoordinatePair:
-        """Generate Coordinates at level 0 of tiles arranged in a grid within the box.
+        """Generate Coordinates at level 0 of grid tiles within the tissue.
 
         Parameters
         ----------
         slide : Slide
-            Slide from which to calculate the coordinates. Needed to calculate the box.
+            Slide from which to calculate the coordinates. Needed to calculate the
+            tissue area.
 
         Yields
         -------
@@ -197,37 +243,13 @@ class GridTiler(Tiler):
             Iterator of tiles' CoordinatePair
         """
         box_mask_lvl = self.box_mask_lvl(slide)
-        tile_w_lvl, tile_h_lvl = self.tile_size
 
         regions = regions_from_binary_mask(box_mask_lvl.todense())
         for region in regions:  # at the moment there is only one region
             bbox_coordinates = region_coordinates(region)
-
-            n_tiles_row = self._n_tiles_row(bbox_coordinates)
-            n_tiles_column = self._n_tiles_column(bbox_coordinates)
-
-            x_ul_lvl_offset = bbox_coordinates.x_ul
-            y_ul_lvl_offset = bbox_coordinates.y_ul
-
-            for i in range(n_tiles_row):
-                for j in range(n_tiles_column):
-                    x_ul_lvl = x_ul_lvl_offset + tile_w_lvl * j - self.pixel_overlap
-                    y_ul_lvl = y_ul_lvl_offset + tile_h_lvl * i - self.pixel_overlap
-
-                    x_ul_lvl = self._valid_coord(x_ul_lvl, x_ul_lvl_offset)
-                    y_ul_lvl = self._valid_coord(y_ul_lvl, y_ul_lvl_offset)
-
-                    x_br_lvl = x_ul_lvl + tile_w_lvl
-                    y_br_lvl = y_ul_lvl + tile_h_lvl
-
-                    tile_wsi_coords = scale_coordinates(
-                        reference_coords=CoordinatePair(
-                            x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl
-                        ),
-                        reference_size=slide.level_dimensions(level=self.level),
-                        target_size=slide.level_dimensions(level=0),
-                    )
-                    yield tile_wsi_coords
+            yield from self._grid_coordinates_from_bbox_coordinates(
+                bbox_coordinates, slide
+            )
 
     def _grid_tiles_generator(self, slide: Slide) -> (Tile, CoordinatePair):
         """Generator of tiles arranged in a grid.
@@ -288,9 +310,6 @@ class GridTiler(Tiler):
         return (bbox_coordinates.x_br - bbox_coordinates.x_ul) // (
             self.tile_size[0] - self.pixel_overlap
         )
-
-    def _valid_coord(self, ul_coord, ul_offset):
-        return ul_coord if ul_coord >= ul_offset else ul_offset
 
 
 class RandomTiler(Tiler):
