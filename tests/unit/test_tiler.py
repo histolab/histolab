@@ -6,6 +6,7 @@ import pytest
 import sparse
 
 from histolab.slide import Slide
+from histolab.tile import Tile
 from histolab.tiler import RandomTiler, Tiler
 from histolab.types import CoordinatePair
 
@@ -173,6 +174,99 @@ class Describe_RandomTiler(object):
         _biggest_tissue_box_mask.assert_called_once_with()
         assert type(box_mask) == sparse._coo.core.COO
         np.testing.assert_array_almost_equal(box_mask.todense(), expected_box.todense())
+
+    @pytest.mark.parametrize(
+        "coords1, coords2, check_tissue, has_enough_tissue, max_iter, expected_n_tiles",
+        (
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [True, True],
+                10,
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [True, False],
+                2,
+                1,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(5900, 6000, 5900, 6000),  # wrong coordinates
+                True,
+                [True, True],
+                2,
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                False,
+                [True, True],
+                10,
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                False,
+                [False, False],
+                10,
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [False, False],
+                10,
+                0,
+            ),
+        ),
+    )
+    def it_can_generate_random_tiles(
+        self,
+        request,
+        tmpdir,
+        coords1,
+        coords2,
+        check_tissue,
+        has_enough_tissue,
+        max_iter,
+        expected_n_tiles,
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+        _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
+        _has_enough_tissue.side_effect = has_enough_tissue * (max_iter // 2)
+        _random_tile_coordinates = method_mock(
+            request, RandomTiler, "_random_tile_coordinates"
+        )
+        _random_tile_coordinates.side_effect = [coords1, coords2] * (max_iter // 2)
+        tile1 = Tile(image, coords1)
+        tile2 = Tile(image, coords2)
+        _extract_tile.side_effect = [tile1, tile2] * (max_iter // 2)
+        random_tiler = RandomTiler(
+            (10, 10), 2, level=0, max_iter=max_iter, check_tissue=check_tissue
+        )
+
+        generated_tiles = list(random_tiler._random_tiles_generator(slide))
+
+        _random_tile_coordinates.assert_called_with(random_tiler, slide)
+        assert _random_tile_coordinates.call_count <= random_tiler.max_iter
+
+        _extract_tile.call_args_list == ([call(coords1, 0), call(coords2, 0)])
+        assert len(generated_tiles) == expected_n_tiles
+        if expected_n_tiles == 2:
+            assert generated_tiles == [(tile1, coords1), (tile2, coords2)]
 
     # fixtures -------------------------------------------------------
 

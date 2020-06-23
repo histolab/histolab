@@ -216,8 +216,6 @@ class RandomTiler(Tiler):
 
         while True:
 
-            iteration += 1
-
             tile_wsi_coords = self._random_tile_coordinates(slide)
             try:
                 tile = slide.extract_tile(tile_wsi_coords, self.level)
@@ -228,11 +226,12 @@ class RandomTiler(Tiler):
             if not self.check_tissue or tile.has_enough_tissue():
                 yield tile, tile_wsi_coords
                 valid_tile_counter += 1
+            iteration += 1
 
-            if self.max_iter and iteration > self.max_iter:
+            if self.max_iter and iteration >= self.max_iter:
                 break
 
-            if valid_tile_counter > self.n_tiles:
+            if valid_tile_counter >= self.n_tiles:
                 break
 
     def _tile_filename(
