@@ -3,7 +3,6 @@ from typing import Tuple
 
 import numpy as np
 import sparse
-from typing_extensions import Protocol, runtime_checkable
 
 from .slide import Slide
 from .tile import Tile
@@ -15,6 +14,11 @@ from .util import (
     resize_mask,
     scale_coordinates,
 )
+
+try:
+    from typing import Protocol, runtime_checkable
+except ImportError:
+    from typing_extensions import Protocol, runtime_checkable
 
 
 @runtime_checkable
