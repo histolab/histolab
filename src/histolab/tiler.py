@@ -106,6 +106,26 @@ class Tiler(Protocol):
 
 
 class GridTiler(Tiler):
+    """Extractor of tiles arranged in a grid, at the given level, with the given size.
+
+    Arguments
+    ---------
+    tile_size : Tuple[int, int]
+        (width, height) of the extracted tiles.
+    level : int, optional
+        Level from which extract the tiles. Default is 0.
+    check_tissue : bool, optional
+        Whether to check if the tile has enough tissue to be saved. Default is True.
+    pixel_overlap : int, optional
+       Number of overlapping pixels (for both height and width) between two adjacent
+       tiles. If negative, two adjacent tiles will be strided by the absolute value of
+       ``pixel_overlap``. Default is 0.
+    prefix : str, optional
+        Prefix to be added to the tile filename. Default is an empty string.
+    suffix : str, optional
+        Suffix to be added to the tile filename. Default is '.png'
+    """
+
     def __init__(
         self,
         tile_size: Tuple[int, int],
@@ -254,7 +274,7 @@ class RandomTiler(Tiler):
 
     Arguments
     ---------
-    tile_size : tuple of int
+    tile_size : Tuple[int, int]
         (width, height) of the extracted tiles.
     n_tiles : int
         Maximum number of tiles to extract.
