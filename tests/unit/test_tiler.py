@@ -420,6 +420,44 @@ class Describe_GridTiler(object):
         assert type(box_mask) == sparse._coo.core.COO
         np.testing.assert_array_almost_equal(box_mask.todense(), expected_box.todense())
 
+    @pytest.mark.parametrize(
+        "bbox_coordinates, pixel_overlap, expected_n_tiles_row",
+        (
+            (CoordinatePair(x_ul=0, y_ul=0, x_br=6060, y_br=1917), 0, 11),
+            (CoordinatePair(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 0, 3),
+            (CoordinatePair(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 128, 5),
+            (CoordinatePair(x_ul=0, y_ul=0, x_br=1921, y_br=2187), -128, 3),
+        ),
+    )
+    def it_can_calculate_n_tiles_row(
+        self, request, bbox_coordinates, pixel_overlap, expected_n_tiles_row
+    ):
+        grid_tiler = GridTiler((512, 512), 2, True, pixel_overlap)
+
+        n_tiles_row = grid_tiler._n_tiles_row(bbox_coordinates)
+
+        assert type(n_tiles_row) == int
+        assert n_tiles_row == expected_n_tiles_row
+
+    @pytest.mark.parametrize(
+        "bbox_coordinates, pixel_overlap, expected_n_tiles_column",
+        (
+            (CoordinatePair(x_ul=0, y_ul=0, x_br=6060, y_br=1917), 0, 3),
+            (CoordinatePair(x_ul=0, y_ul=0, x_br=6060, y_br=1917), -1, 3),
+            (CoordinatePair(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 0, 4),
+            (CoordinatePair(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 128, 5),
+        ),
+    )
+    def it_can_calculate_n_tiles_column(
+        self, request, bbox_coordinates, pixel_overlap, expected_n_tiles_column
+    ):
+        grid_tiler = GridTiler((512, 512), 2, True, pixel_overlap)
+
+        n_tiles_column = grid_tiler._n_tiles_column(bbox_coordinates)
+
+        assert type(n_tiles_column) == int
+        assert n_tiles_column == expected_n_tiles_column
+
     # fixtures -------------------------------------------------------
 
     @pytest.fixture(
