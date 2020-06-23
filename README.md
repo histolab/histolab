@@ -4,8 +4,8 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/histolab/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/histolab/histolab/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/histolab/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/histolab/histolab/context:python)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-![PyPI](https://img.shields.io/pypi/v/histolab)
-![GitHub](https://img.shields.io/github/license/MPBA/histolab)
+[![PyPI](https://img.shields.io/pypi/v/histolab)](https://pypi.org/project/histolab/)
+[![GitHub](https://img.shields.io/github/license/histolab/histolab)](https://github.com/histolab/histolab/blob/master/LICENSE.txt)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/histolab)
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/histolab)
 
