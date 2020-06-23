@@ -157,7 +157,7 @@ class RandomTiler(Tiler):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             tile.save(tile_filename)
             print(f"\t Tile {tiles_counter} saved: {tile_filename}")
-        print(f"{tiles_counter} Random Tiles have been saved.")
+        print(f"{tiles_counter+1} Random Tiles have been saved.")
 
     def _random_tile_coordinates(self, slide: Slide) -> CoordinatePair:
         """Return 0-level Coordinates of a tile picked at random within the box.
