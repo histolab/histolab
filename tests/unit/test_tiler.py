@@ -483,16 +483,54 @@ class Describe_GridTiler(object):
         assert n_tiles_column == expected_n_tiles_column
 
     @pytest.mark.parametrize(
-        "coords, check_tissue, has_enough_tissue, expected_n_tiles",
+        "coords1, coords2, check_tissue, has_enough_tissue, expected_n_tiles",
         (
-            (CoordinatePair(0, 10, 0, 10), True, True, 2),
-            (CoordinatePair(0, 10, 0, 10), False, True, 2),
-            (CoordinatePair(0, 10, 0, 10), False, False, 2),
-            (CoordinatePair(0, 10, 0, 10), True, False, 0),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [True, True],
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                False,
+                [True, True],
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                False,
+                [False, False],
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [False, False],
+                0,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [True, False],
+                1,
+            ),
         ),
     )
     def it_can_generate_grid_tiles(
-        self, request, tmpdir, coords, check_tissue, has_enough_tissue, expected_n_tiles
+        self,
+        request,
+        tmpdir,
+        coords1,
+        coords2,
+        check_tissue,
+        has_enough_tissue,
+        expected_n_tiles,
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
@@ -501,22 +539,27 @@ class Describe_GridTiler(object):
         slide = Slide(slide_path, "processed")
         _extract_tile = method_mock(request, Slide, "extract_tile")
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
-        _has_enough_tissue.return_value = has_enough_tissue
+        _has_enough_tissue.side_effect = has_enough_tissue
         _grid_coordinates_generator = method_mock(
             request, GridTiler, "_grid_coordinates_generator"
         )
-        _grid_coordinates_generator.return_value = [coords, coords]
-        tile = Tile(image, coords)
-        _extract_tile.return_value = tile
+        _grid_coordinates_generator.return_value = [coords1, coords2]
+        tile1 = Tile(image, coords1)
+        tile2 = Tile(image, coords2)
+        _extract_tile.side_effect = [tile1, tile2]
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=check_tissue)
 
         generated_tiles = list(grid_tiler._grid_tiles_generator(slide))
 
         _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
-        _extract_tile.call_args_list == ([call(coords, 0), call(coords, 0)])
+        _extract_tile.call_args_list == ([call(coords1, 0), call(coords2, 0)])
         assert len(generated_tiles) == expected_n_tiles
         if expected_n_tiles == 2:
-            assert generated_tiles == [(tile, coords), (tile, coords)]
+            assert generated_tiles == [(tile1, coords1), (tile2, coords2)]
+        if expected_n_tiles == 1:
+            assert generated_tiles == [(tile1, coords1)]
+        if expected_n_tiles == 0:
+            assert generated_tiles == []
 
     def and_doesnt_raise_error_with_wrong_coordinates(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
