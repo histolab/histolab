@@ -14,6 +14,7 @@ from PIL import ImageShow
 from histolab.filters.image_filters import Compose
 from histolab.slide import Slide, SlideSet
 from histolab.types import CoordinatePair, Region
+from histolab.util import regions_from_binary_mask
 
 from ..unitutil import (
     ANY,
@@ -317,17 +318,16 @@ class Describe_Slide(object):
 
     def it_knows_regions_from_binary_mask(self, request):
         binary_mask = np.array([[True, False], [True, True]])
-        label = function_mock(request, "histolab.slide.label")
-        regionprops = function_mock(request, "histolab.slide.regionprops")
+        label = function_mock(request, "histolab.util.label")
+        regionprops = function_mock(request, "histolab.util.regionprops")
         RegionProps = namedtuple("RegionProps", ("area", "bbox", "centroid"))
         regions_props = [
             RegionProps(3, (0, 0, 2, 2), (0.6666666666666666, 0.3333333333333333))
         ]
         regionprops.return_value = regions_props
         label(binary_mask).return_value = [[0, 1], [1, 1]]
-        slide = Slide("/a/b", "c/d")
 
-        regions_from_binary_mask_ = slide._regions_from_binary_mask(binary_mask)
+        regions_from_binary_mask_ = regions_from_binary_mask(binary_mask)
 
         regionprops.assert_called_once_with(label(binary_mask))
         assert type(regions_from_binary_mask_) == list
@@ -364,14 +364,6 @@ class Describe_Slide(object):
 
         assert str(err.value) == f"n should be between 1 and {len(regions)}, got {n}"
 
-    def it_knows_its_region_coordinates(self):
-        region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5))
-        slide = Slide("a/b", "c/d")
-
-        region_coords_ = slide._region_coordinates(region)
-
-        assert region_coords_ == CoordinatePair(x_ul=1, y_ul=0, x_br=2, y_br=1)
-
     def it_knows_its_biggest_tissue_box_mask(
         self,
         request,
@@ -401,7 +393,7 @@ class Describe_Slide(object):
             ]
         )
         regions_from_binary_mask = function_mock(
-            request, "histolab.slide.Slide._regions_from_binary_mask"
+            request, "histolab.slide.regions_from_binary_mask"
         )
         regions_from_binary_mask.return_value = regions
         biggest_regions_ = function_mock(
@@ -409,7 +401,7 @@ class Describe_Slide(object):
         )
         biggest_regions_.return_value = regions
         region_coordinates_ = function_mock(
-            request, "histolab.slide.Slide._region_coordinates"
+            request, "histolab.slide.region_coordinates"
         )
         region_coordinates_.return_values = CoordinatePair(0, 0, 2, 2)
         polygon_to_mask_array_ = function_mock(
@@ -421,7 +413,7 @@ class Describe_Slide(object):
 
         biggest_mask_tissue_box = slide.biggest_tissue_box_mask
 
-        region_coordinates_.assert_called_once_with(slide, regions[0])
+        region_coordinates_.assert_called_once_with(regions[0])
         biggest_regions_.assert_called_once_with(slide, regions, n=1)
         polygon_to_mask_array_.assert_called_once_with(
             (1000, 1000), CoordinatePair(x_ul=0, y_ul=0, x_br=2, y_br=2)

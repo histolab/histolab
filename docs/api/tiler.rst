@@ -9,4 +9,4 @@ Tiler
 
 .. automodule:: src.histolab.tiler
     :members:
-    :exclude-members: Tiler, GridTiler
+    :exclude-members: Tiler
