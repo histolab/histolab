@@ -23,7 +23,7 @@ style.
 Code contributions—bug fixes, new development, test improvement—all follow a GitHub-centered workflow. To participate 
 in Histolab development, set up a GitHub account. Then:
 
- 1. Fork the repo https://github.com/MPBA/histolab. Go to the project repo page and use the Fork button. This will 
+ 1. Fork the repo https://github.com/histolab/histolab. Go to the project repo page and use the Fork button. This will 
  create a copy of the repo, under your username. (For more details on how to fork a repository see 
  [this guide](https://help.github.com/articles/fork-a-repo/).)
 

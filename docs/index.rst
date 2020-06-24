@@ -56,7 +56,7 @@ Authors
 
 License
 *******
-This project is licensed under `Apache License  Version 2.0` - see the `LICENSE.txt <https://github.com/MPBA/histolab/blob/master/LICENSE.txt>`_ file for details.
+This project is licensed under `Apache License  Version 2.0` - see the `LICENSE.txt <https://github.com/histolab/histolab/blob/master/LICENSE.txt>`_ file for details.
 
 Acknowledgements
 ****************

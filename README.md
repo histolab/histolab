@@ -211,11 +211,11 @@ We use [PEP 440](https://www.python.org/dev/peps/pep-0440/) for versioning.
 
 ## License 
 
-This project is licensed under `Apache License  Version 2.0` - see the [LICENSE.txt](https://github.com/MPBA/histolab/blob/master/LICENSE.txt) file for details
+This project is licensed under `Apache License  Version 2.0` - see the [LICENSE.txt](https://github.com/histolab/histolab/blob/master/LICENSE.txt) file for details
 
 ## Roadmap 
 
-[Open issues](https://github.com/MPBA/histolab/issues)
+[Open issues](https://github.com/histolab/histolab/issues)
 
 ## Acknowledgements 
 

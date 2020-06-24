@@ -32,7 +32,7 @@ in Histolab development, set up a GitHub account. Then:
 
 
 #. 
-   Fork the repo https://github.com/MPBA/histolab. Go to the project repo page and use the Fork button. This will 
+   Fork the repo https://github.com/histolab/histolab. Go to the project repo page and use the Fork button. This will
    create a copy of the repo, under your username. (For more details on how to fork a repository see 
    `this guide <https://help.github.com/articles/fork-a-repo/>`_.)
 
@@ -77,7 +77,7 @@ Before working on your next contribution, make sure your local repository is up 
 #. 
    Set the upstream remote. (You only have to do this once per project, not every time.)
 
-   ``$ git remote add upstream git@github.com:MPBA/project-repo-name``
+   ``$ git remote add upstream git@github.com:histolab/project-repo-name``
 
 #. 
    Switch to the local master branch.
