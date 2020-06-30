@@ -2,37 +2,14 @@
 
 
 import os
-from unittest.mock import MagicMock, patch
 
 import pytest
 
 import openslide
-from histolab.data import _has_hash, _load_svs, cmu_small_region, data_dir, file_hash
+from histolab.data import _has_hash, _load_svs, cmu_small_region, data_dir
 
 from ...fixtures import SVS
 from ...unitutil import function_mock
-
-
-def it_can_calculate_file_hash():
-    with patch.dict("sys.modules", unknown=MagicMock()):
-        file = SVS.CMU_1_SMALL_REGION
-
-        fh = file_hash(file)
-
-        assert fh == "ed92d5a9f2e86df67640d6f92ce3e231419ce127131697fbbce42ad5e002c8a7"
-
-
-def but_it_raises_valueerror_when_algorithm_is_not_available():
-    with patch(
-        "pooch.utils.file_hash", side_effect=ModuleNotFoundError("mocked error")
-    ):
-        file = SVS.CMU_1_SMALL_REGION
-
-        with pytest.raises(ValueError) as err:
-            file_hash(file, alg="fake_alg")
-
-        assert isinstance(err.value, ValueError)
-        assert str(err.value) == "Algorithm 'fake_alg' not available in hashlib"
 
 
 def test_data_dir():
