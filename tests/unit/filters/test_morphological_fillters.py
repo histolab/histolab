@@ -1,12 +1,13 @@
 # encoding: utf-8
 
+import pytest
+
 import numpy as np
 import skimage.morphology
-
 from histolab.filters import morphological_filters as mof
 
-from ...unitutil import NpArrayMock, function_mock
 from ...base import IMAGE1_RGB, IMAGE2_RGBA
+from ...unitutil import NpArrayMock, function_mock
 
 
 class DescribeMorphologicalFilters(object):
@@ -56,6 +57,19 @@ class DescribeMorphologicalFilters(object):
         assert F_binary_erosion.call_args_list[0][0][2] == 1
         assert type(binary_erosion(mask_arr)) == np.ndarray
 
+    def but_it_raises_exception_when_call_binary_erosion_non_mask_array(self, request):
+        array = np.array([(1, 2, 3), (4, 5, 6)])
+        F_binary_erosion = function_mock(
+            request, "scipy.ndimage.morphology.binary_erosion"
+        )
+        F_binary_erosion.return_value = array
+
+        with pytest.raises(ValueError) as err:
+            binary_erosion = mof.BinaryErosion()
+            binary_erosion(array)
+
+        assert str(err.value) == "Mask must be binary"
+
     def it_calls_binary_dilation_filter_functional(self, request):
         mask_arr = NpArrayMock.ONES_500X500X4_BOOL
         disk = skimage.morphology.disk(5)
@@ -74,6 +88,19 @@ class DescribeMorphologicalFilters(object):
         np.testing.assert_array_equal(F_binary_dilation.call_args_list[0][0][1], disk)
         assert F_binary_dilation.call_args_list[0][0][2] == 1
         assert type(binary_dilation(mask_arr)) == np.ndarray
+
+    def but_it_raises_exception_when_call_binary_dilation_non_mask_array(self, request):
+        array = np.array([(1, 2, 3), (4, 5, 6)])
+        F_binary_dilation = function_mock(
+            request, "scipy.ndimage.morphology.binary_dilation"
+        )
+        F_binary_dilation.return_value = array
+
+        with pytest.raises(ValueError) as err:
+            binary_dilation = mof.BinaryDilation()
+            binary_dilation(array)
+
+        assert str(err.value) == "Mask must be binary"
 
     def it_calls_binary_opening_filter_functional(self, request):
         mask_arr = NpArrayMock.ONES_500X500X4_BOOL
@@ -94,6 +121,19 @@ class DescribeMorphologicalFilters(object):
         assert F_binary_opening.call_args_list[0][0][2] == 1
         assert type(binary_opening(mask_arr)) == np.ndarray
 
+    def but_it_raises_exception_when_call_binary_opening_non_mask_array(self, request):
+        array = np.array([(1, 2, 3), (4, 5, 6)])
+        F_binary_opening = function_mock(
+            request, "scipy.ndimage.morphology.binary_opening"
+        )
+        F_binary_opening.return_value = array
+
+        with pytest.raises(ValueError) as err:
+            binary_opening = mof.BinaryOpening()
+            binary_opening(array)
+
+        assert str(err.value) == "Mask must be binary"
+
     def it_calls_binary_closing_filter_functional(self, request):
         mask_arr = NpArrayMock.ONES_500X500X4_BOOL
         disk = skimage.morphology.disk(3)
@@ -112,3 +152,16 @@ class DescribeMorphologicalFilters(object):
         np.testing.assert_array_equal(F_binary_closing.call_args_list[0][0][1], disk)
         assert F_binary_closing.call_args_list[0][0][2] == 1
         assert type(binary_closing(mask_arr)) == np.ndarray
+
+    def but_it_raises_exception_when_call_binary_closing_non_mask_array(self, request):
+        array = np.array([(1, 2, 3), (4, 5, 6)])
+        F_binary_closing = function_mock(
+            request, "scipy.ndimage.morphology.binary_closing"
+        )
+        F_binary_closing.return_value = array
+
+        with pytest.raises(ValueError) as err:
+            binary_closing = mof.BinaryClosing()
+            binary_closing(array)
+
+        assert str(err.value) == "Mask must be binary"
