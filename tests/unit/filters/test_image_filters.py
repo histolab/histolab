@@ -365,7 +365,6 @@ class DescribeImageFilters(object):
         to_pil_image = imf.ToPILImage()
 
         to_pil_image(array)
-        print(util_np_to_pil.call_count)
 
         util_np_to_pil.assert_called_once_with(array)
         assert type(to_pil_image(array)) == PIL.Image.Image
