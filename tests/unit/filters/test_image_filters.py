@@ -2,7 +2,6 @@
 
 import numpy as np
 import PIL
-
 from histolab.filters import image_filters as imf
 
 from ...unitutil import NpArrayMock, PILImageMock, function_mock
@@ -101,7 +100,7 @@ class DescribeImageFilters(object):
     def it_calls_histogram_equalization_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_histogram_equalization = function_mock(
-            request, "histolab.filters.image_filters_functional.histogram_equalization",
+            request, "histolab.filters.image_filters_functional.histogram_equalization"
         )
         F_histogram_equalization.return_value = image
         histogram_equalization = imf.HistogramEqualization(200)
@@ -114,7 +113,7 @@ class DescribeImageFilters(object):
     def it_calls_adaptive_equalization_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_adaptive_equalization = function_mock(
-            request, "histolab.filters.image_filters_functional.adaptive_equalization",
+            request, "histolab.filters.image_filters_functional.adaptive_equalization"
         )
         F_adaptive_equalization.return_value = image
         adaptive_equalization = imf.AdaptiveEqualization(250, 0.2)
@@ -166,7 +165,7 @@ class DescribeImageFilters(object):
     def it_applies_hysteresis_threshold(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_hysteresis_threshold = function_mock(
-            request, "histolab.filters.image_filters_functional.hysteresis_threshold",
+            request, "histolab.filters.image_filters_functional.hysteresis_threshold"
         )
         F_hysteresis_threshold.return_value = image
         hysteresis_threshold = imf.HysteresisThreshold(20, 150)
@@ -206,7 +205,7 @@ class DescribeImageFilters(object):
     def it_calls_local_otsu_threshold_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_local_otsu_threshold = function_mock(
-            request, "histolab.filters.image_filters_functional.local_otsu_threshold",
+            request, "histolab.filters.image_filters_functional.local_otsu_threshold"
         )
         F_local_otsu_threshold.return_value = np.array(image)
         local_otsu_threshold = imf.LocalOtsuThreshold(5)
@@ -258,7 +257,7 @@ class DescribeImageFilters(object):
     def it_calls_green_channel_filter_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_green_channel_filter = function_mock(
-            request, "histolab.filters.image_filters_functional.green_channel_filter",
+            request, "histolab.filters.image_filters_functional.green_channel_filter"
         )
         F_green_channel_filter.return_value = np.array(image)
         green_channel_filter = imf.GreenChannelFilter(250, False, 85.0)
@@ -345,6 +344,19 @@ class DescribeImageFilters(object):
 
         F_blue_pen_filter.assert_called_once_with(image)
         assert type(blue_pen_filter(image)) == np.ndarray
+
+    def it_calls_pen_marks_filter_functional(self, request):
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        F_pen_marks = function_mock(
+            request, "histolab.filters.image_filters_functional.pen_marks"
+        )
+        F_pen_marks.return_value = np.array(image)
+        pen_marks = imf.PenMarks()
+
+        pen_marks(image)
+
+        F_pen_marks.assert_called_once_with(image)
+        assert type(pen_marks(image)) == np.ndarray
 
     def it_calls_np_to_pil(self, request):
         array = NpArrayMock.ONES_30X30_UINT8
