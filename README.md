@@ -45,7 +45,7 @@ The aim of this project is to provide a tool for WSI processing in a reproducibl
 
 ### Prerequisites 
 
-Histolab has only one sistem-wide dependency: OpenSlide.
+Histolab has only one system-wide dependency: OpenSlide.
 
 You can download and install it from [OpenSlide](https://openslide.org/download/) according to your operating system.
 
