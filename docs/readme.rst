@@ -46,7 +46,7 @@ The histolab package can be installed by using::
 
 Prerequisites
 *************
-histolab has only one sistem-wide dependency: `OpenSlide`.
+histolab has only one system-wide dependency: `OpenSlide`.
 
 You can download and install it from https://openslide.org/download/ according to your operating system.
 
