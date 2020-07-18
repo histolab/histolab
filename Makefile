@@ -2,10 +2,10 @@ MAKE   = make
 PYTHON = python
 SETUP  = $(PYTHON) ./setup.py
 
-.PHONY: clean cleandocs coverage dist docs opendocs unit-coverage upload
+.PHONY: clean cleandocs coverage dist docs opendocs unit-coverage upload help
 
 help:
-    @echo "Usage: \`make <target>' where <target> is one or more of"
+	@echo "Usage: \`make <target>' where <target> is one or more of"
 	@echo "  clean          delete intermediate work product and start fresh"
 	@echo "  cleandocs      delete cached HTML documentation and start fresh"
 	@echo "  coverage       report overall test coverage"
