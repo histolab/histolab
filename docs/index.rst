@@ -86,7 +86,7 @@ References
    api/tile
    api/tiler
    api/data
-   utils
+   api/utils
 
 
 Indices and tables
