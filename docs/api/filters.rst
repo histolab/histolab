@@ -2,8 +2,6 @@ Filters
 ====================================
 
 .. toctree::
-
-.. toctree::
    :maxdepth: 2
    :caption: API Reference
 
@@ -11,3 +9,5 @@ Filters
    filters/image_filters_functional
    filters/morphological_filters
    filters/morphological_filters_functional
+
+.. toctree::
