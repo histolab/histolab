@@ -215,14 +215,15 @@ def _load_svs(f: str) -> Tuple[openslide.OpenSlide, str]:
 
     Parameters
     ----------
-    f: str
-        data_filename: str
+    f : str
         Name of the file in the histolab repository
 
     Returns
     -------
-    slide : OpenSlide object
-            An OpenSlide object representing a whole-slide image.
+    slide : openslide.OpenSlide
+        An OpenSlide object representing a whole-slide image.
+    path : str
+        Path where the slide is saved
 
     Raises
     ------
@@ -245,8 +246,10 @@ def cmu_small_region() -> Tuple[openslide.OpenSlide, str]:
 
     Returns
     -------
-    cmu_mrxs_tissue : OpenSlide object
+    cmu_mrxs_tissue : openslide.OpenSlide
         Sample CMU tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
     """
     return _load_svs("data/cmu_small_region.svs")
 
@@ -254,15 +257,17 @@ def cmu_small_region() -> Tuple[openslide.OpenSlide, str]:
 def aorta_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """Aorta tissue, brightfield, JPEG 2000, YCbCr
 
-    This image is avaliable here
+    This image is available here
     http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/
 
     Free to use and distribute, with or without modification
 
     Returns
     -------
-    aorta_tissue : OpenSlide object
+    aorta_tissue : openslide.OpenSlide
         Aorta tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
     """
     return _load_svs("aperio/JP2K-33003-1.svs")
 
@@ -270,23 +275,25 @@ def aorta_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
 def heart_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """Heart tissue, brightfield, JPEG 2000, YCbCr
 
-    This image is avaliable here
+    This image is available here
     http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/
 
     Free to use and distribute, with or without modification
 
     Returns
     -------
-    heart_tissue : OpenSlide object
+    heart_tissue : openslide.OpenSlide
         Heart tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
     """
     return _load_svs("aperio/JP2K-33003-2.svs")
 
 
 def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
-    """Breast tissue, TCGA-BRCA dataset
+    """Breast tissue, TCGA-BRCA dataset.
 
-    This image is avaliable here
+    This image is available here
     https://portal.gdc.cancer.gov/files/9c960533-2e58-4e54-97b2-8454dfb4b8c8
     or through the API
     https://api.gdc.cancer.gov/data/9c960533-2e58-4e54-97b2-8454dfb4b8c8
@@ -295,16 +302,18 @@ def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
 
     Returns
     -------
-    breast_tissue : OpenSlide object
+    breast_tissue : openslide.OpenSlide
         Breast tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
     """
     return _load_svs("tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8")
 
 
 def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
-    """Prostate tissue, TCGA-
+    """Prostate tissue, TCGA-PRAD dataset.
 
-    This image is avaliable here
+    This image is available here
     https://portal.gdc.cancer.gov/files/6b725022-f1d5-4672-8c6c-de8140345210
     or through the API
     https://api.gdc.cancer.gov/data/6b725022-f1d5-4672-8c6c-de8140345210
@@ -314,8 +323,10 @@ def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
 
     Returns
     -------
-    prostate_tissue : OpenSlide object
+    prostate_tissue : openslide.OpenSlide
         Prostate tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
     """
     return _load_svs("tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210")
 
@@ -325,7 +336,7 @@ def breast_tissue_diagnostic_green_pen() -> Tuple[
 ]:  # pragma: no cover
     """Breast tissue, TCGA-BRCA dataset. Diagnostic slide with green pen.
 
-    This image is avaliable here
+    This image is available here
     https://portal.gdc.cancer.gov/files/da36d3aa-9b19-492a-af4f-cc028a926d96
     or through the API
     https://api.gdc.cancer.gov/data/da36d3aa-9b19-492a-af4f-cc028a926d96
@@ -334,8 +345,10 @@ def breast_tissue_diagnostic_green_pen() -> Tuple[
 
     Returns
     -------
-    breast_tissue : OpenSlide object
+    breast_tissue : openslide.OpenSlide
         Breast tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
     """
     return _load_svs("tcga/breast/da36d3aa-9b19-492a-af4f-cc028a926d96")
 
@@ -345,7 +358,7 @@ def breast_tissue_diagnostic_red_pen() -> Tuple[
 ]:  # pragma: no cover
     """Breast tissue, TCGA-BRCA dataset. Diagnostic slide with red pen.
 
-    This image is avaliable here
+    This image is available here
     https://portal.gdc.cancer.gov/files/f8b4cee6-9149-45b4-ae53-82b0547e1e34
     or through the API
     https://api.gdc.cancer.gov/data/f8b4cee6-9149-45b4-ae53-82b0547e1e34
@@ -354,8 +367,10 @@ def breast_tissue_diagnostic_red_pen() -> Tuple[
 
     Returns
     -------
-    breast_tissue : OpenSlide object
+    breast_tissue : openslide.OpenSlide
         Breast tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
     """
     return _load_svs("tcga/breast/f8b4cee6-9149-45b4-ae53-82b0547e1e34")
 
@@ -365,7 +380,7 @@ def breast_tissue_diagnostic_black_pen() -> Tuple[
 ]:  # pragma: no cover
     """Breast tissue, TCGA-BRCA dataset. Diagnostic slide with black pen.
 
-    This image is avaliable here
+    This image is available here
     https://portal.gdc.cancer.gov/files/31e248bf-ee24-4d18-bccb-47046fccb461
     or through the API
     https://api.gdc.cancer.gov/data/31e248bf-ee24-4d18-bccb-47046fccb461
@@ -374,7 +389,9 @@ def breast_tissue_diagnostic_black_pen() -> Tuple[
 
     Returns
     -------
-    breast_tissue : OpenSlide object
+    breast_tissue : openslide.OpenSlide
         Breast tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
     """
     return _load_svs("tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461")
