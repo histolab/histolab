@@ -72,7 +72,7 @@ References
 
 
 .. toctree::
-  :hidden:
+  
 
 .. toctree::
    :caption: API Reference

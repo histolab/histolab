@@ -1,11 +1,11 @@
-Image Filters
+Data
 ====================================
 
 .. toctree::
-   :caption: Filters
+   :caption: API Reference
    :maxdepth: 2
 
-.. automodule:: src.histolab.filters.image_filters
+.. automodule:: src.histolab.data
     :members:
 
 .. toctree::

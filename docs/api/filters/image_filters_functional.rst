@@ -1,7 +1,6 @@
 Image Filters Functional
 ====================================
 
-.. toctree::
 
 .. toctree::
    :caption: Filters
@@ -9,3 +8,5 @@ Image Filters Functional
 
 .. automodule:: src.histolab.filters.image_filters_functional
     :members:
+
+.. toctree::

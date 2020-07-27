@@ -209,3 +209,5 @@ This Code of Conduct is adapted from the `Contributor Covenant <http://contribut
 available at `http://contributor-covenant.org/version/1/4 <http://contributor-covenant.org/version/1/4/>`_
 
 .. toctree::
+
+.. toctree::
