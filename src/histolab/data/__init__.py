@@ -242,6 +242,9 @@ def _load_svs(f: str) -> Tuple[openslide.OpenSlide, str]:
 def cmu_small_region() -> Tuple[openslide.OpenSlide, str]:
     """Carnegie Mellon University MRXS sample tissue
 
+    This image is available here
+    http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/
+
     Licensed under a CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
 
     Returns
