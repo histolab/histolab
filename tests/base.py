@@ -2,7 +2,7 @@ import numpy as np
 import sparse
 
 # ============== IMAGES ==============
-IMAGE1_GREY = np.array(
+IMAGE1_GRAY = np.array(
     [
         [152, 100, 162, 160, 23],
         [160, 113, 31, 126, 36],
@@ -12,7 +12,7 @@ IMAGE1_GREY = np.array(
     ]
 )
 
-IMAGE2_GREY = np.array(
+IMAGE2_GRAY = np.array(
     [
         [89.04472016, 70.10608259, 233.5658837, 165.17043321, 2.37055166],
         [73.56836436, 222.25117531, 73.54528918, 246.26874863, 201.15243113],
@@ -22,7 +22,7 @@ IMAGE2_GREY = np.array(
     ]
 ).astype("float64")
 
-IMAGE3_GREY_BLACK = np.array(
+IMAGE3_GRAY_BLACK = np.array(
     [
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
@@ -32,7 +32,7 @@ IMAGE3_GREY_BLACK = np.array(
     ]
 )
 
-IMAGE4_GREY_WHITE = np.array(
+IMAGE4_GRAY_WHITE = np.array(
     [
         [1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1],

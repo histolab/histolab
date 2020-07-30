@@ -109,7 +109,7 @@ def hematoxylin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
     Returns
     -------
     Image.Image
-        Greyscale image corresponding to input image with Hematoxylin channel enhanced.
+        Grayscale image corresponding to input image with Hematoxylin channel enhanced.
     """
     if img.mode not in ["RGB", "RGBA"]:
         raise ValueError("Input image must be RGB/RGBA.")
@@ -132,7 +132,7 @@ def eosin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
     Returns
     -------
     Image.Image
-        Greyscale image corresponding to input image with Eosin channel enhanced.
+        Grayscale image corresponding to input image with Eosin channel enhanced.
     """
     if img.mode not in ["RGB", "RGBA"]:
         raise ValueError("Input image must be RGB/RGBA.")
@@ -164,7 +164,7 @@ def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
     return hsv
 
 
-# TODO setup logger warning + greyscale --> invert ---> contrast stretch
+# TODO setup logger warning + grayscale --> invert ---> contrast stretch
 
 
 def stretch_contrast(
@@ -523,7 +523,7 @@ def hysteresis_threshold_mask(
 ) -> np.ndarray:
     """Mask an image using hysteresis threshold
 
-    Compute the Hysteresis threshold on the complement of a greyscale image,
+    Compute the Hysteresis threshold on the complement of a grayscale image,
     and return boolean mask based on pixels above this threshold.
 
     Parameters
@@ -575,7 +575,7 @@ def otsu_threshold(
         image = PIL.ImageOps.grayscale(img)
         warn(
             "otsu_threshold is expected to work correctly only for grayscale images."
-            "NOTE: the image will be converted to greyscale before applying Otsu"
+            "NOTE: the image will be converted to grayscale before applying Otsu"
             "threshold"
         )
     else:
@@ -622,7 +622,7 @@ def filter_entropy(
     return threshold_to_mask(entropy, threshold, relate)
 
 
-# input of canny filter is a greyscale
+# input of canny filter is a grayscale
 def canny_edges(
     img: PIL.Image.Image,
     sigma: float = 1.0,
@@ -659,7 +659,7 @@ def canny_edges(
 def grays(img: PIL.Image.Image, tolerance: int = 15) -> np.ndarray:
     """Filter out gray pixels in RGB image.
 
-    Grey pixels are those pixels where the red, green, and blue channel values
+    Gray pixels are those pixels where the red, green, and blue channel values
     are similar, i.e. under a specified tolerance.
 
     Parameters
