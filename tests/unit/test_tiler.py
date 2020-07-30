@@ -297,6 +297,34 @@ class Describe_RandomTiler(object):
             box_mask_lvl.todense(), expected_box_mask_lvl.todense()
         )
 
+    def it_can_extract_random_tiles(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        _random_tiles_generator = method_mock(
+            request, RandomTiler, "_random_tiles_generator"
+        )
+        coords = CoordinatePair(0, 10, 0, 10)
+        tile = Tile(image, coords)
+        _random_tiles_generator.return_value = [(tile, coords), (tile, coords)]
+        _tile_filename = method_mock(request, RandomTiler, "_tile_filename")
+        _tile_filename.side_effect = [
+            os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
+            for i in range(2)
+        ]
+        random_tiler = RandomTiler((10, 10), n_tiles=2, level=2)
+
+        random_tiler.extract(slide)
+
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
+        )
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
+        )
+
     # fixtures -------------------------------------------------------
 
     @pytest.fixture(
@@ -540,6 +568,32 @@ class Describe_GridTiler(object):
 
         assert len(generated_tiles) == 0
         _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
+
+    def it_can_extract_grid_tiles(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        _grid_tiles_generator = method_mock(request, GridTiler, "_grid_tiles_generator")
+        coords = CoordinatePair(0, 10, 0, 10)
+        tile = Tile(image, coords)
+        _grid_tiles_generator.return_value = [(tile, coords), (tile, coords)]
+        _tile_filename = method_mock(request, GridTiler, "_tile_filename")
+        _tile_filename.side_effect = [
+            os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
+            for i in range(2)
+        ]
+        grid_tiler = GridTiler((10, 10), level=2)
+
+        grid_tiler.extract(slide)
+
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
+        )
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
+        )
 
     # fixtures -------------------------------------------------------
 

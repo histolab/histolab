@@ -175,6 +175,17 @@ class Slide(object):
         """
         return ntpath.basename(self._path).split(".")[0]
 
+    @lazyproperty
+    def processed_path(self) -> str:
+        """Retrieve the path to store processed files generated from the slide.
+
+        Returns
+        -------
+        str
+            Path to store processed files generated from the slide
+        """
+        return self._processed_path
+
     def resampled_array(self, scale_factor: int = 32) -> np.array:
         """Retrieve the resampled array from the original slide
 
