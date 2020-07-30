@@ -16,7 +16,7 @@
 # limitations under the License.
 # ------------------------------------------------------------------------
 
-from typing import Any, List, Union
+from typing import Any, Callable, List, Union
 
 import numpy as np
 import PIL
@@ -41,6 +41,34 @@ class Compose(object):
         for f in self.filters:
             img = f(img)
         return img
+
+
+class Lambda(object):
+    """Apply a user-defined lambda as a filter.
+
+    Inspired from:
+    https://pytorch.org/docs/stable/_modules/torchvision/transforms/transforms.html#Lambda
+
+    Parameters
+    ----------
+    lambd : callable
+        Lambda/function to be used as a filter.
+
+    Returns
+    -------
+    PIL.Image.Image
+        The image with the function applied.
+    """
+
+    def __init__(self, lambd: Callable[[PIL.Image.Image], PIL.Image.Image]) -> None:
+        assert callable(lambd), repr(type(lambd).__name__) + " object is not callable"
+        self.lambd = lambd
+
+    def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
+        return self.lambd(img)
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "()"
 
 
 class ToPILImage(object):
