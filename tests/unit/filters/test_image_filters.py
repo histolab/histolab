@@ -2,6 +2,7 @@
 
 import numpy as np
 import PIL
+
 from histolab.filters import image_filters as imf
 
 from ...unitutil import NpArrayMock, PILImageMock, function_mock
@@ -380,3 +381,15 @@ class DescribeImageFilters(object):
 
         util_apply_mask_image.assert_called_once_with(image, mask)
         assert type(util_apply_mask_image(image, mask)) == PIL.Image.Image
+
+    def it_calls_lambda_filter(self, request):
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image_np = np.array(image)
+        fun_ = function_mock(request, "numpy.array")
+        fun_.return_value = image_np
+        lambda_filter = imf.Lambda(fun_)
+
+        lambda_filter(image)
+
+        fun_.assert_called_once_with(image)
+        assert type(lambda_filter(image)) == np.ndarray
