@@ -7,16 +7,16 @@ import operator
 import numpy as np
 import pytest
 from tests.base import (
-    IMAGE1_GREY,
+    IMAGE1_GRAY,
     IMAGE1_RGB,
     IMAGE1_RGBA,
-    IMAGE2_GREY,
+    IMAGE2_GRAY,
     IMAGE2_RGB,
     IMAGE2_RGBA,
-    IMAGE3_GREY_BLACK,
+    IMAGE3_GRAY_BLACK,
     IMAGE3_RGB_BLACK,
     IMAGE3_RGBA_BLACK,
-    IMAGE4_GREY_WHITE,
+    IMAGE4_GRAY_WHITE,
     IMAGE4_RGB_WHITE,
     IMAGE4_RGBA_WHITE,
     SPARSE_BASE_MASK,
@@ -237,7 +237,7 @@ def test_region_coordinates():
 @pytest.fixture(
     params=[
         (
-            IMAGE1_GREY,
+            IMAGE1_GRAY,
             160,
             operator.gt,
             np.array(
@@ -251,7 +251,7 @@ def test_region_coordinates():
             ),
         ),
         (
-            IMAGE2_GREY,
+            IMAGE2_GRAY,
             140,
             operator.lt,
             np.array(
@@ -264,11 +264,11 @@ def test_region_coordinates():
                 ]
             ),
         ),
-        (IMAGE3_GREY_BLACK, 0, operator.gt, np.zeros((5, 5), dtype=bool)),
-        (IMAGE3_GREY_BLACK, 0, operator.lt, np.zeros((5, 5), dtype=bool)),
-        (IMAGE3_GREY_BLACK, 1, operator.lt, np.ones((5, 5), dtype=bool)),
-        (IMAGE4_GREY_WHITE, 0, operator.gt, np.ones((5, 5), dtype=bool)),
-        (IMAGE4_GREY_WHITE, 1, operator.lt, np.zeros((5, 5), dtype=bool)),
+        (IMAGE3_GRAY_BLACK, 0, operator.gt, np.zeros((5, 5), dtype=bool)),
+        (IMAGE3_GRAY_BLACK, 0, operator.lt, np.zeros((5, 5), dtype=bool)),
+        (IMAGE3_GRAY_BLACK, 1, operator.lt, np.ones((5, 5), dtype=bool)),
+        (IMAGE4_GRAY_WHITE, 0, operator.gt, np.ones((5, 5), dtype=bool)),
+        (IMAGE4_GRAY_WHITE, 1, operator.lt, np.zeros((5, 5), dtype=bool)),
         (
             IMAGE1_RGB,
             200,

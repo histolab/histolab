@@ -170,7 +170,7 @@ class HematoxylinChannel(object):
     Returns
     -------
     Image.Image
-        Greyscale image corresponding to input image with Hematoxylin channel enhanced.
+        Grayscale image corresponding to input image with Hematoxylin channel enhanced.
     """
 
     def __call__(self, img):
@@ -195,7 +195,7 @@ class EosinChannel(object):
     Returns
     -------
     Image.Image
-        Greyscale image corresponding to input image with Eosin channel enhanced.
+        Grayscale image corresponding to input image with Eosin channel enhanced.
     """
 
     def __call__(self, img):
@@ -468,7 +468,7 @@ class HysteresisThreshold(object):
 class HysteresisThresholdMask(object):
     """Mask an image using hysteresis threshold
 
-    Compute the Hysteresis threshold on the complement of a greyscale image,
+    Compute the Hysteresis threshold on the complement of a grayscale image,
     and return boolean mask based on pixels above this threshold.
 
     Parameters
@@ -634,7 +634,7 @@ class CannyEdges(object):
 class Grays(object):
     """Filter out gray pixels in RGB image.
 
-    Grey pixels are those pixels where the red, green, and blue channel values
+    Gray pixels are those pixels where the red, green, and blue channel values
     are similar, i.e. under a specified tolerance.
 
     Parameters

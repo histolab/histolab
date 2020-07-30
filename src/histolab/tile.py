@@ -145,8 +145,8 @@ class Tile:
         bool
             True if the image is almost white, False otherwise
         """
-        rgb2grey = imf.RgbToGrayscale()
-        image_gray = rgb2grey(self._image)
+        rgb2gray = imf.RgbToGrayscale()
+        image_gray = rgb2gray(self._image)
         image_gray_arr = np.array(image_gray)
         image_gray_arr = image_gray_arr / 255
 
