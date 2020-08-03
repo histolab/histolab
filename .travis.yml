@@ -28,7 +28,7 @@ jobs:
         - choco install python --version 3.6.8
         - python -m pip install --upgrade pip
         - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
-        - sudo apt-get install unzip
+        - apt-get install unzip
         - unzip openslide-win64-20171122.zip
         - pwd
       env: PATH=/c/Python36:/c/Python36/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
@@ -38,7 +38,11 @@ jobs:
       before_install:
         - choco install python --version 3.7
         - python -m pip install --upgrade pip
-      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+        - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
+        - apt-get install unzip
+        - unzip openslide-win64-20171122.zip
+        - pwd
+      env: PATH=/c/Python37:/c/Python37/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
 
 # command to install dependencies
 install:
