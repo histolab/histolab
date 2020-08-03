@@ -14,7 +14,7 @@ jobs:
       osx_image: xcode9.4  # Python 3.7.4 running on macOS 10.14.4
       language: shell       # 'language: python' is an error on Travis CI macOS
       before_install:
-        - brew update bundle
+        - brew upgrade bundle
     - name: "Python 3.7.4 on macOS"
       os: osx
       osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
