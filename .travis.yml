@@ -6,8 +6,9 @@ python:
   - "3.6"
   - "3.7"
 
-before_install:
-  - sudo apt-get install openslide-tools
+os:
+  - linux
+  - osx
 
 # command to install dependencies
 install:
@@ -31,3 +32,9 @@ after_success:
 
 notifications:
   slack: mpba:fBrjUWlUSa3XKeCA8zFsTFu2
+
+addons:
+  homebrew:
+    packages: openslide
+  apt:
+    packages: openslide-tools
