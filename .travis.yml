@@ -44,5 +44,6 @@ notifications:
 addons:
   homebrew:
     packages: openslide
+    update: true
   apt:
     packages: openslide-tools
