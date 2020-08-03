@@ -1,6 +1,6 @@
 # Wire up travis
 language: python
-sudo: false
+root: false
 
 language: python            # this works for Linux but is an error on macOS or Windows
 jobs:
@@ -13,6 +13,8 @@ jobs:
       os: osx
       osx_image: xcode9.4  # Python 3.7.4 running on macOS 10.14.4
       language: shell       # 'language: python' is an error on Travis CI macOS
+      before_install:
+        - brew update bundle
     - name: "Python 3.7.4 on macOS"
       os: osx
       osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
@@ -44,6 +46,5 @@ notifications:
 addons:
   homebrew:
     packages: openslide
-    update: true
   apt:
     packages: openslide-tools
