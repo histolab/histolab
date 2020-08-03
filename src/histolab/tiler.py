@@ -413,8 +413,7 @@ class RandomTiler(Tiler):
         tiles_counter = 0
         for tiles_counter, (tile, tile_wsi_coords) in enumerate(random_tiles):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
-            root_folder = slide.processed_path
-            full_tile_path = os.path.join(root_folder, tile_filename)
+            full_tile_path = os.path.join(slide.processed_path, tile_filename)
             tile.save(full_tile_path)
             print(f"\t Tile {tiles_counter} saved: {tile_filename}")
         print(f"{tiles_counter+1} Random Tiles have been saved.")

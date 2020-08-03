@@ -318,6 +318,10 @@ class Describe_RandomTiler(object):
 
         random_tiler.extract(slide)
 
+        assert _tile_filename.call_args_list == [
+            call(random_tiler, coords, 0),
+            call(random_tiler, coords, 1),
+        ]
         assert os.path.exists(
             os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
         )
@@ -588,6 +592,10 @@ class Describe_GridTiler(object):
 
         grid_tiler.extract(slide)
 
+        assert _tile_filename.call_args_list == [
+            call(grid_tiler, coords, 0),
+            call(grid_tiler, coords, 1),
+        ]
         assert os.path.exists(
             os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
         )
