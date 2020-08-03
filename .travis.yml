@@ -16,8 +16,8 @@ jobs:
 
 # command to install dependencies
 install:
-  - pip install -e .[testing]
-  - pip install flake8
+  - pip3 install -e .[testing]
+  - pip3 install flake8
 
 services:
   - xvfb
