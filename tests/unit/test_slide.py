@@ -108,7 +108,7 @@ class Describe_Slide(object):
             "/foo/bar/myslide.svs",
             "/foo/bar/myslide/processed",
             (345, 111, 333, 444),
-            "/foo/bar/myslide/processed/thumbnails/myslide.png",
+            os.path.join("/foo/bar/myslide/processed", "thumbnails", "myslide.png"),
         )
         resampled_dims_.return_value = slide_dims
         slide = Slide(slide_path, proc_path)
@@ -216,7 +216,8 @@ class Describe_Slide(object):
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert (
-            str(err.value) == f"cannot identify image file '{os.path.join(slide_path)}'"
+            str(err.value) == f"cannot identify image file "
+            f"'{os.path.normpath(os.path.join(slide_path))}'"
         )
 
     def it_can_resample_itself(self, tmpdir, resampled_dims_):
@@ -444,7 +445,7 @@ class Describe_Slide(object):
         assert (
             str(err.value)
             == "Cannot display the slide thumbnail:[Errno 2] No such file or "
-            "directory: 'processed/thumbnails/b.png'"
+            f"directory: '{os.path.join('processed', 'thumbnails', 'b.png')}'"
         )
 
     def it_knows_its_level_dimensions(self, tmpdir):
@@ -508,25 +509,31 @@ class Describe_Slide(object):
                 "/foo/bar/myslide.svs",
                 "/foo/bar/myslide/processed",
                 (345, 111, 333, 444),
-                "/foo/bar/myslide/processed/myslide-22x-345x111-333x444.png",
+                os.path.join(
+                    "/foo/bar/myslide/processed", "myslide-22x-345x111-333x444.png"
+                ),
             ),
             (
                 "/foo/bar/myslide2.svs",
                 "/foo/bar/myslide/processed",
                 (345, 111, None, None),
-                "/foo/bar/myslide/processed/myslide2-22x-345x111-NonexNone.png",
+                os.path.join(
+                    "/foo/bar/myslide/processed", "myslide2-22x-345x111-NonexNone.png"
+                ),
             ),
             (
                 "/foo/bar/myslide2.svs",
                 "/foo/bar/myslide/processed",
                 (345, 111, 123, 123),
-                "/foo/bar/myslide/processed/myslide2-22x-345x111-123x123.png",
+                os.path.join(
+                    "/foo/bar/myslide/processed", "myslide2-22x-345x111-123x123.png"
+                ),
             ),
             (
                 "/foo/bar/myslide2.svs",
                 "/foo/bar/myslide/processed",
                 (None, None, None, None),
-                "/foo/bar/myslide/processed/myslide2*.png",
+                os.path.join("/foo/bar/myslide/processed", "myslide2*.png"),
             ),
         ]
     )
@@ -542,7 +549,7 @@ class Describe_Slide(object):
                 "/foo/bar/myslide.svs",
                 "processed",
                 64,
-                "/foo/bar/b/0/9/myslide-64x-245x123-145x99.png",
+                os.path.join("/foo/bar/b/0/9", "myslide-64x-245x123-145x99.png"),
             ),
             (
                 (245, 123, 145, 99),
@@ -550,7 +557,7 @@ class Describe_Slide(object):
                 "/foo/bar/myslide.svs",
                 "processed",
                 32,
-                "/foo/bar/b/0/9/myslide-32x-245x123-145x99.png",
+                os.path.join("/foo/bar/b/0/9", "myslide-32x-245x123-145x99.png"),
             ),
             (
                 (None, None, None, None),
@@ -558,7 +565,7 @@ class Describe_Slide(object):
                 "/foo/bar/myslide.svs",
                 "processed",
                 64,
-                "/foo/bar/b/0/9/myslide*.png",
+                os.path.join("/foo/bar/b/0/9", "myslide*.png"),
             ),
             (
                 (None, 234, 192, None),
@@ -566,7 +573,7 @@ class Describe_Slide(object):
                 "/foo/bar/myslide.svs",
                 "processed",
                 64,
-                "/foo/bar/b/0/9/myslide-64x-Nonex234-192xNone.png",
+                os.path.join("/foo/bar/b/0/9", "myslide-64x-Nonex234-192xNone.png"),
             ),
             (
                 (123, 234, 192, None),
@@ -574,7 +581,7 @@ class Describe_Slide(object):
                 "/foo/bar/myslide.svs",
                 "processed",
                 64,
-                "/foo/bar/b/0/9/myslide-64x-123x234-192xNone.png",
+                os.path.join("/foo/bar/b/0/9", "myslide-64x-123x234-192xNone.png"),
             ),
             (
                 (None, None, 192, None),
@@ -582,7 +589,7 @@ class Describe_Slide(object):
                 "/foo/bar/myslide.svs",
                 "processed",
                 64,
-                "/foo/bar/b/0/9/myslide-64x-NonexNone-192xNone.png",
+                os.path.join("/foo/bar/b/0/9", "myslide-64x-NonexNone-192xNone.png"),
             ),
         ]
     )
