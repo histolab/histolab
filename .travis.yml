@@ -15,18 +15,16 @@ jobs:
       before_install:
         - brew update
         - brew install openslide
-        - brew unlink python # ONLY if you have installed (with brew) another version of python 3
-        - brew install --ignore-dependencies https://raw.githubusercontent.com/Homebrew/homebrew-core/f2a764ef944b1080be64bd88dca9a1d80130c558/Formula/python.rb
-        - echo 'export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"' >> /Users/travis/.bash_profile
+        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+        - echo $PATH
     - name: "Python 3.7.4 on macOS"
       os: osx
       osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
       language: shell       # 'language: python' is an error on Travis CI macOS
       before_install:
         - brew install openslide
-        - brew unlink python # ONLY if you have installed (with brew) another version of python 3
-        - brew install --ignore-dependencies https://raw.githubusercontent.com/Homebrew/homebrew-core/88815f9b465c4069204c511bb4f34bb84e702bab/Formula/python.rb
-        - echo 'export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"' >> /Users/travis/.bash_profile
+        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+        - echo $PATH
     - name: "Python 3.6.8 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows
