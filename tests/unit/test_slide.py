@@ -217,7 +217,7 @@ class Describe_Slide(object):
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert (
             str(err.value) == f"cannot identify image file "
-            f"'{os.path.normpath(os.path.join(slide_path))}'"
+            rf"'{os.path.normpath(os.path.join(slide_path))}'"
         )
 
     def it_can_resample_itself(self, tmpdir, resampled_dims_):
@@ -445,7 +445,7 @@ class Describe_Slide(object):
         assert (
             str(err.value)
             == "Cannot display the slide thumbnail:[Errno 2] No such file or "
-            f"directory: '{os.path.join('processed', 'thumbnails', 'b.png')}'"
+            rf"directory: '{os.path.join('processed', 'thumbnails', 'b.png')}'"
         )
 
     def it_knows_its_level_dimensions(self, tmpdir):
@@ -713,7 +713,14 @@ class Describe_Slideset(object):
             slides = slideset.slides
 
         assert isinstance(err.value, FileNotFoundError)
-        assert str(err.value) == "[Errno 2] No such file or directory: 'fake/path'"
+
+        if os.environ.get("TRAVIS_OS_NAME", "linux") == "windows":
+            assert (
+                str(err.value)
+                == "[WinError 3] The system cannot find the path specified: 'fake/path'"
+            )
+        else:
+            assert str(err.value) == "[Errno 2] No such file or directory: 'fake/path'"
 
     def it_constructs_its_sequence_of_slides_to_help(self, request, Slide_, tmpdir):
         slides_path = tmpdir.mkdir("mypath")
