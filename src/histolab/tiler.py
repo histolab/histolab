@@ -387,8 +387,8 @@ class RandomTiler(Tiler):
     def max_iter(self, max_iter_: int = 1e4):
         if max_iter_ < self.n_tiles:
             raise ValueError(
-                f"The maximum number of iterations ({max_iter_}) must be grater than or "
-                f"equal to the maximum number of tiles ({self.n_tiles})."
+                f"The maximum number of iterations ({max_iter_}) must be grater than or"
+                f" equal to the maximum number of tiles ({self.n_tiles})."
             )
         self._valid_max_iter = max_iter_
 
