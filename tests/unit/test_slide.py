@@ -216,8 +216,8 @@ class Describe_Slide(object):
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert (
-            str(err.value) == f"cannot identify image file "
-            f"'{repr(os.path.join(slide_path))}'"
+            str(err.value) == "cannot identify image file "
+            f"{repr(os.path.join(slide_path))}"
         )
 
     def it_can_resample_itself(self, tmpdir, resampled_dims_):
@@ -445,7 +445,7 @@ class Describe_Slide(object):
         assert (
             str(err.value)
             == "Cannot display the slide thumbnail:[Errno 2] No such file or "
-            f"directory: '{repr(os.path.join('processed', 'thumbnails', 'b.png'))}'"
+            f"directory: {repr(os.path.join('processed', 'thumbnails', 'b.png'))}"
         )
 
     def it_knows_its_level_dimensions(self, tmpdir):
