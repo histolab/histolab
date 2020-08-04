@@ -7,7 +7,6 @@ import sys
 
 import numpy as np
 import PIL
-import sparse
 
 from unittest.mock import ANY, call  # noqa # isort:skip
 from unittest.mock import create_autospec, patch, PropertyMock  # isort:skip
@@ -112,8 +111,3 @@ class NpArrayMock:
     ONES_500X500X4_BOOL = np.ones([500, 500, 4], dtype="bool")
     ONES_500X500_BOOL = np.ones([500, 500], dtype="bool")
     RANDOM_500X500_BOOL = np.random.rand(500, 500) > 0.5
-
-
-class SparseArrayMock:
-    ONES_500X500_BOOL = sparse.ones((500, 500), dtype="bool")
-    RANDOM_500X500_BOOL = sparse.random((500, 500), random_state=0) > 0.5

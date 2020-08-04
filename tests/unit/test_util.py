@@ -19,8 +19,6 @@ from tests.base import (
     IMAGE4_GRAY_WHITE,
     IMAGE4_RGB_WHITE,
     IMAGE4_RGBA_WHITE,
-    SPARSE_BASE_MASK,
-    SPARSE_COMPLEX_MASK,
 )
 
 from histolab.types import CoordinatePair, Region
@@ -30,12 +28,9 @@ from histolab.util import (
     np_to_pil,
     polygon_to_mask_array,
     region_coordinates,
-    resize_mask,
     scale_coordinates,
     threshold_to_mask,
 )
-
-from ..util import load_expectation
 
 
 @pytest.mark.parametrize(
@@ -207,21 +202,6 @@ def test_util_polygon_to_mask_array(dims, vertices, expected_array):
     polygon_mask = polygon_to_mask_array(dims, vertices)
 
     np.testing.assert_array_almost_equal(polygon_mask, expected_array)
-
-
-@pytest.mark.parametrize(
-    "mask_array, target_dims, expected_array",
-    (
-        (SPARSE_BASE_MASK, (2, 2), "sparse-mask-arrays/resized-base-mask"),
-        (SPARSE_COMPLEX_MASK, (5, 5), "sparse-mask-arrays/resized-complex-mask"),
-    ),
-)
-def test_util_resize_mask(mask_array, target_dims, expected_array):
-    resized_mask = resize_mask(mask_array, target_dims)
-
-    np.testing.assert_array_almost_equal(
-        resized_mask.todense(), load_expectation(expected_array, "npz").todense()
-    )
 
 
 def test_region_coordinates():

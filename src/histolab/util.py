@@ -24,7 +24,6 @@ from typing import Callable, List, Tuple
 import numpy as np
 import PIL
 import PIL.ImageDraw
-import sparse
 from skimage.measure import label, regionprops
 
 from .types import CoordinatePair, Region
@@ -180,29 +179,6 @@ def region_coordinates(region: Region) -> CoordinatePair:
     """
     y_ul, x_ul, y_br, x_br = region.bbox
     return CoordinatePair(x_ul, y_ul, x_br, y_br)
-
-
-def resize_mask(
-    input_mask: sparse._coo.core.COO, target_dimensions: Tuple[int, int]
-) -> sparse._coo.core.COO:
-    """Resize mask to ``target_dimensions``.
-
-    Parameters
-    ----------
-    input_mask : sparse.COO
-        Input mask
-    target_dimensions : List[int, int]
-        Dimensions of the resized mask
-
-    Returns
-    -------
-    sparse._coo.core.COO
-        Resized mask
-    """
-    input_mask_img = PIL.Image.fromarray(input_mask.todense())
-    resized_mask_img = input_mask_img.resize(target_dimensions)
-    resized_mask_arr = np.array(resized_mask_img).astype(bool)
-    return sparse.COO(resized_mask_arr)
 
 
 def apply_mask_image(img: PIL.Image.Image, mask: np.ndarray) -> PIL.Image.Image:
