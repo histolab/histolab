@@ -68,7 +68,8 @@ class Describe_RandomTiler(object):
         assert isinstance(err.value, ValueError)
         assert (
             str(err.value)
-            == "The maximum number of iterations (3) must be grater than or equal to the maximum number of tiles (10)."
+            == "The maximum number of iterations (3) must be grater than or equal to "
+            "the maximum number of tiles (10)."
         )
 
     def or_it_has_wrong_seed(self, request, tmpdir):

@@ -1,5 +1,5 @@
-import pytest
 import numpy as np
+import pytest
 
 import histolab.filters.morphological_filters_functional as mof
 
@@ -15,28 +15,32 @@ from ..util import load_expectation
             3000,
             True,
             95,
-            "mask-arrays/diagnostic-slide-thumb-rgb1-hysteresis-threshold-remove-small-objects-mask",
+            "mask-arrays/diagnostic-slide-thumb-rgb1-hysteresis-threshold-remove-small-"
+            "objects-mask",
         ),
         (
             NPY.DIAGNOSTIC_SLIDE_THUMB_HSV_OTSU_THRESHOLD_MASK,
             3000,
             True,
             95,
-            "mask-arrays/diagnostic-slide-thumb-hsv-otsu-threshold-remove-small-objects-mask",
+            "mask-arrays/diagnostic-slide-thumb-hsv-otsu-threshold-remove-small-objects"
+            "-mask",
         ),
         (
             NPY.DIAGNOSTIC_SLIDE_THUMB_HSV_OTSU_THRESHOLD_MASK,
             3000,
             False,
             95,
-            "mask-arrays/diagnostic-slide-thumb-hsv-otsu-threshold-remove-small-objects2-mask",
+            "mask-arrays/diagnostic-slide-thumb-hsv-otsu-threshold-remove-small-objects"
+            "2-mask",
         ),
         (
             NPY.DIAGNOSTIC_SLIDE_THUMB_RGB1_HYSTERESIS_THRESHOLD_MASK,
             1200,
             True,
             25,
-            "mask-arrays/diagnostic-slide-thumb-rgb1-hysteresis-threshold-remove-small-objects2-mask",
+            "mask-arrays/diagnostic-slide-thumb-rgb1-hysteresis-threshold-remove-small-"
+            "objects2-mask",
         ),
     ),
 )
