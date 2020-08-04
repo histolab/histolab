@@ -43,9 +43,6 @@ jobs:
         - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
         - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
       env: PATH=/c/Python37:/c/Python37/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
-  allow_failures:
-    - name: "Python 3.6.8 on Windows"
-    - name: "Python 3.7 on Windows"
 
 # command to install dependencies
 install:
