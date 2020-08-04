@@ -1,5 +1,4 @@
 import numpy as np
-import sparse
 
 # ============== IMAGES ==============
 IMAGE1_GRAY = np.array(
@@ -236,6 +235,3 @@ COMPLEX_MASK = np.array(
         [True, True, False, False, False, True, True, False, True, False],
     ]
 )
-
-SPARSE_BASE_MASK = sparse.COO(BASE_MASK)
-SPARSE_COMPLEX_MASK = sparse.COO(COMPLEX_MASK)

@@ -3,8 +3,8 @@ from unittest.mock import call
 
 import numpy as np
 import pytest
-import sparse
 
+from histolab.exceptions import LevelError
 from histolab.slide import Slide
 from histolab.tile import Tile
 from histolab.tiler import GridTiler, RandomTiler, Tiler
@@ -12,8 +12,8 @@ from histolab.types import CoordinatePair
 
 from ..unitutil import (
     ANY,
+    NpArrayMock,
     PILImageMock,
-    SparseArrayMock,
     function_mock,
     initializer_mock,
     method_mock,
@@ -46,17 +46,17 @@ class Describe_RandomTiler(object):
         slide = Slide(slide_path, "processed")
         random_tiler = RandomTiler((512, 512), 10, 3)
 
-        with pytest.raises(ValueError) as err:
+        with pytest.raises(LevelError) as err:
             random_tiler.extract(slide)
 
-        assert isinstance(err.value, ValueError)
+        assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
 
     def or_it_has_negative_level_value(self, request):
-        with pytest.raises(ValueError) as err:
+        with pytest.raises(LevelError) as err:
             RandomTiler((512, 512), 10, -1)
 
-        assert isinstance(err.value, ValueError)
+        assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level cannot be negative (-1)"
 
     def or_it_has_wrong_max_iter(self, request):
@@ -129,8 +129,8 @@ class Describe_RandomTiler(object):
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
-        _box_mask_lvl = method_mock(request, RandomTiler, "box_mask_lvl")
-        _box_mask_lvl.return_value = SparseArrayMock.ONES_500X500_BOOL
+        _box_mask_thumb = method_mock(request, RandomTiler, "box_mask_thumb")
+        _box_mask_thumb.return_value = NpArrayMock.ONES_500X500_BOOL
         _tile_size = property_mock(request, RandomTiler, "tile_size")
         _tile_size.return_value = (128, 128)
         _np_random_choice1 = function_mock(request, "numpy.random.choice")
@@ -142,7 +142,7 @@ class Describe_RandomTiler(object):
 
         random_tiler._random_tile_coordinates(slide)
 
-        _box_mask_lvl.assert_called_once_with(random_tiler, slide)
+        _box_mask_thumb.assert_called_once_with(random_tiler, slide)
         _tile_size.assert_has_calls([call((128, 128))])
         _scale_coordinates.assert_called_once_with(
             reference_coords=CoordinatePair(x_ul=0, y_ul=0, x_br=128, y_br=128),
@@ -153,8 +153,8 @@ class Describe_RandomTiler(object):
     @pytest.mark.parametrize(
         "check_tissue, expected_box",
         (
-            (False, SparseArrayMock.RANDOM_500X500_BOOL),
-            (True, SparseArrayMock.RANDOM_500X500_BOOL),
+            (False, NpArrayMock.RANDOM_500X500_BOOL),
+            (True, NpArrayMock.RANDOM_500X500_BOOL),
         ),
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
@@ -169,11 +169,11 @@ class Describe_RandomTiler(object):
         _biggest_tissue_box_mask.return_value = expected_box
         random_tiler = RandomTiler((128, 128), 10, 0, check_tissue=check_tissue)
 
-        box_mask = random_tiler.box_mask(slide)
+        box_mask = random_tiler.box_mask_thumb(slide)
 
         _biggest_tissue_box_mask.assert_called_once_with()
-        assert type(box_mask) == sparse._coo.core.COO
-        np.testing.assert_array_almost_equal(box_mask.todense(), expected_box.todense())
+        assert type(box_mask) == np.ndarray
+        np.testing.assert_array_almost_equal(box_mask, expected_box)
 
     @pytest.mark.parametrize(
         "coords1, coords2, check_tissue, has_enough_tissue, max_iter, expected_n_tiles",
@@ -267,35 +267,6 @@ class Describe_RandomTiler(object):
         assert len(generated_tiles) == expected_n_tiles
         if expected_n_tiles == 2:
             assert generated_tiles == [(tile1, coords1), (tile2, coords2)]
-
-    @pytest.mark.parametrize(
-        "level, box_mask, expected_box_mask_lvl",
-        (
-            (
-                0,
-                SparseArrayMock.RANDOM_500X500_BOOL,
-                SparseArrayMock.RANDOM_500X500_BOOL,
-            ),  # TODO: use image with more than 1 level
-        ),
-    )
-    def it_knows_its_box_mask_lvl(
-        self, request, tmpdir, level, box_mask, expected_box_mask_lvl
-    ):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
-        _box_mask = method_mock(request, RandomTiler, "box_mask")
-        _box_mask.return_value = box_mask
-        random_tiler = RandomTiler((128, 128), 10, level)
-
-        box_mask_lvl = random_tiler.box_mask_lvl(slide)
-
-        assert type(box_mask_lvl) == sparse._coo.core.COO
-        np.testing.assert_array_almost_equal(
-            box_mask_lvl.todense(), expected_box_mask_lvl.todense()
-        )
 
     def it_can_extract_random_tiles(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
@@ -413,17 +384,17 @@ class Describe_GridTiler(object):
         slide = Slide(slide_path, "processed")
         grid_tiler = GridTiler((512, 512), 3)
 
-        with pytest.raises(ValueError) as err:
+        with pytest.raises(LevelError) as err:
             grid_tiler.extract(slide)
 
-        assert isinstance(err.value, ValueError)
+        assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
 
     def or_it_has_negative_level_value(self, request):
-        with pytest.raises(ValueError) as err:
+        with pytest.raises(LevelError) as err:
             GridTiler((512, 512), -1)
 
-        assert isinstance(err.value, ValueError)
+        assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level cannot be negative (-1)"
 
     @pytest.mark.parametrize("tile_size", ((512, 512), (128, 128), (10, 10)))
@@ -459,8 +430,8 @@ class Describe_GridTiler(object):
     @pytest.mark.parametrize(
         "check_tissue, expected_box",
         (
-            (False, SparseArrayMock.ONES_500X500_BOOL),
-            (True, SparseArrayMock.RANDOM_500X500_BOOL),
+            (False, NpArrayMock.ONES_500X500_BOOL),
+            (True, NpArrayMock.RANDOM_500X500_BOOL),
         ),
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
@@ -475,11 +446,11 @@ class Describe_GridTiler(object):
         _biggest_tissue_box_mask.return_value = expected_box
         grid_tiler = GridTiler((128, 128), 0, check_tissue=check_tissue)
 
-        box_mask = grid_tiler.box_mask(slide)
+        box_mask = grid_tiler.box_mask_thumb(slide)
 
         _biggest_tissue_box_mask.assert_called_once_with()
-        assert type(box_mask) == sparse._coo.core.COO
-        np.testing.assert_array_almost_equal(box_mask.todense(), expected_box.todense())
+        assert type(box_mask) == np.ndarray
+        np.testing.assert_array_almost_equal(box_mask, expected_box)
 
     @pytest.mark.parametrize(
         "bbox_coordinates, pixel_overlap, expected_n_tiles_row",

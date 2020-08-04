@@ -3,7 +3,8 @@ from abc import abstractmethod
 from typing import Tuple
 
 import numpy as np
-import sparse
+
+from histolab.exceptions import LevelError
 
 from .slide import Slide
 from .tile import Tile
@@ -12,7 +13,6 @@ from .util import (
     lru_cache,
     region_coordinates,
     regions_from_binary_mask,
-    resize_mask,
     scale_coordinates,
 )
 
@@ -29,8 +29,8 @@ class Tiler(Protocol):
     tile_size: int
 
     @lru_cache(maxsize=100)
-    def box_mask(self, slide: Slide) -> sparse._coo.core.COO:
-        """Return binary mask at level 0 of the box to consider for tiles extraction.
+    def box_mask_thumb(self, slide: Slide) -> np.ndarray:
+        """Return binary mask at thumbnail dimensions of the box for tiles extraction.
 
         The mask pixels set to True will be the ones corresponding to the tissue box.
 
@@ -41,37 +41,11 @@ class Tiler(Protocol):
 
         Returns
         -------
-        sparse._coo.core.COO
-            Extraction mask at level 0
+        np.ndarray
+            Extraction mask at thumbnail dimensions
         """
 
         return slide.biggest_tissue_box_mask
-
-    @lru_cache(maxsize=100)
-    def box_mask_lvl(self, slide: Slide) -> sparse._coo.core.COO:
-        """Return binary mask at target level of the box to consider for the extraction.
-
-        The mask pixels set to True will be the ones corresponding to the tissue box.
-
-        Parameters
-        ----------
-        slide : Slide
-            The Slide from which to extract the extraction mask
-
-        Returns
-        -------
-        sparse._coo.core.COO
-            Extraction mask at target level
-        """
-
-        box_mask_wsi = self.box_mask(slide)
-
-        if self.level != 0:
-            return resize_mask(
-                box_mask_wsi, target_dimensions=slide.level_dimensions(self.level),
-            )
-        else:
-            return box_mask_wsi
 
     def _tile_filename(
         self, tile_wsi_coords: CoordinatePair, tiles_counter: int
@@ -160,7 +134,7 @@ class GridTiler(Tiler):
     @level.setter
     def level(self, level_: int):
         if level_ < 0:
-            raise ValueError(f"Level cannot be negative ({level_})")
+            raise LevelError(f"Level cannot be negative ({level_})")
         self._valid_level = level_
 
     def extract(self, slide: Slide):
@@ -173,6 +147,12 @@ class GridTiler(Tiler):
         slide : Slide
             Slide from which to extract the tiles
         """
+        if self.level not in slide.levels:
+            raise LevelError(
+                f"Level {self.level} not available. Number of available levels: "
+                f"{len(slide.levels)}"
+            )
+
         grid_tiles = self._grid_tiles_generator(slide)
 
         tiles_counter = 0
@@ -183,7 +163,7 @@ class GridTiler(Tiler):
             tile.save(full_tile_path)
             print(f"\t Tile {tiles_counter} saved: {tile_filename}")
 
-        print(f"{tiles_counter+1} Grid Tiles have been saved.")
+        print(f"{tiles_counter} Grid Tiles have been saved.")
 
     def _grid_coordinates_from_bbox_coordinates(
         self, bbox_coordinates: CoordinatePair, slide: Slide
@@ -244,16 +224,19 @@ class GridTiler(Tiler):
         Iterator[CoordinatePair]
             Iterator of tiles' CoordinatePair
         """
-        box_mask_lvl = self.box_mask_lvl(slide)
+        box_mask_thumb = self.box_mask_thumb(slide)
 
-        regions = regions_from_binary_mask(box_mask_lvl.todense())
+        regions = regions_from_binary_mask(box_mask_thumb)
         for region in regions:  # at the moment there is only one region
-            bbox_coordinates = region_coordinates(region)
+            bbox_coordinates_thumb = region_coordinates(region)
+            bbox_coordinates = scale_coordinates(
+                bbox_coordinates_thumb, box_mask_thumb.shape[::-1], slide.dimensions
+            )
             yield from self._grid_coordinates_from_bbox_coordinates(
                 bbox_coordinates, slide
             )
 
-    def _grid_tiles_generator(self, slide: Slide) -> (Tile, CoordinatePair):
+    def _grid_tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
         """Generator of tiles arranged in a grid.
 
         Parameters
@@ -379,7 +362,7 @@ class RandomTiler(Tiler):
     @level.setter
     def level(self, level_: int):
         if level_ < 0:
-            raise ValueError(f"Level cannot be negative ({level_})")
+            raise LevelError(f"Level cannot be negative ({level_})")
         self._valid_level = level_
 
     @property
@@ -430,24 +413,32 @@ class RandomTiler(Tiler):
         CoordinatePair
             Random tile Coordinates at level 0
         """
-        box_mask_lvl = self.box_mask_lvl(slide)
+        box_mask_thumb = self.box_mask_thumb(slide)
         tile_w_lvl, tile_h_lvl = self.tile_size
 
-        x_ul_lvl = np.random.choice(sparse.where(box_mask_lvl)[1])
-        y_ul_lvl = np.random.choice(sparse.where(box_mask_lvl)[0])
+        x_ul_lvl = np.random.choice(np.where(box_mask_thumb)[1])
+        y_ul_lvl = np.random.choice(np.where(box_mask_thumb)[0])
 
-        x_br_lvl = x_ul_lvl + tile_w_lvl
-        y_br_lvl = y_ul_lvl + tile_h_lvl
+        # Scale tile dimensions to thumbnail dimensions
+        tile_w_thumb = (
+            tile_w_lvl * box_mask_thumb.shape[1] / slide.level_dimensions(self.level)[0]
+        )
+        tile_h_thumn = (
+            tile_h_lvl * box_mask_thumb.shape[0] / slide.level_dimensions(self.level)[1]
+        )
+
+        x_br_lvl = x_ul_lvl + tile_w_thumb
+        y_br_lvl = y_ul_lvl + tile_h_thumn
 
         tile_wsi_coords = scale_coordinates(
             reference_coords=CoordinatePair(x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl),
-            reference_size=slide.level_dimensions(level=self.level),
-            target_size=slide.level_dimensions(level=0),
+            reference_size=box_mask_thumb.shape[::-1],
+            target_size=slide.dimensions,
         )
 
         return tile_wsi_coords
 
-    def _random_tiles_generator(self, slide: Slide) -> (Tile, CoordinatePair):
+    def _random_tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
         """Generate Random Tiles within a slide box.
 
         Stops if:

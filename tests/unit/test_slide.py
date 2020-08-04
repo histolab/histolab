@@ -11,6 +11,7 @@ import PIL
 import pytest
 from PIL import ImageShow
 
+from histolab.exceptions import LevelError
 from histolab.filters.image_filters import Compose
 from histolab.slide import Slide, SlideSet
 from histolab.types import CoordinatePair, Region
@@ -418,9 +419,7 @@ class Describe_Slide(object):
         polygon_to_mask_array_.assert_called_once_with(
             (1000, 1000), CoordinatePair(x_ul=0, y_ul=0, x_br=2, y_br=2)
         )
-        np.testing.assert_almost_equal(
-            biggest_mask_tissue_box.todense(), np.zeros((500, 500))
-        )
+        np.testing.assert_almost_equal(biggest_mask_tissue_box, np.zeros((500, 500)))
 
     @pytest.mark.skipif(
         not on_ci() or is_win32(), reason="Only run on CIs; hangs on Windows CIs"
@@ -465,9 +464,10 @@ class Describe_Slide(object):
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
-        with pytest.raises(ValueError) as err:
+        with pytest.raises(LevelError) as err:
             slide.level_dimensions(level=3)
 
+        assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
 
     def it_knows_if_coords_are_valid(self, valid_coords_fixture, tmpdir):
@@ -482,6 +482,18 @@ class Describe_Slide(object):
 
         assert type(_are_valid) == bool
         assert _are_valid == expected_result
+
+    def it_knows_its_levels(self, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+
+        levels = slide.levels
+
+        assert type(levels) == list
+        assert levels == [0]
 
     # fixtures -------------------------------------------------------
 

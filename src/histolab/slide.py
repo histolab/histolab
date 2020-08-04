@@ -30,8 +30,8 @@ import ntpath
 import numpy as np
 import openslide
 import PIL
-import sparse
 
+from .exceptions import LevelError
 from .filters import image_filters as imf
 from .filters import morphological_filters as mof
 from .tile import Tile
@@ -42,7 +42,6 @@ from .util import (
     polygon_to_mask_array,
     region_coordinates,
     regions_from_binary_mask,
-    resize_mask,
     scale_coordinates,
 )
 
@@ -97,20 +96,32 @@ class Slide(object):
         try:
             return self._wsi.level_dimensions[level]
         except IndexError:
-            raise ValueError(
+            raise LevelError(
                 f"Level {level} not available. Number of available levels: "
                 f"{len(self._wsi.level_dimensions)}"
             )
 
     @lazyproperty
-    @lru_cache(maxsize=100)
-    def biggest_tissue_box_mask(self) -> sparse._coo.core.COO:
-        """Return the binary mask of the box containing the max area of tissue.
+    def levels(self) -> List[int]:
+        """Return the slide's available levels
 
         Returns
         -------
-        mask: sparse._coo.core.COO
-            Binary mask of the box containing the max area of tissue.
+        List[int]
+            The levels available
+        """
+        return list(range(len(self._wsi.level_dimensions)))
+
+    @lazyproperty
+    @lru_cache(maxsize=100)
+    def biggest_tissue_box_mask(self) -> np.ndarray:
+        """Return the thumbnail binary mask of the box containing the max tissue area.
+
+        Returns
+        -------
+        mask: np.ndarray
+            Binary mask of the box containing the max area of tissue. The dimensions are
+            those of the thumbnail.
 
         """
         thumb = self._wsi.get_thumbnail(self._thumbnail_size)
@@ -123,8 +134,7 @@ class Slide(object):
         thumb_bbox_mask = polygon_to_mask_array(
             self._thumbnail_size, biggest_region_coordinates
         )
-        thumb_bbox_mask_sparse = sparse.COO(thumb_bbox_mask)
-        return resize_mask(thumb_bbox_mask_sparse, self.dimensions)
+        return thumb_bbox_mask
 
     def extract_tile(self, coords: CoordinatePair, level: int) -> Tile:
         """Extract a tile of the image at the selected level.
