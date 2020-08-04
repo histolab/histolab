@@ -22,6 +22,7 @@ jobs:
       osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
       language: shell       # 'language: python' is an error on Travis CI macOS
       before_install:
+        - brew install pkg-config gdbm openssl readline sqlite xz
         - brew install openslide
         - brew unlink python # ONLY if you have installed (with brew) another version of python 3
         - brew install --ignore-dependencies https://raw.githubusercontent.com/Homebrew/homebrew-core/88815f9b465c4069204c511bb4f34bb84e702bab/Formula/python.rb
