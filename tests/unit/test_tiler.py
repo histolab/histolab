@@ -169,7 +169,7 @@ class Describe_RandomTiler(object):
         _biggest_tissue_box_mask.return_value = expected_box
         random_tiler = RandomTiler((128, 128), 10, 0, check_tissue=check_tissue)
 
-        box_mask = random_tiler.box_mask(slide)
+        box_mask = random_tiler.box_mask_thumb(slide)
 
         _biggest_tissue_box_mask.assert_called_once_with()
         assert type(box_mask) == np.ndarray
@@ -446,7 +446,7 @@ class Describe_GridTiler(object):
         _biggest_tissue_box_mask.return_value = expected_box
         grid_tiler = GridTiler((128, 128), 0, check_tissue=check_tissue)
 
-        box_mask = grid_tiler.box_mask(slide)
+        box_mask = grid_tiler.box_mask_thumb(slide)
 
         _biggest_tissue_box_mask.assert_called_once_with()
         assert type(box_mask) == np.ndarray

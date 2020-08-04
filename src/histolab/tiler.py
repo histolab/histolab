@@ -224,14 +224,14 @@ class GridTiler(Tiler):
         Iterator[CoordinatePair]
             Iterator of tiles' CoordinatePair
         """
-        box_mask_thumb = self.box_mask(slide)
+        box_mask = self.box_mask(slide)
 
-        regions = regions_from_binary_mask(box_mask_thumb)
+        regions = regions_from_binary_mask(box_mask)
         for region in regions:  # at the moment there is only one region
             bbox_coordinates_thumb = region_coordinates(region)
             bbox_coordinates = scale_coordinates(
                 bbox_coordinates_thumb,
-                box_mask_thumb.shape[::-1],
+                box_mask.shape[::-1],
                 slide.level_dimensions(self.level),
             )
             yield from self._grid_coordinates_from_bbox_coordinates(
@@ -415,18 +415,18 @@ class RandomTiler(Tiler):
         CoordinatePair
             Random tile Coordinates at level 0
         """
-        box_mask_thumb = self.box_mask(slide)
+        box_mask = self.box_mask(slide)
         tile_w_lvl, tile_h_lvl = self.tile_size
 
-        x_ul_lvl = np.random.choice(np.where(box_mask_thumb)[1])
-        y_ul_lvl = np.random.choice(np.where(box_mask_thumb)[0])
+        x_ul_lvl = np.random.choice(np.where(box_mask)[1])
+        y_ul_lvl = np.random.choice(np.where(box_mask)[0])
 
         # Scale tile dimensions to thumbnail dimensions
         tile_w_thumb = (
-            tile_w_lvl * box_mask_thumb.shape[1] / slide.level_dimensions(self.level)[0]
+            tile_w_lvl * box_mask.shape[1] / slide.level_dimensions(self.level)[0]
         )
         tile_h_thumn = (
-            tile_h_lvl * box_mask_thumb.shape[0] / slide.level_dimensions(self.level)[1]
+            tile_h_lvl * box_mask.shape[0] / slide.level_dimensions(self.level)[1]
         )
 
         x_br_lvl = x_ul_lvl + tile_w_thumb
@@ -434,7 +434,7 @@ class RandomTiler(Tiler):
 
         tile_wsi_coords = scale_coordinates(
             reference_coords=CoordinatePair(x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl),
-            reference_size=box_mask_thumb.shape[::-1],
+            reference_size=box_mask.shape[::-1],
             target_size=slide.dimensions,
         )
 
