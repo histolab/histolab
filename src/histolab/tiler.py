@@ -1,11 +1,12 @@
 import os
 from abc import abstractmethod
-from typing import Callable, List, Tuple
+from typing import List, Tuple
 
 import numpy as np
 
 from histolab.exceptions import LevelError
 
+from .scorer import Scorer
 from .slide import Slide
 from .tile import Tile
 from .types import CoordinatePair
@@ -491,7 +492,7 @@ class ScoreTiler(GridTiler):
 
     Arguments
     ---------
-    scorer : Callable[[Tile], float]
+    scorer : Scorer
         Scoring function used to score the tiles.
     tile_size : Tuple[int, int]
         (width, height) of the extracted tiles.
@@ -514,7 +515,7 @@ class ScoreTiler(GridTiler):
 
     def __init__(
         self,
-        scorer: Callable[[Tile], float],
+        scorer: Scorer,
         tile_size: Tuple[int, int],
         n_tiles: int = 0,
         level: int = 0,
