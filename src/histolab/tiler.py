@@ -519,7 +519,7 @@ class ScoreTiler(GridTiler):
 
         scores = []
 
-        for tile, tile_wsi_coords in enumerate(grid_tiles):
+        for tile, tile_wsi_coords in grid_tiles:
             score = self.scorer(tile)
             scores.append((score, tile_wsi_coords))
 
