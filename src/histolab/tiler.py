@@ -230,7 +230,9 @@ class GridTiler(Tiler):
         for region in regions:  # at the moment there is only one region
             bbox_coordinates_thumb = region_coordinates(region)
             bbox_coordinates = scale_coordinates(
-                bbox_coordinates_thumb, box_mask_thumb.shape[::-1], slide.dimensions
+                bbox_coordinates_thumb,
+                box_mask_thumb.shape[::-1],
+                slide.level_dimensions(self.level),
             )
             yield from self._grid_coordinates_from_bbox_coordinates(
                 bbox_coordinates, slide
