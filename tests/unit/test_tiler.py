@@ -746,20 +746,17 @@ class Describe_ScoreTiler(object):
         assert type(n_tiles_) == int
         assert n_tiles_ == n_tiles
 
-    def it_can_calculate_scores(self, request, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_50X50_RGB_RANDOM_COLOR
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+    def it_can_calculate_scores(self, request):
+        slide = instance_mock(request, Slide)
         coords = CoordinatePair(0, 10, 0, 10)
+        image = PILImageMock.DIMS_50X50_RGB_RANDOM_COLOR
         tile = Tile(image, coords)
         _grid_tiles_generator = method_mock(
             request, ScoreTiler, "_grid_tiles_generator"
         )
         _grid_tiles_generator.return_value = [(tile, coords), (tile, coords)]
         _scorer = instance_mock(request, RandomScorer)
-        _scorer.side_effect = [0.7, 0.5]
+        _scorer.side_effect = [0.5, 0.7]
         score_tiler = ScoreTiler(_scorer, (10, 10), 2, 0)
 
         scores = score_tiler._scores(slide)
@@ -770,4 +767,119 @@ class Describe_ScoreTiler(object):
         assert type(scores[0]) == tuple
         assert type(scores[0][0]) == float
         assert type(scores[0][1]) == CoordinatePair
-        assert scores == [(0.7, coords), (0.5, coords)]
+        assert scores == [(0.5, coords), (0.7, coords)]
+
+    def it_can_calculate_highest_score_tiles(
+        self, request, highest_score_tiles_fixture
+    ):
+        n_tiles, expected_highest_score_tiles = highest_score_tiles_fixture
+        slide = instance_mock(request, Slide)
+        _scores = method_mock(request, ScoreTiler, "_scores")
+        coords = CoordinatePair(0, 10, 0, 10)
+        _scores.return_value = [
+            (0.7, coords),
+            (0.5, coords),
+            (0.2, coords),
+            (0.8, coords),
+            (0.1, coords),
+        ]
+        _scorer = instance_mock(request, RandomScorer)
+        score_tiler = ScoreTiler(_scorer, (10, 10), n_tiles, 0)
+
+        highest_score_tiles = score_tiler._highest_score_tiles(slide)
+
+        _scores.assert_called_once_with(score_tiler, slide)
+        assert highest_score_tiles == expected_highest_score_tiles
+
+    def but_it_raises_error_with_negative_n_tiles_value(self, request):
+        slide = instance_mock(request, Slide)
+        _scores = method_mock(request, ScoreTiler, "_scores")
+        coords = CoordinatePair(0, 10, 0, 10)
+        _scores.return_value = [
+            (0.7, coords),
+            (0.5, coords),
+            (0.2, coords),
+            (0.8, coords),
+            (0.1, coords),
+        ]
+        _scorer = instance_mock(request, RandomScorer)
+        score_tiler = ScoreTiler(_scorer, (10, 10), -1, 0)
+
+        with pytest.raises(ValueError) as err:
+            score_tiler.extract(slide)
+
+        assert isinstance(err.value, ValueError)
+        assert str(err.value) == "'n_tiles' cannot be negative (-1)"
+
+    def it_can_extract_score_tiles(self, request, tmpdir):
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        _highest_score_tiles = method_mock(request, ScoreTiler, "_highest_score_tiles")
+        coords = CoordinatePair(0, 10, 0, 10)
+        tile = Tile(image, coords)
+        _extract_tile.return_value = tile
+        _highest_score_tiles.return_value = [(0.8, coords), (0.7, coords)]
+        _tile_filename = method_mock(request, GridTiler, "_tile_filename")
+        _tile_filename.side_effect = [
+            os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
+            for i in range(2)
+        ]
+        random_scorer = RandomScorer()
+        score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 2)
+
+        score_tiler.extract(slide)
+
+        assert _extract_tile.call_args_list == [
+            call(slide, coords, 2),
+            call(slide, coords, 2),
+        ]
+        _highest_score_tiles.assert_called_once_with(score_tiler, slide)
+        assert _tile_filename.call_args_list == [
+            call(score_tiler, coords, 0),
+            call(score_tiler, coords, 1),
+        ]
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
+        )
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
+        )
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture(
+        params=(
+            (
+                0,
+                [
+                    (0.8, CoordinatePair(0, 10, 0, 10)),
+                    (0.7, CoordinatePair(0, 10, 0, 10)),
+                    (0.5, CoordinatePair(0, 10, 0, 10)),
+                    (0.2, CoordinatePair(0, 10, 0, 10)),
+                    (0.1, CoordinatePair(0, 10, 0, 10)),
+                ],
+            ),
+            (
+                2,
+                [
+                    (0.8, CoordinatePair(0, 10, 0, 10)),
+                    (0.7, CoordinatePair(0, 10, 0, 10)),
+                ],
+            ),
+            (
+                3,
+                [
+                    (0.8, CoordinatePair(0, 10, 0, 10)),
+                    (0.7, CoordinatePair(0, 10, 0, 10)),
+                    (0.5, CoordinatePair(0, 10, 0, 10)),
+                ],
+            ),
+        ),
+    )
+    def highest_score_tiles_fixture(self, request):
+        (n_tiles, expected_highest_score_tiles,) = request.param
+        return (n_tiles, expected_highest_score_tiles)
