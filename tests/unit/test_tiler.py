@@ -5,9 +5,10 @@ import numpy as np
 import pytest
 
 from histolab.exceptions import LevelError
+from histolab.scorer import RandomScorer, Scorer
 from histolab.slide import Slide
 from histolab.tile import Tile
-from histolab.tiler import GridTiler, RandomTiler, Tiler
+from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, Tiler
 from histolab.types import CoordinatePair
 
 from ..unitutil import (
@@ -16,6 +17,7 @@ from ..unitutil import (
     PILImageMock,
     function_mock,
     initializer_mock,
+    instance_mock,
     method_mock,
     property_mock,
 )
@@ -711,3 +713,61 @@ class Describe_GridTiler(object):
             has_enough_tissue,
             expected_n_tiles,
         )
+
+
+class Describe_ScoreTiler(object):
+    def it_constructs_from_args(self, request):
+        _init = initializer_mock(request, ScoreTiler)
+        rs = RandomScorer()
+        grid_tiler = ScoreTiler(rs, (512, 512), 4, 2, True, 0, "", ".png",)
+
+        _init.assert_called_once_with(ANY, rs, (512, 512), 4, 2, True, 0, "", ".png")
+
+        assert isinstance(grid_tiler, ScoreTiler)
+        assert isinstance(grid_tiler, GridTiler)
+        assert isinstance(grid_tiler, Tiler)
+
+    def it_knows_its_scorer(self, request):
+        random_scorer = RandomScorer()
+        score_tiler = ScoreTiler(random_scorer, (512, 512), 4, 0)
+
+        scorer_ = score_tiler.scorer
+
+        assert callable(scorer_)
+        assert isinstance(scorer_, Scorer)
+        assert isinstance(scorer_, RandomScorer)
+
+    def it_knows_its_n_tiles(self, request):
+        n_tiles = 4
+        score_tiler = ScoreTiler(RandomScorer(), (512, 512), n_tiles, 0)
+
+        n_tiles_ = score_tiler.n_tiles
+
+        assert type(n_tiles_) == int
+        assert n_tiles_ == n_tiles
+
+    def it_can_calculate_scores(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_50X50_RGB_RANDOM_COLOR
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        coords = CoordinatePair(0, 10, 0, 10)
+        tile = Tile(image, coords)
+        _grid_tiles_generator = method_mock(
+            request, ScoreTiler, "_grid_tiles_generator"
+        )
+        _grid_tiles_generator.return_value = [(tile, coords), (tile, coords)]
+        _scorer = instance_mock(request, RandomScorer)
+        _scorer.side_effect = [0.7, 0.5]
+        score_tiler = ScoreTiler(_scorer, (10, 10), 2, 0)
+
+        scores = score_tiler._scores(slide)
+
+        _grid_tiles_generator.assert_called_once_with(score_tiler, slide)
+        assert _scorer.call_args_list == [call(tile), call(tile)]
+        assert type(scores) == list
+        assert type(scores[0]) == tuple
+        assert type(scores[0][0]) == float
+        assert type(scores[0][1]) == CoordinatePair
+        assert scores == [(0.7, coords), (0.5, coords)]
