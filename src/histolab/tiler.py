@@ -1,8 +1,9 @@
 import os
 from abc import abstractmethod
-from typing import Tuple
+from typing import Callable, List, Tuple
 
 import numpy as np
+import PIL
 
 from histolab.exceptions import LevelError
 
@@ -481,3 +482,58 @@ class RandomTiler(Tiler):
 
             if valid_tile_counter >= self.n_tiles:
                 break
+
+
+class ScoreTiler(GridTiler):
+    def __init__(
+        self,
+        scorer: Callable[[PIL.Image.Image], float],
+        tile_size: Tuple[int, int],
+        n_tiles: int = 0,
+        level: int = 0,
+        check_tissue: bool = True,
+        pixel_overlap: int = 0,
+        prefix: str = "",
+        suffix: str = ".png",
+    ):
+        self.scorer = scorer
+        self.n_tiles = n_tiles
+
+        super().__init__(tile_size, level, check_tissue, pixel_overlap, prefix, suffix)
+
+    def extract(self, slide: Slide):
+        highest_score_tiles = self._highest_score_tiles(slide)
+
+        tiles_counter = 0
+
+        for tiles_counter, (score, tile_wsi_coords) in enumerate(highest_score_tiles):
+            tile = slide.extract_tile(tile_wsi_coords, self.level)
+            tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
+            tile.save(tile_filename)
+            print(f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}")
+
+        print(f"{tiles_counter+1} Grid Tiles have been saved.")
+
+    def _scores(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
+        grid_tiles = self._grid_tiles_generator(slide)
+
+        scores = []
+
+        for tile, tile_wsi_coords in enumerate(grid_tiles):
+            score = self.scorer(tile)
+            scores.append((score, tile_wsi_coords))
+
+        return scores
+
+    def _highest_score_tiles(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
+        all_scores = self._scores(slide)
+
+        sorted_tiles_by_score = sorted(all_scores, key=lambda x: x[0], reverse=True)
+        if self.n_tiles > 0:
+            highest_score_tiles = sorted_tiles_by_score[: self.n_tiles]
+        elif self.n_tiles == 0:
+            highest_score_tiles = sorted_tiles_by_score
+        else:
+            raise ValueError(f"'n_tiles' cannot be negative ({self.n_tiles})")
+
+        return highest_score_tiles
