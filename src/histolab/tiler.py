@@ -3,7 +3,6 @@ from abc import abstractmethod
 from typing import Callable, List, Tuple
 
 import numpy as np
-import PIL
 
 from histolab.exceptions import LevelError
 
@@ -485,9 +484,37 @@ class RandomTiler(Tiler):
 
 
 class ScoreTiler(GridTiler):
+    """Extractor of tiles arranged in a grid according to a scoring function.
+
+    The extraction procedure is the same as the ``GridTiler`` extractor, but only the
+    first ``n_tiles`` tiles with the highest score are saved.
+
+    Arguments
+    ---------
+    scorer : Callable[[Tile], float]
+        Scoring function used to score the tiles.
+    tile_size : Tuple[int, int]
+        (width, height) of the extracted tiles.
+    n_tiles : int, optional
+        The number of tiles to be saved. Default is 0, which means that all the tiles
+        will be saved (same exact behaviour of a GridTiler). Cannot be negative.
+    level : int, optional
+        Level from which extract the tiles. Default is 0.
+    check_tissue : bool, optional
+        Whether to check if the tile has enough tissue to be saved. Default is True.
+    pixel_overlap : int, optional
+       Number of overlapping pixels (for both height and width) between two adjacent
+       tiles. If negative, two adjacent tiles will be strided by the absolute value of
+       ``pixel_overlap``. Default is 0.
+    prefix : str, optional
+        Prefix to be added to the tile filename. Default is an empty string.
+    suffix : str, optional
+        Suffix to be added to the tile filename. Default is '.png'
+    """
+
     def __init__(
         self,
-        scorer: Callable[[PIL.Image.Image], float],
+        scorer: Callable[[Tile], float],
         tile_size: Tuple[int, int],
         n_tiles: int = 0,
         level: int = 0,
@@ -515,6 +542,19 @@ class ScoreTiler(GridTiler):
         print(f"{tiles_counter+1} Grid Tiles have been saved.")
 
     def _scores(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
+        """Calculate the scores for all the tiles extracted from the ``slide``.
+
+        Parameters
+        ----------
+        slide : Slide
+            The slide to extract the tiles from.
+
+        Returns
+        -------
+        List[Tuple[float, CoordinatePair]]
+            List of tuples containing the score and the extraction coordinates for each
+            tile. Each tuple represents a tile.
+        """
         grid_tiles = self._grid_tiles_generator(slide)
 
         scores = []
@@ -526,6 +566,24 @@ class ScoreTiler(GridTiler):
         return scores
 
     def _highest_score_tiles(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
+        """Calculate the tiles with the highest scores and their extraction coordinates.
+
+        Parameters
+        ----------
+        slide : Slide
+            The slide to extract the tiles from.
+
+        Returns
+        -------
+        List[Tuple[float, CoordinatePair]]
+            List of tuples containing the score and the extraction coordinates for the
+            tiles with the highest score. Each tuple represents a tile.
+
+        Raises
+        ------
+        ValueError
+            If ``n_tiles`` is negative.
+        """
         all_scores = self._scores(slide)
 
         sorted_tiles_by_score = sorted(all_scores, key=lambda x: x[0], reverse=True)
