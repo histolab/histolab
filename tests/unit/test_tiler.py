@@ -547,7 +547,9 @@ class Describe_GridTiler(object):
         generated_tiles = list(grid_tiler._grid_tiles_generator(slide))
 
         _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
-        _extract_tile.call_args_list == ([call(coords1, 0), call(coords2, 0)])
+        assert _extract_tile.call_args_list == (
+            [call(slide, coords1, 0), call(slide, coords2, 0)]
+        )
         assert len(generated_tiles) == expected_n_tiles
         if expected_n_tiles == 2:
             assert generated_tiles == [(tile1, coords1), (tile2, coords2)]
@@ -555,6 +557,31 @@ class Describe_GridTiler(object):
             assert generated_tiles == [(tile1, coords1)]
         if expected_n_tiles == 0:
             assert generated_tiles == []
+
+    def but_with_wrong_coordinates(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
+        _has_enough_tissue.return_value = False
+        _grid_coordinates_generator = method_mock(
+            request, GridTiler, "_grid_coordinates_generator"
+        )
+        coords1 = CoordinatePair(600, 610, 600, 610)
+        coords2 = CoordinatePair(0, 10, 0, 10)
+        _grid_coordinates_generator.return_value = [coords1, coords2]
+        grid_tiler = GridTiler((10, 10), level=0, check_tissue=False)
+
+        generated_tiles = list(grid_tiler._grid_tiles_generator(slide))
+
+        _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
+        assert len(generated_tiles) == 1
+        # generated_tiles[0][0] is a Tile object but we don't know what object it is
+        # because Slide.extract_tile is not mocked (for the exception to happen inside)
+        assert isinstance(generated_tiles[0][0], Tile)
+        assert generated_tiles[0][1] == coords2
 
     def and_doesnt_raise_error_with_wrong_coordinates(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
