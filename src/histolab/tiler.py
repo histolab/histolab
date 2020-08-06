@@ -30,9 +30,9 @@ class Tiler(Protocol):
 
     @lru_cache(maxsize=100)
     def box_mask_thumb(self, slide: Slide) -> np.ndarray:
-        """Return binary mask at thumbnail dimensions of the box for tiles extraction.
+        """Return binary mask, at thumbnail level, of the box for tiles extraction.
 
-        The mask pixels set to True will be the ones corresponding to the tissue box.
+        The mask pixels set to True correspond to the tissue box.
 
         Parameters
         ----------
@@ -42,7 +42,7 @@ class Tiler(Protocol):
         Returns
         -------
         np.ndarray
-            Extraction mask at thumbnail dimensions
+            Extraction mask at thumbnail level
         """
 
         return slide.biggest_tissue_box_mask
