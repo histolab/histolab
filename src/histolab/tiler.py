@@ -4,8 +4,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-from histolab.exceptions import LevelError
-
+from .exceptions import LevelError
 from .scorer import Scorer
 from .slide import Slide
 from .tile import Tile
