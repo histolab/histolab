@@ -118,26 +118,6 @@ class GridTiler(Tiler):
         self.prefix = prefix
         self.suffix = suffix
 
-    @property
-    def tile_size(self) -> Tuple[int, int]:
-        return self._valid_tile_size
-
-    @tile_size.setter
-    def tile_size(self, tile_size_: Tuple[int, int]):
-        if tile_size_[0] < 1 or tile_size_[1] < 1:
-            raise ValueError(f"Tile size must be greater than 0 ({tile_size_})")
-        self._valid_tile_size = tile_size_
-
-    @property
-    def level(self) -> int:
-        return self._valid_level
-
-    @level.setter
-    def level(self, level_: int):
-        if level_ < 0:
-            raise LevelError(f"Level cannot be negative ({level_})")
-        self._valid_level = level_
-
     def extract(self, slide: Slide):
         """Extract tiles arranged in a grid and save them to disk, following this
         filename pattern:
@@ -165,6 +145,26 @@ class GridTiler(Tiler):
             print(f"\t Tile {tiles_counter} saved: {tile_filename}")
 
         print(f"{tiles_counter} Grid Tiles have been saved.")
+
+    @property
+    def level(self) -> int:
+        return self._valid_level
+
+    @level.setter
+    def level(self, level_: int):
+        if level_ < 0:
+            raise LevelError(f"Level cannot be negative ({level_})")
+        self._valid_level = level_
+
+    @property
+    def tile_size(self) -> Tuple[int, int]:
+        return self._valid_tile_size
+
+    @tile_size.setter
+    def tile_size(self, tile_size_: Tuple[int, int]):
+        if tile_size_[0] < 1 or tile_size_[1] < 1:
+            raise ValueError(f"Tile size must be greater than 0 ({tile_size_})")
+        self._valid_tile_size = tile_size_
 
     def _grid_coordinates_from_bbox_coordinates(
         self, bbox_coordinates: CoordinatePair, slide: Slide
@@ -348,15 +348,26 @@ class RandomTiler(Tiler):
         self.prefix = prefix
         self.suffix = suffix
 
-    @property
-    def tile_size(self) -> Tuple[int, int]:
-        return self._valid_tile_size
+    def extract(self, slide: Slide):
+        """Extract random tiles and save them to disk, following this filename pattern:
+        `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
 
-    @tile_size.setter
-    def tile_size(self, tile_size_: Tuple[int, int]):
-        if tile_size_[0] < 1 or tile_size_[1] < 1:
-            raise ValueError(f"Tile size must be greater than 0 ({tile_size_})")
-        self._valid_tile_size = tile_size_
+        Parameters
+        ----------
+        slide : Slide
+            Slide from which to extract the tiles
+        """
+
+        np.random.seed(self.seed)
+
+        random_tiles = self._random_tiles_generator(slide)
+
+        tiles_counter = 0
+        for tiles_counter, (tile, tile_wsi_coords) in enumerate(random_tiles):
+            tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
+            tile.save(tile_filename)
+            print(f"\t Tile {tiles_counter} saved: {tile_filename}")
+        print(f"{tiles_counter+1} Random Tiles have been saved.")
 
     @property
     def level(self) -> int:
@@ -381,27 +392,15 @@ class RandomTiler(Tiler):
             )
         self._valid_max_iter = max_iter_
 
-    def extract(self, slide: Slide):
-        """Extract random tiles and save them to disk, following this filename pattern:
-        `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
+    @property
+    def tile_size(self) -> Tuple[int, int]:
+        return self._valid_tile_size
 
-        Parameters
-        ----------
-        slide : Slide
-            Slide from which to extract the tiles
-        """
-
-        np.random.seed(self.seed)
-
-        random_tiles = self._random_tiles_generator(slide)
-
-        tiles_counter = 0
-        for tiles_counter, (tile, tile_wsi_coords) in enumerate(random_tiles):
-            tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
-            full_tile_path = os.path.join(slide.processed_path, "tiles", tile_filename)
-            tile.save(full_tile_path)
-            print(f"\t Tile {tiles_counter} saved: {tile_filename}")
-        print(f"{tiles_counter+1} Random Tiles have been saved.")
+    @tile_size.setter
+    def tile_size(self, tile_size_: Tuple[int, int]):
+        if tile_size_[0] < 1 or tile_size_[1] < 1:
+            raise ValueError(f"Tile size must be greater than 0 ({tile_size_})")
+        self._valid_tile_size = tile_size_
 
     def _random_tile_coordinates(self, slide: Slide) -> CoordinatePair:
         """Return 0-level Coordinates of a tile picked at random within the box.
