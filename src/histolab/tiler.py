@@ -530,6 +530,15 @@ class ScoreTiler(GridTiler):
         super().__init__(tile_size, level, check_tissue, pixel_overlap, prefix, suffix)
 
     def extract(self, slide: Slide):
+        """Extract grid tiles and save them to disk, according to a scoring function and
+        following this filename pattern:
+        `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
+
+        Parameters
+        ----------
+        slide : Slide
+            Slide from which to extract the tiles
+        """
         highest_score_tiles = self._highest_score_tiles(slide)
 
         tiles_counter = 0
@@ -541,30 +550,6 @@ class ScoreTiler(GridTiler):
             print(f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}")
 
         print(f"{tiles_counter+1} Grid Tiles have been saved.")
-
-    def _scores(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
-        """Calculate the scores for all the tiles extracted from the ``slide``.
-
-        Parameters
-        ----------
-        slide : Slide
-            The slide to extract the tiles from.
-
-        Returns
-        -------
-        List[Tuple[float, CoordinatePair]]
-            List of tuples containing the score and the extraction coordinates for each
-            tile. Each tuple represents a tile.
-        """
-        grid_tiles = self._grid_tiles_generator(slide)
-
-        scores = []
-
-        for tile, tile_wsi_coords in grid_tiles:
-            score = self.scorer(tile)
-            scores.append((score, tile_wsi_coords))
-
-        return scores
 
     def _highest_score_tiles(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
         """Calculate the tiles with the highest scores and their extraction coordinates.
@@ -596,3 +581,27 @@ class ScoreTiler(GridTiler):
             raise ValueError(f"'n_tiles' cannot be negative ({self.n_tiles})")
 
         return highest_score_tiles
+
+    def _scores(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
+        """Calculate the scores for all the tiles extracted from the ``slide``.
+
+        Parameters
+        ----------
+        slide : Slide
+            The slide to extract the tiles from.
+
+        Returns
+        -------
+        List[Tuple[float, CoordinatePair]]
+            List of tuples containing the score and the extraction coordinates for each
+            tile. Each tuple represents a tile.
+        """
+        grid_tiles = self._grid_tiles_generator(slide)
+
+        scores = []
+
+        for tile, tile_wsi_coords in grid_tiles:
+            score = self.scorer(tile)
+            scores.append((score, tile_wsi_coords))
+
+        return scores
