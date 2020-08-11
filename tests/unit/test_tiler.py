@@ -311,7 +311,9 @@ class Describe_RandomTiler(object):
         _random_tiles_generator.return_value = [(tile, coords), (tile, coords)]
         _tile_filename = method_mock(request, RandomTiler, "_tile_filename")
         _tile_filename.side_effect = [
-            os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
+            os.path.join(
+                tmp_path_, "processed", "tiles", f"tile_{i}_level2_0-10-0-10.png"
+            )
             for i in range(2)
         ]
         random_tiler = RandomTiler((10, 10), n_tiles=2, level=2)
@@ -323,10 +325,10 @@ class Describe_RandomTiler(object):
             call(random_tiler, coords, 1),
         ]
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tiles", "tile_0_level2_0-10-0-10.png")
         )
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
 
     # fixtures -------------------------------------------------------
@@ -612,7 +614,9 @@ class Describe_GridTiler(object):
         _grid_tiles_generator.return_value = [(tile, coords), (tile, coords)]
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
-            os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
+            os.path.join(
+                tmp_path_, "processed", "tiles", f"tile_{i}_level2_0-10-0-10.png"
+            )
             for i in range(2)
         ]
         grid_tiler = GridTiler((10, 10), level=2)
@@ -624,10 +628,10 @@ class Describe_GridTiler(object):
             call(grid_tiler, coords, 1),
         ]
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tiles", "tile_0_level2_0-10-0-10.png")
         )
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
 
     # fixtures -------------------------------------------------------
