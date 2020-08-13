@@ -590,7 +590,7 @@ class Describe_GridTiler(object):
             )
             for i in range(2)
         ]
-        grid_tiler = GridTiler((10, 10), level=2)
+        grid_tiler = GridTiler((10, 10), level=0)
 
         grid_tiler.extract(slide)
 
