@@ -129,7 +129,7 @@ class Describe_RandomTiler(object):
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
-        _box_mask_thumb = method_mock(request, RandomTiler, "box_mask_thumb")
+        _box_mask_thumb = method_mock(request, RandomTiler, "box_mask")
         _box_mask_thumb.return_value = NpArrayMock.ONES_500X500_BOOL
         _tile_size = property_mock(request, RandomTiler, "tile_size")
         _tile_size.return_value = (128, 128)
@@ -169,7 +169,7 @@ class Describe_RandomTiler(object):
         _biggest_tissue_box_mask.return_value = expected_box
         random_tiler = RandomTiler((128, 128), 10, 0, check_tissue=check_tissue)
 
-        box_mask = random_tiler.box_mask_thumb(slide)
+        box_mask = random_tiler.box_mask(slide)
 
         _biggest_tissue_box_mask.assert_called_once_with()
         assert type(box_mask) == np.ndarray
@@ -446,7 +446,7 @@ class Describe_GridTiler(object):
         _biggest_tissue_box_mask.return_value = expected_box
         grid_tiler = GridTiler((128, 128), 0, check_tissue=check_tissue)
 
-        box_mask = grid_tiler.box_mask_thumb(slide)
+        box_mask = grid_tiler.box_mask(slide)
 
         _biggest_tissue_box_mask.assert_called_once_with()
         assert type(box_mask) == np.ndarray
