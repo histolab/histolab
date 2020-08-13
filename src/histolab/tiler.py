@@ -29,7 +29,7 @@ class Tiler(Protocol):
     tile_size: int
 
     @lru_cache(maxsize=100)
-    def box_mask_thumb(self, slide: Slide) -> np.ndarray:
+    def box_mask(self, slide: Slide) -> np.ndarray:
         """Return binary mask, at thumbnail level, of the box for tiles extraction.
 
         The mask pixels set to True correspond to the tissue box.
@@ -224,7 +224,7 @@ class GridTiler(Tiler):
         Iterator[CoordinatePair]
             Iterator of tiles' CoordinatePair
         """
-        box_mask_thumb = self.box_mask_thumb(slide)
+        box_mask_thumb = self.box_mask(slide)
 
         regions = regions_from_binary_mask(box_mask_thumb)
         for region in regions:  # at the moment there is only one region
@@ -415,7 +415,7 @@ class RandomTiler(Tiler):
         CoordinatePair
             Random tile Coordinates at level 0
         """
-        box_mask_thumb = self.box_mask_thumb(slide)
+        box_mask_thumb = self.box_mask(slide)
         tile_w_lvl, tile_h_lvl = self.tile_size
 
         x_ul_lvl = np.random.choice(np.where(box_mask_thumb)[1])
