@@ -10,6 +10,7 @@ from histolab.slide import Slide
 from histolab.tile import Tile
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, Tiler
 from histolab.types import CoordinatePair
+import pandas as pd
 
 from ..unitutil import (
     ANY,
@@ -828,6 +829,7 @@ class Describe_ScoreTiler(object):
             os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
             for i in range(2)
         ]
+        _save_report = method_mock(request, ScoreTiler, "_save_report")
         random_scorer = RandomScorer()
         score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 2)
 
@@ -847,6 +849,72 @@ class Describe_ScoreTiler(object):
         )
         assert os.path.exists(
             os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
+        )
+        _save_report.assert_not_called()
+
+    def it_can_save_report(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("path")
+        coords = CoordinatePair(0, 10, 0, 10)
+        highest_score_tiles = [(0.8, coords), (0.7, coords)]
+        filenames = ["tile0.png", "tile1.png"]
+        random_scorer_ = instance_mock(request, RandomScorer)
+        score_tiler = ScoreTiler(random_scorer_, (10, 10), 2, 2)
+        report_ = pd.DataFrame({"filename": filenames, "score": [0.8, 0.7]})
+
+        score_tiler._save_report(
+            os.path.join(tmp_path_, "report.csv"), highest_score_tiles, filenames
+        )
+
+        assert os.path.exists(os.path.join(tmp_path_, "report.csv"))
+        report = pd.read_csv(os.path.join(tmp_path_, "report.csv"))
+        pd.testing.assert_frame_equal(report, report_)
+
+    def it_can_extract_score_tiles_and_save_report(self, request, tmpdir):
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        _highest_score_tiles = method_mock(request, ScoreTiler, "_highest_score_tiles")
+        coords = CoordinatePair(0, 10, 0, 10)
+        tile = Tile(image, coords)
+        _extract_tile.return_value = tile
+        _highest_score_tiles.return_value = [(0.8, coords), (0.7, coords)]
+        _tile_filename = method_mock(request, GridTiler, "_tile_filename")
+        _tile_filename.side_effect = [
+            os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
+            for i in range(2)
+        ]
+        _save_report = method_mock(request, ScoreTiler, "_save_report")
+        random_scorer = RandomScorer()
+        score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 2)
+
+        score_tiler.extract(slide, "report.csv")
+
+        assert _extract_tile.call_args_list == [
+            call(slide, coords, 2),
+            call(slide, coords, 2),
+        ]
+        _highest_score_tiles.assert_called_once_with(score_tiler, slide)
+        assert _tile_filename.call_args_list == [
+            call(score_tiler, coords, 0),
+            call(score_tiler, coords, 1),
+        ]
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
+        )
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
+        )
+        _save_report.assert_called_once_with(
+            score_tiler,
+            "report.csv",
+            [(0.8, coords), (0.7, coords)],
+            [
+                os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
+                for i in range(2)
+            ],
         )
 
     # fixtures -------------------------------------------------------
