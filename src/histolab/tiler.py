@@ -20,6 +20,7 @@ try:
     from typing import Protocol, runtime_checkable
 except ImportError:
     from typing_extensions import Protocol, runtime_checkable
+import pandas as pd
 
 
 @runtime_checkable
@@ -527,25 +528,34 @@ class ScoreTiler(GridTiler):
 
         super().__init__(tile_size, level, check_tissue, pixel_overlap, prefix, suffix)
 
-    def extract(self, slide: Slide):
+    def extract(self, slide: Slide, report_path: str = None):
         """Extract grid tiles and save them to disk, according to a scoring function and
         following this filename pattern:
         `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
+
+        Save a CSV report file with the saved tiles and the associated score.
 
         Parameters
         ----------
         slide : Slide
             Slide from which to extract the tiles
+        report_path : str, optional
+            Path to the CSV report. If None, no report will be saved
         """
         highest_score_tiles = self._highest_score_tiles(slide)
 
         tiles_counter = 0
+        filenames = []
 
         for tiles_counter, (score, tile_wsi_coords) in enumerate(highest_score_tiles):
             tile = slide.extract_tile(tile_wsi_coords, self.level)
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             tile.save(tile_filename)
+            filenames.append(tile_filename)
             print(f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}")
+
+        if report_path:
+            self._save_report(report_path, highest_score_tiles, filenames)
 
         print(f"{tiles_counter+1} Grid Tiles have been saved.")
 
@@ -579,6 +589,32 @@ class ScoreTiler(GridTiler):
             raise ValueError(f"'n_tiles' cannot be negative ({self.n_tiles})")
 
         return highest_score_tiles
+
+    def _save_report(
+        self,
+        report_path: str,
+        highest_score_tiles: List[Tuple[float, CoordinatePair]],
+        filenames: List[str],
+    ) -> None:
+        """Save to ``filename`` the report of the saved tiles with the associated score.
+
+        The CSV file
+
+        Parameters
+        ----------
+        report_path : str
+            Path to the report
+        highest_score_tiles : List[Tuple[float, CoordinatePair]]
+            List of tuples containing the score and the extraction coordinates for the
+            tiles with the highest score. Each tuple represents a tile.
+        filenames : List[str]
+            List of the tiles' filename
+        """
+
+        report = pd.DataFrame(
+            {"filename": filenames, "score": np.array(highest_score_tiles)[:, 0]}
+        )
+        report.to_csv(report_path, index=None)
 
     def _scores(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
         """Calculate the scores for all the tiles extracted from the ``slide``.
