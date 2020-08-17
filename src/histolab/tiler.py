@@ -3,6 +3,7 @@ from abc import abstractmethod
 from typing import List, Tuple
 
 import numpy as np
+import pandas as pd
 
 from .exceptions import LevelError
 from .scorer import Scorer
@@ -20,7 +21,6 @@ try:
     from typing import Protocol, runtime_checkable
 except ImportError:
     from typing_extensions import Protocol, runtime_checkable
-import pandas as pd
 
 
 @runtime_checkable
