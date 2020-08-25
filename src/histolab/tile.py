@@ -5,8 +5,8 @@ from typing import Union
 import numpy as np
 import PIL
 
+from .filters import compositions
 from .filters import image_filters as imf
-from .filters import morphological_filters as mof
 from .types import CoordinatePair
 from .util import lazyproperty
 
@@ -97,26 +97,6 @@ class Tile:
 
     # ------- implementation helpers -------
 
-    @lazyproperty
-    def _enough_tissue_mask_filters(self) -> imf.Compose:
-        """Return a filters composition to get a binary mask to estimate tissue.
-
-        Returns
-        -------
-        imf.Compose
-            Filters composition
-        """
-        filters = imf.Compose(
-            [
-                imf.RgbToGrayscale(),
-                imf.OtsuThreshold(),
-                mof.BinaryDilation(),
-                mof.BinaryFillHoles(structure=np.ones((5, 5))),
-            ]
-        )
-
-        return filters
-
     def _has_only_some_tissue(self, near_zero_var_threshold: float = 0.1) -> np.bool_:
         """Check if the tile is composed by only some tissue.
 
@@ -132,7 +112,7 @@ class Tile:
             True if the image is composed by only some tissue. False if the tile is
             composed by all tissue or by no tissue at all.
         """
-        filters = self._enough_tissue_mask_filters
+        filters = compositions.tile_tissue_mask_filters()
         tissue_mask = filters(self._image)
 
         return np.var(tissue_mask) > near_zero_var_threshold
@@ -152,7 +132,8 @@ class Tile:
             True if tissue represent more than ``tissue_percent`` % of the image, False
             otherwise.
         """
-        filters = self._enough_tissue_mask_filters
+
+        filters = compositions.tile_tissue_mask_filters
         return np.mean(self._tissue_mask(filters)) * 100 > tissue_percent
 
     @lazyproperty

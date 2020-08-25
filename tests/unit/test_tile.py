@@ -1,8 +1,8 @@
 import os
 
+import numpy as np
 import pytest
 
-import numpy as np
 from histolab.filters.image_filters import Compose
 from histolab.tile import Tile
 from histolab.types import CoordinatePair
@@ -137,7 +137,7 @@ class Describe_Tile(object):
         ]
         assert type(_enough_tissue_mask_filters_) == Compose
 
-    def it_calls_enough_tissue_mask_filters(
+    def it_calls_tile_tissue_mask_filters(
         self,
         request,
         RgbToGrayscale_,
@@ -145,11 +145,11 @@ class Describe_Tile(object):
         BinaryDilation_,
         BinaryFillHoles_,
     ):
-        _enough_tissue_mask_filters = property_mock(
-            request, Tile, "_enough_tissue_mask_filters"
+        _tile_tissue_mask_filters = function_mock(
+            request, "histolab.filters.compositions.tile_tissue_mask_filters"
         )
         BinaryFillHoles_.return_value = np.zeros((50, 50))
-        _enough_tissue_mask_filters.return_value = Compose(
+        _tile_tissue_mask_filters.return_value = Compose(
             [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
         )
         image = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0
@@ -157,7 +157,7 @@ class Describe_Tile(object):
 
         tile._has_only_some_tissue()
 
-        _enough_tissue_mask_filters.assert_called_once()
+        _tile_tissue_mask_filters.assert_called_once()
         assert type(tile._has_only_some_tissue()) == np.bool_
 
     def it_knows_its_tissue_mask(
