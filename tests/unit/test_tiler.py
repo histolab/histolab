@@ -43,11 +43,11 @@ class Describe_RandomTiler(object):
 
     def or_it_has_not_available_level_value(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_50X50_RGB_RANDOM_COLOR
+        image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
-        random_tiler = RandomTiler((512, 512), 10, 3)
+        random_tiler = RandomTiler((128, 128), 10, 3)
 
         with pytest.raises(LevelError) as err:
             random_tiler.extract(slide)
@@ -75,11 +75,11 @@ class Describe_RandomTiler(object):
 
     def or_it_has_wrong_seed(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_50X50_RGB_RANDOM_COLOR
+        image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
-        random_tiler = RandomTiler((512, 512), 10, 0, seed=-1)
+        random_tiler = RandomTiler((128, 128), 10, 0, seed=-1)
 
         with pytest.raises(ValueError) as err:
             random_tiler.extract(slide)
@@ -382,11 +382,11 @@ class Describe_GridTiler(object):
 
     def or_it_has_not_available_level_value(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_50X50_RGB_RANDOM_COLOR
+        image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
-        grid_tiler = GridTiler((512, 512), 3)
+        grid_tiler = GridTiler((128, 128), 3)
 
         with pytest.raises(LevelError) as err:
             grid_tiler.extract(slide)
@@ -743,7 +743,7 @@ class Describe_ScoreTiler(object):
     def it_can_calculate_scores(self, request):
         slide = instance_mock(request, Slide)
         coords = CoordinatePair(0, 10, 0, 10)
-        image = PILImageMock.DIMS_50X50_RGB_RANDOM_COLOR
+        image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
         tile = Tile(image, coords)
         _grid_tiles_generator = method_mock(
             request, ScoreTiler, "_grid_tiles_generator"

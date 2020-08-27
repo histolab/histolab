@@ -1,20 +1,16 @@
 import os
 
 import numpy as np
+import PIL
 import pytest
 
 from histolab.filters.image_filters import Compose
 from histolab.tile import Tile
 from histolab.types import CoordinatePair
 
-from ..unitutil import (
-    ANY,
-    PILImageMock,
-    class_mock,
-    initializer_mock,
-    method_mock,
-    property_mock,
-)
+from ..base import COMPLEX_MASK
+from ..unitutil import (ANY, PILImageMock, class_mock, function_mock,
+                        initializer_mock, method_mock, property_mock)
 
 
 class Describe_Tile(object):
@@ -160,7 +156,11 @@ class Describe_Tile(object):
         _tile_tissue_mask_filters.assert_called_once()
         assert type(tile._has_only_some_tissue()) == np.bool_
 
+<<<<<<< 3df9238d4cbb245c907f51adf4bfc878eeb7bcbc
     def it_knows_its_tissue_mask(
+=======
+    def it_knows_its_tissue_ratio(
+>>>>>>> Add method for applying filters on a tile + add method to calculate the tissue ratio of a tile
         self,
         request,
         RgbToGrayscale_,
@@ -168,6 +168,7 @@ class Describe_Tile(object):
         BinaryDilation_,
         BinaryFillHoles_,
     ):
+<<<<<<< 3df9238d4cbb245c907f51adf4bfc878eeb7bcbc
         BinaryFillHoles_.return_value = np.zeros((50, 50))
         filters = Compose(
             [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
@@ -240,6 +241,40 @@ class Describe_Tile(object):
     @pytest.fixture
     def _has_tissue_more_than_percent(self, request):
         return method_mock(request, Tile, "_has_tissue_more_than_percent")
+=======
+        _tile_tissue_mask_filters = function_mock(
+            request, "histolab.tile.compositions.tile_tissue_mask_filters"
+        )
+        filters = Compose(
+            [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
+        )
+        _tile_tissue_mask_filters.return_value = filters
+        _apply_filters = method_mock(request, Tile, "apply_filters")
+        _apply_filters.return_value = Tile(PIL.Image.fromarray(COMPLEX_MASK), None, 0)
+        image = PILImageMock.DIMS_10X10_RGB_RANDOM_COLOR
+        tile = Tile(image, None, 0)
+
+        tissue_ratio = tile.tissue_ratio
+
+        _tile_tissue_mask_filters.assert_called_once()
+        _apply_filters.assert_called_once_with(tile, filters)
+        assert type(tissue_ratio) == float
+        assert tissue_ratio == 0.61
+
+    def it_knows_how_to_apply_filters(self, request, RgbToGrayscale_):
+        image_before = PILImageMock.DIMS_10X10_RGB_RANDOM_COLOR
+        image_after = PILImageMock.DIMS_10X10_GRAY_RANDOM
+        RgbToGrayscale_.return_value = image_after
+        tile = Tile(image_before, None, 0)
+
+        filtered_image = tile.apply_filters(RgbToGrayscale_)
+
+        RgbToGrayscale_.assert_called_once_with(tile.image)
+        assert isinstance(filtered_image, Tile)
+        assert filtered_image.image == image_after
+        assert filtered_image.coords is None
+        assert filtered_image.level == 0
+>>>>>>> Add method for applying filters on a tile + add method to calculate the tissue ratio of a tile
 
     @pytest.fixture
     def RgbToGrayscale_(self, request):

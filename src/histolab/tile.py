@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Union
+from typing import Callable, Union
 
 import numpy as np
 import PIL
@@ -28,6 +28,29 @@ class Tile:
         self._image = image
         self._coords = coords
         self._level = level
+
+    def apply_filters(
+        self,
+        filters: Union[
+            Callable[[PIL.Image.Image], Union[PIL.Image.Image, np.ndarray]], imf.Compose
+        ],
+    ) -> "Tile":
+        """Apply a filter or composition of filters on a tile.
+
+        Parameters
+        ----------
+        filters : Union[ Callable[[PIL.Image.Image], Union[PIL.Image.Image, np.ndarray]], imf.Compose]
+            Filter or composition of filters to be applied
+
+        Returns
+        -------
+        Tile
+            Tile with the filters applied
+        """
+        filtered_image = filters(self.image)
+        if isinstance(filtered_image, np.ndarray):
+            filtered_image = PIL.Image.fromarray(filtered_image)
+        return Tile(filtered_image, self.coords, self.level)
 
     @lazyproperty
     def coords(self) -> CoordinatePair:
@@ -94,6 +117,21 @@ class Tile:
 
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         self._image.save(path)
+
+    @lazyproperty
+    def tissue_ratio(self) -> float:
+        """Return the ratio of the tissue area over the total area of the tile.
+
+        Returns
+        -------
+        float
+            The ratio of the tissue area over the total area of the tile
+        """
+        filters = compositions.tile_tissue_mask_filters()
+        tissue_mask_image = self.apply_filters(filters).image
+        tissue_mask = np.array(tissue_mask_image)
+        tissue_ratio = np.count_nonzero(tissue_mask) / tissue_mask.size
+        return tissue_ratio
 
     # ------- implementation helpers -------
 
