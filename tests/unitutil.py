@@ -101,9 +101,17 @@ class PILImageMock:
         "RGBA", size=(50, 50), color=(155, 0, 0)
     )
 
-    DIMS_50X50_RGB_RANDOM_COLOR = PIL.Image.fromarray(
+    DIMS_500X500_RGB_RANDOM_COLOR = PIL.Image.fromarray(
         (np.random.rand(500, 500, 3) * 255).astype("uint8")
     ).convert("RGB")
+
+    DIMS_10X10_RGB_RANDOM_COLOR = PIL.Image.fromarray(
+        (np.random.rand(10, 10, 3) * 255).astype("uint8")
+    ).convert("RGB")
+
+    DIMS_10X10_GRAY_RANDOM = PIL.Image.fromarray(
+        (np.random.rand(10, 10) * 255).astype("uint8")
+    )
 
 
 class NpArrayMock:
