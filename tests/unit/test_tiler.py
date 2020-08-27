@@ -1,3 +1,4 @@
+import csv
 import os
 from unittest.mock import call
 
@@ -851,15 +852,16 @@ class Describe_ScoreTiler(object):
         filenames = ["tile0.png", "tile1.png"]
         random_scorer_ = instance_mock(request, RandomScorer)
         score_tiler = ScoreTiler(random_scorer_, (10, 10), 2, 2)
-        report_ = ["filename,score\n", "tile0.png,0.8\n", "tile1.png,0.7\n"]
+        report_ = ["filename,score", "tile0.png,0.8", "tile1.png,0.7"]
 
         score_tiler._save_report(
             os.path.join(tmp_path_, "report.csv"), highest_score_tiles, filenames
         )
 
         assert os.path.exists(os.path.join(tmp_path_, "report.csv"))
-        with open(os.path.join(tmp_path_, "report.csv")) as f:
-            report = f.readlines()
+        with open(os.path.join(tmp_path_, "report.csv"), newline="") as f:
+            reader = csv.reader(f)
+            report = [",".join(row) for row in reader]
             assert report == report_
 
     def it_can_extract_score_tiles_and_save_report(self, request, tmpdir):
