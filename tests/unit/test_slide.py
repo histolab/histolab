@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+import errno
 import math
 import os
 from collections import namedtuple
@@ -713,14 +714,7 @@ class Describe_Slideset(object):
             slides = slideset.slides
 
         assert isinstance(err.value, FileNotFoundError)
-
-        if os.environ.get("TRAVIS_OS_NAME", "linux") == "windows":
-            assert (
-                str(err.value)
-                == "[WinError 3] The system cannot find the path specified: 'fake/path'"
-            )
-        else:
-            assert str(err.value) == "[Errno 2] No such file or directory: 'fake/path'"
+        assert err.value.errno == errno.ENOENT
 
     def it_constructs_its_sequence_of_slides_to_help(self, request, Slide_, tmpdir):
         slides_path = tmpdir.mkdir("mypath")
