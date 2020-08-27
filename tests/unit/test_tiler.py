@@ -2,7 +2,6 @@ import os
 from unittest.mock import call
 
 import numpy as np
-import pandas as pd
 import pytest
 
 from histolab.exceptions import LevelError
@@ -366,7 +365,7 @@ class Describe_GridTiler(object):
     def it_constructs_from_args(self, request):
         _init = initializer_mock(request, GridTiler)
 
-        grid_tiler = GridTiler((512, 512), 2, True, 0, "", ".png",)
+        grid_tiler = GridTiler((512, 512), 2, True, 0, "", ".png")
 
         _init.assert_called_once_with(ANY, (512, 512), 2, True, 0, "", ".png")
         assert isinstance(grid_tiler, GridTiler)
@@ -493,9 +492,7 @@ class Describe_GridTiler(object):
         assert type(n_tiles_column) == int
         assert n_tiles_column == expected_n_tiles_column
 
-    def it_can_generate_grid_tiles(
-        self, request, tmpdir, grid_tiles_fixture,
-    ):
+    def it_can_generate_grid_tiles(self, request, tmpdir, grid_tiles_fixture):
         (
             coords1,
             coords2,
@@ -707,20 +704,14 @@ class Describe_GridTiler(object):
             has_enough_tissue,
             expected_n_tiles,
         ) = request.param
-        return (
-            coords1,
-            coords2,
-            check_tissue,
-            has_enough_tissue,
-            expected_n_tiles,
-        )
+        return (coords1, coords2, check_tissue, has_enough_tissue, expected_n_tiles)
 
 
 class Describe_ScoreTiler(object):
     def it_constructs_from_args(self, request):
         _init = initializer_mock(request, ScoreTiler)
         rs = RandomScorer()
-        grid_tiler = ScoreTiler(rs, (512, 512), 4, 2, True, 0, "", ".png",)
+        grid_tiler = ScoreTiler(rs, (512, 512), 4, 2, True, 0, "", ".png")
 
         _init.assert_called_once_with(ANY, rs, (512, 512), 4, 2, True, 0, "", ".png")
 
@@ -859,15 +850,16 @@ class Describe_ScoreTiler(object):
         filenames = ["tile0.png", "tile1.png"]
         random_scorer_ = instance_mock(request, RandomScorer)
         score_tiler = ScoreTiler(random_scorer_, (10, 10), 2, 2)
-        report_ = pd.DataFrame({"filename": filenames, "score": [0.8, 0.7]})
+        report_ = ["filename;score\n", "tile0.png;0.8\n", "tile1.png;0.7\n"]
 
         score_tiler._save_report(
             os.path.join(tmp_path_, "report.csv"), highest_score_tiles, filenames
         )
 
         assert os.path.exists(os.path.join(tmp_path_, "report.csv"))
-        report = pd.read_csv(os.path.join(tmp_path_, "report.csv"))
-        pd.testing.assert_frame_equal(report, report_)
+        with open(os.path.join(tmp_path_, "report.csv")) as f:
+            report = f.readlines()
+            assert report == report_
 
     def it_can_extract_score_tiles_and_save_report(self, request, tmpdir):
         _extract_tile = method_mock(request, Slide, "extract_tile")
@@ -946,8 +938,8 @@ class Describe_ScoreTiler(object):
                     (0.5, CoordinatePair(0, 10, 0, 10)),
                 ],
             ),
-        ),
+        )
     )
     def highest_score_tiles_fixture(self, request):
-        (n_tiles, expected_highest_score_tiles,) = request.param
+        (n_tiles, expected_highest_score_tiles) = request.param
         return (n_tiles, expected_highest_score_tiles)
