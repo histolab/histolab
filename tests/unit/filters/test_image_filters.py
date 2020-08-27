@@ -393,3 +393,16 @@ class DescribeImageFilters(object):
 
         fun_.assert_called_once_with(image)
         assert type(lambda_filter(image)) == np.ndarray
+
+    def it_calls_yen_threshold(self, request):
+        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        F_yen_threshold = function_mock(
+            request, "histolab.filters.image_filters_functional.yen_threshold"
+        )
+        F_yen_threshold.return_value = np.array(image)
+        yen_threshold = imf.YenThreshold()
+
+        yen_threshold(image)
+
+        F_yen_threshold.assert_called_once_with(image)
+        assert type(yen_threshold(image)) == np.ndarray

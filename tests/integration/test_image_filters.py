@@ -1,12 +1,12 @@
 import operator
-import pytest
+
 import numpy as np
+import pytest
+from PIL import ImageChops
 
 import histolab.filters.image_filters_functional as imf
 
-from PIL import ImageChops
-
-from ..fixtures import RGBA, RGB, GS
+from ..fixtures import GS, RGB, RGBA
 from ..util import load_expectation
 
 
@@ -1535,3 +1535,50 @@ def test_blue_pen_filter_on_rgb_image(pil_img, expected_value):
 
 
 # TODO: manage general pen marks
+
+
+def test_yen_threshold_filter_on_rgba_image():
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-yen-threshold-mask", type_="npy"
+    )
+
+    yen_threshold_mask = imf.yen_threshold(rgba_img)
+
+    np.testing.assert_array_equal(yen_threshold_mask, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_image, expected_array",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb-yen-threshold-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-yen-threshold-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "mask-arrays/diagnostic-slide-thumb-hsv-yen-threshold-mask",
+        ),
+    ),
+)
+def test_yen_threshold_filter_on_rgb_image(pil_image, expected_array):
+    expected_value = load_expectation(expected_array, type_="npy")
+
+    yen_threshold_mask = imf.yen_threshold(pil_image)
+
+    np.testing.assert_array_equal(yen_threshold_mask, expected_value)
+
+
+def test_yen_threshold_filter_on_gs_image():
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-gs-yen-threshold-mask", type_="npy"
+    )
+
+    yen_threshold_mask = imf.yen_threshold(gs_img)
+
+    np.testing.assert_array_equal(yen_threshold_mask, expected_value)

@@ -550,10 +550,10 @@ def otsu_threshold(
 ) -> np.ndarray:
     """Mask image based on pixel above Otsu threshold.
 
-    Compute Otsu threshold on image as a NumPy array and return boolean mask
-    based on pixels above this threshold.
+    Compute Otsu threshold on image and return boolean mask based on pixels above this
+    threshold.
 
-    Note that Otsu threshold is expected to work correctly only for grayscale images
+    Note that Otsu threshold is expected to work correctly only for grayscale images.
 
     Parameters
     ----------
@@ -870,3 +870,29 @@ def pen_marks(img: PIL.Image.Image) -> np.ndarray:
     hue = np_hsv[:, :, 0]
     threshold = sk_filters.threshold_otsu(hue)
     return threshold_to_mask(hue, threshold, operator.gt)
+
+
+def yen_threshold(
+    img: PIL.Image.Image, relate: Callable[..., bool] = operator.gt
+) -> np.ndarray:
+    """Mask image based on pixel above Yen's threshold.
+
+    Compute Yen threshold on image and return boolean mask based on pixels above this
+    threshold.
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image.
+    relate : operator, optional
+        Operator to be used to compute the mask from the threshold. Default is
+        operator.lt
+
+    Returns
+    -------
+    np.ndarray
+        Boolean NumPy array where True represents a pixel above Yen's threshold.
+    """
+
+    yen_thresh = sk_filters.threshold_yen(np.array(img))
+    return threshold_to_mask(img, yen_thresh, relate)
