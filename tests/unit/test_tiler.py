@@ -850,7 +850,7 @@ class Describe_ScoreTiler(object):
         filenames = ["tile0.png", "tile1.png"]
         random_scorer_ = instance_mock(request, RandomScorer)
         score_tiler = ScoreTiler(random_scorer_, (10, 10), 2, 2)
-        report_ = ["filename;score\n", "tile0.png;0.8\n", "tile1.png;0.7\n"]
+        report_ = ["filename,score\n", "tile0.png,0.8\n", "tile1.png,0.7\n"]
 
         score_tiler._save_report(
             os.path.join(tmp_path_, "report.csv"), highest_score_tiles, filenames
