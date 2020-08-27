@@ -261,7 +261,7 @@ class Describe_Tile(object):
         assert type(tissue_ratio) == float
         assert tissue_ratio == 0.61
 
-    def it_knows_how_to_apply_filters(self, request, RgbToGrayscale_):
+    def it_knows_how_to_apply_filters_PIL(self, RgbToGrayscale_):
         image_before = PILImageMock.DIMS_10X10_RGB_RANDOM_COLOR
         image_after = PILImageMock.DIMS_10X10_GRAY_RANDOM
         RgbToGrayscale_.return_value = image_after
@@ -275,6 +275,20 @@ class Describe_Tile(object):
         assert filtered_image.coords is None
         assert filtered_image.level == 0
 >>>>>>> Add method for applying filters on a tile + add method to calculate the tissue ratio of a tile
+
+    def it_knows_how_to_apply_filters_np(self, OtsuThreshold_):
+        image_before = PILImageMock.DIMS_10X10_RGB_RANDOM_COLOR
+        image_after = PILImageMock.DIMS_10X10_GRAY_RANDOM
+        OtsuThreshold_.return_value = np.array(image_after)
+        tile = Tile(image_before, None, 0)
+
+        filtered_image = tile.apply_filters(OtsuThreshold_)
+
+        OtsuThreshold_.assert_called_once_with(tile.image)
+        assert isinstance(filtered_image, Tile)
+        assert filtered_image.image == image_after
+        assert filtered_image.coords is None
+        assert filtered_image.level == 0
 
     @pytest.fixture
     def RgbToGrayscale_(self, request):
