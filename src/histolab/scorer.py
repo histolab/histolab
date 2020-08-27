@@ -18,5 +18,19 @@ class Scorer(Protocol):
 
 
 class RandomScorer(Scorer):
+    """Implement a Scorer that returns a random float score between 0 and 1."""
+
     def __call__(self, tile: Tile) -> float:
+        """Return the random score associated with the tile.
+
+        Parameters
+        ----------
+        tile : Tile
+            The tile to calculate the score from.
+
+        Returns
+        -------
+        float
+            Random score ranging between 0 and 1.
+        """
         return np.random.random()
