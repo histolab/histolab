@@ -1,9 +1,9 @@
+import csv
 import os
 from abc import abstractmethod
 from typing import List, Tuple
 
 import numpy as np
-import pandas as pd
 
 from .exceptions import LevelError
 from .scorer import Scorer
@@ -611,10 +611,16 @@ class ScoreTiler(GridTiler):
             List of the tiles' filename
         """
 
-        report = pd.DataFrame(
-            {"filename": filenames, "score": np.array(highest_score_tiles)[:, 0]}
-        )
-        report.to_csv(report_path, index=None)
+        header = ["filename", "score"]
+        rows = [
+            dict(zip(header, values))
+            for values in zip(filenames, np.array(highest_score_tiles)[:, 0])
+        ]
+
+        with open(report_path, "w+") as f:
+            w = csv.DictWriter(f, fieldnames=header, delimiter=";")
+            w.writeheader()
+            w.writerows(rows)
 
     def _scores(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
         """Calculate the scores for all the tiles extracted from the ``slide``.
