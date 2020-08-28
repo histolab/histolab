@@ -617,7 +617,7 @@ class ScoreTiler(GridTiler):
             for values in zip(filenames, np.array(highest_score_tiles)[:, 0])
         ]
 
-        with open(report_path, "w+") as f:
+        with open(report_path, "w+", newline="") as f:
             w = csv.DictWriter(f, fieldnames=header, lineterminator=os.linesep)
             w.writeheader()
             w.writerows(rows)
