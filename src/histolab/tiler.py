@@ -618,7 +618,7 @@ class ScoreTiler(GridTiler):
         ]
 
         with open(report_path, "w+") as f:
-            w = csv.DictWriter(f, fieldnames=header)
+            w = csv.DictWriter(f, fieldnames=header, lineterminator=os.linesep)
             w.writeheader()
             w.writerows(rows)
 
