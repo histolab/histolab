@@ -18,24 +18,41 @@
 
 import numpy as np
 
+from ..util import lazyproperty
 from . import image_filters as imf
 from . import morphological_filters as mof
 
 
-def tile_tissue_mask_filters() -> imf.Compose:
-    """Return a filters composition to get a binary mask to estimate tissue in a tile.
+class FiltersComposition(object):
+    def __new__(cls: type, cls_):
+        FiltersSubCls = {
+            "Tile": _TileFiltersComposition,
+            "Slide": _SlideFiltersComposition,
+        }.get(cls_.__name__)
+        instance = super(FiltersComposition, FiltersSubCls).__new__(FiltersSubCls)
+        return instance
 
-    Returns
-    -------
-    imf.Compose
-        Filters composition
-    """
-    filters = imf.Compose(
-        [
-            imf.RgbToGrayscale(),
-            imf.OtsuThreshold(),
-            mof.BinaryDilation(),
-            mof.BinaryFillHoles(structure=np.ones((5, 5))),
-        ]
-    )
-    return filters
+
+class _SlideFiltersComposition(FiltersComposition):
+    pass
+
+
+class _TileFiltersComposition(FiltersComposition):
+    @lazyproperty
+    def tissue_mask_filters(self) -> imf.Compose:
+        """Return a filters composition to get a binary mask to estimate tissue in a tile.
+
+        Returns
+        -------
+        imf.Compose
+            Filters composition
+        """
+        filters = imf.Compose(
+            [
+                imf.RgbToGrayscale(),
+                imf.OtsuThreshold(),
+                mof.BinaryDilation(),
+                mof.BinaryFillHoles(structure=np.ones((5, 5))),
+            ]
+        )
+        return filters
