@@ -1,7 +1,6 @@
 import os
 
 import numpy as np
-import PIL
 import pytest
 
 from histolab.filters.compositions import _TileFiltersComposition
@@ -255,15 +254,15 @@ class Describe_Tile(object):
             [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
         )
         _tile_tissue_mask_filters.return_value = filters
-        _apply_filters = method_mock(request, Tile, "apply_filters")
-        _apply_filters.return_value = Tile(PIL.Image.fromarray(COMPLEX_MASK), None, 0)
+        _call = method_mock(request, Compose, "__call__")
+        _call.return_value = COMPLEX_MASK
         image = PILImageMock.DIMS_10X10_RGB_RANDOM_COLOR
         tile = Tile(image, None, 0)
 
         tissue_ratio = tile.tissue_ratio
 
         _tile_tissue_mask_filters.assert_called_once()
-        _apply_filters.assert_called_once_with(tile, filters)
+        _call.assert_called_once_with(filters, image)
         assert type(tissue_ratio) == float
         assert tissue_ratio == 0.61
 
