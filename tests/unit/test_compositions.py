@@ -1,8 +1,9 @@
 import numpy as np
 import pytest
 
-from histolab.filters.compositions import tile_tissue_mask_filters
+from histolab.filters.compositions import FiltersComposition
 from histolab.filters.image_filters import Compose
+from histolab.tile import Tile
 
 from ..unitutil import class_mock
 
@@ -10,7 +11,7 @@ from ..unitutil import class_mock
 def it_knows_tissue_areas_mask_filters_composition(
     RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_
 ):
-    _enough_tissue_mask_filters_ = tile_tissue_mask_filters()
+    _enough_tissue_mask_filters_ = FiltersComposition(Tile).tissue_mask_filters
 
     RgbToGrayscale_.assert_called_once()
     OtsuThreshold_.assert_called_once()

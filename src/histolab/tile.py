@@ -5,8 +5,8 @@ from typing import Callable, Union
 import numpy as np
 import PIL
 
-from .filters import compositions
 from .filters import image_filters as imf
+from .filters.compositions import FiltersComposition
 from .types import CoordinatePair
 from .util import lazyproperty
 
@@ -127,7 +127,7 @@ class Tile:
         float
             The ratio of the tissue area over the total area of the tile
         """
-        filters = compositions.tile_tissue_mask_filters()
+        filters = FiltersComposition(Tile).tissue_mask_filters
         tissue_mask_image = self.apply_filters(filters).image
         tissue_mask = np.array(tissue_mask_image)
         tissue_ratio = np.count_nonzero(tissue_mask) / tissue_mask.size
@@ -150,7 +150,7 @@ class Tile:
             True if the image is composed by only some tissue. False if the tile is
             composed by all tissue or by no tissue at all.
         """
-        filters = compositions.tile_tissue_mask_filters()
+        filters = FiltersComposition(Tile).tissue_mask_filters
         tissue_mask = filters(self._image)
 
         return np.var(tissue_mask) > near_zero_var_threshold
@@ -171,7 +171,7 @@ class Tile:
             otherwise.
         """
 
-        filters = compositions.tile_tissue_mask_filters
+        filters = FiltersComposition(Tile).tissue_mask_filters
         return np.mean(self._tissue_mask(filters)) * 100 > tissue_percent
 
     @lazyproperty
