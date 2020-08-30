@@ -1,6 +1,4 @@
-class LevelError(Exception):
-    """Raised when a requested level is not available"""
-
+class HistolabException(Exception):
     def __init__(self, *args) -> None:
         if args:
             self.message = args[0]
@@ -12,3 +10,11 @@ class LevelError(Exception):
             return self.message
         else:
             return ""
+
+
+class LevelError(HistolabException):
+    """Raised when a requested level is not available"""
+
+
+class FilterCompositionError(HistolabException):
+    """Raised when a filter composition for the class is not available"""

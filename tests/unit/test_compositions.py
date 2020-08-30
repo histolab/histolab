@@ -1,11 +1,17 @@
 import numpy as np
 import pytest
 
-from histolab.filters.compositions import FiltersComposition
+from histolab.exceptions import FilterCompositionError
+from histolab.filters.compositions import (
+    FiltersComposition,
+    _SlideFiltersComposition,
+    _TileFiltersComposition,
+)
 from histolab.filters.image_filters import Compose
+from histolab.slide import Slide
 from histolab.tile import Tile
 
-from ..unitutil import class_mock
+from ..unitutil import class_mock, initializer_mock
 
 
 def it_knows_tissue_areas_mask_filters_composition(
@@ -28,6 +34,45 @@ def it_knows_tissue_areas_mask_filters_composition(
         BinaryFillHoles_(),
     ]
     assert type(_enough_tissue_mask_filters_) == Compose
+
+
+@pytest.mark.parametrize(
+    "_cls, subclass",
+    ((Tile, _TileFiltersComposition), (Slide, _SlideFiltersComposition),),
+)
+def it_can_dispatch_subclass_according_class_type(request, _cls, subclass):
+    _init_ = initializer_mock(request, FiltersComposition)
+
+    filters_composition = FiltersComposition(_cls)
+
+    _init_.assert_called_once_with(_cls)
+    assert isinstance(filters_composition, subclass)
+
+
+def it_raises_filtercompositionerror_if_class_not_allowed(request):
+    _init_ = initializer_mock(request, FiltersComposition)
+    cls_ = Compose
+
+    with pytest.raises(FilterCompositionError) as err:
+        FiltersComposition(cls_)
+
+    _init_.assert_not_called()
+    assert isinstance(err.value, FilterCompositionError)
+    assert (
+        str(err.value) == "Filters composition for the class Compose is not available"
+    )
+
+
+def it_raises_filtercompositionerror_if_class_is_none(request):
+    _init_ = initializer_mock(request, FiltersComposition)
+    cls_ = None
+
+    with pytest.raises(FilterCompositionError) as err:
+        FiltersComposition(cls_)
+
+    _init_.assert_not_called()
+    assert isinstance(err.value, FilterCompositionError)
+    assert str(err.value) == "cls_ parameter cannot be None"
 
 
 @pytest.fixture

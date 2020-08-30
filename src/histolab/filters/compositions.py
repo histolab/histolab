@@ -18,6 +18,7 @@
 
 import numpy as np
 
+from ..exceptions import FilterCompositionError
 from ..util import lazyproperty
 from . import image_filters as imf
 from . import morphological_filters as mof
@@ -25,12 +26,19 @@ from . import morphological_filters as mof
 
 class FiltersComposition(object):
     def __new__(cls: type, cls_):
+        if not cls_:
+            raise FilterCompositionError("cls_ parameter cannot be None")
         FiltersSubCls = {
             "Tile": _TileFiltersComposition,
             "Slide": _SlideFiltersComposition,
         }.get(cls_.__name__)
-        instance = super(FiltersComposition, FiltersSubCls).__new__(FiltersSubCls)
-        return instance
+        if FiltersSubCls:
+            instance = super(FiltersComposition, FiltersSubCls).__new__(FiltersSubCls)
+            return instance
+        else:
+            raise FilterCompositionError(
+                f"Filters composition for the class {cls_.__name__} is not available"
+            )
 
 
 class _SlideFiltersComposition(FiltersComposition):
