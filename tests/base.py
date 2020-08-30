@@ -221,6 +221,7 @@ IMAGE4_RGBA_WHITE = np.array(
 # ============== MASKS ==============
 
 BASE_MASK = np.array([[True, True, False, False], [False, True, False, False]])
+BASE_MASK2 = np.array([[True, False, False, False], [True, True, False, False]])
 COMPLEX_MASK = np.array(
     [
         [False, True, True, True, True, True, False, False, True, False],
