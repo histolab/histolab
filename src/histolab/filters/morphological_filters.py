@@ -253,3 +253,27 @@ class BinaryClosing(object):
 
     def __repr__(self):
         return self.__class__.__name__ + "()"
+
+
+class WhiteTopHat(object):
+    """Return white top hat of an image.
+
+    The white top hat of an image is defined as the image minus its morphological
+    opening. This operation returns the bright spots of the image that are smaller than
+    the structuring element.
+
+    Parameters
+    ----------
+    np_mask : np.ndarray (arbitrary shape, int or bool type)
+        Numpy array of the binary mask
+    structure : np.ndarray, optional
+        The neighborhood expressed as an array of 1 and 0. If None, use cross-shaped
+        structuring element (connectivity=1).
+
+    """
+
+    def __init__(self, structure: np.ndarray = None):
+        self.structure = structure
+
+    def __call__(self, np_mask: np.ndarray) -> np.ndarray:
+        return skimage.morphology.white_tophat(np_mask, self.structure)
