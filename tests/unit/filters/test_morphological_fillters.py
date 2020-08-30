@@ -1,9 +1,9 @@
 # encoding: utf-8
 
-import pytest
-
 import numpy as np
+import pytest
 import skimage.morphology
+
 from histolab.filters import morphological_filters as mof
 
 from ...base import IMAGE1_RGB, IMAGE2_RGBA
@@ -165,3 +165,17 @@ class DescribeMorphologicalFilters(object):
             binary_closing(array)
 
         assert str(err.value) == "Mask must be binary"
+
+    def it_calls_white_top_hat_filter(self, request):
+        mask_arr = NpArrayMock.ONES_500X500X4_BOOL
+        disk = skimage.morphology.disk(5)
+        _white_top_hat = function_mock(request, "skimage.morphology.white_tophat")
+        _white_top_hat.return_value = mask_arr
+
+        white_top_hat = mof.WhiteTopHat(disk)
+
+        white_top_hat(mask_arr)
+
+        np.testing.assert_array_equal(_white_top_hat.call_args_list[0][0][0], mask_arr)
+        np.testing.assert_array_equal(_white_top_hat.call_args_list[0][0][1], disk)
+        assert type(white_top_hat(mask_arr)) == np.ndarray
