@@ -40,7 +40,7 @@ class RandomScorer(Scorer):
 
 
 class NucleiScorer(Scorer):
-    r"""Implement a Scorer that estimates the presence of nuclei in the tile.
+    r"""Implement a Scorer that estimates the presence of nuclei in an H&E-stained tile.
 
     An higher presence of nuclei is associated with an higher scorer, following this
     formula:
