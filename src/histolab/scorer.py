@@ -40,12 +40,33 @@ class RandomScorer(Scorer):
 
 
 class NucleiScorer(Scorer):
-    """Implement a Scorer that estimates the presence of nuclei in the tile.
+    r"""Implement a Scorer that estimates the presence of nuclei in the tile.
 
-    An higher presence of nuclei is associated with an higher scorer.
+    An higher presence of nuclei is associated with an higher scorer, following this
+    formula:
+
+    .. math::
+
+        score = nuclei\_ratio \cdot \\a + tissue\_ratio \cdot (1-\\a)
+
     """
 
     def __call__(self, tile: Tile, alpha: float = 0.6) -> float:
+        """Return the nuclei score associated with the tile.
+
+        Parameters
+        ----------
+        tile : Tile
+            The tile to calculate the score from.
+        alpha : float, optional
+            Parameter to regulate the contribution of the nuclei ratio with respect to
+            the tissue ratio. Default is 0.6
+
+        Returns
+        -------
+        float
+            Nuclei score
+        """
         tissue_ratio = tile.tissue_ratio
 
         filters_raw_nuclei = imf.Compose([imf.HematoxylinChannel(), imf.YenThreshold()])
