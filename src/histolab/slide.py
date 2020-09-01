@@ -32,8 +32,7 @@ import openslide
 import PIL
 
 from .exceptions import LevelError
-from .filters import image_filters as imf
-from .filters import morphological_filters as mof
+from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair, Region
 from .util import (
@@ -84,7 +83,7 @@ class Slide(object):
 
         """
         thumb = self._wsi.get_thumbnail(self._thumbnail_size)
-        filters = self._main_tissue_areas_mask_filters
+        filters = FiltersComposition(Slide).tissue_mask_filters
 
         thumb_mask = filters(thumb)
         regions = regions_from_binary_mask(thumb_mask)
@@ -345,26 +344,6 @@ class Slide(object):
             and 0 <= coords.y_ul < self.dimensions[1]
             and 0 <= coords.y_br < self.dimensions[1]
         )
-
-    @lazyproperty
-    def _main_tissue_areas_mask_filters(self) -> imf.Compose:
-        """Return a filters composition to get a binary mask of the main tissue regions.
-
-        Returns
-        -------
-        imf.Compose
-            Filters composition
-        """
-        filters = imf.Compose(
-            [
-                imf.RgbToGrayscale(),
-                imf.OtsuThreshold(),
-                mof.BinaryDilation(),
-                mof.RemoveSmallHoles(),
-                mof.RemoveSmallObjects(),
-            ]
-        )
-        return filters
 
     def _resample(self, scale_factor: int = 32) -> Tuple[PIL.Image.Image, np.array]:
         """Converts a slide to a scaled-down PIL image.

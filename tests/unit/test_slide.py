@@ -13,6 +13,7 @@ import pytest
 from PIL import ImageShow
 
 from histolab.exceptions import LevelError
+from histolab.filters.compositions import _SlideFiltersComposition
 from histolab.filters.image_filters import Compose
 from histolab.slide import Slide, SlideSet
 from histolab.types import CoordinatePair, Region
@@ -284,33 +285,6 @@ class Describe_Slide(object):
         )
         assert os.path.exists(os.path.join(tmp_path_, slide.thumbnail_path))
 
-    def it_knows_tissue_areas_mask_filters_composition(
-        self,
-        RgbToGrayscale_,
-        OtsuThreshold_,
-        BinaryDilation_,
-        RemoveSmallHoles_,
-        RemoveSmallObjects_,
-    ):
-        slide = Slide("/a/b", "c/d")
-
-        main_tissue_areas_mask_filters_ = slide._main_tissue_areas_mask_filters
-
-        RgbToGrayscale_.assert_called_once()
-        OtsuThreshold_.assert_called_once()
-        BinaryDilation_.assert_called_once()
-        RemoveSmallHoles_.assert_called_once()
-        RemoveSmallObjects_.assert_called_once()
-        assert main_tissue_areas_mask_filters_.filters == [
-            RgbToGrayscale_(),
-            OtsuThreshold_(),
-            BinaryDilation_(),
-            RemoveSmallHoles_(),
-            RemoveSmallObjects_(),
-        ]
-
-        assert type(main_tissue_areas_mask_filters_) == Compose
-
     def it_knows_regions_from_binary_mask(self, request):
         binary_mask = np.array([[True, False], [True, True]])
         label = function_mock(request, "histolab.util.label")
@@ -376,7 +350,7 @@ class Describe_Slide(object):
         slide = Slide(slide_path, "processed")
         regions = [Region(index=0, area=33, bbox=(0, 0, 2, 2), center=(0.5, 0.5))]
         main_tissue_areas_mask_filters_ = property_mock(
-            request, Slide, "_main_tissue_areas_mask_filters"
+            request, _SlideFiltersComposition, "tissue_mask_filters"
         )
         main_tissue_areas_mask_filters_.return_value = Compose(
             [

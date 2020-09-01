@@ -14,7 +14,7 @@ from histolab.tile import Tile
 from ..unitutil import class_mock, initializer_mock
 
 
-def it_knows_tissue_areas_mask_filters_composition(
+def it_knows_tissue_areas_mask_tile_filters_composition(
     RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_
 ):
     _enough_tissue_mask_filters_ = FiltersComposition(Tile).tissue_mask_filters
@@ -22,7 +22,6 @@ def it_knows_tissue_areas_mask_filters_composition(
     RgbToGrayscale_.assert_called_once()
     OtsuThreshold_.assert_called_once()
     BinaryDilation_.assert_called_once()
-
     BinaryFillHoles_.assert_called_once()
     np.testing.assert_almost_equal(
         BinaryFillHoles_.call_args_list[0][1]["structure"], np.ones((5, 5))
@@ -33,6 +32,32 @@ def it_knows_tissue_areas_mask_filters_composition(
         BinaryDilation_(),
         BinaryFillHoles_(),
     ]
+    assert type(_enough_tissue_mask_filters_) == Compose
+
+
+def it_knows_tissue_areas_mask_slide_filters_composition(
+    RgbToGrayscale_,
+    OtsuThreshold_,
+    BinaryDilation_,
+    RemoveSmallHoles_,
+    RemoveSmallObjects_,
+):
+    _enough_tissue_mask_filters_ = FiltersComposition(Slide).tissue_mask_filters
+
+    RgbToGrayscale_.assert_called_once()
+    OtsuThreshold_.assert_called_once()
+    BinaryDilation_.assert_called_once()
+    RemoveSmallHoles_.assert_called_once()
+    RemoveSmallObjects_.assert_called_once()
+
+    assert _enough_tissue_mask_filters_.filters == [
+        RgbToGrayscale_(),
+        OtsuThreshold_(),
+        BinaryDilation_(),
+        RemoveSmallHoles_(),
+        RemoveSmallObjects_(),
+    ]
+
     assert type(_enough_tissue_mask_filters_) == Compose
 
 
@@ -93,3 +118,17 @@ def BinaryDilation_(request):
 @pytest.fixture
 def BinaryFillHoles_(request):
     return class_mock(request, "histolab.filters.morphological_filters.BinaryFillHoles")
+
+
+@pytest.fixture
+def RemoveSmallHoles_(request):
+    return class_mock(
+        request, "histolab.filters.morphological_filters.RemoveSmallHoles"
+    )
+
+
+@pytest.fixture
+def RemoveSmallObjects_(request):
+    return class_mock(
+        request, "histolab.filters.morphological_filters.RemoveSmallObjects"
+    )
