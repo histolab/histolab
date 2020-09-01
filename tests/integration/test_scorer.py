@@ -23,6 +23,6 @@ class Describe_Scorers(object):
         tile = Tile(tile_img, None)
         nuclei_scorer = scorer.NucleiScorer()
 
-        score = nuclei_scorer(tile, 0.8)
+        score = nuclei_scorer(tile, 0.6)
 
         assert score == expected_score
