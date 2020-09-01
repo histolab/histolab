@@ -25,6 +25,14 @@ from . import morphological_filters as mof
 
 
 class FiltersComposition(object):
+    """Provide appropriate filters compositions based on the ``cls_`` parameter.
+
+    Arguments
+    ---------
+    cls_ : type, {Tile, Slide}
+        The class to get the appropriate filters composition for
+    """
+
     def __new__(cls: type, cls_):
         if not cls_:
             raise FilterCompositionError("cls_ parameter cannot be None")
@@ -42,7 +50,25 @@ class FiltersComposition(object):
 
 
 class _SlideFiltersComposition(FiltersComposition):
-    pass
+    @lazyproperty
+    def tissue_mask_filters(self) -> imf.Compose:
+        """Return a filters composition to get a binary mask to estimate tissue in a slide.
+
+        Returns
+        -------
+        imf.Compose
+            Filters composition
+        """
+        filters = imf.Compose(
+            [
+                imf.RgbToGrayscale(),
+                imf.OtsuThreshold(),
+                mof.BinaryDilation(),
+                mof.RemoveSmallHoles(),
+                mof.RemoveSmallObjects(),
+            ]
+        )
+        return filters
 
 
 class _TileFiltersComposition(FiltersComposition):
