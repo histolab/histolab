@@ -286,10 +286,7 @@ class Describe_RandomTiler(object):
         _random_tiles_generator.return_value = [(tile, coords), (tile, coords)]
         _tile_filename = method_mock(request, RandomTiler, "_tile_filename")
         _tile_filename.side_effect = [
-            os.path.join(
-                tmp_path_, "processed", "tiles", f"tile_{i}_level2_0-10-0-10.png"
-            )
-            for i in range(2)
+            f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
         ]
         random_tiler = RandomTiler((10, 10), n_tiles=2, level=2)
 
@@ -819,8 +816,7 @@ class Describe_ScoreTiler(object):
         _highest_score_tiles.return_value = [(0.8, coords), (0.7, coords)]
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
-            os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
-            for i in range(2)
+            f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
         ]
         _save_report = method_mock(request, ScoreTiler, "_save_report")
         random_scorer = RandomScorer()
@@ -838,10 +834,10 @@ class Describe_ScoreTiler(object):
             call(score_tiler, coords, 1),
         ]
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tiles", "tile_0_level2_0-10-0-10.png")
         )
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
         _save_report.assert_not_called()
 
@@ -878,8 +874,7 @@ class Describe_ScoreTiler(object):
         _highest_score_tiles.return_value = [(0.8, coords), (0.7, coords)]
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
-            os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
-            for i in range(2)
+            f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
         ]
         _save_report = method_mock(request, ScoreTiler, "_save_report")
         random_scorer = RandomScorer()
@@ -897,10 +892,10 @@ class Describe_ScoreTiler(object):
             call(score_tiler, coords, 1),
         ]
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tiles", "tile_0_level2_0-10-0-10.png")
         )
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
         _save_report.assert_called_once_with(
             score_tiler,

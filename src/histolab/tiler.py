@@ -367,7 +367,7 @@ class RandomTiler(Tiler):
         tiles_counter = 0
         for tiles_counter, (tile, tile_wsi_coords) in enumerate(random_tiles):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
-            tile.save(tile_filename)
+            tile.save(os.path.join(slide.processed_path, "tiles", tile_filename))
             print(f"\t Tile {tiles_counter} saved: {tile_filename}")
         print(f"{tiles_counter+1} Random Tiles have been saved.")
 
@@ -554,7 +554,7 @@ class ScoreTiler(GridTiler):
         for tiles_counter, (score, tile_wsi_coords) in enumerate(highest_score_tiles):
             tile = slide.extract_tile(tile_wsi_coords, self.level)
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
-            tile.save(os.path.join(slide.processed_path, tile_filename))
+            tile.save(os.path.join(slide.processed_path, "tiles", tile_filename))
             filenames.append(tile_filename)
             print(f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}")
 
