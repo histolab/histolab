@@ -222,6 +222,8 @@ IMAGE4_RGBA_WHITE = np.array(
 
 BASE_MASK = np.array([[True, True, False, False], [False, True, False, False]])
 BASE_MASK2 = np.array([[True, False, False, False], [True, True, False, False]])
+BASE_MASK3 = np.array([True, True, False, False])
+BASE_MASK4 = np.array([False, True, True, False])
 COMPLEX_MASK = np.array(
     [
         [False, True, True, True, True, True, False, False, True, False],
@@ -234,5 +236,33 @@ COMPLEX_MASK = np.array(
         [True, True, False, True, True, False, True, True, True, True],
         [False, True, True, True, True, False, True, True, False, False],
         [True, True, False, False, False, True, True, False, True, False],
+    ]
+)
+COMPLEX_MASK2 = np.array(
+    [
+        [False, True, True, True, True, True, False, False, True, False],
+        [True, True, False, False, True, False, False, False, True, False],
+        [True, True, False, False, True, True, False, False, True, True],
+        [True, True, True, True, False, True, False, False, True, False],
+        [True, False, False, True, False, True, False, True, True, False],
+        [False, True, True, False, True, True, True, True, True, True],
+        [True, False, True, False, False, True, True, False, True, True],
+        [True, True, False, True, True, False, True, True, True, True],
+        [False, True, True, True, True, False, True, True, False, False],
+        [True, True, False, False, False, True, True, False, True, True],
+    ]
+)
+COMPLEX_MASK3 = np.array(
+    [
+        [False, False, False, False, False, False, False, False, False, False],
+        [False, False, False, False, False, False, False, False, False, False],
+        [False, False, False, False, False, False, False, False, False, False],
+        [False, False, False, False, False, False, False, True, False, False],
+        [False, False, False, False, False, False, False, False, False, False],
+        [False, False, False, False, False, False, False, False, False, False],
+        [False, False, False, False, False, False, False, False, False, False],
+        [False, False, False, False, False, False, False, False, False, False],
+        [False, False, False, False, False, False, False, False, False, False],
+        [False, False, False, False, False, False, False, False, False, False],
     ]
 )
