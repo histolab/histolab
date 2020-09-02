@@ -39,7 +39,8 @@ class Tile:
 
         Parameters
         ----------
-        filters : Union[ Callable[[PIL.Image.Image], Union[PIL.Image.Image, np.ndarray]], imf.Compose]
+        filters : Union[ Callable[[PIL.Image.Image], Union[PIL.Image.Image, np.ndarray]]
+                , imf.Compose]
             Filter or composition of filters to be applied
 
         Returns
