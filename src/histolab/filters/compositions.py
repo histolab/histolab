@@ -59,7 +59,7 @@ class _SlideFiltersComposition(FiltersComposition):
         imf.Compose
             Filters composition
         """
-        filters = imf.Compose(
+        return imf.Compose(
             [
                 imf.RgbToGrayscale(),
                 imf.OtsuThreshold(),
@@ -68,7 +68,6 @@ class _SlideFiltersComposition(FiltersComposition):
                 mof.RemoveSmallObjects(),
             ]
         )
-        return filters
 
 
 class _TileFiltersComposition(FiltersComposition):
@@ -81,7 +80,7 @@ class _TileFiltersComposition(FiltersComposition):
         imf.Compose
             Filters composition
         """
-        filters = imf.Compose(
+        return imf.Compose(
             [
                 imf.RgbToGrayscale(),
                 imf.OtsuThreshold(),
@@ -89,4 +88,3 @@ class _TileFiltersComposition(FiltersComposition):
                 mof.BinaryFillHoles(structure=np.ones((5, 5))),
             ]
         )
-        return filters
