@@ -152,7 +152,7 @@ class Slide(object):
             Image containing the selected tile.
         """
 
-        if not self._are_valid_coords(coords):
+        if not self._valid_coordinates(coords):
             # OpenSlide doesn't complain if the coordinates for extraction are wrong,
             # but it returns an odd image.
             raise ValueError(
@@ -273,7 +273,7 @@ class Slide(object):
 
     # ---private interface methods and properties---
 
-    def _are_valid_coords(self, coords: CoordinatePair) -> bool:
+    def _valid_coordinates(self, coords: CoordinatePair) -> bool:
         """Check if ``coords`` are valid 0-level coordinates.
 
         Parameters
