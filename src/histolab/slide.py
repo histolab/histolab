@@ -72,47 +72,6 @@ class Slide(object):
     # ---public interface methods and properties---
 
     @lazyproperty
-    def dimensions(self) -> Tuple[int, int]:
-        """Return the slide dimensions (w,h) at level 0.
-
-        Returns
-        -------
-        dimensions : tuple(width, height)
-        """
-        return self._wsi.dimensions
-
-    def level_dimensions(self, level: int = 0) -> Tuple[int, int]:
-        """Return the slide dimensions (w,h) at the specified level
-
-        Parameters
-        ---------
-        level : int
-            The level which dimensions are requested, default is 0
-
-        Returns
-        -------
-        dimensions : tuple (width, height)
-        """
-        try:
-            return self._wsi.level_dimensions[level]
-        except IndexError:
-            raise LevelError(
-                f"Level {level} not available. Number of available levels: "
-                f"{len(self._wsi.level_dimensions)}"
-            )
-
-    @lazyproperty
-    def levels(self) -> List[int]:
-        """Return the slide's available levels
-
-        Returns
-        -------
-        List[int]
-            The levels available
-        """
-        return list(range(len(self._wsi.level_dimensions)))
-
-    @lazyproperty
     @lru_cache(maxsize=100)
     def biggest_tissue_box_mask(self) -> np.ndarray:
         """Return the thumbnail binary mask of the box containing the max tissue area.
@@ -135,6 +94,16 @@ class Slide(object):
             self._thumbnail_size, biggest_region_coordinates
         )
         return thumb_bbox_mask
+
+    @lazyproperty
+    def dimensions(self) -> Tuple[int, int]:
+        """Return the slide dimensions (w,h) at level 0.
+
+        Returns
+        -------
+        dimensions : tuple(width, height)
+        """
+        return self._wsi.dimensions
 
     def extract_tile(self, coords: CoordinatePair, level: int) -> Tile:
         """Extract a tile of the image at the selected level.
@@ -174,6 +143,37 @@ class Slide(object):
         )
         tile = Tile(image, coords, level)
         return tile
+
+    def level_dimensions(self, level: int = 0) -> Tuple[int, int]:
+        """Return the slide dimensions (w,h) at the specified level
+
+        Parameters
+        ---------
+        level : int
+            The level which dimensions are requested, default is 0
+
+        Returns
+        -------
+        dimensions : tuple (width, height)
+        """
+        try:
+            return self._wsi.level_dimensions[level]
+        except IndexError:
+            raise LevelError(
+                f"Level {level} not available. Number of available levels: "
+                f"{len(self._wsi.level_dimensions)}"
+            )
+
+    @lazyproperty
+    def levels(self) -> List[int]:
+        """Return the slide's available levels
+
+        Returns
+        -------
+        List[int]
+            The levels available
+        """
+        return list(range(len(self._wsi.level_dimensions)))
 
     @lazyproperty
     def name(self) -> str:
@@ -271,7 +271,7 @@ class Slide(object):
         )
         return thumb_path
 
-    # ---private interface methods and properties---
+    # ------- implementation helpers -------
 
     def _biggest_regions(self, regions: List[Region], n: int = 1) -> List[Region]:
         """Return the biggest ``n`` regions.
