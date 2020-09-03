@@ -273,26 +273,6 @@ class Slide(object):
 
     # ---private interface methods and properties---
 
-    def _valid_coordinates(self, coords: CoordinatePair) -> bool:
-        """Check if ``coords`` are valid 0-level coordinates.
-
-        Parameters
-        ----------
-        coords : CoordinatePair
-            Coordinates at level 0 to check
-
-        Returns
-        -------
-        bool
-            True if the coordinates are valid, False otherwise
-        """
-        return (
-            0 <= coords.x_ul < self.dimensions[0]
-            and 0 <= coords.x_br < self.dimensions[0]
-            and 0 <= coords.y_ul < self.dimensions[1]
-            and 0 <= coords.y_br < self.dimensions[1]
-        )
-
     def _biggest_regions(self, regions: List[Region], n: int = 1) -> List[Region]:
         """Return the biggest ``n`` regions.
 
@@ -345,10 +325,6 @@ class Slide(object):
                 f"{new_h}.{IMG_EXT}",
             )
         return final_path
-
-    @lazyproperty
-    def _extension(self) -> str:
-        return os.path.splitext(self._path)[1]
 
     @lazyproperty
     def _main_tissue_areas_mask_filters(self) -> imf.Compose:
@@ -453,6 +429,26 @@ class Slide(object):
                 int(s / np.power(10, math.ceil(math.log10(s)) - 3))
                 for s in self.dimensions
             ]
+        )
+
+    def _valid_coordinates(self, coords: CoordinatePair) -> bool:
+        """Check if ``coords`` are valid 0-level coordinates.
+
+        Parameters
+        ----------
+        coords : CoordinatePair
+            Coordinates at level 0 to check
+
+        Returns
+        -------
+        bool
+            True if the coordinates are valid, False otherwise
+        """
+        return (
+            0 <= coords.x_ul < self.dimensions[0]
+            and 0 <= coords.x_br < self.dimensions[0]
+            and 0 <= coords.y_ul < self.dimensions[1]
+            and 0 <= coords.y_br < self.dimensions[1]
         )
 
     @lazyproperty

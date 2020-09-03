@@ -118,14 +118,6 @@ class Describe_Slide(object):
 
         assert thumbnail_path == expected_value
 
-    def it_knows_its_wsi_extension(self, slide_ext_fixture):
-        slide_path, expected_value = slide_ext_fixture
-        slide = Slide(slide_path, "processed")
-
-        _ext = slide._extension
-
-        assert _ext == expected_value
-
     def it_knows_its_dimensions(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
