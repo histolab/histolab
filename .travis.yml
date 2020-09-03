@@ -1,5 +1,4 @@
 # Wire up travis
-language: python
 
 language: python            # this works for Linux but is an error on macOS or Windows
 jobs:
