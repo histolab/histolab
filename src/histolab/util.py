@@ -31,6 +31,33 @@ from .types import CoordinatePair, Region
 warn = functools.partial(warnings.warn, stacklevel=2)
 
 
+def apply_mask_image(img: PIL.Image.Image, mask: np.ndarray) -> PIL.Image.Image:
+    """Mask image with the provided binary mask.
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
+    mask : np.ndarray
+        Binary mask
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image with the mask applied
+    """
+    img_arr = np.array(img)
+
+    if mask.ndim == 2 and img_arr.ndim != 2:
+        masked_image = np.zeros(img_arr.shape, "uint8")
+        n_channels = img_arr.shape[2]
+        for channel_i in range(n_channels):
+            masked_image[:, :, channel_i] = img_arr[:, :, channel_i] * mask
+    else:
+        masked_image = img_arr * mask
+    return np_to_pil(masked_image)
+
+
 def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
     """Convert a NumPy array to a PIL Image.
 
@@ -57,60 +84,6 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
     }
     image_array = types_factory.get(str(np_img.dtype), np_img.astype(np.uint8))
     return PIL.Image.fromarray(image_array)
-
-
-def scale_coordinates(
-    reference_coords: CoordinatePair,
-    reference_size: Tuple[int, int],
-    target_size: Tuple[int, int],
-) -> CoordinatePair:
-    """Compute the coordinates corresponding to a scaled version of the image.
-
-    Parameters
-    ----------
-    reference_coords: CoordinatePair
-        Coordinates referring to the upper left and lower right corners
-        respectively.
-    reference_size: tuple of int
-        Reference (width, height) size to which input coordinates refer to
-    target_size: tuple of int
-        Target (width, height) size of the resulting scaled image
-
-    Returns
-    -------
-    coords: CoordinatesPair
-        Coordinates in the scaled image
-    """
-    reference_coords = np.asarray(reference_coords).ravel()
-    reference_size = np.tile(reference_size, 2)
-    target_size = np.tile(target_size, 2)
-    return CoordinatePair(
-        *np.floor((reference_coords * target_size) / reference_size).astype("int64")
-    )
-
-
-def threshold_to_mask(
-    img: PIL.Image.Image, threshold: float, relate: Callable[..., bool]
-) -> np.ndarray:
-    """Mask image with pixel according to the threshold value.
-
-    Parameters
-    ----------
-    img: PIL.Image.Image
-        Input image
-    threshold: float
-        The threshold value to exceed.
-    relate: callable operator
-        Comparison operator between img pixel values and threshold
-
-    Returns
-    -------
-    np.ndarray
-        Boolean NumPy array representing a mask where a pixel has a value True
-        if the corresponding input array pixel exceeds the threshold value.
-    """
-    img_arr = np.array(img)
-    return relate(img_arr, threshold)
 
 
 def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
@@ -181,31 +154,58 @@ def region_coordinates(region: Region) -> CoordinatePair:
     return CoordinatePair(x_ul, y_ul, x_br, y_br)
 
 
-def apply_mask_image(img: PIL.Image.Image, mask: np.ndarray) -> PIL.Image.Image:
-    """Mask image with the provided binary mask.
+def scale_coordinates(
+    reference_coords: CoordinatePair,
+    reference_size: Tuple[int, int],
+    target_size: Tuple[int, int],
+) -> CoordinatePair:
+    """Compute the coordinates corresponding to a scaled version of the image.
 
     Parameters
     ----------
-    img : PIL.Image.Image
-        Input image
-    mask : np.ndarray
-        Binary mask
+    reference_coords: CoordinatePair
+        Coordinates referring to the upper left and lower right corners
+        respectively.
+    reference_size: tuple of int
+        Reference (width, height) size to which input coordinates refer to
+    target_size: tuple of int
+        Target (width, height) size of the resulting scaled image
 
     Returns
     -------
-    PIL.Image.Image
-        Image with the mask applied
+    coords: CoordinatesPair
+        Coordinates in the scaled image
+    """
+    reference_coords = np.asarray(reference_coords).ravel()
+    reference_size = np.tile(reference_size, 2)
+    target_size = np.tile(target_size, 2)
+    return CoordinatePair(
+        *np.floor((reference_coords * target_size) / reference_size).astype("int64")
+    )
+
+
+def threshold_to_mask(
+    img: PIL.Image.Image, threshold: float, relate: Callable[..., bool]
+) -> np.ndarray:
+    """Mask image with pixel according to the threshold value.
+
+    Parameters
+    ----------
+    img: PIL.Image.Image
+        Input image
+    threshold: float
+        The threshold value to exceed.
+    relate: callable operator
+        Comparison operator between img pixel values and threshold
+
+    Returns
+    -------
+    np.ndarray
+        Boolean NumPy array representing a mask where a pixel has a value True
+        if the corresponding input array pixel exceeds the threshold value.
     """
     img_arr = np.array(img)
-
-    if mask.ndim == 2 and img_arr.ndim != 2:
-        masked_image = np.zeros(img_arr.shape, "uint8")
-        n_channels = img_arr.shape[2]
-        for channel_i in range(n_channels):
-            masked_image[:, :, channel_i] = img_arr[:, :, channel_i] * mask
-    else:
-        masked_image = img_arr * mask
-    return np_to_pil(masked_image)
+    return relate(img_arr, threshold)
 
 
 class Counter(dict):
