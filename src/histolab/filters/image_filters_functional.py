@@ -164,9 +164,6 @@ def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
     return hsv
 
 
-# TODO setup logger warning + grayscale --> invert ---> contrast stretch
-
-
 def stretch_contrast(
     img: PIL.Image.Image, low: int = 40, high: int = 60
 ) -> PIL.Image.Image:
