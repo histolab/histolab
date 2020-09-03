@@ -239,24 +239,6 @@ def _load_svs(f: str) -> Tuple[openslide.OpenSlide, str]:
     return svs, _fetch(f)
 
 
-def cmu_small_region() -> Tuple[openslide.OpenSlide, str]:
-    """Carnegie Mellon University MRXS sample tissue
-
-    This image is available here
-    http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/
-
-    Licensed under a CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
-
-    Returns
-    -------
-    cmu_mrxs_tissue : openslide.OpenSlide
-        Sample CMU tissue Whole-Slide-Image
-    path : str
-        Path where the slide is saved
-    """
-    return _load_svs("data/cmu_small_region.svs")
-
-
 def aorta_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """Aorta tissue, brightfield, JPEG 2000, YCbCr
 
@@ -273,24 +255,6 @@ def aorta_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
         Path where the slide is saved
     """
     return _load_svs("aperio/JP2K-33003-1.svs")
-
-
-def heart_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
-    """Heart tissue, brightfield, JPEG 2000, YCbCr
-
-    This image is available here
-    http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/
-
-    Free to use and distribute, with or without modification
-
-    Returns
-    -------
-    heart_tissue : openslide.OpenSlide
-        Heart tissue Whole-Slide-Image
-    path : str
-        Path where the slide is saved
-    """
-    return _load_svs("aperio/JP2K-33003-2.svs")
 
 
 def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
@@ -311,27 +275,6 @@ def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
         Path where the slide is saved
     """
     return _load_svs("tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8")
-
-
-def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
-    """Prostate tissue, TCGA-PRAD dataset.
-
-    This image is available here
-    https://portal.gdc.cancer.gov/files/6b725022-f1d5-4672-8c6c-de8140345210
-    or through the API
-    https://api.gdc.cancer.gov/data/6b725022-f1d5-4672-8c6c-de8140345210
-
-
-    Access: open
-
-    Returns
-    -------
-    prostate_tissue : openslide.OpenSlide
-        Prostate tissue Whole-Slide-Image
-    path : str
-        Path where the slide is saved
-    """
-    return _load_svs("tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210")
 
 
 def breast_tissue_diagnostic_green_pen() -> Tuple[
@@ -398,3 +341,60 @@ def breast_tissue_diagnostic_black_pen() -> Tuple[
         Path where the slide is saved
     """
     return _load_svs("tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461")
+
+
+def cmu_small_region() -> Tuple[openslide.OpenSlide, str]:
+    """Carnegie Mellon University MRXS sample tissue
+
+    This image is available here
+    http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/
+
+    Licensed under a CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
+
+    Returns
+    -------
+    cmu_mrxs_tissue : openslide.OpenSlide
+        Sample CMU tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
+    """
+    return _load_svs("data/cmu_small_region.svs")
+
+
+def heart_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
+    """Heart tissue, brightfield, JPEG 2000, YCbCr
+
+    This image is available here
+    http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/
+
+    Free to use and distribute, with or without modification
+
+    Returns
+    -------
+    heart_tissue : openslide.OpenSlide
+        Heart tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
+    """
+    return _load_svs("aperio/JP2K-33003-2.svs")
+
+
+def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
+    """Prostate tissue, TCGA-PRAD dataset.
+
+    This image is available here
+    https://portal.gdc.cancer.gov/files/6b725022-f1d5-4672-8c6c-de8140345210
+    or through the API
+    https://api.gdc.cancer.gov/data/6b725022-f1d5-4672-8c6c-de8140345210
+
+
+    Access: open
+
+    Returns
+    -------
+    prostate_tissue : openslide.OpenSlide
+        Prostate tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
+    """
+    return _load_svs("tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210")
