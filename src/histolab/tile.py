@@ -30,14 +30,6 @@ class Tile:
         self._coords = coords
 
     @lazyproperty
-    def image(self) -> PIL.Image.Image:
-        return self._image
-
-    @lazyproperty
-    def level(self) -> int:
-        return self._level
-
-    @lazyproperty
     def coords(self) -> CoordinatePair:
         return self._coords
 
@@ -75,6 +67,14 @@ class Tile:
 
         return True
 
+    @lazyproperty
+    def image(self) -> PIL.Image.Image:
+        return self._image
+
+    @lazyproperty
+    def level(self) -> int:
+        return self._level
+
     def save(self, path: Union[str, bytes, os.PathLike]) -> None:
         """Save tile at given path.
 
@@ -89,13 +89,13 @@ class Tile:
 
         """
         ext = os.path.splitext(path)[1]
-
         if not ext:
             path = f"{path}.png"
 
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-
         self._image.save(path)
+
+    # ------- implementation helpers -------
 
     @lazyproperty
     def _enough_tissue_mask_filters(self) -> imf.Compose:
@@ -114,6 +114,7 @@ class Tile:
                 mof.BinaryFillHoles(structure=np.ones((5, 5))),
             ]
         )
+
         return filters
 
     def _has_only_some_tissue(self, near_zero_var_threshold: float = 0.1) -> np.bool_:
@@ -136,25 +137,6 @@ class Tile:
 
         return np.var(tissue_mask) > near_zero_var_threshold
 
-    @lazyproperty
-    def _is_almost_white(self) -> bool:
-        """Check if the image is almost white.
-
-        Returns
-        -------
-        bool
-            True if the image is almost white, False otherwise
-        """
-        rgb2gray = imf.RgbToGrayscale()
-        image_gray = rgb2gray(self._image)
-        image_gray_arr = np.array(image_gray)
-        image_gray_arr = image_gray_arr / 255
-
-        return (
-            np.mean(image_gray_arr.ravel()) > 0.9
-            and np.std(image_gray_arr.ravel()) < 0.09
-        )
-
     def _has_tissue_more_than_percent(self, tissue_percent: float = 80.0) -> bool:
         """Check if tissue represent more than ``tissue_percent`` % of the image.
 
@@ -174,3 +156,22 @@ class Tile:
         tissue_mask = filters(self._image)
 
         return np.mean(tissue_mask) * 100 > tissue_percent
+
+    @lazyproperty
+    def _is_almost_white(self) -> bool:
+        """Check if the image is almost white.
+
+        Returns
+        -------
+        bool
+            True if the image is almost white, False otherwise
+        """
+        rgb2gray = imf.RgbToGrayscale()
+        image_gray = rgb2gray(self._image)
+        image_gray_arr = np.array(image_gray)
+        image_gray_arr = image_gray_arr / 255
+
+        return (
+            np.mean(image_gray_arr.ravel()) > 0.9
+            and np.std(image_gray_arr.ravel()) < 0.09
+        )
