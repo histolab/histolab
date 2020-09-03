@@ -16,7 +16,7 @@
 # Raymond Hettinger’s “Beyond PEP 8” talk and highway patrol not stopping you
 # if you drive < 5mph too fast. Disable E501 to avoid duplicate warnings.
 
-max-line-length = 80
+max-line-length = 88
 max-complexity = 12
 select = E,F,W,C,B,B9
 ignore =
