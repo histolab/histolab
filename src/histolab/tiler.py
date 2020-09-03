@@ -48,6 +48,12 @@ class Tiler(Protocol):
 
         return slide.biggest_tissue_box_mask
 
+    @abstractmethod
+    def extract(self, slide: Slide):
+        raise NotImplementedError
+
+    # ------- implementation helpers -------
+
     def _tile_filename(
         self, tile_wsi_coords: CoordinatePair, tiles_counter: int
     ) -> str:
@@ -75,10 +81,6 @@ class Tiler(Protocol):
         )
 
         return tile_filename
-
-    @abstractmethod
-    def extract(self, slide: Slide):
-        raise NotImplementedError
 
 
 class GridTiler(Tiler):
@@ -165,6 +167,8 @@ class GridTiler(Tiler):
         if tile_size_[0] < 1 or tile_size_[1] < 1:
             raise ValueError(f"Tile size must be greater than 0 ({tile_size_})")
         self._valid_tile_size = tile_size_
+
+    # ------- implementation helpers -------
 
     def _grid_coordinates_from_bbox_coordinates(
         self, bbox_coordinates: CoordinatePair, slide: Slide
@@ -402,6 +406,8 @@ class RandomTiler(Tiler):
             raise ValueError(f"Tile size must be greater than 0 ({tile_size_})")
         self._valid_tile_size = tile_size_
 
+    # ------- implementation helpers -------
+
     def _random_tile_coordinates(self, slide: Slide) -> CoordinatePair:
         """Return 0-level Coordinates of a tile picked at random within the box.
 
@@ -558,6 +564,8 @@ class ScoreTiler(GridTiler):
             self._save_report(report_path, highest_score_tiles, filenames)
 
         print(f"{tiles_counter+1} Grid Tiles have been saved.")
+
+    # ------- implementation helpers -------
 
     def _highest_score_tiles(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
         """Calculate the tiles with the highest scores and their extraction coordinates.
