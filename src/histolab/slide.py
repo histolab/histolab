@@ -121,7 +121,7 @@ class Slide(object):
             Image containing the selected tile.
         """
 
-        if not self._valid_coordinates(coords):
+        if not self._has_valid_coords(coords):
             # OpenSlide doesn't complain if the coordinates for extraction are wrong,
             # but it returns an odd image.
             raise ValueError(
@@ -326,6 +326,26 @@ class Slide(object):
             )
         return final_path
 
+    def _has_valid_coords(self, coords: CoordinatePair) -> bool:
+        """Check if ``coords`` are valid 0-level coordinates.
+
+        Parameters
+        ----------
+        coords : CoordinatePair
+            Coordinates at level 0 to check
+
+        Returns
+        -------
+        bool
+            True if the coordinates are valid, False otherwise
+        """
+        return (
+            0 <= coords.x_ul < self.dimensions[0]
+            and 0 <= coords.x_br < self.dimensions[0]
+            and 0 <= coords.y_ul < self.dimensions[1]
+            and 0 <= coords.y_br < self.dimensions[1]
+        )
+
     @lazyproperty
     def _main_tissue_areas_mask_filters(self) -> imf.Compose:
         """Return a filters composition to get a binary mask of the main tissue regions.
@@ -429,26 +449,6 @@ class Slide(object):
                 int(s / np.power(10, math.ceil(math.log10(s)) - 3))
                 for s in self.dimensions
             ]
-        )
-
-    def _valid_coordinates(self, coords: CoordinatePair) -> bool:
-        """Check if ``coords`` are valid 0-level coordinates.
-
-        Parameters
-        ----------
-        coords : CoordinatePair
-            Coordinates at level 0 to check
-
-        Returns
-        -------
-        bool
-            True if the coordinates are valid, False otherwise
-        """
-        return (
-            0 <= coords.x_ul < self.dimensions[0]
-            and 0 <= coords.x_br < self.dimensions[0]
-            and 0 <= coords.y_ul < self.dimensions[1]
-            and 0 <= coords.y_br < self.dimensions[1]
         )
 
     @lazyproperty
