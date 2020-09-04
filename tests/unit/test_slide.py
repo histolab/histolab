@@ -472,7 +472,7 @@ class Describe_Slide(object):
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
 
-        _are_valid = slide._valid_coordinates(coords)
+        _are_valid = slide._has_valid_coords(coords)
 
         assert type(_are_valid) == bool
         assert _are_valid == expected_result
