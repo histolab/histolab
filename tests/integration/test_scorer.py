@@ -51,4 +51,4 @@ class Describe_Scorers(object):
 
         score = nuclei_scorer(tile)
 
-        assert score == expected_score
+        assert round(score, 5) == round(expected_score, 5)
