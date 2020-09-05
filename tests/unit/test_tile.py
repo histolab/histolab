@@ -20,6 +20,16 @@ class Describe_Tile(object):
         _init.assert_called_once_with(ANY, _image, _coords, _level)
         assert isinstance(tile, Tile)
 
+    def but_it_has_wrong_image_type(self):
+        """This test simulates a wrong user behaviour, using a None object instead of a
+        PIL Image for image param"""
+        with pytest.raises(AttributeError) as err:
+            tile = Tile(None, CoordinatePair(0, 0, 50, 50), 0)
+            tile.has_enough_tissue()
+
+        assert isinstance(err.value, AttributeError)
+        assert str(err.value) == "'NoneType' object has no attribute 'convert'"
+
     def it_knows_its_coords(self):
         _coords = CoordinatePair(0, 0, 50, 50)
         tile = Tile(None, _coords, 0)
@@ -42,16 +52,6 @@ class Describe_Tile(object):
         level = tile.level
 
         assert level == 0
-
-    def but_it_has_wrong_image_type(self):
-        """This test simulates a wrong user behaviour, using a None object instead of a
-        PIL Image for image param"""
-        with pytest.raises(AttributeError) as err:
-            tile = Tile(None, CoordinatePair(0, 0, 50, 50), 0)
-            tile.has_enough_tissue()
-
-        assert isinstance(err.value, AttributeError)
-        assert str(err.value) == "'NoneType' object has no attribute 'convert'"
 
     def it_knows_tissue_areas_mask_filters_composition(
         self, RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_
