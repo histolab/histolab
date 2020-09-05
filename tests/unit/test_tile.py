@@ -5,7 +5,14 @@ from histolab.filters.image_filters import Compose
 from histolab.tile import Tile
 from histolab.types import CoordinatePair
 
-from ..unitutil import ANY, PILImageMock, class_mock, initializer_mock, property_mock
+from ..unitutil import (
+    ANY,
+    PILImageMock,
+    class_mock,
+    initializer_mock,
+    property_mock,
+    method_mock,
+)
 
 
 class Describe_Tile(object):
@@ -52,6 +59,28 @@ class Describe_Tile(object):
         level = tile.level
 
         assert level == 0
+
+    def it_knows_if_it_has_enough_tissue(
+        self,
+        has_enough_tissue_fixture,
+        _is_almost_white,
+        _has_only_some_tissue,
+        _has_tissue_more_than_percent,
+    ):
+        (
+            almost_white,
+            only_some_tissue,
+            tissue_more_than_percent,
+            expected_value,
+        ) = has_enough_tissue_fixture
+        _is_almost_white.return_value = almost_white
+        _has_only_some_tissue.return_value = only_some_tissue
+        _has_tissue_more_than_percent.return_value = tissue_more_than_percent
+        tile = Tile(None, None, 0)
+
+        has_enough_tissue = tile.has_enough_tissue()
+
+        assert has_enough_tissue is expected_value
 
     def it_knows_tissue_areas_mask_filters_composition(
         self, RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_
@@ -118,3 +147,45 @@ class Describe_Tile(object):
         return class_mock(
             request, "histolab.filters.morphological_filters.BinaryFillHoles"
         )
+
+    # fixtures -------------------------------------------------------
+
+    @pytest.fixture(
+        params=[
+            (False, True, True, True),
+            (False, False, False, False),
+            (True, False, False, False),
+            (False, True, False, False),
+            (False, False, True, False),
+            (True, True, True, False),
+            (True, False, True, False),
+            (True, True, False, False),
+        ]
+    )
+    def has_enough_tissue_fixture(self, request):
+        (
+            almost_white,
+            only_some_tissue,
+            tissue_more_than_percent,
+            expected_value,
+        ) = request.param
+        return (
+            almost_white,
+            only_some_tissue,
+            tissue_more_than_percent,
+            expected_value,
+        )
+
+    # fixture components ---------------------------------------------
+
+    @pytest.fixture
+    def _is_almost_white(self, request):
+        return property_mock(request, Tile, "_is_almost_white")
+
+    @pytest.fixture
+    def _has_only_some_tissue(self, request):
+        return method_mock(request, Tile, "_has_only_some_tissue")
+
+    @pytest.fixture
+    def _has_tissue_more_than_percent(self, request):
+        return method_mock(request, Tile, "_has_tissue_more_than_percent")
