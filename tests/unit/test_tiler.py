@@ -901,10 +901,7 @@ class Describe_ScoreTiler(object):
             score_tiler,
             "report.csv",
             [(0.8, coords), (0.7, coords)],
-            [
-                os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
-                for i in range(2)
-            ],
+            [f"tile_{i}_level2_0-10-0-10.png" for i in range(2)],
         )
 
     # fixtures -------------------------------------------------------
