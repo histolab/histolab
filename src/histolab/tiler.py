@@ -642,8 +642,12 @@ class ScoreTiler(GridTiler):
             List of tuples containing the score and the extraction coordinates for each
             tile. Each tuple represents a tile.
         """
-        grid_tiles = self._grid_tiles_generator(slide)
+        if next(self._grid_tiles_generator(slide), None) is None:
+            raise RuntimeError(
+                "No tiles have been generated. This could happen if `check_tissue=True`"
+            )
 
+        grid_tiles = self._grid_tiles_generator(slide)
         scores = []
 
         for tile, tile_wsi_coords in grid_tiles:

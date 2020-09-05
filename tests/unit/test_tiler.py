@@ -745,20 +745,43 @@ class Describe_ScoreTiler(object):
         _grid_tiles_generator = method_mock(
             request, ScoreTiler, "_grid_tiles_generator"
         )
-        _grid_tiles_generator.return_value = [(tile, coords), (tile, coords)]
+        # it needs to be a generator
+        _grid_tiles_generator.return_value = ((tile, coords) for i in range(3))
         _scorer = instance_mock(request, RandomScorer)
         _scorer.side_effect = [0.5, 0.7]
         score_tiler = ScoreTiler(_scorer, (10, 10), 2, 0)
 
         scores = score_tiler._scores(slide)
 
-        _grid_tiles_generator.assert_called_once_with(score_tiler, slide)
+        assert _grid_tiles_generator.call_args_list == [
+            call(score_tiler, slide),
+            call(score_tiler, slide),
+        ]
         assert _scorer.call_args_list == [call(tile), call(tile)]
         assert type(scores) == list
         assert type(scores[0]) == tuple
         assert type(scores[0][0]) == float
         assert type(scores[0][1]) == CoordinatePair
         assert scores == [(0.5, coords), (0.7, coords)]
+
+    def but_it_raises_runtimeerror_if_no_tiles_are_extracted(self, request):
+        slide = instance_mock(request, Slide)
+        _grid_tiles_generator = method_mock(
+            request, ScoreTiler, "_grid_tiles_generator"
+        )
+        # it needs to be an empty generator
+        _grid_tiles_generator.return_value = (n for n in [])
+        score_tiler = ScoreTiler(None, (10, 10), 2, 0)
+
+        with pytest.raises(RuntimeError) as err:
+            score_tiler._scores(slide)
+
+        _grid_tiles_generator.assert_called_once_with(score_tiler, slide)
+        assert isinstance(err.value, RuntimeError)
+        assert (
+            str(err.value)
+            == "No tiles have been generated. This could happen if `check_tissue=True`"
+        )
 
     def it_can_calculate_highest_score_tiles(
         self, request, highest_score_tiles_fixture
