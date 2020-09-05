@@ -80,7 +80,19 @@ class Describe_Tile(object):
 
         has_enough_tissue = tile.has_enough_tissue()
 
-        assert has_enough_tissue is expected_value
+        assert has_enough_tissue == expected_value
+
+    def it_knows_if_has_tissue_more_than_percent(
+        self, request, has_tissue_more_than_percent_fixture
+    ):
+        tissue_mask, percent, expected_value = has_tissue_more_than_percent_fixture
+        _tissue_mask = method_mock(request, Tile, "_tissue_mask")
+        _tissue_mask.return_value = tissue_mask
+
+        tile = Tile(None, None, 0)
+        has_tissue_more_than_percent = tile._has_tissue_more_than_percent(percent)
+
+        assert has_tissue_more_than_percent == expected_value
 
     def it_knows_tissue_areas_mask_filters_composition(
         self, RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_
@@ -149,6 +161,26 @@ class Describe_Tile(object):
         )
 
     # fixtures -------------------------------------------------------
+
+    @pytest.fixture(
+        params=[
+            ([[0, 1, 1, 0, 1], [0, 1, 1, 1, 1]], 80, False),
+            ([[0, 1, 1, 0, 1], [0, 1, 1, 1, 1]], 10, True),
+            ([[0, 1, 1, 0, 1], [0, 1, 1, 1, 1]], 100, False),
+            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 100, False),
+            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 10, True),
+            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 80, True),
+            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 60, True),
+            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 60, False),
+            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 10, False),
+            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 3, False),
+            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 80, False),
+            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 100, False),
+        ]
+    )
+    def has_tissue_more_than_percent_fixture(self, request):
+        tissue_mask, percent, expected_value = request.param
+        return tissue_mask, percent, expected_value
 
     @pytest.fixture(
         params=[
