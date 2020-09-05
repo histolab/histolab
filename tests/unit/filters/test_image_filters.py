@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+import operator
+
 import numpy as np
 import PIL
 
@@ -404,5 +406,5 @@ class DescribeImageFilters(object):
 
         yen_threshold(image)
 
-        F_yen_threshold.assert_called_once_with(image)
+        F_yen_threshold.assert_called_once_with(image, operator.lt)
         assert type(yen_threshold(image)) == np.ndarray
