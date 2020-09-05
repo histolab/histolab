@@ -26,8 +26,8 @@ class Tile:
 
     def __init__(self, image: PIL.Image.Image, coords: CoordinatePair, level: int = 0):
         self._image = image
-        self._level = level
         self._coords = coords
+        self._level = level
 
     @lazyproperty
     def coords(self) -> CoordinatePair:

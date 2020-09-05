@@ -15,10 +15,33 @@ class Describe_Tile(object):
         _level = 0
         _coords = CoordinatePair(0, 0, 50, 50)
 
-        tile = Tile(_image, _level, _coords)
+        tile = Tile(_image, _coords, _level)
 
-        _init.assert_called_once_with(ANY, _image, _level, _coords)
+        _init.assert_called_once_with(ANY, _image, _coords, _level)
         assert isinstance(tile, Tile)
+
+    def it_knows_its_coords(self):
+        _coords = CoordinatePair(0, 0, 50, 50)
+        tile = Tile(None, _coords, 0)
+
+        coords = tile.coords
+
+        assert coords == _coords
+
+    def it_knows_its_image(self):
+        _image = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0
+        tile = Tile(_image, None, 0)
+
+        image = tile.image
+
+        assert image == _image
+
+    def it_knows_its_level(self):
+        tile = Tile(None, None, 0)
+
+        level = tile.level
+
+        assert level == 0
 
     def but_it_has_wrong_image_type(self):
         """This test simulates a wrong user behaviour, using a None object instead of a
