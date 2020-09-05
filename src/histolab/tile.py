@@ -175,4 +175,16 @@ class Tile:
         )
 
     def _tissue_mask(self, filters: imf.Compose) -> np.ndarray:
+        """Return the tissue mask of the tile image
+
+        Parameters
+        ----------
+        imf.Compose
+            Filters composition
+
+        Returns
+        -------
+        np.ndarray
+             Tissue mask array
+        """
         return filters(self._image)
