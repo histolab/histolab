@@ -1,3 +1,4 @@
+import operator
 from abc import abstractmethod
 
 import numpy as np
@@ -47,8 +48,7 @@ class NucleiScorer(Scorer):
 
     .. math::
 
-        score = nuclei\_ratio \cdot \\a + tissue\_ratio \cdot (1-\\a)
-
+        score = nuclei\_ratio \cdot tanh(tissue\_ratio)
     """
 
     def __call__(self, tile: Tile) -> float:
@@ -66,9 +66,11 @@ class NucleiScorer(Scorer):
         """
         tissue_ratio = tile.tissue_ratio
 
-        filters_raw_nuclei = imf.Compose([imf.HematoxylinChannel(), imf.YenThreshold()])
+        filters_raw_nuclei = imf.Compose(
+            [imf.HematoxylinChannel(), imf.YenThreshold(operator.gt)]
+        )
         filters_nuclei_cleaner = imf.Compose(
-            [imf.HematoxylinChannel(), imf.YenThreshold(), mof.WhiteTopHat()]
+            [imf.HematoxylinChannel(), imf.YenThreshold(operator.gt), mof.WhiteTopHat()]
         )
 
         mask_raw_nuclei = np.array(tile.apply_filters(filters_raw_nuclei).image)
