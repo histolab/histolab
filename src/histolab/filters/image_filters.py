@@ -16,6 +16,7 @@
 # limitations under the License.
 # ------------------------------------------------------------------------
 
+import operator
 from typing import Any, Callable, List, Union
 
 import numpy as np
@@ -949,6 +950,9 @@ class YenThreshold(object):
     ----------
     img : PIL.Image.Image
         Input image.
+    relate : operator, optional
+        Operator to be used to compute the mask from the threshold. Default is
+        operator.lt
 
     Returns
     -------
@@ -956,8 +960,11 @@ class YenThreshold(object):
         Boolean NumPy array where True represents a pixel above Yen's threshold.
     """
 
+    def __init__(self, relate: Callable[..., bool] = operator.lt):
+        self.relate = relate
+
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
-        return F.yen_threshold(img)
+        return F.yen_threshold(img, self.relate)
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "()"

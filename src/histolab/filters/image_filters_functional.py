@@ -873,11 +873,11 @@ def pen_marks(img: PIL.Image.Image) -> np.ndarray:
 
 
 def yen_threshold(
-    img: PIL.Image.Image, relate: Callable[..., bool] = operator.gt
+    img: PIL.Image.Image, relate: Callable[..., bool] = operator.lt
 ) -> np.ndarray:
     """Mask image based on pixel above Yen's threshold.
 
-    Compute Yen threshold on image and return boolean mask based on pixels above this
+    Compute Yen threshold on image and return boolean mask based on pixels below this
     threshold.
 
     Parameters
