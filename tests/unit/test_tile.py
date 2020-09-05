@@ -1,6 +1,8 @@
-import numpy as np
+import os
+
 import pytest
 
+import numpy as np
 from histolab.filters.image_filters import Compose
 from histolab.tile import Tile
 from histolab.types import CoordinatePair
@@ -10,8 +12,8 @@ from ..unitutil import (
     PILImageMock,
     class_mock,
     initializer_mock,
-    property_mock,
     method_mock,
+    property_mock,
 )
 
 
@@ -59,6 +61,24 @@ class Describe_Tile(object):
         level = tile.level
 
         assert level == 0
+
+    def it_can_save_the_tile_image(self, tmpdir):
+        tmp_path_ = os.path.join(tmpdir.mkdir("mydir"), "mytile.png")
+        _image = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0
+        tile = Tile(_image, None, 0)
+
+        tile.save(tmp_path_)
+
+        assert os.path.exists(tmp_path_)
+
+    def and_it_can_save_the_tile_image_also_without_ext(self, tmpdir):
+        tmp_path_ = os.path.join(tmpdir.mkdir("mydir"), "mytile")
+        _image = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0
+        tile = Tile(_image, None, 0)
+
+        tile.save(tmp_path_)
+
+        assert os.path.exists(tmp_path_ + ".png")
 
     def it_knows_if_it_has_enough_tissue(
         self,
@@ -159,26 +179,6 @@ class Describe_Tile(object):
 
         assert tissue_mask.shape == (50, 50)
 
-    @pytest.fixture
-    def RgbToGrayscale_(self, request):
-        return class_mock(request, "histolab.filters.image_filters.RgbToGrayscale")
-
-    @pytest.fixture
-    def OtsuThreshold_(self, request):
-        return class_mock(request, "histolab.filters.image_filters.OtsuThreshold")
-
-    @pytest.fixture
-    def BinaryDilation_(self, request):
-        return class_mock(
-            request, "histolab.filters.morphological_filters.BinaryDilation"
-        )
-
-    @pytest.fixture
-    def BinaryFillHoles_(self, request):
-        return class_mock(
-            request, "histolab.filters.morphological_filters.BinaryFillHoles"
-        )
-
     # fixtures -------------------------------------------------------
 
     @pytest.fixture(
@@ -240,3 +240,23 @@ class Describe_Tile(object):
     @pytest.fixture
     def _has_tissue_more_than_percent(self, request):
         return method_mock(request, Tile, "_has_tissue_more_than_percent")
+
+    @pytest.fixture
+    def RgbToGrayscale_(self, request):
+        return class_mock(request, "histolab.filters.image_filters.RgbToGrayscale")
+
+    @pytest.fixture
+    def OtsuThreshold_(self, request):
+        return class_mock(request, "histolab.filters.image_filters.OtsuThreshold")
+
+    @pytest.fixture
+    def BinaryDilation_(self, request):
+        return class_mock(
+            request, "histolab.filters.morphological_filters.BinaryDilation"
+        )
+
+    @pytest.fixture
+    def BinaryFillHoles_(self, request):
+        return class_mock(
+            request, "histolab.filters.morphological_filters.BinaryFillHoles"
+        )
