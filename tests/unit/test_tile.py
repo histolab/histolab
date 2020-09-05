@@ -140,6 +140,25 @@ class Describe_Tile(object):
         _enough_tissue_mask_filters.assert_called_once()
         assert type(tile._has_only_some_tissue()) == np.bool_
 
+    def it_knows_its_tissue_mask(
+        self,
+        request,
+        RgbToGrayscale_,
+        OtsuThreshold_,
+        BinaryDilation_,
+        BinaryFillHoles_,
+    ):
+        BinaryFillHoles_.return_value = np.zeros((50, 50))
+        filters = Compose(
+            [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
+        )
+        image = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0
+        tile = Tile(image, None, 0)
+
+        tissue_mask = tile._tissue_mask(filters)
+
+        assert tissue_mask.shape == (50, 50)
+
     @pytest.fixture
     def RgbToGrayscale_(self, request):
         return class_mock(request, "histolab.filters.image_filters.RgbToGrayscale")
