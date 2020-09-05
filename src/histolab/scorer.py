@@ -51,16 +51,13 @@ class NucleiScorer(Scorer):
 
     """
 
-    def __call__(self, tile: Tile, alpha: float = 0.6) -> float:
+    def __call__(self, tile: Tile) -> float:
         """Return the nuclei score associated with the tile.
 
         Parameters
         ----------
         tile : Tile
             The tile to calculate the score from.
-        alpha : float, optional
-            Parameter to regulate the contribution of the nuclei ratio with respect to
-            the tissue ratio. Default is 0.6
 
         Returns
         -------
@@ -78,6 +75,6 @@ class NucleiScorer(Scorer):
         mask_nuclei_clean = np.array(tile.apply_filters(filters_nuclei_cleaner).image)
 
         mask_nuclei = mask_difference(mask_raw_nuclei, mask_nuclei_clean)
-        nuclei_ratio = np.count_nonzero(mask_nuclei) / (tissue_ratio * mask_nuclei.size)
+        nuclei_ratio = np.count_nonzero(mask_nuclei) / mask_nuclei.size
 
-        return nuclei_ratio * alpha + tissue_ratio * (1 - alpha)
+        return nuclei_ratio * np.tanh(tissue_ratio)

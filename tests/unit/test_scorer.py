@@ -36,7 +36,7 @@ class DescribeScorers(object):
         tile = Tile(image, None, 0)
         nuclei_scorer = scorer.NucleiScorer()
 
-        score = nuclei_scorer(tile, 0.6)
+        score = nuclei_scorer(tile)
 
         tissue_ratio_.assert_called_once()
         assert len(apply_filters_.call_args_list) == 2
@@ -51,5 +51,5 @@ class DescribeScorers(object):
         )
         assert isinstance(nuclei_scorer, scorer.NucleiScorer)
         assert isinstance(nuclei_scorer, scorer.Scorer)
-        assert type(score) == float
-        assert score == 0.7 * 0.4  # to avoid float representation issues
+        assert type(score) == np.float64
+        assert score == 0  # to avoid float representation issues
