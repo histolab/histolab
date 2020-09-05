@@ -11,32 +11,44 @@ class Describe_Scorers(object):
         "tile_img, expected_score",
         (
             # level 0
-            (TILES.VERY_LOW_NUCLEI_SCORE_LEVEL0, 0.39668202921529044),
-            (TILES.LOW_NUCLEI_SCORE_LEVEL0, 0.34299989754219434),
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL0, 0.3832490771628042),
-            (TILES.HIGH_NUCLEI_SCORE_LEVEL0, 0.7147274900858304),
+            (TILES.VERY_LOW_NUCLEI_SCORE_LEVEL0, 4.95387907194613e-05),
+            (TILES.LOW_NUCLEI_SCORE_LEVEL0, 0.011112025501054716),
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL0, 0.018651677436394662),
+            (TILES.HIGH_NUCLEI_SCORE_LEVEL0, 0.39901978131493154),
             # level 1
-            (TILES.VERY_LOW_NUCLEI_SCORE_RED_PEN_LEVEL1, 0.16439756135044395),
-            (TILES.LOW_NUCLEI_SCORE_LEVEL1, 0.2412938986183465),
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1, 0.3171736698917567),
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1_2, 0.5193736600810265),
-            (TILES.MEDIUM_NUCLEI_SCORE_GREEN_PEN_LEVEL1, 0.7200658493037305),
-            (TILES.HIGH_NUCLEI_SCORE_RED_PEN_LEVEL1, 0.5549940151965075),
+            (
+                TILES.VERY_LOW_NUCLEI_SCORE_RED_PEN_LEVEL1,
+                0.0017590279896743531,
+            ),  # breast - red pen
+            (TILES.LOW_NUCLEI_SCORE_LEVEL1, 0.019689596845556157),  # breast - green pen
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1, 0.009512701556682022,),  # aorta
+            (
+                TILES.MEDIUM_NUCLEI_SCORE_LEVEL1_2,
+                0.1519627864167197,
+            ),  # breast - green pen
+            (
+                TILES.MEDIUM_NUCLEI_SCORE_GREEN_PEN_LEVEL1,
+                0.35696740368342295,
+            ),  # breast - green pen
+            (
+                TILES.HIGH_NUCLEI_SCORE_RED_PEN_LEVEL1,
+                0.19867406253648537,
+            ),  # breast - red pen
             # level 2
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL2, 0.5226490280587772),
-            (TILES.HIGH_NUCLEI_SCORE_LEVEL2, 0.5941818245460105),
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL2, 0.17959041877765877),  # prostate
+            (TILES.HIGH_NUCLEI_SCORE_LEVEL2, 0.02165773137397028),  # prostate
             # no tissue
-            (TILES.NO_TISSUE, 0.015577231690474633),
-            (TILES.NO_TISSUE2, 0.03227306029240194),
-            (TILES.NO_TISSUE_LINE, 0.2140289904514813),
-            (TILES.NO_TISSUE_RED_PEN, 0.6531987758882148),
-            (TILES.NO_TISSUE_GREEN_PEN, 0.6926820791810822),
+            (TILES.NO_TISSUE, 6.677516254309149e-07),
+            (TILES.NO_TISSUE2, 7.505964521573081e-06),
+            (TILES.NO_TISSUE_LINE, 0.00028575083246431935),
+            (TILES.NO_TISSUE_RED_PEN, 0.2051245888881937),
+            (TILES.NO_TISSUE_GREEN_PEN, 0.28993597176882124),
         ),
     )
     def it_knows_nuclei_score(self, tile_img, expected_score):
         tile = Tile(tile_img, None)
         nuclei_scorer = scorer.NucleiScorer()
 
-        score = nuclei_scorer(tile, 0.6)
+        score = nuclei_scorer(tile)
 
         assert score == expected_score
