@@ -184,24 +184,21 @@ class GridTiler(Tiler):
 
         Yields
         -------
-        Iterator[CoordinatePair]
-            Iterator of tiles' CoordinatePair
+        Generator[CoordinatePair]
+            Generator of tiles' CoordinatePair
         """
         tile_w_lvl, tile_h_lvl = self.tile_size
 
         n_tiles_row = self._n_tiles_row(bbox_coordinates)
         n_tiles_column = self._n_tiles_column(bbox_coordinates)
 
-        x_ul_lvl_offset = bbox_coordinates.x_ul
-        y_ul_lvl_offset = bbox_coordinates.y_ul
-
         for i in range(n_tiles_row):
             for j in range(n_tiles_column):
-                x_ul_lvl = x_ul_lvl_offset + tile_w_lvl * j - self.pixel_overlap
-                y_ul_lvl = y_ul_lvl_offset + tile_h_lvl * i - self.pixel_overlap
+                x_ul_lvl = bbox_coordinates.x_ul + tile_w_lvl * j - self.pixel_overlap
+                y_ul_lvl = bbox_coordinates.y_ul + tile_h_lvl * i - self.pixel_overlap
 
-                x_ul_lvl = np.clip(x_ul_lvl, x_ul_lvl_offset, None)
-                y_ul_lvl = np.clip(y_ul_lvl, y_ul_lvl_offset, None)
+                x_ul_lvl = np.clip(x_ul_lvl, bbox_coordinates.x_ul, None)
+                y_ul_lvl = np.clip(y_ul_lvl, bbox_coordinates.y_ul, None)
 
                 x_br_lvl = x_ul_lvl + tile_w_lvl
                 y_br_lvl = y_ul_lvl + tile_h_lvl
