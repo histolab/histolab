@@ -88,3 +88,21 @@ def test_pooch_missing(monkeypatch):
     data.file_hash(file)
 
     assert data.file_hash.__module__ == "histolab.data"
+
+
+def test_file_hash_with_wrong_algorithm(monkeypatch):
+    from histolab import data
+    import copy
+
+    fakesysmodules = copy.copy(sys.modules)
+    fakesysmodules["pooch.utils"] = None
+    monkeypatch.delitem(sys.modules, "pooch.utils")
+    monkeypatch.setattr("sys.modules", fakesysmodules)
+    from importlib import reload
+
+    file = SVS.CMU_1_SMALL_REGION
+    reload(data)
+    with pytest.raises(ValueError) as err:
+        data.file_hash(file, "fakesha")
+    assert str(err.value) == "Algorithm 'fakesha' not available in hashlib"
+    assert data.file_hash.__module__ == "histolab.data"
