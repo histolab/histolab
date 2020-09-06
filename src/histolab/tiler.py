@@ -429,12 +429,12 @@ class RandomTiler(Tiler):
         tile_w_thumb = (
             tile_w_lvl * box_mask.shape[1] / slide.level_dimensions(self.level)[0]
         )
-        tile_h_thumn = (
+        tile_h_thumb = (
             tile_h_lvl * box_mask.shape[0] / slide.level_dimensions(self.level)[1]
         )
 
         x_br_lvl = x_ul_lvl + tile_w_thumb
-        y_br_lvl = y_ul_lvl + tile_h_thumn
+        y_br_lvl = y_ul_lvl + tile_h_thumb
 
         tile_wsi_coords = scale_coordinates(
             reference_coords=CoordinatePair(x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl),
