@@ -229,7 +229,8 @@ class GridTiler(Tiler):
         box_mask = self.box_mask(slide)
 
         regions = regions_from_binary_mask(box_mask)
-        for region in regions:  # at the moment there is only one region
+        # ----at the moment there is only one region----
+        for region in regions:
             bbox_coordinates_thumb = region_coordinates(region)
             bbox_coordinates = scale_coordinates(
                 bbox_coordinates_thumb,
