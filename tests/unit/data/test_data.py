@@ -1,9 +1,11 @@
 # coding: utf-8
 
+import copy
 
 import os
 import sys
 from unittest.mock import patch
+from importlib import reload
 
 import pytest
 
@@ -75,14 +77,11 @@ def it_raises_error_on_fetch_if_image_fetcher_is_None():
 
 def test_pooch_missing(monkeypatch):
     from histolab import data
-    import copy
 
     fakesysmodules = copy.copy(sys.modules)
     fakesysmodules["pooch.utils"] = None
     monkeypatch.delitem(sys.modules, "pooch.utils")
     monkeypatch.setattr("sys.modules", fakesysmodules)
-    from importlib import reload
-
     file = SVS.CMU_1_SMALL_REGION
     reload(data)
 
@@ -93,16 +92,14 @@ def test_pooch_missing(monkeypatch):
 
 def test_file_hash_with_wrong_algorithm(monkeypatch):
     from histolab import data
-    import copy
 
     fakesysmodules = copy.copy(sys.modules)
     fakesysmodules["pooch.utils"] = None
     monkeypatch.delitem(sys.modules, "pooch.utils")
     monkeypatch.setattr("sys.modules", fakesysmodules)
-    from importlib import reload
-
     file = SVS.CMU_1_SMALL_REGION
     reload(data)
+
     with pytest.raises(ValueError) as err:
         data.file_hash(file, "fakesha")
     assert str(err.value) == "Algorithm 'fakesha' not available in hashlib"
@@ -111,14 +108,11 @@ def test_file_hash_with_wrong_algorithm(monkeypatch):
 
 def test_create_image_fetcher_without_pooch(monkeypatch):
     from histolab import data
-    import copy
 
     fakesysmodules = copy.copy(sys.modules)
     fakesysmodules["pooch"] = None
     monkeypatch.delitem(sys.modules, "pooch")
     monkeypatch.setattr("sys.modules", fakesysmodules)
-    from importlib import reload
-
     reload(data)
 
     create_image_fetcher = data._create_image_fetcher()
