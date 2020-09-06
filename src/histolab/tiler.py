@@ -184,8 +184,8 @@ class GridTiler(Tiler):
 
         Yields
         -------
-        Generator[CoordinatePair]
-            Generator of tiles' CoordinatePair
+        Iterator[CoordinatePair]
+            Iterator of tiles' CoordinatePair
         """
         tile_w_lvl, tile_h_lvl = self.tile_size
 
@@ -223,8 +223,8 @@ class GridTiler(Tiler):
 
         Yields
         -------
-        Generator[CoordinatePair]
-            Generator of tiles' CoordinatePair
+        Iterator[CoordinatePair]
+            Iterator of tiles' CoordinatePair
         """
         box_mask = self.box_mask(slide)
 
