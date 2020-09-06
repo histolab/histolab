@@ -47,6 +47,7 @@ jobs:
 install:
   - pip3 install -e .[testing]
   - pip3 install flake8
+  - pip3 install pooch
 
 services:
   - xvfb
