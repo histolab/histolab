@@ -18,7 +18,7 @@ from histolab.data import (
 )
 
 from ...fixtures import SVS
-from ...unitutil import function_mock
+from ...unitutil import function_mock, ANY
 
 
 def test_data_dir():
@@ -85,6 +85,7 @@ def test_pooch_missing(monkeypatch):
 
     file = SVS.CMU_1_SMALL_REGION
     reload(data)
+
     data.file_hash(file)
 
     assert data.file_hash.__module__ == "histolab.data"
@@ -106,3 +107,20 @@ def test_file_hash_with_wrong_algorithm(monkeypatch):
         data.file_hash(file, "fakesha")
     assert str(err.value) == "Algorithm 'fakesha' not available in hashlib"
     assert data.file_hash.__module__ == "histolab.data"
+
+
+def test_create_image_fetcher_without_pooch(monkeypatch):
+    from histolab import data
+    import copy
+
+    fakesysmodules = copy.copy(sys.modules)
+    fakesysmodules["pooch"] = None
+    monkeypatch.delitem(sys.modules, "pooch")
+    monkeypatch.setattr("sys.modules", fakesysmodules)
+    from importlib import reload
+
+    reload(data)
+
+    create_image_fetcher = data._create_image_fetcher()
+
+    assert create_image_fetcher == (None, ANY)
