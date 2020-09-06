@@ -2,11 +2,20 @@
 
 
 import os
+import sys
+from unittest.mock import patch
 
 import pytest
 
 import openslide
-from histolab.data import _has_hash, _load_svs, cmu_small_region, data_dir
+from histolab.data import (
+    _fetch,
+    _has_hash,
+    _load_svs,
+    cmu_small_region,
+    data_dir,
+    registry,
+)
 
 from ...fixtures import SVS
 from ...unitutil import function_mock
@@ -47,3 +56,35 @@ def it_knows_its_hash(request, file, hash, expected_value):
     has_hash = _has_hash(file, hash)
 
     assert has_hash is expected_value
+
+
+@patch.dict(registry, {"data/cmu_small_region.svs": "bar"}, clear=True)
+@patch("histolab.data.image_fetcher", None)
+def it_raises_error_on_fetch_if_image_fetcher_is_None():
+    with pytest.raises(ModuleNotFoundError) as err:
+        _fetch("data/cmu_small_region.svs")
+
+    assert (
+        str(err.value)
+        == "The requested file is part of the histolab distribution, but requires the "
+        "installation of an optional dependency, pooch. To install pooch, use your "
+        "preferred python package manager. Follow installation instruction found at "
+        "https://www.fatiando.org/pooch/latest/install.html"
+    )
+
+
+def test_pooch_missing(monkeypatch):
+    from histolab import data
+    import copy
+
+    fakesysmodules = copy.copy(sys.modules)
+    fakesysmodules["pooch.utils"] = None
+    monkeypatch.delitem(sys.modules, "pooch.utils")
+    monkeypatch.setattr("sys.modules", fakesysmodules)
+    from importlib import reload
+
+    file = SVS.CMU_1_SMALL_REGION
+    reload(data)
+    data.file_hash(file)
+
+    assert data.file_hash.__module__ == "histolab.data"
