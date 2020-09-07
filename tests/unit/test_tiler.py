@@ -783,6 +783,21 @@ class Describe_ScoreTiler(object):
             == "No tiles have been generated. This could happen if `check_tissue=True`"
         )
 
+    def it_can_scale_scores(self):
+        coords = [CoordinatePair(0, 10 * i, 0, 10) for i in range(3)]
+        scores = [0.3, 0.4, 0.7]
+        scores_ = list(zip(scores, coords))
+        score_tiler = ScoreTiler(None, (10, 10), 2, 0)
+        expected_scaled_coords = list(zip([0.0, 0.2500000000000001, 1.0], coords))
+
+        scaled_scores = score_tiler._scale_scores(scores_)
+
+        for (score, coords_), (expected_score, expected_coords) in zip(
+            scaled_scores, expected_scaled_coords
+        ):
+            assert round(score, 5) == round(expected_score, 5)
+            assert coords_ == expected_coords
+
     def it_can_calculate_highest_score_tiles(
         self, request, highest_score_tiles_fixture
     ):
@@ -836,7 +851,10 @@ class Describe_ScoreTiler(object):
         coords = CoordinatePair(0, 10, 0, 10)
         tile = Tile(image, coords)
         _extract_tile.return_value = tile
-        _highest_score_tiles.return_value = [(0.8, coords), (0.7, coords)]
+        _highest_score_tiles.return_value = (
+            [(0.8, coords), (0.7, coords)],
+            [(0.8, coords), (0.7, coords)],
+        )
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
@@ -868,13 +886,21 @@ class Describe_ScoreTiler(object):
         tmp_path_ = tmpdir.mkdir("path")
         coords = CoordinatePair(0, 10, 0, 10)
         highest_score_tiles = [(0.8, coords), (0.7, coords)]
+        highest_scaled_score_tiles = [(0.1, coords), (0.0, coords)]
         filenames = ["tile0.png", "tile1.png"]
         random_scorer_ = instance_mock(request, RandomScorer)
         score_tiler = ScoreTiler(random_scorer_, (10, 10), 2, 2)
-        report_ = ["filename,score", "tile0.png,0.8", "tile1.png,0.7"]
+        report_ = [
+            "filename,score,scaled_score",
+            "tile0.png,0.8,0.1",
+            "tile1.png,0.7,0.0",
+        ]
 
         score_tiler._save_report(
-            os.path.join(tmp_path_, "report.csv"), highest_score_tiles, filenames
+            os.path.join(tmp_path_, "report.csv"),
+            highest_score_tiles,
+            highest_scaled_score_tiles,
+            filenames,
         )
 
         assert os.path.exists(os.path.join(tmp_path_, "report.csv"))
@@ -894,7 +920,10 @@ class Describe_ScoreTiler(object):
         coords = CoordinatePair(0, 10, 0, 10)
         tile = Tile(image, coords)
         _extract_tile.return_value = tile
-        _highest_score_tiles.return_value = [(0.8, coords), (0.7, coords)]
+        _highest_score_tiles.return_value = (
+            [(0.8, coords), (0.7, coords)],
+            [(0.8, coords), (0.7, coords)],
+        )
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
@@ -924,6 +953,7 @@ class Describe_ScoreTiler(object):
             score_tiler,
             "report.csv",
             [(0.8, coords), (0.7, coords)],
+            [(0.8, coords), (0.7, coords)],
             [f"tile_{i}_level2_0-10-0-10.png" for i in range(2)],
         )
 
@@ -933,28 +963,50 @@ class Describe_ScoreTiler(object):
         params=(
             (
                 0,
-                [
-                    (0.8, CoordinatePair(0, 10, 0, 10)),
-                    (0.7, CoordinatePair(0, 10, 0, 10)),
-                    (0.5, CoordinatePair(0, 10, 0, 10)),
-                    (0.2, CoordinatePair(0, 10, 0, 10)),
-                    (0.1, CoordinatePair(0, 10, 0, 10)),
-                ],
+                (
+                    [
+                        (0.8, CoordinatePair(0, 10, 0, 10)),
+                        (0.7, CoordinatePair(0, 10, 0, 10)),
+                        (0.5, CoordinatePair(0, 10, 0, 10)),
+                        (0.2, CoordinatePair(0, 10, 0, 10)),
+                        (0.1, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                    [
+                        (1.0, CoordinatePair(0, 10, 0, 10)),
+                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
+                        (0.5714285714285714, CoordinatePair(0, 10, 0, 10)),
+                        (0.14285714285714285, CoordinatePair(0, 10, 0, 10)),
+                        (0.0, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                ),
             ),
             (
                 2,
-                [
-                    (0.8, CoordinatePair(0, 10, 0, 10)),
-                    (0.7, CoordinatePair(0, 10, 0, 10)),
-                ],
+                (
+                    [
+                        (0.8, CoordinatePair(0, 10, 0, 10)),
+                        (0.7, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                    [
+                        (1.0, CoordinatePair(0, 10, 0, 10)),
+                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                ),
             ),
             (
                 3,
-                [
-                    (0.8, CoordinatePair(0, 10, 0, 10)),
-                    (0.7, CoordinatePair(0, 10, 0, 10)),
-                    (0.5, CoordinatePair(0, 10, 0, 10)),
-                ],
+                (
+                    [
+                        (0.8, CoordinatePair(0, 10, 0, 10)),
+                        (0.7, CoordinatePair(0, 10, 0, 10)),
+                        (0.5, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                    [
+                        (1.0, CoordinatePair(0, 10, 0, 10)),
+                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
+                        (0.5714285714285714, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                ),
             ),
         )
     )
