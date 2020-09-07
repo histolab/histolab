@@ -546,7 +546,9 @@ class ScoreTiler(GridTiler):
         report_path : str, optional
             Path to the CSV report. If None, no report will be saved
         """
-        highest_score_tiles = self._highest_score_tiles(slide)
+        highest_score_tiles, highest_scaled_score_tiles = self._highest_score_tiles(
+            slide
+        )
 
         tiles_counter = 0
         filenames = []
@@ -559,7 +561,9 @@ class ScoreTiler(GridTiler):
             print(f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}")
 
         if report_path:
-            self._save_report(report_path, highest_score_tiles, filenames)
+            self._save_report(
+                report_path, highest_score_tiles, highest_scaled_score_tiles, filenames
+            )
 
         print(f"{tiles_counter+1} Grid Tiles have been saved.")
 
@@ -578,6 +582,10 @@ class ScoreTiler(GridTiler):
         List[Tuple[float, CoordinatePair]]
             List of tuples containing the score and the extraction coordinates for the
             tiles with the highest score. Each tuple represents a tile.
+        List[Tuple[float, CoordinatePair]]
+            List of tuples containing the scaled score between 0 and 1 and the
+            extraction coordinates for the tiles with the highest score. Each tuple
+            represents a tile.
 
         Raises
         ------
@@ -585,21 +593,28 @@ class ScoreTiler(GridTiler):
             If ``n_tiles`` is negative.
         """
         all_scores = self._scores(slide)
+        scaled_scores = self._scale_scores(all_scores)
 
         sorted_tiles_by_score = sorted(all_scores, key=lambda x: x[0], reverse=True)
+        sorted_tiles_by_scaled_score = sorted(
+            scaled_scores, key=lambda x: x[0], reverse=True
+        )
         if self.n_tiles > 0:
             highest_score_tiles = sorted_tiles_by_score[: self.n_tiles]
+            highest_scaled_score_tiles = sorted_tiles_by_scaled_score[: self.n_tiles]
         elif self.n_tiles == 0:
             highest_score_tiles = sorted_tiles_by_score
+            highest_scaled_score_tiles = sorted_tiles_by_scaled_score
         else:
             raise ValueError(f"'n_tiles' cannot be negative ({self.n_tiles})")
 
-        return highest_score_tiles
+        return highest_score_tiles, highest_scaled_score_tiles
 
     def _save_report(
         self,
         report_path: str,
         highest_score_tiles: List[Tuple[float, CoordinatePair]],
+        highest_scaled_score_tiles: List[Tuple[float, CoordinatePair]],
         filenames: List[str],
     ) -> None:
         """Save to ``filename`` the report of the saved tiles with the associated score.
@@ -613,20 +628,52 @@ class ScoreTiler(GridTiler):
         highest_score_tiles : List[Tuple[float, CoordinatePair]]
             List of tuples containing the score and the extraction coordinates for the
             tiles with the highest score. Each tuple represents a tile.
+        List[Tuple[float, CoordinatePair]]
+            List of tuples containing the scaled score between 0 and 1 and the
+            extraction coordinates for the tiles with the highest score. Each tuple
+            represents a tile.
         filenames : List[str]
             List of the tiles' filename
         """
 
-        header = ["filename", "score"]
+        header = ["filename", "score", "scaled_score"]
         rows = [
             dict(zip(header, values))
-            for values in zip(filenames, np.array(highest_score_tiles)[:, 0])
+            for values in zip(
+                filenames,
+                np.array(highest_score_tiles)[:, 0],
+                np.array(highest_scaled_score_tiles)[:, 0],
+            )
         ]
 
         with open(report_path, "w+", newline="") as f:
             w = csv.DictWriter(f, fieldnames=header, lineterminator=os.linesep)
             w.writeheader()
             w.writerows(rows)
+
+    @staticmethod
+    def _scale_scores(
+        scores: List[Tuple[float, CoordinatePair]]
+    ) -> List[Tuple[float, CoordinatePair]]:
+        """Scale scores between 0 and 1.
+
+        Parameters
+        ----------
+        scores : List[Tuple[float, CoordinatePair]]
+            Scores to be scaled
+
+        Returns
+        -------
+        List[Tuple[float, CoordinatePair]])
+            Scaled scores
+        """
+        scores_ = np.array(scores)[:, 0]
+        coords = np.array(scores)[:, 1]
+        scores_scaled = (scores_ - np.min(scores_)) / (
+            np.max(scores_) - np.min(scores_)
+        )
+
+        return list(zip(scores_scaled, coords))
 
     def _scores(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
         """Calculate the scores for all the tiles extracted from the ``slide``.
