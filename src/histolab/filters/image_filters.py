@@ -943,7 +943,7 @@ class PenMarks(object):
 class YenThreshold(object):
     """Mask image based on pixel above Yen threshold.
 
-    Compute Yen threshold on image and return boolean mask based on pixels above this
+    Compute Yen threshold on image and return boolean mask based on pixels below this
     threshold.
 
     Parameters
@@ -957,7 +957,7 @@ class YenThreshold(object):
     Returns
     -------
     np.ndarray
-        Boolean NumPy array where True represents a pixel above Yen's threshold.
+        Boolean NumPy array where True represents a pixel below Yen's threshold.
     """
 
     def __init__(self, relate: Callable[..., bool] = operator.lt):

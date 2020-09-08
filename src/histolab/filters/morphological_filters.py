@@ -259,8 +259,8 @@ class WhiteTopHat(object):
     """Return white top hat of an image.
 
     The white top hat of an image is defined as the image minus its morphological
-    opening. This operation returns the bright spots of the image that are smaller than
-    the structuring element.
+    opening with respect to a structuring element. This operation returns the bright
+    spots of the image that are smaller than the structuring element.
 
     Parameters
     ----------
