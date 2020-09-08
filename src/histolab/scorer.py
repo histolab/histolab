@@ -64,7 +64,6 @@ class NucleiScorer(Scorer):
         float
             Nuclei score
         """
-        tissue_ratio = tile.tissue_ratio
 
         filters_raw_nuclei = imf.Compose(
             [imf.HematoxylinChannel(), imf.YenThreshold(operator.gt)]
@@ -79,4 +78,4 @@ class NucleiScorer(Scorer):
         mask_nuclei = mask_difference(mask_raw_nuclei, mask_nuclei_clean)
         nuclei_ratio = np.count_nonzero(mask_nuclei) / mask_nuclei.size
 
-        return nuclei_ratio * np.tanh(tissue_ratio)
+        return nuclei_ratio * np.tanh(tile.tissue_ratio)
