@@ -599,14 +599,15 @@ class ScoreTiler(GridTiler):
         sorted_tiles_by_scaled_score = sorted(
             scaled_scores, key=lambda x: x[0], reverse=True
         )
+        if self.n_tiles < 0:
+            raise ValueError(f"'n_tiles' cannot be negative ({self.n_tiles})")
+
         if self.n_tiles > 0:
             highest_score_tiles = sorted_tiles_by_score[: self.n_tiles]
             highest_scaled_score_tiles = sorted_tiles_by_scaled_score[: self.n_tiles]
-        elif self.n_tiles == 0:
+        else:
             highest_score_tiles = sorted_tiles_by_score
             highest_scaled_score_tiles = sorted_tiles_by_scaled_score
-        else:
-            raise ValueError(f"'n_tiles' cannot be negative ({self.n_tiles})")
 
         return highest_score_tiles, highest_scaled_score_tiles
 
