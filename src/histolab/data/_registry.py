@@ -15,6 +15,7 @@ registry = {
     "tcga/breast/f8b4cee6-9149-45b4-ae53-82b0547e1e34": "55c694262c4d44b342e08eb3ef2082eeb9e9deeb3cb445e4776419bb9fa7dc21",
     "tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461": "95163831d9076bb5e5b21790933dee9535a3607ba35bd6ae425374a45ecb1ba6",
     "tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210": "305c80e28227b25fdd0cc24726da4cf038380b4326e25c6518ffe23051a25ac0",
+    "tcga/ovarian/b777ec99-2811-4aa4-9568-13f68e380c86": "f8e5059a0c9f8c026cfb2613cddef6562f8cdbd5954580282e2afa41d2f86a8c",
 }
 
 aperio_repo_url = "http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio"
@@ -28,6 +29,7 @@ registry_urls = {
     "tcga/breast/f8b4cee6-9149-45b4-ae53-82b0547e1e34": f"{tcga_repo_url}/f8b4cee6-9149-45b4-ae53-82b0547e1e34",
     "tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461": f"{tcga_repo_url}/31e248bf-ee24-4d18-bccb-47046fccb461",
     "tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210": f"{tcga_repo_url}/6b725022-f1d5-4672-8c6c-de8140345210",
+    "tcga/ovarian/b777ec99-2811-4aa4-9568-13f68e380c86": f"{tcga_repo_url}/b777ec99-2811-4aa4-9568-13f68e380c86",
 }
 
 legacy_registry = {

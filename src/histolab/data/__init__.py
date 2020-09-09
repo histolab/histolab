@@ -379,6 +379,27 @@ def heart_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     return _load_svs("aperio/JP2K-33003-2.svs")
 
 
+def ovarian_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
+    """Ovarian tissue, TCGA-OV dataset.
+
+    This image is available here
+    https://portal.gdc.cancer.gov/cases/b777ec99-2811-4aa4-9568-13f68e380c86
+    or through the API
+    https://api.gdc.cancer.gov/data/b777ec99-2811-4aa4-9568-13f68e380c86
+
+
+    Access: open
+
+    Returns
+    -------
+    prostate_tissue : openslide.OpenSlide
+        Ovarian tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
+    """
+    return _load_svs("tcga/ovarian/b777ec99-2811-4aa4-9568-13f68e380c86")
+
+
 def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """Prostate tissue, TCGA-PRAD dataset.
 
