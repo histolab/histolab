@@ -61,7 +61,7 @@ pip install histolab
 
 Read the full documentation here https://histolab.readthedocs.io/en/latest/.
 
-### Quickstart 
+# Quickstart 
 Here we present a step-by-step tutorial on the use of `histolab` to
 extract a tile dataset from example WSIs. The corresponding Jupyter
 Notebook is available at <https://github.com/histolab/histolab-box>:
@@ -80,8 +80,7 @@ command:
 pip install histolab
 ```
 
-TCGA data
----------
+##TCGA data
 
 First things first, let’s import some data to work with, for example the
 prostate tissue slide and the ovarian tissue slide available in the
@@ -107,8 +106,7 @@ ovarian_svs, ovarian_path = ovarian_tissue()
 Notice that each `data` function outputs the corresponding slide, as an
 OpenSlide object, and the path where the slide has been saved.
 
-Slide initialization
---------------------
+## Slide initialization
 
 `histolab` maps a WSI file into a `Slide` object. Each usage of a WSI
 requires a 1-o-1 association with a `Slide` object contained in the
@@ -196,8 +194,7 @@ ovarian_slide.show()
 
 ![](https://user-images.githubusercontent.com/4196091/92748248-3db9ad00-f385-11ea-846b-a5ce8cf3ca09.png)
 
-Tile extraction
----------------
+## Tile extraction
 
 Once that the `Slide` objects are defined, we can proceed to extract the
 tiles. To speed up the extraction process, `histolab` automatically
