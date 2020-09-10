@@ -50,13 +50,6 @@ Histolab has only one system-wide dependency: OpenSlide.
 
 You can download and install it from [OpenSlide](https://openslide.org/download/) according to your operating system.
 
-
-### Installation 
-
-```
-pip install histolab
-```
-
 ### Documentation
 
 Read the full documentation here https://histolab.readthedocs.io/en/latest/.
@@ -80,7 +73,7 @@ command:
 pip install histolab
 ```
 
-##TCGA data
+## TCGA data
 
 First things first, let’s import some data to work with, for example the
 prostate tissue slide and the ovarian tissue slide available in the
