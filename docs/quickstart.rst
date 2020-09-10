@@ -203,8 +203,6 @@ the ``extract`` method on the extractor, passing the slide as parameter:
 .. figure:: https://user-images.githubusercontent.com/4196091/92750145-1663df80-f387-11ea-8d98-7794eef2fd47.png
    :alt: extracted tiles
 
-.. class:: center
-
 Random tiles extracted from the prostate slide at level 2.
 
 
@@ -247,8 +245,6 @@ on our extractor:
 
 .. figure:: https://user-images.githubusercontent.com/4196091/92751173-0993bb80-f388-11ea-9d30-a6cd17769d76.png
    :alt: ovarian tile extraction
-
-.. class:: center
 
 Examples of non-overlapping grid tiles extracted from the ovarian slide at level 0.
 
@@ -308,8 +304,6 @@ of the saved tiles and their scores in a CSV file:
 
 .. figure:: https://user-images.githubusercontent.com/4196091/92751801-9d658780-f388-11ea-8132-5d0c82bb112b.png
    :alt: nuclei scorer
-
-.. class:: center
 
 Representation of the scored assigned to each extracted tile by the NucleiScorer,
 based on the amount of nuclei detected.
