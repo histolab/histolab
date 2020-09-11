@@ -10,9 +10,9 @@ on all platforms.
 
 Thus, the user can decide either to use ``histolab`` through
 ``histolab-box`` or installing it in his/her python virtual environment
-(e.g. conda, pipenv, pyenv, virtualenv, etc...). In the latter case, as
-the ``histolab`` package has been published on the Python Package Index
-(`PyPi <http://www.pypi.org>`_), it can be easily installed via the command:
+(using conda, pipenv, pyenv, virtualenv, etc...). In the latter case, as
+the ``histolab`` package has been published on
+`PyPi <http://www.pypi.org>`_, it can be easily installed via the command:
 
 
 .. code-block:: bash
@@ -76,7 +76,7 @@ subfolder of the current working directory:
    ovarian_slide = Slide(ovarian_path, processed_path=PROCESS_PATH_PROSTATE)
 
 **Note:** If the slides were stored in the same folder, this can be
-done directly on the whole dataset by calling the ``SlideSet`` object
+done directly on the whole dataset by using the ``SlideSet`` object
 of the ``slide`` module.
 
 With a ``Slide`` object we can easily retrieve information about the
@@ -116,7 +116,7 @@ dimensions at native magnification or at a specified level:
    Dimensions at level 2: (1875, 2124)
 
 Moreover, we can save and show the slide thumbnail in a separate window.
-In particular, the thumbnailimage will be automatically saved in a subdirectory
+In particular, the thumbnail image will be automatically saved in a subdirectory
 of the processedpath:
 
 .. code-block:: ipython3

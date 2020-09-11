@@ -302,8 +302,9 @@ preferable over tiles with few or no nuclei. We can leverage the
 `NucleiScorer` function of the `scorer` module to order the extracted
 tiles based on the proportion of the tissue and of the hematoxylin
 staining. In particular, the score is computed as
-$N_t\cdot\mathrm{tanh}(T_t)$, where $N_t$ is the percentage of nuclei
-and $T_t$ the percentage of tissue in the tile $t$.
+
+![formula](https://render.githubusercontent.com/render/math?math=N_t\cdot\mathrm{tanh}(T_t)) where ![formula](https://render.githubusercontent.com/render/math?math=N_t) is the percentage of nuclei and  ![formula](https://render.githubusercontent.com/render/math?math=T_t) the percentage of tissue in the tile *t*
+
 
 First, we need the extractor and the scorer:
 
