@@ -340,7 +340,7 @@ SUMMARY_PATH = os.path.join(OVARIAN_SCORED_TILES_PATH, summary_filename)
 scored_tiles_extractor.extract(ovarian_slide, report_path=SUMMARY_PATH)
 ```
 
-![](https://user-images.githubusercontent.com/4196091/92751801-9d658780-f388-11ea-8132-5d0c82bb112b.png)
+<img src="https://user-images.githubusercontent.com/4196091/92751801-9d658780-f388-11ea-8132-5d0c82bb112b.png" width=500>
 
 Representation of the scored assigned to each extracted tile by the
 NucleiScorer, based on the amount of nuclei detected.
