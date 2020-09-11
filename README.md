@@ -214,12 +214,13 @@ from histolab.tiler import RandomTiler
 ```
 
 Let us suppose that we want to randomly extract 6 squared tiles at level
-2 of size 512 from ourprostate slide, and that we want to save them only
+2 of size 512 from our prostate slide, and that we want to save them only
 if they have at least 80% of tissue inside. We then initialize our
 `RandomTiler` extractor as follows:
 
 ```python
-PROSTATE_RANDOM_TILES_PATH = os.path.join(PROCESS_PATH_PROSTATE, 'random')# save tiles in the 'random' subdirectory
+# save tiles in the 'random' subdirectory
+PROSTATE_RANDOM_TILES_PATH = os.path.join(PROCESS_PATH_PROSTATE, 'random')
 
 random_tiles_extractor = RandomTiler(
     tile_size=(512, 512),
@@ -339,8 +340,8 @@ scored_tiles_extractor.extract(ovarian_slide, report_path=SUMMARY_PATH)
 
 <img src="https://user-images.githubusercontent.com/4196091/92751801-9d658780-f388-11ea-8132-5d0c82bb112b.png" width=500>
 
-Representation of the scored assigned to each extracted tile by the
-NucleiScorer, based on the amount of nuclei detected.
+Representation of the score assigned to each extracted tile by the
+`NucleiScorer`, based on the amount of nuclei detected.
 
 ## Versioning 
 

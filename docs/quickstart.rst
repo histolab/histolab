@@ -171,7 +171,7 @@ of tiles from our slides; in this case, we need the ``RandomTiler`` extractor:
    from histolab.tiler import RandomTiler
 
 Let us suppose that we want to randomly extract 6 squared tiles at level 2 of
-size 512 from ourprostate slide, and that we want to save them only if
+size 512 from our prostate slide, and that we want to save them only if
 they have at least 80% of tissue inside. We then initialize our ``RandomTiler``
 extractor as follows:
 
@@ -302,7 +302,7 @@ of the saved tiles and their scores in a CSV file:
 .. figure:: https://user-images.githubusercontent.com/4196091/92751801-9d658780-f388-11ea-8132-5d0c82bb112b.png
    :alt: nuclei scorer
 
-Representation of the scored assigned to each extracted tile by the NucleiScorer,
+Representation of the score assigned to each extracted tile by the NucleiScorer,
 based on the amount of nuclei detected.
 
 
