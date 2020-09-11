@@ -177,7 +177,8 @@ extractor as follows:
 
 .. code-block:: ipython3
 
-   PROSTATE_RANDOM_TILES_PATH = os.path.join(PROCESS_PATH_PROSTATE, 'random')# save tilesin the 'random' subdirectory
+   # save tilesin the 'random' subdirectory
+   PROSTATE_RANDOM_TILES_PATH = os.path.join(PROCESS_PATH_PROSTATE, 'random')
 
    random_tiles_extractor = RandomTiler(
        tile_size=(512, 512),
@@ -221,6 +222,7 @@ defining the number of overlapping pixels between two adjacent tiles,
 ``pixel_overlap``, is set to zero:
 
 .. code-block:: ipython3
+
    # save tiles in the 'grid' subdirectory
    OVARIAN_GRID_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'grid')
 
@@ -275,6 +277,7 @@ specify the number of the top tiles we want to save with the
 ``n_tile`` parameter:
 
 .. code-block:: ipython3
+
    # save tiles in the 'scored' subdirectory
    OVARIAN_SCORED_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'scored')
 
