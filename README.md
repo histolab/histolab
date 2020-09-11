@@ -64,10 +64,9 @@ used through [Vagrant](http://www.vagrantup.com) or
 
 Thus, the user can decide either to use `histolab` through
 `histolab-box` or installing it in his/her python virtual environment
-(e.g. conda, pipenv, pyenv, virtualenv, etc...). In the latter case, as
-the `histolab` package has been published on the Python Package Index
-([PyPi](http://www.pypi.org)), it can be easily installed via the
-command:
+(using conda, pipenv, pyenv, virtualenv, etc...). In the latter case, as
+the `histolab` package has been published on ([PyPi](http://www.pypi.org)), 
+it can be easily installed via the command:
 
 ```
 pip install histolab
@@ -79,7 +78,7 @@ First things first, let’s import some data to work with, for example the
 prostate tissue slide and the ovarian tissue slide available in the
 `data` module:
 
-```
+```python
 from histolab.data import prostate_tissue, ovarian_tissue
 ```
 
@@ -91,7 +90,7 @@ The calling to a `data` function will automatically download the WSI
 from the corresponding repository and save the slide in a cached
 directory:
 
-```
+```python
 prostate_svs, prostate_path = prostate_tissue()
 ovarian_svs, ovarian_path = ovarian_tissue()
 ```
@@ -105,7 +104,7 @@ OpenSlide object, and the path where the slide has been saved.
 requires a 1-o-1 association with a `Slide` object contained in the
 `slide` module:
 
-```
+```python
 from histolab.slide import Slide
 ```
 
@@ -114,7 +113,7 @@ To initialize a Slide it is necessary to specify the WSI path, and the
 example, we want the `processed_path` of each slide to be a subfolder of
 the current working directory:
 
-```
+```python
 import os
 
 BASE_PATH_PROSTATE = os.getcwd()
@@ -128,14 +127,14 @@ ovarian_slide = Slide(ovarian_path, processed_path=PROCESS_PATH_PROSTATE)
 ```
 
 **Note:** If the slides were stored in the same folder, this can be done
-directly on the whole dataset by calling the `SlideSet` object of the
+directly on the whole dataset by using the `SlideSet` object of the
 `slide` module.
 
 With a `Slide` object we can easily retrieve information about the
 slide, such as the slide name, the number of available levels, the
 dimensions at native magnification or at a specified level:
 
-```
+```python
 print(f"Slide name: {prostate_slide.name}")
 print(f"Levels: {prostate_slide.levels}")
 print(f"Dimensions at level 0: {prostate_slide.dimensions}")
@@ -151,7 +150,7 @@ Dimensions at level 1: (4000, 3829)
 Dimensions at level 2: (2000, 1914)
 ```
 
-```
+```python
 print(f"Slide name: {ovarian_slide.name}")
 print(f"Levels: {ovarian_slide.levels}")
 print(f"Dimensions at level 0: {ovarian_slide.dimensions}")
@@ -168,10 +167,10 @@ Dimensions at level 2: (1875, 2124)
 ```
 
 Moreover, we can save and show the slide thumbnail in a separate window.
-In particular, the thumbnailimage will be automatically saved in a
+In particular, the thumbnail image will be automatically saved in a
 subdirectory of the processedpath:
 
-```
+```python
 prostate_slide.save_thumbnail()
 print(f"Thumbnails saved at: {prostate_slide.thumbnail_path}")
 prostate_slide.show()
@@ -179,7 +178,7 @@ prostate_slide.show()
 
 ![](https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png)
 
-```
+```python
 ovarian_slide.save_thumbnail()
 print(f"Thumbnails saved at: {ovarian_slide.thumbnail_path}")
 ovarian_slide.show()
@@ -205,7 +204,7 @@ each extraction method is customizable with several common parameters:
 -   `prefix`: a prefix to be added at the beginning of the tiles’
     filename (default is the empty string);
 -   `suffix`: a suffix to be added to the end of the tiles’ filename
-    (default is .png).
+    (default is `.png`).
 
 ### Random Extraction
 
@@ -213,7 +212,7 @@ The simplest approach we may adopt is to randomly crop a fixed number of
 tiles from our slides; in this case, we need the `RandomTiler`
 extractor:
 
-```
+```python
 from histolab.tiler import RandomTiler
 ```
 
@@ -222,8 +221,8 @@ Let us suppose that we want to randomly extract 6 squared tiles at level
 if they have at least 80% of tissue inside. We then initialize our
 `RandomTiler` extractor as follows:
 
-```
-PROSTATE_RANDOM_TILES_PATH = os.path.join(PROCESS_PATH_PROSTATE, 'random')# save tilesin the 'random' subdirectory
+```python
+PROSTATE_RANDOM_TILES_PATH = os.path.join(PROCESS_PATH_PROSTATE, 'random')# save tiles in the 'random' subdirectory
 
 random_tiles_extractor = RandomTiler(
     tile_size=(512, 512),
@@ -241,7 +240,7 @@ reproducibility of the extraction process. Starting the extraction is as
 simple as calling the `extract` method on the extractor, passing the
 slide as parameter:
 
-```
+```python
 random_tiles_extractor.extract(prostate_slide)
 ```
 
@@ -255,7 +254,7 @@ Instead of picking tiles at random, we may want to retrieve all the
 tiles available. TheGridTilerextractor crops the tiles following a grid
 structure on the largest tissue region detected in the WSI:
 
-```
+```python
 from histolab.tiler import GridTiler
 ```
 
@@ -265,8 +264,9 @@ By default, tiles will not overlap, namely the parameter defining the
 number of overlapping pixels between two adjacent tiles,
 `pixel_overlap`, is set to zero:
 
-```
-OVARIAN_GRID_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'grid') # save tiles in the 'grid' subdirectory
+```python
+# save tiles in the 'grid' subdirectory
+OVARIAN_GRID_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'grid')
 
 grid_tiles_extractor = GridTiler(
    tile_size=(512, 512),
@@ -281,7 +281,7 @@ grid_tiles_extractor = GridTiler(
 Again, the extraction process starts when the extract method is called
 on our extractor:
 
-```
+```python
 grid_tiles_extractor.extract(ovarian_slide)
 ```
 
@@ -307,7 +307,7 @@ and $T_t$ the percentage of tissue in the tile $t$.
 
 First, we need the extractor and the scorer:
 
-```
+```python
 from histolab.tiler import ScoreTiler
 from histolab.scorer import NucleiScorer
 ```
@@ -316,8 +316,9 @@ As the `ScoreTiler` extends the `GridTiler` extractor, we also set the
 `pixel_overlap` as additional parameter. Moreover, we can specify the
 number of the top tiles we want to save with the `n_tile` parameter:
 
-```
-OVARIAN_SCORED_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'scored') # save tiles in the 'scored' subdirectory
+```python
+# save tiles in the 'scored' subdirectory
+OVARIAN_SCORED_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'scored')
 
 scored_tiles_extractor = ScoreTiler(
     scorer = NucleiScorer(),
@@ -334,7 +335,7 @@ scored_tiles_extractor = ScoreTiler(
 Finally, when we extract our cropped images, we can also write a report
 of the saved tiles and their scores in a CSV file:
 
-```
+```python
 summary_filename = 'summary_ovarian_tiles.csv'
 SUMMARY_PATH = os.path.join(OVARIAN_SCORED_TILES_PATH, summary_filename)
 
