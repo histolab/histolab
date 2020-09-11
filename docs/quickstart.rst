@@ -122,7 +122,6 @@ of the processedpath:
 .. code-block:: ipython3
 
    prostate_slide.save_thumbnail()
-   print(f"Thumbnails saved at: {prostate_slide.thumbnail_path}")
    prostate_slide.show()
 
 .. figure:: https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png
@@ -131,7 +130,6 @@ of the processedpath:
 .. code-block:: ipython3
 
    ovarian_slide.save_thumbnail()
-   print(f"Thumbnails saved at: {ovarian_slide.thumbnail_path}")
    ovarian_slide.show()
 
 .. figure:: https://user-images.githubusercontent.com/4196091/92748248-3db9ad00-f385-11ea-846b-a5ce8cf3ca09.png
@@ -210,7 +208,7 @@ Grid Extraction
 ~~~~~~~~~~~~~~~
 
 Instead of picking tiles at random,  we may want to retrieve all the tiles available.
-TheGridTilerextractor crops the tiles following a grid structure on the largest tissue
+The Grid Tiler extractor crops the tiles following a grid structure on the largest tissue
 region detected in the WSI:
 
 .. code-block:: ipython3
@@ -224,8 +222,8 @@ defining the number of overlapping pixels between two adjacent tiles,
 ``pixel_overlap``, is set to zero:
 
 .. code-block:: ipython3
-
-   OVARIAN_GRID_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'grid') # save tiles in the 'grid' subdirectory
+   # save tiles in the 'grid' subdirectory
+   OVARIAN_GRID_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'grid')
 
    grid_tiles_extractor = GridTiler(
       tile_size=(512, 512),
@@ -278,8 +276,8 @@ specify the number of the top tiles we want to save with the
 ``n_tile`` parameter:
 
 .. code-block:: ipython3
-
-   OVARIAN_SCORED_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'scored') # save tiles in the 'scored' subdirectory
+   # save tiles in the 'scored' subdirectory
+   OVARIAN_SCORED_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'scored')
 
    scored_tiles_extractor = ScoreTiler(
        scorer = NucleiScorer(),

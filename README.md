@@ -172,7 +172,6 @@ subdirectory of the processedpath:
 
 ```python
 prostate_slide.save_thumbnail()
-print(f"Thumbnails saved at: {prostate_slide.thumbnail_path}")
 prostate_slide.show()
 ```
 
@@ -180,7 +179,6 @@ prostate_slide.show()
 
 ```python
 ovarian_slide.save_thumbnail()
-print(f"Thumbnails saved at: {ovarian_slide.thumbnail_path}")
 ovarian_slide.show()
 ```
 
@@ -251,7 +249,7 @@ Random tiles extracted from the prostate slide at level 2.
 ### Grid Extraction
 
 Instead of picking tiles at random, we may want to retrieve all the
-tiles available. TheGridTilerextractor crops the tiles following a grid
+tiles available. The Grid Tiler extractor crops the tiles following a grid
 structure on the largest tissue region detected in the WSI:
 
 ```python
