@@ -3,7 +3,6 @@
 [![Documentation Status](https://readthedocs.org/projects/histolab/badge/?version=latest)](https://histolab.readthedocs.io/en/latest/?badge=latest)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/histolab/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/histolab/histolab/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/histolab/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/histolab/histolab/context:python)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/histolab/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/histolab/histolab/context:python)
 [![Code Grade](https://www.code-inspector.com/project/13419/score/svg)](https://www.code-inspector.com)
 [![Code Grade](https://www.code-inspector.com/project/13419/status/svg)](https://www.code-inspector.com)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
