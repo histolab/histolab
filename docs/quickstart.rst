@@ -66,11 +66,10 @@ subfolder of the current working directory:
 
    import os
 
-   BASE_PATH_PROSTATE = os.getcwd()
-   BASE_PATH_OVARIAN = os.getcwd()
+   BASE_PATH = os.getcwd()
 
-   PROCESS_PATH_PROSTATE = os.path.join(BASE_PATH_PROSTATE, 'processed')
-   PROCESS_PATH_OVARIAN = os.path.join(BASE_PATH_OVARIAN, 'processed')
+   PROCESS_PATH_PROSTATE = os.path.join(BASE_PATH, 'prostate', 'processed')
+   PROCESS_PATH_OVARIAN = os.path.join(BASE_PATH, 'ovarian', 'processed')
 
    prostate_slide = Slide(prostate_path, processed_path=PROCESS_PATH_PROSTATE)
    ovarian_slide = Slide(ovarian_path, processed_path=PROCESS_PATH_PROSTATE)
