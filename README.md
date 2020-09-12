@@ -60,8 +60,7 @@ Here we present a step-by-step tutorial on the use of `histolab` to
 extract a tile dataset from example WSIs. The corresponding Jupyter
 Notebook is available at <https://github.com/histolab/histolab-box>:
 this repository contains a complete `histolab` environment that can be
-used through [Vagrant](http://www.vagrantup.com) or
-[Docker](http://www.docker.com) on all platforms.
+used through [Docker](http://www.docker.com) on all platforms.
 
 Thus, the user can decide either to use `histolab` through
 `histolab-box` or installing it in his/her python virtual environment
