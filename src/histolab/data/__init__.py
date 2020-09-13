@@ -210,12 +210,12 @@ if HAS_POOCH:
     _init_pooch()
 
 
-def _load_svs(f: str) -> Tuple[openslide.OpenSlide, str]:
+def _load_svs(filename: str) -> Tuple[openslide.OpenSlide, str]:
     """Load an image file located in the data directory.
 
     Parameters
     ----------
-    f : str
+    filename : str
         Name of the file in the histolab repository
 
     Returns
@@ -231,12 +231,12 @@ def _load_svs(f: str) -> Tuple[openslide.OpenSlide, str]:
         OpenSlide cannot open the given input
     """
     try:
-        svs = openslide.open_slide(_fetch(f))
+        svs = openslide.open_slide(_fetch(filename))
     except openslide.OpenSlideError:
         raise openslide.OpenSlideError(
             "Your wsi has something broken inside, a doctor is needed"
         )
-    return svs, _fetch(f)
+    return svs, _fetch(filename)
 
 
 def aorta_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
