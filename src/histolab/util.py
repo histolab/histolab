@@ -215,7 +215,7 @@ class Counter(dict):
         return 0
 
 
-class lazyproperty(object):
+class lazyproperty:
     """Decorator like @property, but evaluated only on first access.
 
     Like @property, this can only be used to decorate methods having only
