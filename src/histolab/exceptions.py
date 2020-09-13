@@ -10,8 +10,7 @@ class HistolabException(Exception):
     def __str__(self):
         if self.message:
             return self.message
-        else:
-            return ""
+        return ""
 
 
 class LevelError(HistolabException):
