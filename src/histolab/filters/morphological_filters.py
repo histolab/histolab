@@ -23,7 +23,7 @@ import skimage.morphology
 from . import morphological_filters_functional as F
 
 
-class RemoveSmallObjects(object):
+class RemoveSmallObjects:
     """Remove objects smaller than the specified size.
 
     If avoid_overmask is True, this function can recursively call itself with
@@ -66,7 +66,7 @@ class RemoveSmallObjects(object):
         return self.__class__.__name__ + "()"
 
 
-class RemoveSmallHoles(object):
+class RemoveSmallHoles:
     """Remove holes smaller than a specified size.
 
     Parameters
@@ -92,7 +92,7 @@ class RemoveSmallHoles(object):
         return self.__class__.__name__ + "()"
 
 
-class BinaryErosion(object):
+class BinaryErosion:
     """Erode a binary mask.
 
     Parameters
@@ -126,7 +126,7 @@ class BinaryErosion(object):
         return self.__class__.__name__ + "()"
 
 
-class BinaryDilation(object):
+class BinaryDilation:
     """Dilate a binary mask.
 
     Parameters
@@ -159,7 +159,7 @@ class BinaryDilation(object):
         return self.__class__.__name__ + "()"
 
 
-class BinaryFillHoles(object):
+class BinaryFillHoles:
     """Fill the holes in binary objects.
 
     Parameters
@@ -183,7 +183,7 @@ class BinaryFillHoles(object):
         return scipy.ndimage.morphology.binary_fill_holes(np_img, self.structure)
 
 
-class BinaryOpening(object):
+class BinaryOpening:
     """Open a binary mask.
 
     Opening is an erosion followed by a dilation. Opening can be used to remove
@@ -219,7 +219,7 @@ class BinaryOpening(object):
         return self.__class__.__name__ + "()"
 
 
-class BinaryClosing(object):
+class BinaryClosing:
     """Close a binary mask.
 
     Closing is a dilation followed by an erosion. Closing can be used to remove
@@ -255,7 +255,7 @@ class BinaryClosing(object):
         return self.__class__.__name__ + "()"
 
 
-class WhiteTopHat(object):
+class WhiteTopHat:
     """Return white top hat of an image.
 
     The white top hat of an image is defined as the image minus its morphological

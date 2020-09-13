@@ -26,7 +26,7 @@ from .. import util as U
 from . import image_filters_functional as F
 
 
-class Compose(object):
+class Compose:
     """Composes several filters together.
 
     Parameters
@@ -44,7 +44,7 @@ class Compose(object):
         return img
 
 
-class Lambda(object):
+class Lambda:
     """Apply a user-defined lambda as a filter.
 
     Inspired from:
@@ -72,7 +72,7 @@ class Lambda(object):
         return self.__class__.__name__ + "()"
 
 
-class ToPILImage(object):
+class ToPILImage:
     """Convert a ndarray to a PIL Image, while preserving the value range.
 
     Parameters
@@ -93,7 +93,7 @@ class ToPILImage(object):
         return self.__class__.__name__ + "()"
 
 
-class ApplyMaskImage(object):
+class ApplyMaskImage:
     """Mask image with the provided binary mask.
 
     Parameters
@@ -119,7 +119,7 @@ class ApplyMaskImage(object):
         return self.__class__.__name__ + "()"
 
 
-class Invert(object):
+class Invert:
     """Invert an image, i.e. take the complement of the correspondent array.
 
     Parameters
@@ -140,7 +140,7 @@ class Invert(object):
         return self.__class__.__name__ + "()"
 
 
-class RgbToGrayscale(object):
+class RgbToGrayscale:
     """Convert an RGB image to a grayscale image.
 
     Parameters
@@ -161,7 +161,7 @@ class RgbToGrayscale(object):
         return self.__class__.__name__ + "()"
 
 
-class RgbToHed(object):
+class RgbToHed:
     """Convert RGB channels to HED channels.
 
     image color space (RGB) is converted to Hematoxylin-Eosin-Diaminobenzidine space.
@@ -185,7 +185,7 @@ class RgbToHed(object):
         return self.__class__.__name__ + "()"
 
 
-class HematoxylinChannel(object):
+class HematoxylinChannel:
     """Obtain Hematoxylin channel from RGB image.
 
     Input image is first converted into HED space and the hematoxylin channel is
@@ -210,7 +210,7 @@ class HematoxylinChannel(object):
         return self.__class__.__name__ + "()"
 
 
-class EosinChannel(object):
+class EosinChannel:
     """Obtain Eosin channel from RGB image.
 
     Input image is first converted into HED space and the Eosin channel is
@@ -235,7 +235,7 @@ class EosinChannel(object):
         return self.__class__.__name__ + "()"
 
 
-class RgbToHsv(object):
+class RgbToHsv:
     """Convert RGB channels to HSV channels.
 
     image color space (RGB) is converted to Hue - Saturation - Value (HSV) space.
@@ -259,7 +259,7 @@ class RgbToHsv(object):
         return self.__class__.__name__ + "()"
 
 
-class StretchContrast(object):
+class StretchContrast:
     """Increase image contrast.
 
     Th contrast in image is increased based on intensities in a specified range
@@ -291,7 +291,7 @@ class StretchContrast(object):
         return self.__class__.__name__ + "()"
 
 
-class HistogramEqualization(object):
+class HistogramEqualization:
     """Increase image contrast using histogram equalization.
 
     The input image (gray or RGB) is filterd using histogram equalization to increase
@@ -321,7 +321,7 @@ class HistogramEqualization(object):
         return self.__class__.__name__ + "()"
 
 
-class AdaptiveEqualization(object):
+class AdaptiveEqualization:
     """Increase image contrast using adaptive equalization.
 
     Contrast in local region of input image (gray or RGB) is increased using
@@ -357,7 +357,7 @@ class AdaptiveEqualization(object):
 # ------- LocalEqualization input must be 2D (grayscale)
 
 
-class LocalEqualization(object):
+class LocalEqualization:
     """Filter gray image using local equalization.
 
     Local equalization method uses local histograms based on a disk structuring element.
@@ -387,7 +387,7 @@ class LocalEqualization(object):
         return self.__class__.__name__ + "()"
 
 
-class KmeansSegmentation(object):
+class KmeansSegmentation:
     """Segment an RGB image with K-means segmentation
 
     By using K-means segmentation (color/space proximity) each segment is colored based
@@ -423,7 +423,7 @@ class KmeansSegmentation(object):
         return self.__class__.__name__ + "()"
 
 
-class RagThreshold(object):
+class RagThreshold:
     """Combine similar K-means segmented regions based on threshold value.
 
     Segment an image with K-means, build region adjacency graph based on
@@ -462,7 +462,7 @@ class RagThreshold(object):
         return self.__class__.__name__ + "()"
 
 
-class HysteresisThreshold(object):
+class HysteresisThreshold:
     """Apply two-level (hysteresis) threshold to an image.
 
     Parameters
@@ -494,7 +494,7 @@ class HysteresisThreshold(object):
 # ----------- Branching functions (grayscale/invert input)-------------------
 
 # invert --> grayscale ..> hysteresis
-class HysteresisThresholdMask(object):
+class HysteresisThresholdMask:
     """Mask an image using hysteresis threshold
 
     Compute the Hysteresis threshold on the complement of a grayscale image,
@@ -529,7 +529,7 @@ class HysteresisThresholdMask(object):
         return self.__class__.__name__ + "()"
 
 
-class OtsuThreshold(object):
+class OtsuThreshold:
     """Mask image based on pixel above Otsu threshold.
 
     Compute Otsu threshold on image as a NumPy array and return boolean mask
@@ -555,7 +555,7 @@ class OtsuThreshold(object):
         return self.__class__.__name__ + "()"
 
 
-class LocalOtsuThreshold(object):
+class LocalOtsuThreshold:
     """Mask image based on local Otsu threshold.
 
     Compute local Otsu threshold for each pixel and return boolean mask
@@ -587,7 +587,7 @@ class LocalOtsuThreshold(object):
         return self.__class__.__name__ + "()"
 
 
-class FilterEntropy(object):
+class FilterEntropy:
     """Filter image based on entropy (complexity).
 
     The area of the image included in the local neighborhood is defined by a square
@@ -621,7 +621,7 @@ class FilterEntropy(object):
         return self.__class__.__name__ + "()"
 
 
-class CannyEdges(object):
+class CannyEdges:
     """Filter image based on Canny edge algorithm.
 
     Note that input image must be 2D
@@ -660,7 +660,7 @@ class CannyEdges(object):
         return self.__class__.__name__ + "()"
 
 
-class Grays(object):
+class Grays:
     """Filter out gray pixels in RGB image.
 
     Gray pixels are those pixels where the red, green, and blue channel values
@@ -690,7 +690,7 @@ class Grays(object):
         return self.__class__.__name__ + "()"
 
 
-class GreenChannelFilter(object):
+class GreenChannelFilter:
     """Mask pixels in an RGB image with G-channel greater than a specified threshold.
 
     Create a mask to filter out pixels with a green channel value greater than
@@ -736,7 +736,7 @@ class GreenChannelFilter(object):
         return self.__class__.__name__ + "()"
 
 
-class RedFilter(object):
+class RedFilter:
     """Mask reddish colors in an RGB image.
 
     Create a mask to filter out reddish colors, where the mask is based on a pixel
@@ -772,7 +772,7 @@ class RedFilter(object):
         return self.__class__.__name__ + "()"
 
 
-class RedPenFilter(object):
+class RedPenFilter:
     """Filter out red pen marks on diagnostic slides.
 
     The resulting mask is a composition of red filters with different thresholds
@@ -795,7 +795,7 @@ class RedPenFilter(object):
         return self.__class__.__name__ + "()"
 
 
-class GreenFilter(object):
+class GreenFilter:
     """Filter out greenish colors in an RGB image.
     The mask is based on a pixel being above a red channel threshold value, below a
     green channel threshold value, and below a blue channel threshold value.
@@ -832,7 +832,7 @@ class GreenFilter(object):
         return self.__class__.__name__ + "()"
 
 
-class GreenPenFilter(object):
+class GreenPenFilter:
     """Filter out green pen marks from a diagnostic slide.
 
     The resulting mask is a composition of green filters with different thresholds
@@ -856,7 +856,7 @@ class GreenPenFilter(object):
         return self.__class__.__name__ + "()"
 
 
-class BlueFilter(object):
+class BlueFilter:
     """Filter out blueish colors in an RGB image.
 
     Create a mask to filter out blueish colors, where the mask is based on a pixel
@@ -892,7 +892,7 @@ class BlueFilter(object):
         return self.__class__.__name__ + "()"
 
 
-class BluePenFilter(object):
+class BluePenFilter:
     """Filter out blue pen marks from a diagnostic slide.
 
     The resulting mask is a composition of green filters with different thresholds
@@ -916,7 +916,7 @@ class BluePenFilter(object):
         return self.__class__.__name__ + "()"
 
 
-class PenMarks(object):
+class PenMarks:
     """Filter out pen marks from a diagnostic slide.
 
     Pen marks are removed by applying Otsu threshold on the H channel of the image
@@ -940,7 +940,7 @@ class PenMarks(object):
         return self.__class__.__name__ + "()"
 
 
-class YenThreshold(object):
+class YenThreshold:
     """Mask image based on pixel above Yen threshold.
 
     Compute Yen threshold on image and return boolean mask based on pixels below this

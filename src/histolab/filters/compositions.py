@@ -24,7 +24,7 @@ from . import image_filters as imf
 from . import morphological_filters as mof
 
 
-class FiltersComposition(object):
+class FiltersComposition:
     """Provide appropriate filters compositions based on the ``cls_`` parameter.
 
     Arguments
