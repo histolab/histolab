@@ -18,18 +18,18 @@ registry = {
     "tcga/ovarian/b777ec99-2811-4aa4-9568-13f68e380c86": "f8e5059a0c9f8c026cfb2613cddef6562f8cdbd5954580282e2afa41d2f86a8c",
 }
 
-aperio_repo_url = "http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio"
-tcga_repo_url = "https://api.gdc.cancer.gov/data"
+APERIO_REPO_URL = "http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio"
+TCGA_REPO_URL = "https://api.gdc.cancer.gov/data"
 
 registry_urls = {
-    "aperio/JP2K-33003-1.svs": f"{aperio_repo_url}/JP2K-33003-1.svs",
-    "aperio/JP2K-33003-2.svs": f"{aperio_repo_url}/JP2K-33003-2.svs",
-    "tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8": f"{tcga_repo_url}/9c960533-2e58-4e54-97b2-8454dfb4b8c8",
-    "tcga/breast/da36d3aa-9b19-492a-af4f-cc028a926d96": f"{tcga_repo_url}/da36d3aa-9b19-492a-af4f-cc028a926d96",
-    "tcga/breast/f8b4cee6-9149-45b4-ae53-82b0547e1e34": f"{tcga_repo_url}/f8b4cee6-9149-45b4-ae53-82b0547e1e34",
-    "tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461": f"{tcga_repo_url}/31e248bf-ee24-4d18-bccb-47046fccb461",
-    "tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210": f"{tcga_repo_url}/6b725022-f1d5-4672-8c6c-de8140345210",
-    "tcga/ovarian/b777ec99-2811-4aa4-9568-13f68e380c86": f"{tcga_repo_url}/b777ec99-2811-4aa4-9568-13f68e380c86",
+    "aperio/JP2K-33003-1.svs": f"{APERIO_REPO_URL}/JP2K-33003-1.svs",
+    "aperio/JP2K-33003-2.svs": f"{APERIO_REPO_URL}/JP2K-33003-2.svs",
+    "tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8": f"{TCGA_REPO_URL}/9c960533-2e58-4e54-97b2-8454dfb4b8c8",
+    "tcga/breast/da36d3aa-9b19-492a-af4f-cc028a926d96": f"{TCGA_REPO_URL}/da36d3aa-9b19-492a-af4f-cc028a926d96",
+    "tcga/breast/f8b4cee6-9149-45b4-ae53-82b0547e1e34": f"{TCGA_REPO_URL}/f8b4cee6-9149-45b4-ae53-82b0547e1e34",
+    "tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461": f"{TCGA_REPO_URL}/31e248bf-ee24-4d18-bccb-47046fccb461",
+    "tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210": f"{TCGA_REPO_URL}/6b725022-f1d5-4672-8c6c-de8140345210",
+    "tcga/ovarian/b777ec99-2811-4aa4-9568-13f68e380c86": f"{TCGA_REPO_URL}/b777ec99-2811-4aa4-9568-13f68e380c86",
 }
 
 legacy_registry = {

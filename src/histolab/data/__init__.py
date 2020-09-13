@@ -97,9 +97,9 @@ def _create_image_fetcher():
 image_fetcher, data_dir = _create_image_fetcher()
 
 if image_fetcher is None:
-    has_pooch = False
+    HAS_POOCH = False
 else:
-    has_pooch = True
+    HAS_POOCH = True
 
 
 def _has_hash(path: str, expected_hash: str) -> bool:
@@ -206,7 +206,7 @@ def _init_pooch() -> None:
         _fetch(filename)
 
 
-if has_pooch:
+if HAS_POOCH:
     _init_pooch()
 
 
