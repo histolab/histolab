@@ -16,6 +16,8 @@ except ImportError:
 
 @runtime_checkable
 class Scorer(Protocol):
+    """General scorer object"""
+
     @abstractmethod
     def __call__(self, tile: Tile) -> float:
         raise NotImplementedError
