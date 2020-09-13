@@ -47,7 +47,7 @@ from .util import (
 IMG_EXT = "png"
 
 
-class Slide(object):
+class Slide:
     """Provide Slide objects and expose property and methods.
 
     Arguments
@@ -450,7 +450,7 @@ class Slide(object):
         return slide
 
 
-class SlideSet(object):
+class SlideSet:
     """Slideset object. It is considered a collection of Slides."""
 
     def __init__(
