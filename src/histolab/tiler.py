@@ -25,6 +25,7 @@ except ImportError:
 
 @runtime_checkable
 class Tiler(Protocol):
+    """General tiler object"""
 
     level: int
     tile_size: int
