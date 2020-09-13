@@ -360,11 +360,10 @@ class Slide:
 
         Returns
         -------
-        img, arr_img, large_w, large_h, new_w, new_h: tuple
+        img, arr_img
         """
-        # TODO: use logger instead of print(f"Opening Slide {slide_filepath}")
 
-        large_w, large_h, new_w, new_h = self._resampled_dimensions(scale_factor)
+        _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
         level = self._wsi.get_best_level_for_downsample(scale_factor)
         whole_slide_image = self._wsi.read_region(
             (0, 0), level, self._wsi.level_dimensions[level]
