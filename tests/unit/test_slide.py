@@ -34,7 +34,7 @@ from ..unitutil import (
 )
 
 
-class Describe_Slide(object):
+class Describe_Slide:
     def it_constructs_from_args(self, request):
         _init_ = initializer_mock(request, Slide)
         _slide_path = "/foo/bar/myslide.svs"
@@ -633,7 +633,7 @@ class Describe_Slide(object):
         )
 
 
-class Describe_Slideset(object):
+class Describe_Slideset:
     def it_constructs_from_args(self, request):
         _init_ = initializer_mock(request, SlideSet)
         _slides_path = "/foo/bar/"

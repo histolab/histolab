@@ -10,7 +10,7 @@ from histolab.filters import image_filters as imf
 from ...unitutil import NpArrayMock, PILImageMock, function_mock
 
 
-class DescribeImageFilters(object):
+class DescribeImageFilters:
     def it_calls_invert_filter_functional(self, request):
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         F_invert = function_mock(

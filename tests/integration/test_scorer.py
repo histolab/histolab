@@ -6,7 +6,7 @@ from histolab.tile import Tile
 from ..fixtures import TILES
 
 
-class Describe_Scorers(object):
+class Describe_Scorers:
     @pytest.mark.parametrize(
         "tile_img, expected_score",
         (
@@ -21,7 +21,7 @@ class Describe_Scorers(object):
                 0.0017590279896743531,
             ),  # breast - red pen
             (TILES.LOW_NUCLEI_SCORE_LEVEL1, 0.019689596845556157),  # breast - green pen
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1, 0.009512701556682022,),  # aorta
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1, 0.009512701556682022),  # aorta
             (
                 TILES.MEDIUM_NUCLEI_SCORE_LEVEL1_2,
                 0.1519627864167197,

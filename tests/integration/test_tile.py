@@ -6,7 +6,7 @@ from histolab.types import CoordinatePair
 from ..fixtures import TILES
 
 
-class Describe_Tile(object):
+class Describe_Tile:
     @pytest.mark.parametrize(
         "tile_img, expected_result",
         (

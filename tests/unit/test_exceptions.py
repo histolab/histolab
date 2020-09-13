@@ -5,7 +5,7 @@ from histolab import exceptions as exp
 from ..unitutil import ANY, initializer_mock
 
 
-class DescribeExceptions(object):
+class DescribeExceptions:
     @pytest.mark.parametrize("arg", (["hello", "error"], None))
     def it_can_construct_from_str_or_none_level_error(self, request, arg):
         _init = initializer_mock(request, exp.LevelError)
