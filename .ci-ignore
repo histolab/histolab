@@ -3,4 +3,4 @@ docs
 setup.py
 .pre-commit-config.yaml
 .travis.yml
-.readthedocs.yml
+readthedocs.yml
