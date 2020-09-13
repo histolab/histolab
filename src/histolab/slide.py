@@ -488,7 +488,6 @@ class SlideSet:
         scale_factor : int, optional
             Image scaling factor. Default is 32.
         """
-        # TODO: add logger n>total_slide and log thumbnails names
         os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
         for slide in self.slides[:n]:
