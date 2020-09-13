@@ -8,7 +8,7 @@ import numpy as np
 from PIL import Image
 
 
-class LazyResponder(object):
+class LazyResponder:
     """Loads and caches fixtures files by name from fixture directory.
     Provides access to all the svs fixtures in a directory by
     a standardized mapping of the file name, e.g. ca-1-c.svs is available
