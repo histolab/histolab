@@ -648,10 +648,12 @@ class ScoreTiler(GridTiler):
             )
         ]
 
-        with open(report_path, "w+", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=header, lineterminator=os.linesep)
-            w.writeheader()
-            w.writerows(rows)
+        with open(report_path, "w+", newline="") as filename:
+            writer = csv.DictWriter(
+                filename, fieldnames=header, lineterminator=os.linesep
+            )
+            writer.writeheader()
+            writer.writerows(rows)
 
     @staticmethod
     def _scale_scores(
