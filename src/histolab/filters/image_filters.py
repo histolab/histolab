@@ -39,8 +39,8 @@ class Compose:
         self.filters = filters
 
     def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
-        for f in self.filters:
-            img = f(img)
+        for filter_ in self.filters:
+            img = filter_(img)
         return img
 
 
