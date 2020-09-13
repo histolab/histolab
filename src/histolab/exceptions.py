@@ -1,4 +1,6 @@
 class HistolabException(Exception):
+    """Histolab custom exception main class"""
+
     def __init__(self, *args) -> None:
         if args:
             self.message = args[0]
