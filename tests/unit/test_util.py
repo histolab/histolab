@@ -723,7 +723,7 @@ def apply_mask_image_fixture(request):
     return img, mask, expected_array
 
 
-class DescribeLazyPropertyDecorator(object):
+class DescribeLazyPropertyDecorator:
     """Tests @lazyproperty decorator class."""
 
     def it_is_a_lazyproperty_object_on_class_access(self, Obj):
@@ -754,7 +754,7 @@ class DescribeLazyPropertyDecorator(object):
 
     @pytest.fixture
     def Obj(self):
-        class Obj(object):
+        class Obj:
             @lazyproperty
             def fget(self):
                 """Docstring of Obj.fget method definition."""

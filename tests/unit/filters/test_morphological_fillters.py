@@ -10,7 +10,7 @@ from ...base import IMAGE1_RGB, IMAGE2_RGBA
 from ...unitutil import NpArrayMock, function_mock
 
 
-class DescribeMorphologicalFilters(object):
+class DescribeMorphologicalFilters:
     def it_calls_remove_small_objects_filter_functional(self, request):
         img_arr = IMAGE1_RGB
         F_remove_small_objects = function_mock(

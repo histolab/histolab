@@ -13,7 +13,7 @@ from ..fixtures import SVS
 from ..util import load_expectation
 
 
-class Describe_Slide(object):
+class Describe_Slide:
     def it_knows_its_name(self):
         slide = Slide(
             SVS.CMU_1_SMALL_REGION, os.path.join(SVS.CMU_1_SMALL_REGION, "processed")

@@ -24,7 +24,7 @@ from ..unitutil import (
 )
 
 
-class Describe_RandomTiler(object):
+class Describe_RandomTiler:
     def it_constructs_from_args(self, request):
         _init = initializer_mock(request, RandomTiler)
 
@@ -360,7 +360,7 @@ class Describe_RandomTiler(object):
         )
 
 
-class Describe_GridTiler(object):
+class Describe_GridTiler:
     def it_constructs_from_args(self, request):
         _init = initializer_mock(request, GridTiler)
 
@@ -706,7 +706,7 @@ class Describe_GridTiler(object):
         return (coords1, coords2, check_tissue, has_enough_tissue, expected_n_tiles)
 
 
-class Describe_ScoreTiler(object):
+class Describe_ScoreTiler:
     def it_constructs_from_args(self, request):
         _init = initializer_mock(request, ScoreTiler)
         rs = RandomScorer()

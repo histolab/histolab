@@ -19,7 +19,7 @@ from ..unitutil import (
 )
 
 
-class Describe_Tile(object):
+class Describe_Tile:
     def it_constructs_from_args(self, request):
         _init = initializer_mock(request, Tile)
         _image = PILImageMock.DIMS_50X50_RGBA_COLOR_155_0_0

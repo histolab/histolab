@@ -14,7 +14,7 @@ from ..unitutil import (
 )
 
 
-class DescribeScorers(object):
+class DescribeScorers:
     def it_can_construct_randomscorer(self, request):
         tile = instance_mock(request, Tile)
         random_scorer = scorer.RandomScorer()
