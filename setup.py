@@ -31,7 +31,7 @@ install_requires = [
     "Pillow",
     "scikit-image",
     "scipy",
-    "openslide-wrapper",
+    "openslide-python",
     "typing_extensions",
 ]
 
