@@ -1,6 +1,17 @@
 Changelog
 =========
 
+v0.1.0
+------
+​
+ - Add Lambda filter (`#124 <https://github.com/histolab/histolab/pull/124>`_)
+ - Add ScoreTiler and RandomScorer (`#129 <https://github.com/histolab/histolab/pull/129>`_)
+ - Add NucleiScorer (`#132 <https://github.com/histolab/histolab/pull/132>`_)
+ - Add Ovarian Tissue sample in data module (`#136 <https://github.com/histolab/histolab/pull/136>`_)
+ - Fix tiles's save path (`#126 <https://github.com/histolab/histolab/pull/126>`_)
+ - Fix critical memory issue when extracting biggest tissue box (`#128 <https://github.com/histolab/histolab/pull/128>`_)
+
+
 v0.0.5b
 -------
 
