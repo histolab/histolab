@@ -232,7 +232,6 @@ def hysteresis_threshold(
     PIL.Image.Image
         Image with the hysteresis threshold applied
     """
-    # TODO: warning grayscale input image (skimage doc)
     if low is None or high is None:
         raise ValueError("thresholds cannot be None")
     hyst = sk_filters.apply_hysteresis_threshold(np.array(img), low, high)
@@ -290,8 +289,7 @@ def kmeans_segmentation(
     """
     img_arr = np.array(img)
     labels = sk_segmentation.slic(img_arr, n_segments, compactness, start_label=0)
-    kmeans_segmentation = sk_color.label2rgb(labels, img_arr, kind="avg", bg_label=-1)
-    return np_to_pil(kmeans_segmentation)
+    return np_to_pil(sk_color.label2rgb(labels, img_arr, kind="avg", bg_label=-1))
 
 
 def local_equalization(img: PIL.Image.Image, disk_size: int = 50) -> PIL.Image.Image:
@@ -347,7 +345,7 @@ def local_otsu_threshold(
     """
     if np.array(img).ndim != 2:
         raise ValueError("Input must be 2D.")
-    # TODO add function to check real finite number
+    # TODO: add function to check real finite number
     if disk_size is None or disk_size < 0 or disk_size == np.inf:
         raise ValueError("Disk size must be a positive number.")
     img_arr = np.array(img)
@@ -388,8 +386,8 @@ def rag_threshold(
         raise ValueError("Input image cannot be RGBA")
     img_arr = np.array(img)
     labels = sk_segmentation.slic(img_arr, n_segments, compactness, start_label=0)
-    g = sk_future.graph.rag_mean_color(img_arr, labels)
-    labels2 = sk_future.graph.cut_threshold(labels, g, threshold)
+    green = sk_future.graph.rag_mean_color(img_arr, labels)
+    labels2 = sk_future.graph.cut_threshold(labels, green, threshold)
     rag = sk_color.label2rgb(labels2, img_arr, kind="avg", bg_label=-1)
     return np_to_pil(rag)
 
@@ -505,8 +503,7 @@ def stretch_contrast(
         raise Exception("low and high values must be in range [0, 255]")
     img_arr = np.array(img)
     low_p, high_p = np.percentile(img_arr, (low * 100 / 255, high * 100 / 255))
-    stretch_contrast = sk_exposure.rescale_intensity(img_arr, in_range=(low_p, high_p))
-    return np_to_pil(stretch_contrast)
+    return np_to_pil(sk_exposure.rescale_intensity(img_arr, in_range=(low_p, high_p)))
 
 
 # -------- Branching function --------
@@ -544,11 +541,10 @@ def blue_filter(
     ):
         raise ValueError("RGB Thresholds must be in range [0, 255]")
     img_arr = np.array(img)
-    r = img_arr[:, :, 0] > red_thresh
-    g = img_arr[:, :, 1] > green_thresh
-    b = img_arr[:, :, 2] < blue_thresh
-    blue_filter_mask = r | g | b
-    return blue_filter_mask
+    red = img_arr[:, :, 0] > red_thresh
+    green = img_arr[:, :, 1] > green_thresh
+    blue = img_arr[:, :, 2] < blue_thresh
+    return red | green | blue
 
 
 def canny_edges(
@@ -580,8 +576,7 @@ def canny_edges(
     if np.array(img).ndim != 2:
         raise ValueError("Input must be 2D.")
     img_arr = np.array(img)
-    canny_edges = sk_feature.canny(img_arr, sigma, low_threshold, high_threshold)
-    return canny_edges
+    return sk_feature.canny(img_arr, sigma, low_threshold, high_threshold)
 
 
 def filter_entropy(
@@ -683,11 +678,10 @@ def green_channel_filter(
         Boolean mask where pixels above a particular green channel
         threshold have been masked out.
     """
-    # TODO: warning RGB and change print and discuss raise error thresh
     if green_thresh > 255.0 or green_thresh < 0.0:
         raise ValueError("threshold must be in range [0, 255]")
-    g = np.array(img)[:, :, 1]
-    g_mask = g <= green_thresh
+    green = np.array(img)[:, :, 1]
+    g_mask = green <= green_thresh
     mask_percentage = mask_percent(g_mask)
     if avoid_overmask and (mask_percentage >= overmask_thresh) and (green_thresh < 255):
         new_green_thresh = math.ceil((255 + green_thresh) / 2)
@@ -731,11 +725,10 @@ def green_filter(
         raise ValueError("RGB Thresholds must be in range [0, 255]")
 
     img_arr = np.array(img)
-    r = img_arr[:, :, 0] > red_thresh
-    g = img_arr[:, :, 1] < green_thresh
-    b = img_arr[:, :, 2] < blue_thresh
-    green_filter = r | g | b
-    return green_filter
+    red = img_arr[:, :, 0] > red_thresh
+    green = img_arr[:, :, 1] < green_thresh
+    blue = img_arr[:, :, 2] < blue_thresh
+    return red | green | blue
 
 
 def hysteresis_threshold_mask(
@@ -762,8 +755,8 @@ def hysteresis_threshold_mask(
     """
     if low is None or high is None:
         raise ValueError("thresholds cannot be None")
-    gs = PIL.ImageOps.grayscale(img)
-    comp = invert(gs)
+    grey_scale = PIL.ImageOps.grayscale(img)
+    comp = invert(grey_scale)
     hyst_mask = sk_filters.apply_hysteresis_threshold(np.array(comp), low, high)
     return hyst_mask
 
@@ -861,11 +854,10 @@ def red_filter(
         raise ValueError("RGB Thresholds must be in range [0, 255]")
 
     img_arr = np.array(img)
-    r = img_arr[:, :, 0] < red_thresh
-    g = img_arr[:, :, 1] > green_thresh
-    b = img_arr[:, :, 2] > blue_thresh
-    red_filter_mask = r | g | b
-    return red_filter_mask
+    red = img_arr[:, :, 0] < red_thresh
+    green = img_arr[:, :, 1] > green_thresh
+    blue = img_arr[:, :, 2] > blue_thresh
+    return red | green | blue
 
 
 def yen_threshold(
