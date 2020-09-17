@@ -26,25 +26,25 @@ class DescribeExceptions:
         assert isinstance(level_error, exp.LevelError)
         assert isinstance(level_error, Exception)
 
-    def it_knows_its_message_from_str_level_error(self, request):
+    def it_knows_its_message_from_str_level_error(self):
         arg = "error"
         level_error = exp.LevelError(arg)
 
         message = level_error.message
 
-        assert type(message) == str
+        assert isinstance(message, str)
         assert message == arg
 
-    def it_knows_its_message_from_list_level_error(self, request):
+    def it_knows_its_message_from_list_level_error(self):
         args = ["hello", "error"]
         level_error = exp.LevelError(*args)
 
         message = level_error.message
 
-        assert type(message) == str
+        assert isinstance(message, str)
         assert message == list(args)[0]
 
-    def it_knows_its_message_from_none_level_error(self, request):
+    def it_knows_its_message_from_none_level_error(self):
         arg = None
         level_error = exp.LevelError(arg)
 
@@ -52,7 +52,7 @@ class DescribeExceptions:
 
         assert message is None
 
-    def it_knows_its_str_from_str_level_error(self, request):
+    def it_knows_its_str_from_str_level_error(self):
         arg = "error"
         level_error = exp.LevelError(arg)
 
@@ -60,7 +60,7 @@ class DescribeExceptions:
 
         assert s == level_error.message
 
-    def it_knows_its_str_from_list_level_error(self, request):
+    def it_knows_its_str_from_list_level_error(self):
         args = ["hello", "error"]
         level_error = exp.LevelError(*args)
 
@@ -68,7 +68,7 @@ class DescribeExceptions:
 
         assert s == level_error.message
 
-    def it_knows_its_str_from_none_level_error(self, request):
+    def it_knows_its_str_from_none_level_error(self):
         arg = None
         level_error = exp.LevelError(arg)
 
