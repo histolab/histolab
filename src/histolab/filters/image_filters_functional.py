@@ -254,14 +254,11 @@ def invert(img: PIL.Image.Image) -> PIL.Image.Image:
         Inverted image
     """
     if img.mode == "RGBA":
-        r, g, b, a = img.split()
-        rgb_img = PIL.Image.merge("RGB", (r, g, b))
-
+        red, green, blue, alpha = img.split()
+        rgb_img = PIL.Image.merge("RGB", (red, green, blue))
         inverted_img_rgb = PIL.ImageOps.invert(rgb_img)
-
-        r2, g2, b2 = inverted_img_rgb.split()
-        inverted_img = PIL.Image.merge("RGBA", (r2, g2, b2, a))
-
+        red, green, blue = inverted_img_rgb.split()
+        inverted_img = PIL.Image.merge("RGBA", (red, green, blue, alpha))
     else:
         inverted_img = PIL.ImageOps.invert(img)
 
