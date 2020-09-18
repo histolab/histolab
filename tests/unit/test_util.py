@@ -4,8 +4,19 @@
 
 import operator
 
-import numpy as np
 import pytest
+
+import numpy as np
+from histolab.types import CoordinatePair, Region
+from histolab.util import (
+    apply_mask_image,
+    lazyproperty,
+    np_to_pil,
+    polygon_to_mask_array,
+    region_coordinates,
+    scale_coordinates,
+    threshold_to_mask,
+)
 from tests.base import (
     IMAGE1_GRAY,
     IMAGE1_RGB,
@@ -21,16 +32,8 @@ from tests.base import (
     IMAGE4_RGBA_WHITE,
 )
 
-from histolab.types import CoordinatePair, Region
-from histolab.util import (
-    apply_mask_image,
-    lazyproperty,
-    np_to_pil,
-    polygon_to_mask_array,
-    region_coordinates,
-    scale_coordinates,
-    threshold_to_mask,
-)
+from ..fixtures import MASKNPY, NPY
+from ..util import load_expectation, load_python_expression
 
 
 @pytest.mark.parametrize(
@@ -51,79 +54,9 @@ def test_scale_coordinates(ref_coords, ref_size, target_size, expected_value):
 @pytest.mark.parametrize(
     "img_array, expected_mode, expected_size, expected_type, expected_array",
     (
-        (
-            np.array([[True, False], [True, True]]),
-            "L",
-            (2, 2),
-            np.uint8,
-            [[255, 0], [255, 255]],
-        ),
-        (
-            np.array([[[27.0, 7.0], [66.0, 84.0]], [[77.0, 63.0], [98.0, 77.0]]]),
-            "LA",
-            (2, 2),
-            np.uint8,
-            [[[229, 249], [190, 172]], [[179, 193], [158, 179]]],
-        ),
-        (
-            np.array(
-                [
-                    [
-                        [87, 130, 227, 200],
-                        [67, 234, 45, 68],
-                        [244, 207, 19, 21],
-                        [216, 213, 220, 16],
-                    ],
-                    [
-                        [16, 245, 236, 78],
-                        [240, 202, 186, 24],
-                        [201, 78, 14, 243],
-                        [43, 78, 74, 83],
-                    ],
-                    [
-                        [16, 35, 219, 6],
-                        [97, 130, 251, 151],
-                        [184, 20, 109, 216],
-                        [200, 5, 179, 155],
-                    ],
-                    [
-                        [1, 39, 195, 204],
-                        [90, 179, 247, 35],
-                        [129, 95, 194, 116],
-                        [228, 120, 156, 170],
-                    ],
-                ]
-            ),
-            "RGBA",
-            (4, 4),
-            np.uint8,
-            [
-                [
-                    [87, 130, 227, 200],
-                    [67, 234, 45, 68],
-                    [244, 207, 19, 21],
-                    [216, 213, 220, 16],
-                ],
-                [
-                    [16, 245, 236, 78],
-                    [240, 202, 186, 24],
-                    [201, 78, 14, 243],
-                    [43, 78, 74, 83],
-                ],
-                [
-                    [16, 35, 219, 6],
-                    [97, 130, 251, 151],
-                    [184, 20, 109, 216],
-                    [200, 5, 179, 155],
-                ],
-                [
-                    [1, 39, 195, 204],
-                    [90, 179, 247, 35],
-                    [129, 95, 194, 116],
-                    [228, 120, 156, 170],
-                ],
-            ],
-        ),
+        (NPY.NP_TO_PIL_L, "L", (2, 2), np.uint8, "python-expr/np-to-pil-l"),
+        (NPY.NP_TO_PIL_LA, "LA", (2, 2), np.uint8, "python-expr/np-to-pil-la"),
+        (NPY.NP_TO_PIL_RGBA, "RGBA", (4, 4), np.uint8, "python-expr/np-to-pil-rgba"),
     ),
 )
 def test_util_np_to_pil(
@@ -134,74 +67,90 @@ def test_util_np_to_pil(
     assert pil_img.mode == expected_mode
     assert pil_img.size == expected_size
     assert np.array(pil_img).dtype == expected_type
-    np.testing.assert_array_almost_equal(np.array(pil_img), expected_array)
+    np.testing.assert_array_almost_equal(
+        np.array(pil_img), load_python_expression(expected_array)
+    )
 
 
-def test_util_threshold_to_mask(threshold_to_mask_fixture):
-    img, threshold, relate, expected_array = threshold_to_mask_fixture
-
+@pytest.mark.parametrize(
+    "img, threshold, relate, expected_array",
+    (
+        (IMAGE1_GRAY, 160, operator.gt, "python-expr/threshold-to-mask-160"),
+        (IMAGE2_GRAY, 140, operator.lt, "python-expr/threshold-to-mask-140"),
+        (IMAGE3_GRAY_BLACK, 0, operator.gt, "python-expr/5-x-5-zeros"),
+        (IMAGE3_GRAY_BLACK, 0, operator.lt, "python-expr/5-x-5-zeros"),
+        (IMAGE3_GRAY_BLACK, 1, operator.lt, "python-expr/5-x-5-ones"),
+        (IMAGE4_GRAY_WHITE, 0, operator.gt, "python-expr/5-x-5-ones"),
+        (IMAGE4_GRAY_WHITE, 1, operator.lt, "python-expr/5-x-5-zeros"),
+        (IMAGE1_RGB, 200, operator.lt, "python-expr/threshold-to-mask-200"),
+        (IMAGE2_RGB, 39, operator.gt, "python-expr/threshold-to-mask-39"),
+        (IMAGE3_RGB_BLACK, 0, operator.gt, "python-expr/5-x-5-x-3-zeros"),
+        (IMAGE3_RGB_BLACK, 0, operator.lt, "python-expr/5-x-5-x-3-zeros"),
+        (IMAGE3_RGB_BLACK, 1, operator.lt, "python-expr/5-x-5-x-3-ones"),
+        (IMAGE4_RGB_WHITE, 0, operator.gt, "python-expr/5-x-5-x-3-ones"),
+        (IMAGE4_RGB_WHITE, 1, operator.lt, "python-expr/5-x-5-x-3-zeros"),
+        (IMAGE1_RGBA, 178, operator.gt, "python-expr/threshold-to-mask-178"),
+        (IMAGE2_RGBA, 37, operator.lt, "python-expr/threshold-to-mask-37"),
+        (IMAGE3_RGBA_BLACK, 2, operator.gt, "python-expr/5-x-5-x-4-zeros"),
+        (IMAGE3_RGBA_BLACK, 0, operator.lt, "python-expr/5-x-5-x-4-zeros"),
+        (IMAGE3_RGBA_BLACK, 1, operator.lt, "python-expr/5-x-5-x-4-ones"),
+        (IMAGE4_RGBA_WHITE, 0, operator.gt, "python-expr/5-x-5-x-4-ones"),
+        (IMAGE4_RGBA_WHITE, 1, operator.lt, "python-expr/5-x-5-x-4-zeros"),
+    ),
+)
+def test_util_threshold_to_mask(img, threshold, relate, expected_array):
     mask = threshold_to_mask(np_to_pil(img), threshold, relate)
 
-    np.testing.assert_array_equal(mask, expected_array)
+    np.testing.assert_array_equal(mask, load_python_expression(expected_array))
 
 
-def test_apply_mask_image(apply_mask_image_fixture):
-    img, mask, expected_array = apply_mask_image_fixture
-
+@pytest.mark.parametrize(
+    "img, mask, expected_array",
+    (
+        (
+            NPY.APPLY_MASK_IMAGE_F1,
+            MASKNPY.APPLY_MASK_IMAGE_F1,
+            "python-expr/apply-mask-image-exp1",
+        ),
+        (
+            NPY.APPLY_MASK_IMAGE_F2,
+            MASKNPY.APPLY_MASK_IMAGE_F2,
+            "python-expr/apply-mask-image-exp2",
+        ),
+        (
+            NPY.APPLY_MASK_IMAGE_F3,
+            MASKNPY.APPLY_MASK_IMAGE_F3,
+            "python-expr/apply-mask-image-exp3",
+        ),
+        (
+            NPY.APPLY_MASK_IMAGE_F4,
+            MASKNPY.APPLY_MASK_IMAGE_F4,
+            "python-expr/apply-mask-image-exp4",
+        ),
+    ),
+)
+def test_apply_mask_image(img, mask, expected_array):
     masked_image = apply_mask_image(img, mask)
 
-    np.testing.assert_array_almost_equal(np.array(masked_image), expected_array)
+    np.testing.assert_array_almost_equal(
+        np.array(masked_image), load_python_expression(expected_array)
+    )
 
 
 @pytest.mark.parametrize(
     "dims, vertices, expected_array",
     (
-        (
-            (5, 5),
-            CoordinatePair(0, 3, 2, 5),
-            np.array(
-                [
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [1, 1, 1, 0, 0],
-                    [1, 1, 1, 0, 0],
-                ]
-            ),
-        ),
-        (
-            (5, 6),
-            CoordinatePair(1, 0, 2, 0),
-            np.array(
-                [
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                ]
-            ),
-        ),
-        (
-            (5, 5),
-            CoordinatePair(2, 1, 4, 3),
-            np.array(
-                [
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 1, 1, 1],
-                    [0, 0, 1, 1, 1],
-                    [0, 0, 1, 1, 1],
-                    [0, 0, 0, 0, 0],
-                ]
-            ),
-        ),
+        ((5, 5), CoordinatePair(0, 3, 2, 5), "mask-arrays/polygon-to-mask-array-0325"),
+        ((5, 6), CoordinatePair(1, 0, 2, 0), "mask-arrays/polygon-to-mask-array-1020"),
+        ((5, 5), CoordinatePair(2, 1, 4, 3), "mask-arrays/polygon-to-mask-array-2143"),
     ),
 )
 def test_util_polygon_to_mask_array(dims, vertices, expected_array):
     polygon_mask = polygon_to_mask_array(dims, vertices)
 
-    np.testing.assert_array_almost_equal(polygon_mask, expected_array)
+    np.testing.assert_array_almost_equal(
+        polygon_mask, load_expectation(expected_array, type_="npy")
+    )
 
 
 def test_region_coordinates():
@@ -209,518 +158,6 @@ def test_region_coordinates():
     region_coords_ = region_coordinates(region)
 
     assert region_coords_ == CoordinatePair(x_ul=1, y_ul=0, x_br=2, y_br=1)
-
-
-# fixtures ---------------------------------------------
-
-
-@pytest.fixture(
-    params=[
-        (
-            IMAGE1_GRAY,
-            160,
-            operator.gt,
-            np.array(
-                [
-                    [False, False, True, False, False],
-                    [False, False, False, False, False],
-                    [True, True, False, False, False],
-                    [False, False, False, False, True],
-                    [False, True, False, True, False],
-                ]
-            ),
-        ),
-        (
-            IMAGE2_GRAY,
-            140,
-            operator.lt,
-            np.array(
-                [
-                    [False, False, False, True, True],
-                    [True, True, True, True, True],
-                    [False, False, False, False, False],
-                    [True, False, False, True, True],
-                    [False, True, False, True, False],
-                ]
-            ),
-        ),
-        (IMAGE3_GRAY_BLACK, 0, operator.gt, np.zeros((5, 5), dtype=bool)),
-        (IMAGE3_GRAY_BLACK, 0, operator.lt, np.zeros((5, 5), dtype=bool)),
-        (IMAGE3_GRAY_BLACK, 1, operator.lt, np.ones((5, 5), dtype=bool)),
-        (IMAGE4_GRAY_WHITE, 0, operator.gt, np.ones((5, 5), dtype=bool)),
-        (IMAGE4_GRAY_WHITE, 1, operator.lt, np.zeros((5, 5), dtype=bool)),
-        (
-            IMAGE1_RGB,
-            200,
-            operator.lt,
-            np.array(
-                [
-                    [
-                        [False, False, False],
-                        [False, True, True],
-                        [True, True, True],
-                        [True, True, True],
-                        [True, True, True],
-                    ],
-                    [
-                        [True, False, False],
-                        [True, False, True],
-                        [True, True, True],
-                        [True, False, False],
-                        [True, True, False],
-                    ],
-                    [
-                        [True, True, True],
-                        [True, False, True],
-                        [True, True, False],
-                        [False, True, True],
-                        [True, True, True],
-                    ],
-                    [
-                        [True, True, True],
-                        [True, True, True],
-                        [True, False, False],
-                        [True, True, True],
-                        [True, True, True],
-                    ],
-                    [
-                        [False, True, True],
-                        [True, False, True],
-                        [True, True, True],
-                        [True, True, True],
-                        [True, True, True],
-                    ],
-                ]
-            ),
-        ),
-        (
-            IMAGE2_RGB,
-            39,
-            operator.gt,
-            np.array(
-                [
-                    [
-                        [True, True, True],
-                        [True, True, True],
-                        [True, True, True],
-                        [True, True, True],
-                        [False, True, False],
-                    ],
-                    [
-                        [True, True, True],
-                        [True, True, True],
-                        [True, True, False],
-                        [True, True, False],
-                        [True, True, True],
-                    ],
-                    [
-                        [True, True, True],
-                        [False, True, True],
-                        [True, True, True],
-                        [True, True, True],
-                        [True, True, False],
-                    ],
-                    [
-                        [True, True, False],
-                        [True, True, True],
-                        [True, True, False],
-                        [False, True, True],
-                        [False, True, True],
-                    ],
-                    [
-                        [True, True, True],
-                        [False, False, True],
-                        [True, False, False],
-                        [True, True, True],
-                        [True, True, True],
-                    ],
-                ]
-            ),
-        ),
-        (IMAGE3_RGB_BLACK, 0, operator.gt, np.zeros((5, 5, 3), dtype=bool)),
-        (IMAGE3_RGB_BLACK, 0, operator.lt, np.zeros((5, 5, 3), dtype=bool)),
-        (IMAGE3_RGB_BLACK, 1, operator.lt, np.ones((5, 5, 3), dtype=bool)),
-        (IMAGE4_RGB_WHITE, 0, operator.gt, np.ones((5, 5, 3), dtype=bool)),
-        (IMAGE4_RGB_WHITE, 1, operator.lt, np.zeros((5, 5, 3), dtype=bool)),
-        (
-            IMAGE1_RGBA,
-            178,
-            operator.gt,
-            np.array(
-                [
-                    [
-                        [False, False, True, True],
-                        [False, True, False, False],
-                        [False, True, True, True],
-                        [False, False, True, False],
-                        [True, False, True, False],
-                    ],
-                    [
-                        [True, False, False, False],
-                        [False, False, True, False],
-                        [True, False, False, False],
-                        [False, False, True, False],
-                        [False, True, False, False],
-                    ],
-                    [
-                        [False, False, True, True],
-                        [False, False, False, False],
-                        [False, True, False, False],
-                        [False, False, True, True],
-                        [True, False, True, False],
-                    ],
-                    [
-                        [True, False, False, True],
-                        [True, True, True, False],
-                        [False, True, True, True],
-                        [True, False, True, True],
-                        [False, False, False, False],
-                    ],
-                    [
-                        [False, False, True, True],
-                        [False, True, False, False],
-                        [True, False, False, True],
-                        [True, False, False, False],
-                        [False, False, False, True],
-                    ],
-                ]
-            ),
-        ),
-        (
-            IMAGE2_RGBA,
-            37,
-            operator.lt,
-            np.array(
-                [
-                    [
-                        [False, False, False, False],
-                        [False, False, False, False],
-                        [False, False, False, False],
-                        [False, False, True, False],
-                        [False, False, False, False],
-                    ],
-                    [
-                        [True, False, True, False],
-                        [True, False, False, False],
-                        [False, False, False, True],
-                        [False, False, False, False],
-                        [False, False, True, False],
-                    ],
-                    [
-                        [False, False, False, False],
-                        [False, False, False, False],
-                        [True, False, False, False],
-                        [False, False, False, False],
-                        [False, False, True, True],
-                    ],
-                    [
-                        [False, False, False, False],
-                        [False, False, False, False],
-                        [True, True, True, False],
-                        [False, False, False, False],
-                        [False, False, False, False],
-                    ],
-                    [
-                        [True, False, False, False],
-                        [True, False, False, False],
-                        [False, False, False, False],
-                        [True, False, False, False],
-                        [False, False, False, False],
-                    ],
-                ]
-            ),
-        ),
-        (IMAGE3_RGBA_BLACK, 2, operator.gt, np.zeros((5, 5, 4), dtype=bool)),
-        (IMAGE3_RGBA_BLACK, 0, operator.lt, np.zeros((5, 5, 4), dtype=bool)),
-        (IMAGE3_RGBA_BLACK, 1, operator.lt, np.ones((5, 5, 4), dtype=bool)),
-        (IMAGE4_RGBA_WHITE, 0, operator.gt, np.ones((5, 5, 4), dtype=bool)),
-        (IMAGE4_RGBA_WHITE, 1, operator.lt, np.zeros((5, 5, 4), dtype=bool)),
-    ]
-)
-def threshold_to_mask_fixture(request):
-    (img, threshold, relate, expected_array) = request.param
-    return img, threshold, relate, expected_array
-
-
-@pytest.fixture(
-    params=[
-        (
-            np.array(
-                [
-                    [
-                        [9.53975711, 45.98541936, 156.28007954],
-                        [6.73064837, 176.78741919, 174.95470397],
-                        [157.17617866, 71.21380744, 219.48186052],
-                        [249.72378036, 226.46022371, 119.54589884],
-                        [17.29386951, 199.52296683, 43.44804103],
-                    ],
-                    [
-                        [73.14354246, 64.67302707, 74.04000342],
-                        [36.28444347, 44.30212391, 161.701794],
-                        [135.21200604, 219.2487995, 69.34124309],
-                        [79.08871113, 139.76394382, 75.24903853],
-                        [148.42727139, 40.26703283, 155.14522723],
-                    ],
-                    [
-                        [207.72097941, 94.85677006, 136.95335035],
-                        [35.87960978, 83.0704467, 152.93280054],
-                        [138.24239063, 173.45527492, 20.54340419],
-                        [29.00949635, 17.22138894, 250.35899589],
-                        [200.83328237, 115.16546538, 253.85420946],
-                    ],
-                    [
-                        [151.96629846, 95.88575407, 60.66781005],
-                        [163.88449905, 0.3666264, 167.66724667],
-                        [250.22130117, 80.98605632, 105.51786192],
-                        [72.47738539, 57.77933851, 192.59844648],
-                        [155.69520169, 221.76117742, 100.33591651],
-                    ],
-                    [
-                        [84.288965, 55.17525206, 130.47955595],
-                        [106.7083522, 123.64126622, 248.81003909],
-                        [117.11354434, 155.69250301, 214.32878442],
-                        [16.42456011, 121.28565776, 122.80049983],
-                        [154.15207853, 146.9827038, 26.26988447],
-                    ],
-                ]
-            ),
-            np.array(
-                [
-                    [0, 0, 0, 0, 0],
-                    [1, 1, 1, 1, 1],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [1, 1, 1, 1, 1],
-                ]
-            ),
-            np.array(
-                [
-                    [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
-                    [
-                        [73, 64, 74],
-                        [36, 44, 161],
-                        [135, 219, 69],
-                        [79, 139, 75],
-                        [148, 40, 155],
-                    ],
-                    [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
-                    [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
-                    [
-                        [84, 55, 130],
-                        [106, 123, 248],
-                        [117, 155, 214],
-                        [16, 121, 122],
-                        [154, 146, 26],
-                    ],
-                ]
-            ),
-        ),
-        (
-            np.array(
-                [
-                    [
-                        [94, 96, 86],
-                        [239, 168, 4],
-                        [60, 37, 62],
-                        [221, 219, 175],
-                        [10, 248, 11],
-                    ],
-                    [
-                        [82, 206, 188],
-                        [17, 90, 219],
-                        [2, 17, 134],
-                        [62, 28, 4],
-                        [209, 124, 224],
-                    ],
-                    [
-                        [104, 89, 239],
-                        [140, 137, 95],
-                        [60, 6, 105],
-                        [199, 99, 19],
-                        [97, 92, 234],
-                    ],
-                    [
-                        [164, 160, 13],
-                        [4, 75, 214],
-                        [221, 106, 122],
-                        [216, 46, 242],
-                        [239, 77, 137],
-                    ],
-                    [
-                        [227, 55, 112],
-                        [156, 26, 142],
-                        [175, 138, 46],
-                        [95, 104, 90],
-                        [190, 146, 200],
-                    ],
-                ]
-            ),
-            np.array(
-                [
-                    [1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1],
-                    [0, 0, 0, 0, 0],
-                ]
-            ),
-            np.array(
-                [
-                    [
-                        [94, 96, 86],
-                        [239, 168, 4],
-                        [60, 37, 62],
-                        [221, 219, 175],
-                        [10, 248, 11],
-                    ],
-                    [
-                        [82, 206, 188],
-                        [17, 90, 219],
-                        [2, 17, 134],
-                        [62, 28, 4],
-                        [209, 124, 224],
-                    ],
-                    [
-                        [104, 89, 239],
-                        [140, 137, 95],
-                        [60, 6, 105],
-                        [199, 99, 19],
-                        [97, 92, 234],
-                    ],
-                    [
-                        [164, 160, 13],
-                        [4, 75, 214],
-                        [221, 106, 122],
-                        [216, 46, 242],
-                        [239, 77, 137],
-                    ],
-                    [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
-                ]
-            ),
-        ),
-        (
-            np.array(
-                [
-                    [
-                        [23, 153, 214, 226],
-                        [82, 172, 200, 90],
-                        [179, 178, 109, 250],
-                        [178, 23, 132, 171],
-                        [159, 104, 98, 179],
-                    ],
-                    [
-                        [167, 246, 250, 180],
-                        [93, 157, 27, 234],
-                        [62, 104, 193, 14],
-                        [82, 41, 14, 29],
-                        [104, 89, 181, 183],
-                    ],
-                    [
-                        [172, 206, 47, 28],
-                        [185, 136, 220, 130],
-                        [183, 196, 147, 210],
-                        [156, 142, 209, 193],
-                        [135, 0, 153, 39],
-                    ],
-                    [
-                        [45, 157, 13, 187],
-                        [98, 234, 128, 112],
-                        [11, 19, 126, 139],
-                        [215, 185, 148, 125],
-                        [66, 240, 220, 101],
-                    ],
-                    [
-                        [117, 196, 13, 6],
-                        [126, 189, 51, 220],
-                        [145, 226, 5, 147],
-                        [220, 94, 237, 45],
-                        [72, 193, 231, 140],
-                    ],
-                ]
-            ),
-            np.array(
-                [
-                    [1, 1, 1, 1, 1],
-                    [0, 0, 0, 0, 0],
-                    [1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1],
-                    [0, 0, 0, 0, 0],
-                ]
-            ),
-            np.array(
-                [
-                    [
-                        [23, 153, 214, 226],
-                        [82, 172, 200, 90],
-                        [179, 178, 109, 250],
-                        [178, 23, 132, 171],
-                        [159, 104, 98, 179],
-                    ],
-                    [
-                        [0, 0, 0, 0],
-                        [0, 0, 0, 0],
-                        [0, 0, 0, 0],
-                        [0, 0, 0, 0],
-                        [0, 0, 0, 0],
-                    ],
-                    [
-                        [172, 206, 47, 28],
-                        [185, 136, 220, 130],
-                        [183, 196, 147, 210],
-                        [156, 142, 209, 193],
-                        [135, 0, 153, 39],
-                    ],
-                    [
-                        [45, 157, 13, 187],
-                        [98, 234, 128, 112],
-                        [11, 19, 126, 139],
-                        [215, 185, 148, 125],
-                        [66, 240, 220, 101],
-                    ],
-                    [
-                        [0, 0, 0, 0],
-                        [0, 0, 0, 0],
-                        [0, 0, 0, 0],
-                        [0, 0, 0, 0],
-                        [0, 0, 0, 0],
-                    ],
-                ]
-            ),
-        ),
-        (
-            np.array(
-                [
-                    [243, 123, 83, 251, 90],
-                    [135, 162, 48, 11, 227],
-                    [31, 151, 68, 192, 70],
-                    [40, 220, 239, 170, 128],
-                    [217, 56, 101, 111, 119],
-                ]
-            ),
-            np.array(
-                [
-                    [1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                ]
-            ),
-            np.array(
-                [
-                    [243, 123, 83, 251, 90],
-                    [135, 162, 48, 11, 227],
-                    [31, 151, 68, 192, 70],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                ]
-            ),
-        ),
-    ]
-)
-def apply_mask_image_fixture(request):
-    (img, mask, expected_array) = request.param
-    return img, mask, expected_array
 
 
 class DescribeLazyPropertyDecorator:
