@@ -61,7 +61,7 @@ before_script:
 # command to run tests
 script:
   - flake8 .
-  - pytest --cov=histolab -n auto
+  - pytest --cov=histolab
 
 after_success:
   - coveralls
