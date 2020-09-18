@@ -85,6 +85,7 @@ References
    api/filters
    api/tile
    api/tiler
+   api/scorer
    api/data
    api/utils
 
