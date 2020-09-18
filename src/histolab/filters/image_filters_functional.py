@@ -345,7 +345,6 @@ def local_otsu_threshold(
     """
     if np.array(img).ndim != 2:
         raise ValueError("Input must be 2D.")
-    # TODO: add function to check real finite number
     if disk_size is None or disk_size < 0 or disk_size == np.inf:
         raise ValueError("Disk size must be a positive number.")
     img_arr = np.array(img)
