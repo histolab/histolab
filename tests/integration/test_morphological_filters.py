@@ -3,7 +3,7 @@ import pytest
 
 import histolab.filters.morphological_filters_functional as mof
 
-from ..fixtures import NPY
+from ..fixtures import MASKNPY
 from ..util import load_expectation
 
 
@@ -11,7 +11,7 @@ from ..util import load_expectation
     "mask_array, min_size, avoid_overmask, overmask_thresh, expected_array",
     (
         (
-            NPY.DIAGNOSTIC_SLIDE_THUMB_RGB1_HYSTERESIS_THRESHOLD_MASK,
+            MASKNPY.DIAGNOSTIC_SLIDE_THUMB_RGB1_HYSTERESIS_THRESHOLD_MASK,
             3000,
             True,
             95,
@@ -19,7 +19,7 @@ from ..util import load_expectation
             "objects-mask",
         ),
         (
-            NPY.DIAGNOSTIC_SLIDE_THUMB_HSV_OTSU_THRESHOLD_MASK,
+            MASKNPY.DIAGNOSTIC_SLIDE_THUMB_HSV_OTSU_THRESHOLD_MASK,
             3000,
             True,
             95,
@@ -27,7 +27,7 @@ from ..util import load_expectation
             "-mask",
         ),
         (
-            NPY.DIAGNOSTIC_SLIDE_THUMB_HSV_OTSU_THRESHOLD_MASK,
+            MASKNPY.DIAGNOSTIC_SLIDE_THUMB_HSV_OTSU_THRESHOLD_MASK,
             3000,
             False,
             95,
@@ -35,7 +35,7 @@ from ..util import load_expectation
             "2-mask",
         ),
         (
-            NPY.DIAGNOSTIC_SLIDE_THUMB_RGB1_HYSTERESIS_THRESHOLD_MASK,
+            MASKNPY.DIAGNOSTIC_SLIDE_THUMB_RGB1_HYSTERESIS_THRESHOLD_MASK,
             1200,
             True,
             25,
