@@ -15,7 +15,7 @@ from histolab.types import CoordinatePair as CP
 from ..unitutil import (
     ANY,
     NpArrayMock,
-    PILImageMock as PIL,
+    PILImageMock as PILIMG,
     function_mock,
     initializer_mock,
     instance_mock,
@@ -43,7 +43,7 @@ class Describe_RandomTiler:
 
     def or_it_has_not_available_level_value(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGB_RANDOM_COLOR_500X500
+        image = PILIMG.RGB_RANDOM_COLOR_500X500
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -75,7 +75,7 @@ class Describe_RandomTiler:
 
     def or_it_has_wrong_seed(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGB_RANDOM_COLOR_500X500
+        image = PILIMG.RGB_RANDOM_COLOR_500X500
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -131,7 +131,7 @@ class Describe_RandomTiler:
 
     def it_can_generate_random_coordinates(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -165,7 +165,7 @@ class Describe_RandomTiler:
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -185,48 +185,48 @@ class Describe_RandomTiler:
         "tile1, tile2, check_tissue, has_enough_tissue, max_iter, expected_value",
         (
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [True, True],
                 10,
                 2,
             ),
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [True, False],
                 2,
                 1,
             ),
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(5900, 6000, 5900, 6000)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(5900, 6000, 5900, 6000)),
                 True,
                 [True, True],
                 2,
                 2,
             ),
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 False,
                 [True, True],
                 10,
                 2,
             ),
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 False,
                 [False, False],
                 10,
                 2,
             ),
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [False, False],
                 10,
@@ -246,7 +246,7 @@ class Describe_RandomTiler:
         expected_value,
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -272,7 +272,7 @@ class Describe_RandomTiler:
 
     def it_can_extract_random_tiles(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
@@ -321,7 +321,7 @@ class Describe_GridTiler:
 
     def or_it_has_not_available_level_value(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGB_RANDOM_COLOR_500X500
+        image = PILIMG.RGB_RANDOM_COLOR_500X500
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -388,7 +388,7 @@ class Describe_GridTiler:
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -446,36 +446,36 @@ class Describe_GridTiler:
         "tile1, tile2, check_tissue, has_enough_tissue, expected_n_tiles",
         (
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [True, True],
                 2,
             ),
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 False,
                 [True, True],
                 2,
             ),
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 False,
                 [False, False],
                 2,
             ),
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [False, False],
                 0,
             ),
             (
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [True, False],
                 1,
@@ -493,7 +493,7 @@ class Describe_GridTiler:
         expected_n_tiles,
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -520,7 +520,7 @@ class Describe_GridTiler:
 
     def but_with_wrong_coordinates(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -545,7 +545,7 @@ class Describe_GridTiler:
 
     def and_doesnt_raise_error_with_wrong_coordinates(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -562,7 +562,7 @@ class Describe_GridTiler:
 
     def it_can_extract_grid_tiles(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
@@ -626,7 +626,7 @@ class Describe_ScoreTiler:
     def it_can_calculate_scores(self, request):
         slide = instance_mock(request, Slide)
         coords = CP(0, 10, 0, 10)
-        image = PIL.RGB_RANDOM_COLOR_500X500
+        image = PILIMG.RGB_RANDOM_COLOR_500X500
         tile = Tile(image, coords)
         _grid_tiles_generator = method_mock(
             request, ScoreTiler, "_grid_tiles_generator"
@@ -772,7 +772,7 @@ class Describe_ScoreTiler:
     def it_can_extract_score_tiles(self, request, tmpdir):
         _extract_tile = method_mock(request, Slide, "extract_tile")
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
@@ -841,7 +841,7 @@ class Describe_ScoreTiler:
     def it_can_extract_score_tiles_and_save_report(self, request, tmpdir):
         _extract_tile = method_mock(request, Slide, "extract_tile")
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PIL.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))

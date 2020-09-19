@@ -21,7 +21,7 @@ from histolab.util import regions_from_binary_mask
 
 from ..unitutil import (
     ANY,
-    PILImageMock,
+    PILImageMock as PILIMG,
     class_mock,
     dict_list_eq,
     function_mock,
@@ -188,7 +188,7 @@ class Describe_Slide:
 
     def it_knows_its_dimensions(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -227,7 +227,7 @@ class Describe_Slide:
 
     def it_knows_its_resampled_array(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -240,7 +240,7 @@ class Describe_Slide:
 
     def it_knows_its_thumbnail_size(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -251,7 +251,7 @@ class Describe_Slide:
 
     def it_creates_a_correct_slide_object(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_50X50_155_0_0
+        image = PILIMG.RGBA_COLOR_50X50_155_0_0
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -283,7 +283,7 @@ class Describe_Slide:
 
     def it_can_resample_itself(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -312,7 +312,7 @@ class Describe_Slide:
 
     def it_resamples_with_the_correct_scale_factor(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -324,7 +324,7 @@ class Describe_Slide:
 
     def it_can_save_scaled_image(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
@@ -339,7 +339,7 @@ class Describe_Slide:
 
     def it_can_save_thumbnail(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
@@ -411,7 +411,7 @@ class Describe_Slide:
         RemoveSmallObjects_,
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -461,7 +461,7 @@ class Describe_Slide:
     )
     def it_can_show_its_thumbnail(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -484,7 +484,7 @@ class Describe_Slide:
 
     def it_knows_its_level_dimensions(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -495,7 +495,7 @@ class Describe_Slide:
 
     def but_it_raises_expection_when_level_does_not_exist(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -515,7 +515,7 @@ class Describe_Slide:
     )
     def it_knows_if_coords_are_valid(self, coords, expected_result, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -527,7 +527,7 @@ class Describe_Slide:
 
     def it_knows_its_levels(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -602,7 +602,7 @@ class Describe_Slideset:
 
     def it_knows_its_slides(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.svs"), "TIFF")
         slideset = SlideSet(tmp_path_, "proc", [".svs"])
 
@@ -649,9 +649,9 @@ class Describe_Slideset:
 
     def it_knows_the_slides_dimensions(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.svs"), "TIFF")
-        image2 = PILImageMock.RGBA_COLOR_50X50_155_0_0
+        image2 = PILIMG.RGBA_COLOR_50X50_155_0_0
         image2.save(os.path.join(tmp_path_, "mywsi2.svs"), "TIFF")
         slideset = SlideSet(tmp_path_, "proc", [".svs"])
 
@@ -665,9 +665,9 @@ class Describe_Slideset:
 
     def it_knows_its_slides_dimensions_list(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.svs"), "TIFF")
-        image2 = PILImageMock.RGBA_COLOR_50X50_155_0_0
+        image2 = PILIMG.RGBA_COLOR_50X50_155_0_0
         image2.save(os.path.join(tmp_path_, "mywsi2.svs"), "TIFF")
         slideset = SlideSet(tmp_path_, "proc", [".svs"])
 
@@ -827,9 +827,9 @@ class Describe_Slideset:
     def it_generates_slides_stats(self, total_slides_prop, tmpdir):
         total_slides_prop.return_value = 2
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.svs"), "TIFF")
-        image2 = PILImageMock.RGBA_COLOR_50X50_155_0_0
+        image2 = PILIMG.RGBA_COLOR_50X50_155_0_0
         image2.save(os.path.join(tmp_path_, "mywsi2.svs"), "TIFF")
         slideset = SlideSet(tmp_path_, os.path.join("proc"), [".svs"])
 
