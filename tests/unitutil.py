@@ -94,22 +94,20 @@ def is_win32():
 
 
 class PILImageMock:
-    DIMS_500X500_RGBA_COLOR_155_249_240 = PIL.Image.new(
+    RGBA_COLOR_500X500_155_249_240 = PIL.Image.new(
         "RGBA", size=(500, 500), color=(155, 249, 240)
     )
-    DIMS_50X50_RGBA_COLOR_155_0_0 = PIL.Image.new(
-        "RGBA", size=(50, 50), color=(155, 0, 0)
-    )
+    RGBA_COLOR_50X50_155_0_0 = PIL.Image.new("RGBA", size=(50, 50), color=(155, 0, 0))
 
-    DIMS_500X500_RGB_RANDOM_COLOR = PIL.Image.fromarray(
+    RGB_RANDOM_COLOR_500X500 = PIL.Image.fromarray(
         (np.random.rand(500, 500, 3) * 255).astype("uint8")
     ).convert("RGB")
 
-    DIMS_10X10_RGB_RANDOM_COLOR = PIL.Image.fromarray(
+    RGB_RANDOM_COLOR_10X10 = PIL.Image.fromarray(
         (np.random.rand(10, 10, 3) * 255).astype("uint8")
     ).convert("RGB")
 
-    DIMS_10X10_GRAY_RANDOM = PIL.Image.fromarray(
+    GRAY_RANDOM_10X10 = PIL.Image.fromarray(
         (np.random.rand(10, 10) * 255).astype("uint8")
     )
 

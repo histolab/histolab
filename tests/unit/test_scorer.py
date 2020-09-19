@@ -25,7 +25,7 @@ class DescribeScorers:
         assert type(score) == float
 
     def it_can_construct_nuclei_scorer(self, request):
-        image = PILImageMock.DIMS_10X10_RGB_RANDOM_COLOR
+        image = PILImageMock.RGB_RANDOM_COLOR_10X10
         tissue_ratio_ = property_mock(request, Tile, "tissue_ratio")
         tissue_ratio_.return_value = 0.7
         apply_filters_ = method_mock(request, Tile, "apply_filters")
