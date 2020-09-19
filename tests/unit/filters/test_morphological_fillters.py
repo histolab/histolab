@@ -1,9 +1,9 @@
 # encoding: utf-8
 
-import numpy as np
 import pytest
-import skimage.morphology
 
+import numpy as np
+import skimage.morphology
 from histolab.filters import morphological_filters as mof
 
 from ...base import IMAGE1_RGB, IMAGE2_RGBA
