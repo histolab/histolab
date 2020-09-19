@@ -12,7 +12,7 @@ from ...unitutil import NpArrayMock, PILImageMock, function_mock
 
 class DescribeImageFilters:
     def it_calls_invert_filter_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_invert = function_mock(
             request, "histolab.filters.image_filters_functional.invert"
         )
@@ -25,7 +25,7 @@ class DescribeImageFilters:
         assert type(invert(image)) == PIL.Image.Image
 
     def it_calls_pil_grayscale(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         grayscale_filter = function_mock(request, "PIL.ImageOps.grayscale")
         grayscale_filter.return_value = image
         grayscale = imf.RgbToGrayscale()
@@ -36,7 +36,7 @@ class DescribeImageFilters:
         assert type(grayscale(image)) == PIL.Image.Image
 
     def it_calls_rgb_to_hed_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_rgb_to_hed = function_mock(
             request, "histolab.filters.image_filters_functional.rgb_to_hed"
         )
@@ -49,7 +49,7 @@ class DescribeImageFilters:
         assert type(rgb_to_hed(image)) == PIL.Image.Image
 
     def it_calls_hematoxylin_channel_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_hematoxylin_channel = function_mock(
             request, "histolab.filters.image_filters_functional.hematoxylin_channel"
         )
@@ -62,7 +62,7 @@ class DescribeImageFilters:
         assert type(hematoxylin_channel(image)) == PIL.Image.Image
 
     def it_calls_eosin_channel_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_eosin_channel = function_mock(
             request, "histolab.filters.image_filters_functional.eosin_channel"
         )
@@ -75,7 +75,7 @@ class DescribeImageFilters:
         assert type(eosin_channel(image)) == PIL.Image.Image
 
     def it_calls_rgb_to_hsv_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_rgb_to_hsv = function_mock(
             request, "histolab.filters.image_filters_functional.rgb_to_hsv"
         )
@@ -88,7 +88,7 @@ class DescribeImageFilters:
         assert type(rgb_to_hsv(image)) == PIL.Image.Image
 
     def it_calls_stretch_contrast_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_stretch_contrast = function_mock(
             request, "histolab.filters.image_filters_functional.stretch_contrast"
         )
@@ -101,7 +101,7 @@ class DescribeImageFilters:
         assert type(stretch_contrast(image)) == PIL.Image.Image
 
     def it_calls_histogram_equalization_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_histogram_equalization = function_mock(
             request, "histolab.filters.image_filters_functional.histogram_equalization"
         )
@@ -114,7 +114,7 @@ class DescribeImageFilters:
         assert type(histogram_equalization(image)) == PIL.Image.Image
 
     def it_calls_adaptive_equalization_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_adaptive_equalization = function_mock(
             request, "histolab.filters.image_filters_functional.adaptive_equalization"
         )
@@ -127,7 +127,7 @@ class DescribeImageFilters:
         assert type(adaptive_equalization(image)) == PIL.Image.Image
 
     def it_calls_local_equalization_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_local_equalization = function_mock(
             request, "histolab.filters.image_filters_functional.local_equalization"
         )
@@ -140,7 +140,7 @@ class DescribeImageFilters:
         assert type(local_equalization(image)) == PIL.Image.Image
 
     def it_calls_kmeans_segmentation_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_kmeans_segmentation = function_mock(
             request, "histolab.filters.image_filters_functional.kmeans_segmentation"
         )
@@ -153,7 +153,7 @@ class DescribeImageFilters:
         assert type(kmeans_segmentation(image)) == PIL.Image.Image
 
     def it_calls_rag_threshold_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_rag_threshold = function_mock(
             request, "histolab.filters.image_filters_functional.rag_threshold"
         )
@@ -166,7 +166,7 @@ class DescribeImageFilters:
         assert type(rag_threshold(image)) == PIL.Image.Image
 
     def it_applies_hysteresis_threshold(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_hysteresis_threshold = function_mock(
             request, "histolab.filters.image_filters_functional.hysteresis_threshold"
         )
@@ -179,7 +179,7 @@ class DescribeImageFilters:
         assert type(hysteresis_threshold(image)) == PIL.Image.Image
 
     def it_applies_hysteresis_threshold_mask_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_hysteresis_threshold_mask = function_mock(
             request,
             "histolab.filters.image_filters_functional.hysteresis_threshold_mask",
@@ -193,7 +193,7 @@ class DescribeImageFilters:
         assert type(hysteresis_threshold_mask(image)) == np.ndarray
 
     def it_calls_otsu_threshold_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_otsu_threshold = function_mock(
             request, "histolab.filters.image_filters_functional.otsu_threshold"
         )
@@ -206,7 +206,7 @@ class DescribeImageFilters:
         assert type(otsu_threshold(image)) == np.ndarray
 
     def it_calls_local_otsu_threshold_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_local_otsu_threshold = function_mock(
             request, "histolab.filters.image_filters_functional.local_otsu_threshold"
         )
@@ -219,7 +219,7 @@ class DescribeImageFilters:
         assert type(local_otsu_threshold(image)) == np.ndarray
 
     def it_calls_filter_entropy_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_filter_entropy = function_mock(
             request, "histolab.filters.image_filters_functional.filter_entropy"
         )
@@ -232,7 +232,7 @@ class DescribeImageFilters:
         assert type(filter_entropy(image)) == np.ndarray
 
     def it_calls_canny_edges_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_canny_edges = function_mock(
             request, "histolab.filters.image_filters_functional.canny_edges"
         )
@@ -245,7 +245,7 @@ class DescribeImageFilters:
         assert type(canny_edges(image)) == np.ndarray
 
     def it_calls_grays_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_grays = function_mock(
             request, "histolab.filters.image_filters_functional.grays"
         )
@@ -258,7 +258,7 @@ class DescribeImageFilters:
         assert type(grays(image)) == np.ndarray
 
     def it_calls_green_channel_filter_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_green_channel_filter = function_mock(
             request, "histolab.filters.image_filters_functional.green_channel_filter"
         )
@@ -271,7 +271,7 @@ class DescribeImageFilters:
         assert type(green_channel_filter(image)) == np.ndarray
 
     def it_calls_red_filter_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_red_filter = function_mock(
             request, "histolab.filters.image_filters_functional.red_filter"
         )
@@ -284,7 +284,7 @@ class DescribeImageFilters:
         assert type(red_filter(image)) == np.ndarray
 
     def it_calls_red_pen_filter_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_red_pen_filter = function_mock(
             request, "histolab.filters.image_filters_functional.red_pen_filter"
         )
@@ -297,7 +297,7 @@ class DescribeImageFilters:
         assert type(red_pen_filter(image)) == np.ndarray
 
     def it_calls_green_filter_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_green_filter = function_mock(
             request, "histolab.filters.image_filters_functional.green_filter"
         )
@@ -310,7 +310,7 @@ class DescribeImageFilters:
         assert type(green_filter(image)) == np.ndarray
 
     def it_calls_green_pen_filter_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_green_pen_filter = function_mock(
             request, "histolab.filters.image_filters_functional.green_pen_filter"
         )
@@ -323,7 +323,7 @@ class DescribeImageFilters:
         assert type(green_pen_filter(image)) == np.ndarray
 
     def it_calls_blue_filter_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_blue_filter = function_mock(
             request, "histolab.filters.image_filters_functional.blue_filter"
         )
@@ -336,7 +336,7 @@ class DescribeImageFilters:
         assert type(blue_filter(image)) == np.ndarray
 
     def it_calls_blue_pen_filter_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_blue_pen_filter = function_mock(
             request, "histolab.filters.image_filters_functional.blue_pen_filter"
         )
@@ -349,7 +349,7 @@ class DescribeImageFilters:
         assert type(blue_pen_filter(image)) == np.ndarray
 
     def it_calls_pen_marks_filter_functional(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_pen_marks = function_mock(
             request, "histolab.filters.image_filters_functional.pen_marks"
         )
@@ -373,7 +373,7 @@ class DescribeImageFilters:
         assert type(to_pil_image(array)) == PIL.Image.Image
 
     def it_calls_apply_mask_image(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         mask = NpArrayMock.ONES_500X500X4_BOOL
         util_apply_mask_image = function_mock(request, "histolab.util.apply_mask_image")
         util_apply_mask_image.return_value = PIL.Image.fromarray(np.array(image) * mask)
@@ -385,7 +385,7 @@ class DescribeImageFilters:
         assert type(util_apply_mask_image(image, mask)) == PIL.Image.Image
 
     def it_calls_lambda_filter(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         image_np = np.array(image)
         fun_ = function_mock(request, "numpy.array")
         fun_.return_value = image_np
@@ -397,7 +397,7 @@ class DescribeImageFilters:
         assert type(lambda_filter(image)) == np.ndarray
 
     def it_calls_yen_threshold(self, request):
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PILImageMock.RGBA_COLOR_500X500_155_249_240
         F_yen_threshold = function_mock(
             request, "histolab.filters.image_filters_functional.yen_threshold"
         )

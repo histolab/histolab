@@ -10,12 +10,12 @@ from histolab.scorer import RandomScorer
 from histolab.slide import Slide
 from histolab.tile import Tile
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, Tiler
-from histolab.types import CoordinatePair
+from histolab.types import CoordinatePair as CP
 
 from ..unitutil import (
     ANY,
     NpArrayMock,
-    PILImageMock,
+    PILImageMock as PIL,
     function_mock,
     initializer_mock,
     instance_mock,
@@ -43,7 +43,7 @@ class Describe_RandomTiler:
 
     def or_it_has_not_available_level_value(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
+        image = PIL.RGB_RANDOM_COLOR_500X500
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -75,7 +75,7 @@ class Describe_RandomTiler:
 
     def or_it_has_wrong_seed(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
+        image = PIL.RGB_RANDOM_COLOR_500X500
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -108,19 +108,12 @@ class Describe_RandomTiler:
     @pytest.mark.parametrize(
         "level, prefix, suffix, tile_coords, tiles_counter, expected_filename",
         (
-            (
-                3,
-                "",
-                ".png",
-                CoordinatePair(0, 512, 0, 512),
-                3,
-                "tile_3_level3_0-512-0-512.png",
-            ),
+            (3, "", ".png", CP(0, 512, 0, 512), 3, "tile_3_level3_0-512-0-512.png"),
             (
                 0,
                 "folder/",
                 ".png",
-                CoordinatePair(4, 127, 4, 127),
+                CP(4, 127, 4, 127),
                 10,
                 "folder/tile_10_level0_4-127-4-127.png",
             ),
@@ -138,7 +131,7 @@ class Describe_RandomTiler:
 
     def it_can_generate_random_coordinates(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -158,7 +151,7 @@ class Describe_RandomTiler:
         _box_mask_thumb.assert_called_once_with(random_tiler, slide)
         _tile_size.assert_has_calls([call((128, 128))])
         _scale_coordinates.assert_called_once_with(
-            reference_coords=CoordinatePair(x_ul=0, y_ul=0, x_br=128, y_br=128),
+            reference_coords=CP(x_ul=0, y_ul=0, x_br=128, y_br=128),
             reference_size=(500, 500),
             target_size=(500, 500),
         )
@@ -172,7 +165,7 @@ class Describe_RandomTiler:
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -189,51 +182,51 @@ class Describe_RandomTiler:
         np.testing.assert_array_almost_equal(box_mask, expected_box)
 
     @pytest.mark.parametrize(
-        "coords1, coords2, check_tissue, has_enough_tissue, max_iter, expected_n_tiles",
+        "tile1, tile2, check_tissue, has_enough_tissue, max_iter, expected_value",
         (
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [True, True],
                 10,
                 2,
             ),
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [True, False],
                 2,
                 1,
             ),
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(5900, 6000, 5900, 6000),  # wrong coordinates
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(5900, 6000, 5900, 6000)),
                 True,
                 [True, True],
                 2,
                 2,
             ),
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 False,
                 [True, True],
                 10,
                 2,
             ),
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 False,
                 [False, False],
                 10,
                 2,
             ),
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [False, False],
                 10,
@@ -245,15 +238,15 @@ class Describe_RandomTiler:
         self,
         request,
         tmpdir,
-        coords1,
-        coords2,
+        tile1,
+        tile2,
         check_tissue,
         has_enough_tissue,
         max_iter,
-        expected_n_tiles,
+        expected_value,
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -263,10 +256,8 @@ class Describe_RandomTiler:
         _random_tile_coordinates = method_mock(
             request, RandomTiler, "_random_tile_coordinates"
         )
-        _random_tile_coordinates.side_effect = [coords1, coords2] * (max_iter // 2)
-        tile1 = Tile(image, coords1)
-        tile2 = Tile(image, coords2)
-        _extract_tile.side_effect = [tile1, tile2] * (max_iter // 2)
+        tiles = [tile1, tile2]
+        _extract_tile.side_effect = tiles * (max_iter // 2)
         random_tiler = RandomTiler(
             (10, 10), 2, level=0, max_iter=max_iter, check_tissue=check_tissue
         )
@@ -275,22 +266,20 @@ class Describe_RandomTiler:
 
         _random_tile_coordinates.assert_called_with(random_tiler, slide)
         assert _random_tile_coordinates.call_count <= random_tiler.max_iter
-
-        _extract_tile.call_args_list == ([call(coords1, 0), call(coords2, 0)])
-        assert len(generated_tiles) == expected_n_tiles
-        if expected_n_tiles == 2:
-            assert generated_tiles == [(tile1, coords1), (tile2, coords2)]
+        assert len(generated_tiles) == expected_value
+        for i, tile in enumerate(generated_tiles):
+            assert tile[0] == tiles[i]
 
     def it_can_extract_random_tiles(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
         _random_tiles_generator = method_mock(
             request, RandomTiler, "_random_tiles_generator"
         )
-        coords = CoordinatePair(0, 10, 0, 10)
+        coords = CP(0, 10, 0, 10)
         tile = Tile(image, coords)
         _random_tiles_generator.return_value = [(tile, coords), (tile, coords)]
         _tile_filename = method_mock(request, RandomTiler, "_tile_filename")
@@ -332,7 +321,7 @@ class Describe_GridTiler:
 
     def or_it_has_not_available_level_value(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
+        image = PIL.RGB_RANDOM_COLOR_500X500
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -353,7 +342,7 @@ class Describe_GridTiler:
 
     @pytest.mark.parametrize("tile_size", ((512, 512), (128, 128), (10, 10)))
     def it_knows_its_tile_size(self, tile_size):
-        grid_tiler = GridTiler(tile_size, 10, 0)
+        grid_tiler = GridTiler(tile_size, 10, True, 0)
 
         tile_size_ = grid_tiler.tile_size
 
@@ -363,19 +352,12 @@ class Describe_GridTiler:
     @pytest.mark.parametrize(
         "level, pixel_overlap, prefix, tile_coords, tiles_counter, expected_filename",
         (
-            (
-                3,
-                0,
-                "",
-                CoordinatePair(0, 512, 0, 512),
-                3,
-                "tile_3_level3_0-512-0-512.png",
-            ),
+            (3, 0, "", CP(0, 512, 0, 512), 3, "tile_3_level3_0-512-0-512.png"),
             (
                 0,
                 0,
                 "folder/",
-                CoordinatePair(4, 127, 4, 127),
+                CP(4, 127, 4, 127),
                 10,
                 "folder/tile_10_level0_4-127-4-127.png",
             ),
@@ -406,7 +388,7 @@ class Describe_GridTiler:
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -425,10 +407,10 @@ class Describe_GridTiler:
     @pytest.mark.parametrize(
         "bbox_coordinates, pixel_overlap, expected_n_tiles_row",
         (
-            (CoordinatePair(x_ul=0, y_ul=0, x_br=6060, y_br=1917), 0, 11),
-            (CoordinatePair(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 0, 3),
-            (CoordinatePair(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 128, 5),
-            (CoordinatePair(x_ul=0, y_ul=0, x_br=1921, y_br=2187), -128, 3),
+            (CP(x_ul=0, y_ul=0, x_br=6060, y_br=1917), 0, 11),
+            (CP(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 0, 3),
+            (CP(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 128, 5),
+            (CP(x_ul=0, y_ul=0, x_br=1921, y_br=2187), -128, 3),
         ),
     )
     def it_can_calculate_n_tiles_row(
@@ -444,10 +426,10 @@ class Describe_GridTiler:
     @pytest.mark.parametrize(
         "bbox_coordinates, pixel_overlap, expected_n_tiles_column",
         (
-            (CoordinatePair(x_ul=0, y_ul=0, x_br=6060, y_br=1917), 0, 3),
-            (CoordinatePair(x_ul=0, y_ul=0, x_br=6060, y_br=1917), -1, 3),
-            (CoordinatePair(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 0, 4),
-            (CoordinatePair(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 128, 5),
+            (CP(x_ul=0, y_ul=0, x_br=6060, y_br=1917), 0, 3),
+            (CP(x_ul=0, y_ul=0, x_br=6060, y_br=1917), -1, 3),
+            (CP(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 0, 4),
+            (CP(x_ul=0, y_ul=0, x_br=1921, y_br=2187), 128, 5),
         ),
     )
     def it_can_calculate_n_tiles_column(
@@ -461,39 +443,39 @@ class Describe_GridTiler:
         assert n_tiles_column == expected_n_tiles_column
 
     @pytest.mark.parametrize(
-        "coords1, coords2, check_tissue, has_enough_tissue, expected_n_tiles",
+        "tile1, tile2, check_tissue, has_enough_tissue, expected_n_tiles",
         (
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [True, True],
                 2,
             ),
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 False,
                 [True, True],
                 2,
             ),
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 False,
                 [False, False],
                 2,
             ),
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [False, False],
                 0,
             ),
             (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PIL.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 True,
                 [True, False],
                 1,
@@ -504,14 +486,14 @@ class Describe_GridTiler:
         self,
         request,
         tmpdir,
-        coords1,
-        coords2,
+        tile1,
+        tile2,
         check_tissue,
         has_enough_tissue,
         expected_n_tiles,
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -521,29 +503,24 @@ class Describe_GridTiler:
         _grid_coordinates_generator = method_mock(
             request, GridTiler, "_grid_coordinates_generator"
         )
-        _grid_coordinates_generator.return_value = [coords1, coords2]
-        tile1 = Tile(image, coords1)
-        tile2 = Tile(image, coords2)
+        _grid_coordinates_generator.return_value = [CP(0, 10, 0, 10), CP(0, 10, 0, 10)]
         _extract_tile.side_effect = [tile1, tile2]
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=check_tissue)
+        tiles = [tile1, tile2]
 
         generated_tiles = list(grid_tiler._grid_tiles_generator(slide))
 
         _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
         assert _extract_tile.call_args_list == (
-            [call(slide, coords1, 0), call(slide, coords2, 0)]
+            [call(slide, CP(0, 10, 0, 10), 0), call(slide, CP(0, 10, 0, 10), 0)]
         )
         assert len(generated_tiles) == expected_n_tiles
-        if expected_n_tiles == 2:
-            assert generated_tiles == [(tile1, coords1), (tile2, coords2)]
-        if expected_n_tiles == 1:
-            assert generated_tiles == [(tile1, coords1)]
-        if expected_n_tiles == 0:
-            assert generated_tiles == []
+        for i, tile in enumerate(generated_tiles):
+            assert tile[0] == tiles[i]
 
     def but_with_wrong_coordinates(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
@@ -552,8 +529,8 @@ class Describe_GridTiler:
         _grid_coordinates_generator = method_mock(
             request, GridTiler, "_grid_coordinates_generator"
         )
-        coords1 = CoordinatePair(600, 610, 600, 610)
-        coords2 = CoordinatePair(0, 10, 0, 10)
+        coords1 = CP(600, 610, 600, 610)
+        coords2 = CP(0, 10, 0, 10)
         _grid_coordinates_generator.return_value = [coords1, coords2]
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=False)
 
@@ -568,11 +545,11 @@ class Describe_GridTiler:
 
     def and_doesnt_raise_error_with_wrong_coordinates(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
-        coords = CoordinatePair(5800, 6000, 5800, 6000)
+        coords = CP(5800, 6000, 5800, 6000)
         _grid_coordinates_generator = method_mock(
             request, GridTiler, "_grid_coordinates_generator"
         )
@@ -585,12 +562,12 @@ class Describe_GridTiler:
 
     def it_can_extract_grid_tiles(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
         _grid_tiles_generator = method_mock(request, GridTiler, "_grid_tiles_generator")
-        coords = CoordinatePair(0, 10, 0, 10)
+        coords = CP(0, 10, 0, 10)
         tile = Tile(image, coords)
         _grid_tiles_generator.return_value = [(tile, coords), (tile, coords)]
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
@@ -648,8 +625,8 @@ class Describe_ScoreTiler:
 
     def it_can_calculate_scores(self, request):
         slide = instance_mock(request, Slide)
-        coords = CoordinatePair(0, 10, 0, 10)
-        image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
+        coords = CP(0, 10, 0, 10)
+        image = PIL.RGB_RANDOM_COLOR_500X500
         tile = Tile(image, coords)
         _grid_tiles_generator = method_mock(
             request, ScoreTiler, "_grid_tiles_generator"
@@ -670,7 +647,7 @@ class Describe_ScoreTiler:
         assert type(scores) == list
         assert type(scores[0]) == tuple
         assert type(scores[0][0]) == float
-        assert type(scores[0][1]) == CoordinatePair
+        assert type(scores[0][1]) == CP
         assert scores == [(0.5, coords), (0.7, coords)]
 
     def but_it_raises_runtimeerror_if_no_tiles_are_extracted(self, request):
@@ -693,7 +670,7 @@ class Describe_ScoreTiler:
         )
 
     def it_can_scale_scores(self):
-        coords = [CoordinatePair(0, 10 * i, 0, 10) for i in range(3)]
+        coords = [CP(0, 10 * i, 0, 10) for i in range(3)]
         scores = [0.3, 0.4, 0.7]
         scores_ = list(zip(scores, coords))
         score_tiler = ScoreTiler(None, (10, 10), 2, 0)
@@ -714,46 +691,40 @@ class Describe_ScoreTiler:
                 0,
                 (
                     [
-                        (0.8, CoordinatePair(0, 10, 0, 10)),
-                        (0.7, CoordinatePair(0, 10, 0, 10)),
-                        (0.5, CoordinatePair(0, 10, 0, 10)),
-                        (0.2, CoordinatePair(0, 10, 0, 10)),
-                        (0.1, CoordinatePair(0, 10, 0, 10)),
+                        (0.8, CP(0, 10, 0, 10)),
+                        (0.7, CP(0, 10, 0, 10)),
+                        (0.5, CP(0, 10, 0, 10)),
+                        (0.2, CP(0, 10, 0, 10)),
+                        (0.1, CP(0, 10, 0, 10)),
                     ],
                     [
-                        (1.0, CoordinatePair(0, 10, 0, 10)),
-                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
-                        (0.5714285714285714, CoordinatePair(0, 10, 0, 10)),
-                        (0.14285714285714285, CoordinatePair(0, 10, 0, 10)),
-                        (0.0, CoordinatePair(0, 10, 0, 10)),
+                        (1.0, CP(0, 10, 0, 10)),
+                        (0.857142857142857, CP(0, 10, 0, 10)),
+                        (0.5714285714285714, CP(0, 10, 0, 10)),
+                        (0.14285714285714285, CP(0, 10, 0, 10)),
+                        (0.0, CP(0, 10, 0, 10)),
                     ],
                 ),
             ),
             (
                 2,
                 (
-                    [
-                        (0.8, CoordinatePair(0, 10, 0, 10)),
-                        (0.7, CoordinatePair(0, 10, 0, 10)),
-                    ],
-                    [
-                        (1.0, CoordinatePair(0, 10, 0, 10)),
-                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
-                    ],
+                    [(0.8, CP(0, 10, 0, 10)), (0.7, CP(0, 10, 0, 10))],
+                    [(1.0, CP(0, 10, 0, 10)), (0.857142857142857, CP(0, 10, 0, 10))],
                 ),
             ),
             (
                 3,
                 (
                     [
-                        (0.8, CoordinatePair(0, 10, 0, 10)),
-                        (0.7, CoordinatePair(0, 10, 0, 10)),
-                        (0.5, CoordinatePair(0, 10, 0, 10)),
+                        (0.8, CP(0, 10, 0, 10)),
+                        (0.7, CP(0, 10, 0, 10)),
+                        (0.5, CP(0, 10, 0, 10)),
                     ],
                     [
-                        (1.0, CoordinatePair(0, 10, 0, 10)),
-                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
-                        (0.5714285714285714, CoordinatePair(0, 10, 0, 10)),
+                        (1.0, CP(0, 10, 0, 10)),
+                        (0.857142857142857, CP(0, 10, 0, 10)),
+                        (0.5714285714285714, CP(0, 10, 0, 10)),
                     ],
                 ),
             ),
@@ -762,7 +733,7 @@ class Describe_ScoreTiler:
     def it_can_calculate_highest_score_tiles(self, request, n_tiles, expected_value):
         slide = instance_mock(request, Slide)
         _scores = method_mock(request, ScoreTiler, "_scores")
-        coords = CoordinatePair(0, 10, 0, 10)
+        coords = CP(0, 10, 0, 10)
         _scores.return_value = [
             (0.7, coords),
             (0.5, coords),
@@ -781,7 +752,7 @@ class Describe_ScoreTiler:
     def but_it_raises_error_with_negative_n_tiles_value(self, request):
         slide = instance_mock(request, Slide)
         _scores = method_mock(request, ScoreTiler, "_scores")
-        coords = CoordinatePair(0, 10, 0, 10)
+        coords = CP(0, 10, 0, 10)
         _scores.return_value = [
             (0.7, coords),
             (0.5, coords),
@@ -801,12 +772,12 @@ class Describe_ScoreTiler:
     def it_can_extract_score_tiles(self, request, tmpdir):
         _extract_tile = method_mock(request, Slide, "extract_tile")
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
         _highest_score_tiles = method_mock(request, ScoreTiler, "_highest_score_tiles")
-        coords = CoordinatePair(0, 10, 0, 10)
+        coords = CP(0, 10, 0, 10)
         tile = Tile(image, coords)
         _extract_tile.return_value = tile
         _highest_score_tiles.return_value = (
@@ -842,7 +813,7 @@ class Describe_ScoreTiler:
 
     def it_can_save_report(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("path")
-        coords = CoordinatePair(0, 10, 0, 10)
+        coords = CP(0, 10, 0, 10)
         highest_score_tiles = [(0.8, coords), (0.7, coords)]
         highest_scaled_score_tiles = [(0.1, coords), (0.0, coords)]
         filenames = ["tile0.png", "tile1.png"]
@@ -870,12 +841,12 @@ class Describe_ScoreTiler:
     def it_can_extract_score_tiles_and_save_report(self, request, tmpdir):
         _extract_tile = method_mock(request, Slide, "extract_tile")
         tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
+        image = PIL.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
         _highest_score_tiles = method_mock(request, ScoreTiler, "_highest_score_tiles")
-        coords = CoordinatePair(0, 10, 0, 10)
+        coords = CP(0, 10, 0, 10)
         tile = Tile(image, coords)
         _extract_tile.return_value = tile
         _highest_score_tiles.return_value = (
