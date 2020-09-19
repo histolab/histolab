@@ -97,7 +97,6 @@ class Describe_Tile:
     )
     def it_knows_if_it_has_enough_tissue(
         self,
-        has_enough_tissue_fixture,
         _is_almost_white,
         _has_only_some_tissue,
         _has_tissue_more_than_percent,

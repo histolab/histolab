@@ -337,7 +337,7 @@ class RandomTiler(Tiler):
         check_tissue: bool = True,
         prefix: str = "",
         suffix: str = ".png",
-        max_iter: int = 1e4,
+        max_iter: float = 1e4,
     ):
 
         super().__init__()
