@@ -156,10 +156,25 @@ class Describe_Slide:
     @pytest.mark.parametrize(
         "slide_path, proc_path, slide_dims, expected_value",
         (
-            ("1.svs", "1/p", (345, 111, 333, 444), "1/p/1-22x-345x111-333x444.png"),
-            ("2.svs", "2/p", (345, 111, None, None), "2/p/2-22x-345x111-NonexNone.png"),
-            ("2.svs", "2/p", (345, 111, 123, 123), "2/p/2-22x-345x111-123x123.png"),
-            ("2.svs", "2/p", (None, None, None, None), "2/p/2*.png"),
+            (
+                "1.svs",
+                "1/p",
+                (345, 111, 333, 444),
+                os.path.join("1/p", "1-22x-345x111-333x444.png"),
+            ),
+            (
+                "2.svs",
+                "2/p",
+                (345, 111, None, None),
+                os.path.join("2/p", "2-22x-345x111-NonexNone.png"),
+            ),
+            (
+                "2.svs",
+                "2/p",
+                (345, 111, 123, 123),
+                os.path.join("2/p", "2-22x-345x111-123x123.png"),
+            ),
+            ("2.svs", "2/p", (None, None, None, None), os.path.join("2/p", "2*.png")),
         ),
     )
     def it_knows_its_scaled_image_path(
