@@ -1,12 +1,12 @@
 import csv
 import os
 from abc import abstractmethod
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import numpy as np
 
 from .exceptions import LevelError
-from .scorer import Scorer
+from .scorer import RandomScorer, NucleiScorer
 from .slide import Slide
 from .tile import Tile
 from .types import CoordinatePair
@@ -519,7 +519,7 @@ class ScoreTiler(GridTiler):
 
     def __init__(
         self,
-        scorer: Scorer,
+        scorer: Union[NucleiScorer, RandomScorer],
         tile_size: Tuple[int, int],
         n_tiles: int = 0,
         level: int = 0,

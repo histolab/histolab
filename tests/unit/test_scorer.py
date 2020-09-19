@@ -22,7 +22,6 @@ class DescribeScorers:
         score = random_scorer(tile)
 
         assert isinstance(random_scorer, scorer.RandomScorer)
-        assert isinstance(random_scorer, scorer.Scorer)
         assert type(score) == float
 
     def it_can_construct_nuclei_scorer(self, request):
@@ -50,6 +49,5 @@ class DescribeScorers:
             mask_difference_.call_args_list[0][0][1], COMPLEX_MASK
         )
         assert isinstance(nuclei_scorer, scorer.NucleiScorer)
-        assert isinstance(nuclei_scorer, scorer.Scorer)
         assert type(score) == np.float64
         assert score == 0  # to avoid float representation issues

@@ -1,3 +1,20 @@
+# encoding: utf-8
+
+# ------------------------------------------------------------------------
+# Copyright 2020 All Histolab Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
 import operator
 from abc import abstractmethod
 
@@ -15,16 +32,22 @@ except ImportError:
 
 
 @runtime_checkable
-class Scorer(Protocol):
-    """General scorer object"""
+class _Scorer(Protocol):
+    """General scorer object
+
+    .. automethod:: __call__
+    """
 
     @abstractmethod
     def __call__(self, tile: Tile) -> float:
         raise NotImplementedError
 
 
-class RandomScorer(Scorer):
-    """Implement a Scorer that returns a random float score between 0 and 1."""
+class RandomScorer(_Scorer):
+    """Implement a Scorer that returns a random float score between 0 and 1.
+
+    .. automethod:: __call__
+    """
 
     def __call__(self, tile: Tile) -> float:
         """Return the random score associated with the tile.
@@ -42,7 +65,7 @@ class RandomScorer(Scorer):
         return np.random.random()
 
 
-class NucleiScorer(Scorer):
+class NucleiScorer(_Scorer):
     r"""Implement a Scorer that estimates the presence of nuclei in an H&E-stained tile.
 
     A higher presence of nuclei is associated with a higher scorer, following this
@@ -51,6 +74,8 @@ class NucleiScorer(Scorer):
     .. math::
 
         score = nuclei\_ratio \cdot tanh(tissue\_ratio)
+
+    .. automethod:: __call__
     """
 
     def __call__(self, tile: Tile) -> float:
