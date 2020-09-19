@@ -82,19 +82,30 @@ class Describe_Tile:
 
         assert os.path.exists(tmp_path_ + ".png")
 
+    @pytest.mark.parametrize(
+        "almost_white, only_some_tissue, tissue_more_than_percent, expected_value",
+        (
+            (False, True, True, True),
+            (False, False, False, False),
+            (True, False, False, False),
+            (False, True, False, False),
+            (False, False, True, False),
+            (True, True, True, False),
+            (True, False, True, False),
+            (True, True, False, False),
+        ),
+    )
     def it_knows_if_it_has_enough_tissue(
         self,
         has_enough_tissue_fixture,
         _is_almost_white,
         _has_only_some_tissue,
         _has_tissue_more_than_percent,
+        almost_white,
+        only_some_tissue,
+        tissue_more_than_percent,
+        expected_value,
     ):
-        (
-            almost_white,
-            only_some_tissue,
-            tissue_more_than_percent,
-            expected_value,
-        ) = has_enough_tissue_fixture
         _is_almost_white.return_value = almost_white
         _has_only_some_tissue.return_value = only_some_tissue
         _has_tissue_more_than_percent.return_value = tissue_more_than_percent
@@ -104,10 +115,26 @@ class Describe_Tile:
 
         assert has_enough_tissue == expected_value
 
+    @pytest.mark.parametrize(
+        "tissue_mask, percent, expected_value",
+        (
+            ([[0, 1, 1, 0, 1], [0, 1, 1, 1, 1]], 80, False),
+            ([[0, 1, 1, 0, 1], [0, 1, 1, 1, 1]], 10, True),
+            ([[0, 1, 1, 0, 1], [0, 1, 1, 1, 1]], 100, False),
+            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 100, False),
+            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 10, True),
+            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 80, True),
+            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 60, True),
+            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 60, False),
+            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 10, False),
+            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 3, False),
+            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 80, False),
+            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 100, False),
+        ),
+    )
     def it_knows_if_has_tissue_more_than_percent(
-        self, request, has_tissue_more_than_percent_fixture
+        self, request, tissue_mask, percent, expected_value
     ):
-        tissue_mask, percent, expected_value = has_tissue_more_than_percent_fixture
         _tissue_mask = method_mock(request, Tile, "_tissue_mask")
         _tissue_mask.return_value = tissue_mask
 
@@ -212,54 +239,6 @@ class Describe_Tile:
         assert filtered_image.image == image_after
         assert filtered_image.coords is None
         assert filtered_image.level == 0
-
-    # fixtures -------------------------------------------------------
-
-    @pytest.fixture(
-        params=[
-            ([[0, 1, 1, 0, 1], [0, 1, 1, 1, 1]], 80, False),
-            ([[0, 1, 1, 0, 1], [0, 1, 1, 1, 1]], 10, True),
-            ([[0, 1, 1, 0, 1], [0, 1, 1, 1, 1]], 100, False),
-            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 100, False),
-            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 10, True),
-            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 80, True),
-            ([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1]], 60, True),
-            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 60, False),
-            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 10, False),
-            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 3, False),
-            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 80, False),
-            ([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 100, False),
-        ]
-    )
-    def has_tissue_more_than_percent_fixture(self, request):
-        tissue_mask, percent, expected_value = request.param
-        return tissue_mask, percent, expected_value
-
-    @pytest.fixture(
-        params=[
-            (False, True, True, True),
-            (False, False, False, False),
-            (True, False, False, False),
-            (False, True, False, False),
-            (False, False, True, False),
-            (True, True, True, False),
-            (True, False, True, False),
-            (True, True, False, False),
-        ]
-    )
-    def has_enough_tissue_fixture(self, request):
-        (
-            almost_white,
-            only_some_tissue,
-            tissue_more_than_percent,
-            expected_value,
-        ) = request.param
-        return (
-            almost_white,
-            only_some_tissue,
-            tissue_more_than_percent,
-            expected_value,
-        )
 
     # fixture components ---------------------------------------------
 

@@ -63,7 +63,7 @@ def it_knows_tissue_areas_mask_slide_filters_composition(
 
 @pytest.mark.parametrize(
     "_cls, subclass",
-    ((Tile, _TileFiltersComposition), (Slide, _SlideFiltersComposition),),
+    ((Tile, _TileFiltersComposition), (Slide, _SlideFiltersComposition)),
 )
 def it_can_dispatch_subclass_according_class_type(request, _cls, subclass):
     _init_ = initializer_mock(request, FiltersComposition)
@@ -98,6 +98,9 @@ def it_raises_filtercompositionerror_if_class_is_none(request):
     _init_.assert_not_called()
     assert isinstance(err.value, FilterCompositionError)
     assert str(err.value) == "cls_ parameter cannot be None"
+
+
+# fixture components ---------------------------------------------
 
 
 @pytest.fixture
