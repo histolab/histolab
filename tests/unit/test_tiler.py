@@ -34,14 +34,14 @@ class Describe_RandomTiler:
         assert isinstance(random_tiler, RandomTiler)
         assert isinstance(random_tiler, Tiler)
 
-    def but_it_has_wrong_tile_size_value(self, request):
+    def but_it_has_wrong_tile_size_value(self):
         with pytest.raises(ValueError) as err:
             RandomTiler((512, -1), 10, 0)
 
         assert isinstance(err.value, ValueError)
         assert str(err.value) == "Tile size must be greater than 0 ((512, -1))"
 
-    def or_it_has_not_available_level_value(self, request, tmpdir):
+    def or_it_has_not_available_level_value(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -55,14 +55,14 @@ class Describe_RandomTiler:
         assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
 
-    def or_it_has_negative_level_value(self, request):
+    def or_it_has_negative_level_value(self):
         with pytest.raises(LevelError) as err:
             RandomTiler((512, 512), 10, -1)
 
         assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level cannot be negative (-1)"
 
-    def or_it_has_wrong_max_iter(self, request):
+    def or_it_has_wrong_max_iter(self):
         with pytest.raises(ValueError) as err:
             RandomTiler((512, 512), 10, 0, max_iter=3)
 
@@ -73,7 +73,7 @@ class Describe_RandomTiler:
             "the maximum number of tiles (10)."
         )
 
-    def or_it_has_wrong_seed(self, request, tmpdir):
+    def or_it_has_wrong_seed(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -88,7 +88,7 @@ class Describe_RandomTiler:
         assert str(err.value) == "Seed must be between 0 and 2**32 - 1"
 
     @pytest.mark.parametrize("tile_size", ((512, 512), (128, 128), (10, 10)))
-    def it_knows_its_tile_size(self, request, tile_size):
+    def it_knows_its_tile_size(self, tile_size):
         random_tiler = RandomTiler(tile_size, 10, 0)
 
         tile_size_ = random_tiler.tile_size
@@ -97,7 +97,7 @@ class Describe_RandomTiler:
         assert tile_size_ == tile_size
 
     @pytest.mark.parametrize("max_iter", (1000, 10, 3000))
-    def it_knows_its_max_iter(self, request, max_iter):
+    def it_knows_its_max_iter(self, max_iter):
         random_tiler = RandomTiler((128, 128), 10, 0, max_iter=max_iter)
 
         max_iter_ = random_tiler.max_iter
@@ -105,22 +105,31 @@ class Describe_RandomTiler:
         assert type(max_iter_) == int
         assert max_iter_ == max_iter
 
-    def it_knows_its_tile_filename(self, request, tile_filename_fixture):
+    @pytest.mark.parametrize(
+        "level, prefix, suffix, tile_coords, tiles_counter, expected_filename",
         (
-            tile_size,
-            n_tiles,
-            level,
-            seed,
-            check_tissue,
-            prefix,
-            suffix,
-            tile_coords,
-            tiles_counter,
-            expected_filename,
-        ) = tile_filename_fixture
-        random_tiler = RandomTiler(
-            tile_size, n_tiles, level, seed, check_tissue, prefix, suffix
-        )
+            (
+                3,
+                "",
+                ".png",
+                CoordinatePair(0, 512, 0, 512),
+                3,
+                "tile_3_level3_0-512-0-512.png",
+            ),
+            (
+                0,
+                "folder/",
+                ".png",
+                CoordinatePair(4, 127, 4, 127),
+                10,
+                "folder/tile_10_level0_4-127-4-127.png",
+            ),
+        ),
+    )
+    def it_knows_its_tile_filename(
+        self, level, prefix, suffix, tile_coords, tiles_counter, expected_filename
+    ):
+        random_tiler = RandomTiler((512, 512), 10, level, 7, True, prefix, suffix)
 
         _filename = random_tiler._tile_filename(tile_coords, tiles_counter)
 
@@ -303,62 +312,6 @@ class Describe_RandomTiler:
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
 
-    # fixtures -------------------------------------------------------
-
-    @pytest.fixture(
-        params=(
-            (
-                (512, 512),
-                10,
-                3,
-                7,
-                True,
-                "",
-                ".png",
-                CoordinatePair(0, 512, 0, 512),
-                3,
-                "tile_3_level3_0-512-0-512.png",
-            ),
-            (
-                (512, 512),
-                10,
-                0,
-                7,
-                True,
-                "folder/",
-                ".png",
-                CoordinatePair(4, 127, 4, 127),
-                10,
-                "folder/tile_10_level0_4-127-4-127.png",
-            ),
-        )
-    )
-    def tile_filename_fixture(self, request):
-        (
-            tile_size,
-            n_tiles,
-            level,
-            seed,
-            check_tissue,
-            prefix,
-            suffix,
-            tile_coords,
-            tiles_counter,
-            expected_filename,
-        ) = request.param
-        return (
-            tile_size,
-            n_tiles,
-            level,
-            seed,
-            check_tissue,
-            prefix,
-            suffix,
-            tile_coords,
-            tiles_counter,
-            expected_filename,
-        )
-
 
 class Describe_GridTiler:
     def it_constructs_from_args(self, request):
@@ -370,14 +323,14 @@ class Describe_GridTiler:
         assert isinstance(grid_tiler, GridTiler)
         assert isinstance(grid_tiler, Tiler)
 
-    def but_it_has_wrong_tile_size_value(self, request):
+    def but_it_has_wrong_tile_size_value(self):
         with pytest.raises(ValueError) as err:
             GridTiler((512, -1))
 
         assert isinstance(err.value, ValueError)
         assert str(err.value) == "Tile size must be greater than 0 ((512, -1))"
 
-    def or_it_has_not_available_level_value(self, request, tmpdir):
+    def or_it_has_not_available_level_value(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGB_RANDOM_COLOR
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -391,7 +344,7 @@ class Describe_GridTiler:
         assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
 
-    def or_it_has_negative_level_value(self, request):
+    def or_it_has_negative_level_value(self):
         with pytest.raises(LevelError) as err:
             GridTiler((512, 512), -1)
 
@@ -399,7 +352,7 @@ class Describe_GridTiler:
         assert str(err.value) == "Level cannot be negative (-1)"
 
     @pytest.mark.parametrize("tile_size", ((512, 512), (128, 128), (10, 10)))
-    def it_knows_its_tile_size(self, request, tile_size):
+    def it_knows_its_tile_size(self, tile_size):
         grid_tiler = GridTiler(tile_size, 10, 0)
 
         tile_size_ = grid_tiler.tile_size
@@ -407,21 +360,37 @@ class Describe_GridTiler:
         assert type(tile_size_) == tuple
         assert tile_size_ == tile_size
 
-    def it_knows_its_tile_filename(self, request, tile_filename_fixture):
+    @pytest.mark.parametrize(
+        "level, pixel_overlap, prefix, tile_coords, tiles_counter, expected_filename",
         (
-            tile_size,
-            level,
-            check_tissue,
-            pixel_overlap,
-            prefix,
-            suffix,
-            tile_coords,
-            tiles_counter,
-            expected_filename,
-        ) = tile_filename_fixture
-        grid_tiler = GridTiler(
-            tile_size, level, check_tissue, pixel_overlap, prefix, suffix
-        )
+            (
+                3,
+                0,
+                "",
+                CoordinatePair(0, 512, 0, 512),
+                3,
+                "tile_3_level3_0-512-0-512.png",
+            ),
+            (
+                0,
+                0,
+                "folder/",
+                CoordinatePair(4, 127, 4, 127),
+                10,
+                "folder/tile_10_level0_4-127-4-127.png",
+            ),
+        ),
+    )
+    def it_knows_its_tile_filename(
+        self,
+        level,
+        pixel_overlap,
+        prefix,
+        tile_coords,
+        tiles_counter,
+        expected_filename,
+    ):
+        grid_tiler = GridTiler((512, 512), level, True, pixel_overlap, prefix, ".png")
 
         _filename = grid_tiler._tile_filename(tile_coords, tiles_counter)
 
@@ -463,7 +432,7 @@ class Describe_GridTiler:
         ),
     )
     def it_can_calculate_n_tiles_row(
-        self, request, bbox_coordinates, pixel_overlap, expected_n_tiles_row
+        self, bbox_coordinates, pixel_overlap, expected_n_tiles_row
     ):
         grid_tiler = GridTiler((512, 512), 2, True, pixel_overlap)
 
@@ -482,7 +451,7 @@ class Describe_GridTiler:
         ),
     )
     def it_can_calculate_n_tiles_column(
-        self, request, bbox_coordinates, pixel_overlap, expected_n_tiles_column
+        self, bbox_coordinates, pixel_overlap, expected_n_tiles_column
     ):
         grid_tiler = GridTiler((512, 512), 2, True, pixel_overlap)
 
@@ -491,14 +460,56 @@ class Describe_GridTiler:
         assert type(n_tiles_column) == int
         assert n_tiles_column == expected_n_tiles_column
 
-    def it_can_generate_grid_tiles(self, request, tmpdir, grid_tiles_fixture):
+    @pytest.mark.parametrize(
+        "coords1, coords2, check_tissue, has_enough_tissue, expected_n_tiles",
         (
-            coords1,
-            coords2,
-            check_tissue,
-            has_enough_tissue,
-            expected_n_tiles,
-        ) = grid_tiles_fixture
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [True, True],
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                False,
+                [True, True],
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                False,
+                [False, False],
+                2,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [False, False],
+                0,
+            ),
+            (
+                CoordinatePair(0, 10, 0, 10),
+                CoordinatePair(0, 10, 0, 10),
+                True,
+                [True, False],
+                1,
+            ),
+        ),
+    )
+    def it_can_generate_grid_tiles(
+        self,
+        request,
+        tmpdir,
+        coords1,
+        coords2,
+        check_tissue,
+        has_enough_tissue,
+        expected_n_tiles,
+    ):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -604,107 +615,6 @@ class Describe_GridTiler:
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
 
-    # fixtures -------------------------------------------------------
-
-    @pytest.fixture(
-        params=(
-            (
-                (512, 512),
-                3,
-                True,
-                0,
-                "",
-                ".png",
-                CoordinatePair(0, 512, 0, 512),
-                3,
-                "tile_3_level3_0-512-0-512.png",
-            ),
-            (
-                (512, 512),
-                0,
-                True,
-                0,
-                "folder/",
-                ".png",
-                CoordinatePair(4, 127, 4, 127),
-                10,
-                "folder/tile_10_level0_4-127-4-127.png",
-            ),
-        )
-    )
-    def tile_filename_fixture(self, request):
-        (
-            tile_size,
-            level,
-            check_tissue,
-            pixel_overlap,
-            prefix,
-            suffix,
-            tile_coords,
-            tiles_counter,
-            expected_filename,
-        ) = request.param
-        return (
-            tile_size,
-            level,
-            check_tissue,
-            pixel_overlap,
-            prefix,
-            suffix,
-            tile_coords,
-            tiles_counter,
-            expected_filename,
-        )
-
-    @pytest.fixture(
-        params=(
-            (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
-                True,
-                [True, True],
-                2,
-            ),
-            (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
-                False,
-                [True, True],
-                2,
-            ),
-            (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
-                False,
-                [False, False],
-                2,
-            ),
-            (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
-                True,
-                [False, False],
-                0,
-            ),
-            (
-                CoordinatePair(0, 10, 0, 10),
-                CoordinatePair(0, 10, 0, 10),
-                True,
-                [True, False],
-                1,
-            ),
-        )
-    )
-    def grid_tiles_fixture(self, request):
-        (
-            coords1,
-            coords2,
-            check_tissue,
-            has_enough_tissue,
-            expected_n_tiles,
-        ) = request.param
-        return (coords1, coords2, check_tissue, has_enough_tissue, expected_n_tiles)
-
 
 class Describe_ScoreTiler:
     def it_constructs_from_args(self, request):
@@ -718,7 +628,7 @@ class Describe_ScoreTiler:
         assert isinstance(grid_tiler, GridTiler)
         assert isinstance(grid_tiler, Tiler)
 
-    def it_knows_its_scorer(self, request):
+    def it_knows_its_scorer(self):
         random_scorer = RandomScorer()
         score_tiler = ScoreTiler(random_scorer, (512, 512), 4, 0)
 
@@ -728,7 +638,7 @@ class Describe_ScoreTiler:
         assert isinstance(scorer_, Scorer)
         assert isinstance(scorer_, RandomScorer)
 
-    def it_knows_its_n_tiles(self, request):
+    def it_knows_its_n_tiles(self):
         n_tiles = 4
         score_tiler = ScoreTiler(RandomScorer(), (512, 512), n_tiles, 0)
 
@@ -798,10 +708,59 @@ class Describe_ScoreTiler:
             assert round(score, 5) == round(expected_score, 5)
             assert coords_ == expected_coords
 
-    def it_can_calculate_highest_score_tiles(
-        self, request, highest_score_tiles_fixture
-    ):
-        n_tiles, expected_highest_score_tiles = highest_score_tiles_fixture
+    @pytest.mark.parametrize(
+        "n_tiles, expected_value",
+        (
+            (
+                0,
+                (
+                    [
+                        (0.8, CoordinatePair(0, 10, 0, 10)),
+                        (0.7, CoordinatePair(0, 10, 0, 10)),
+                        (0.5, CoordinatePair(0, 10, 0, 10)),
+                        (0.2, CoordinatePair(0, 10, 0, 10)),
+                        (0.1, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                    [
+                        (1.0, CoordinatePair(0, 10, 0, 10)),
+                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
+                        (0.5714285714285714, CoordinatePair(0, 10, 0, 10)),
+                        (0.14285714285714285, CoordinatePair(0, 10, 0, 10)),
+                        (0.0, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                ),
+            ),
+            (
+                2,
+                (
+                    [
+                        (0.8, CoordinatePair(0, 10, 0, 10)),
+                        (0.7, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                    [
+                        (1.0, CoordinatePair(0, 10, 0, 10)),
+                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                ),
+            ),
+            (
+                3,
+                (
+                    [
+                        (0.8, CoordinatePair(0, 10, 0, 10)),
+                        (0.7, CoordinatePair(0, 10, 0, 10)),
+                        (0.5, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                    [
+                        (1.0, CoordinatePair(0, 10, 0, 10)),
+                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
+                        (0.5714285714285714, CoordinatePair(0, 10, 0, 10)),
+                    ],
+                ),
+            ),
+        ),
+    )
+    def it_can_calculate_highest_score_tiles(self, request, n_tiles, expected_value):
         slide = instance_mock(request, Slide)
         _scores = method_mock(request, ScoreTiler, "_scores")
         coords = CoordinatePair(0, 10, 0, 10)
@@ -818,7 +777,7 @@ class Describe_ScoreTiler:
         highest_score_tiles = score_tiler._highest_score_tiles(slide)
 
         _scores.assert_called_once_with(score_tiler, slide)
-        assert highest_score_tiles == expected_highest_score_tiles
+        assert highest_score_tiles == expected_value
 
     def but_it_raises_error_with_negative_n_tiles_value(self, request):
         slide = instance_mock(request, Slide)
@@ -956,60 +915,3 @@ class Describe_ScoreTiler:
             [(0.8, coords), (0.7, coords)],
             [f"tile_{i}_level2_0-10-0-10.png" for i in range(2)],
         )
-
-    # fixtures -------------------------------------------------------
-
-    @pytest.fixture(
-        params=(
-            (
-                0,
-                (
-                    [
-                        (0.8, CoordinatePair(0, 10, 0, 10)),
-                        (0.7, CoordinatePair(0, 10, 0, 10)),
-                        (0.5, CoordinatePair(0, 10, 0, 10)),
-                        (0.2, CoordinatePair(0, 10, 0, 10)),
-                        (0.1, CoordinatePair(0, 10, 0, 10)),
-                    ],
-                    [
-                        (1.0, CoordinatePair(0, 10, 0, 10)),
-                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
-                        (0.5714285714285714, CoordinatePair(0, 10, 0, 10)),
-                        (0.14285714285714285, CoordinatePair(0, 10, 0, 10)),
-                        (0.0, CoordinatePair(0, 10, 0, 10)),
-                    ],
-                ),
-            ),
-            (
-                2,
-                (
-                    [
-                        (0.8, CoordinatePair(0, 10, 0, 10)),
-                        (0.7, CoordinatePair(0, 10, 0, 10)),
-                    ],
-                    [
-                        (1.0, CoordinatePair(0, 10, 0, 10)),
-                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
-                    ],
-                ),
-            ),
-            (
-                3,
-                (
-                    [
-                        (0.8, CoordinatePair(0, 10, 0, 10)),
-                        (0.7, CoordinatePair(0, 10, 0, 10)),
-                        (0.5, CoordinatePair(0, 10, 0, 10)),
-                    ],
-                    [
-                        (1.0, CoordinatePair(0, 10, 0, 10)),
-                        (0.857142857142857, CoordinatePair(0, 10, 0, 10)),
-                        (0.5714285714285714, CoordinatePair(0, 10, 0, 10)),
-                    ],
-                ),
-            ),
-        )
-    )
-    def highest_score_tiles_fixture(self, request):
-        (n_tiles, expected_highest_score_tiles) = request.param
-        return (n_tiles, expected_highest_score_tiles)

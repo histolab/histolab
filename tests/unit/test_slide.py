@@ -71,15 +71,69 @@ class Describe_Slide:
             str(err.value) == "expected str, bytes or os.PathLike object, not NoneType"
         )
 
-    def it_generates_the_correct_breadcumb(self, request, breadcumb_fixture):
+    @pytest.mark.parametrize(
+        "resampled_dims, dir_path, slide_path, proc_path, scale_factor, expected_path",
         (
-            resampled_dims,
-            dir_path,
-            slide_path,
-            proc_path,
-            scale_factor,
-            expected_path,
-        ) = breadcumb_fixture
+            (
+                (245, 123, 145, 99),
+                "/foo/bar/b/0/9",
+                "/foo/bar/myslide.svs",
+                "processed",
+                64,
+                os.path.join("/foo/bar/b/0/9", "myslide-64x-245x123-145x99.png"),
+            ),
+            (
+                (245, 123, 145, 99),
+                "/foo/bar/b/0/9",
+                "/foo/bar/myslide.svs",
+                "processed",
+                32,
+                os.path.join("/foo/bar/b/0/9", "myslide-32x-245x123-145x99.png"),
+            ),
+            (
+                (None, None, None, None),
+                "/foo/bar/b/0/9",
+                "/foo/bar/myslide.svs",
+                "processed",
+                64,
+                os.path.join("/foo/bar/b/0/9", "myslide*.png"),
+            ),
+            (
+                (None, 234, 192, None),
+                "/foo/bar/b/0/9",
+                "/foo/bar/myslide.svs",
+                "processed",
+                64,
+                os.path.join("/foo/bar/b/0/9", "myslide-64x-Nonex234-192xNone.png"),
+            ),
+            (
+                (123, 234, 192, None),
+                "/foo/bar/b/0/9",
+                "/foo/bar/myslide.svs",
+                "processed",
+                64,
+                os.path.join("/foo/bar/b/0/9", "myslide-64x-123x234-192xNone.png"),
+            ),
+            (
+                (None, None, 192, None),
+                "/foo/bar/b/0/9",
+                "/foo/bar/myslide.svs",
+                "processed",
+                64,
+                os.path.join("/foo/bar/b/0/9", "myslide-64x-NonexNone-192xNone.png"),
+            ),
+        ),
+    )
+    def it_generates_the_correct_breadcumb(
+        self,
+        request,
+        resampled_dims,
+        dir_path,
+        slide_path,
+        proc_path,
+        scale_factor,
+        expected_path,
+    ):
         _resampled_dimensions = method_mock(request, Slide, "_resampled_dimensions")
         _resampled_dimensions.return_value = resampled_dims
         slide = Slide(slide_path, proc_path)
@@ -88,16 +142,29 @@ class Describe_Slide:
 
         assert _breadcumb == expected_path
 
-    def it_knows_its_name(self, slide_name_fixture):
-        _slide_path, expected_value = slide_name_fixture
-        slide = Slide(_slide_path, "processed/")
+    @pytest.mark.parametrize(
+        "slide_path, expected_value",
+        (("/foo/bar/myslide.svs", "myslide"), ("/foo/myslide.svs", "myslide")),
+    )
+    def it_knows_its_name(self, slide_path, expected_value):
+        slide = Slide(slide_path, "processed/")
 
         name = slide.name
 
         assert name == expected_value
 
-    def it_knows_its_scaled_image_path(self, scaled_img_path_fixture, resampled_dims_):
-        slide_path, proc_path, slide_dims, expected_value = scaled_img_path_fixture
+    @pytest.mark.parametrize(
+        "slide_path, proc_path, slide_dims, expected_value",
+        (
+            ("1.svs", "1/p", (345, 111, 333, 444), "1/p/1-22x-345x111-333x444.png"),
+            ("2.svs", "2/p", (345, 111, None, None), "2/p/2-22x-345x111-NonexNone.png"),
+            ("2.svs", "2/p", (345, 111, 123, 123), "2/p/2-22x-345x111-123x123.png"),
+            ("2.svs", "2/p", (None, None, None, None), "2/p/2*.png"),
+        ),
+    )
+    def it_knows_its_scaled_image_path(
+        self, resampled_dims_, slide_path, proc_path, slide_dims, expected_value
+    ):
         resampled_dims_.return_value = slide_dims
         slide = Slide(slide_path, proc_path)
 
@@ -438,8 +505,15 @@ class Describe_Slide:
         assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
 
-    def it_knows_if_coords_are_valid(self, valid_coords_fixture, tmpdir):
-        coords, expected_result = valid_coords_fixture
+    @pytest.mark.parametrize(
+        "coords, expected_result",
+        (
+            (CoordinatePair(0, 128, 0, 128), True),
+            (CoordinatePair(800000, 90000, 8000010, 90010), False),
+            (CoordinatePair(800000, 90000, -1, 90010), False),
+        ),
+    )
+    def it_knows_if_coords_are_valid(self, coords, expected_result, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILImageMock.DIMS_500X500_RGBA_COLOR_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -462,139 +536,6 @@ class Describe_Slide:
 
         assert type(levels) == list
         assert levels == [0]
-
-    # fixtures -------------------------------------------------------
-
-    @pytest.fixture(params=[("/a/b/mywsi.svs", ".svs"), ("/a/b/mywsi.34s", ".34s")])
-    def slide_ext_fixture(self, request):
-        slide_path, expected_value = request.param
-        return slide_path, expected_value
-
-    @pytest.fixture(
-        params=[
-            (
-                "/foo/bar/myslide.svs",
-                "/foo/bar/myslide/processed",
-                (345, 111, 333, 444),
-                os.path.join(
-                    "/foo/bar/myslide/processed", "myslide-22x-345x111-333x444.png"
-                ),
-            ),
-            (
-                "/foo/bar/myslide2.svs",
-                "/foo/bar/myslide/processed",
-                (345, 111, None, None),
-                os.path.join(
-                    "/foo/bar/myslide/processed", "myslide2-22x-345x111-NonexNone.png"
-                ),
-            ),
-            (
-                "/foo/bar/myslide2.svs",
-                "/foo/bar/myslide/processed",
-                (345, 111, 123, 123),
-                os.path.join(
-                    "/foo/bar/myslide/processed", "myslide2-22x-345x111-123x123.png"
-                ),
-            ),
-            (
-                "/foo/bar/myslide2.svs",
-                "/foo/bar/myslide/processed",
-                (None, None, None, None),
-                os.path.join("/foo/bar/myslide/processed", "myslide2*.png"),
-            ),
-        ]
-    )
-    def scaled_img_path_fixture(self, request):
-        slide_path, proc_path, slide_dims, expected_value = request.param
-        return slide_path, proc_path, slide_dims, expected_value
-
-    @pytest.fixture(
-        params=[
-            (
-                (245, 123, 145, 99),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                64,
-                os.path.join("/foo/bar/b/0/9", "myslide-64x-245x123-145x99.png"),
-            ),
-            (
-                (245, 123, 145, 99),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                32,
-                os.path.join("/foo/bar/b/0/9", "myslide-32x-245x123-145x99.png"),
-            ),
-            (
-                (None, None, None, None),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                64,
-                os.path.join("/foo/bar/b/0/9", "myslide*.png"),
-            ),
-            (
-                (None, 234, 192, None),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                64,
-                os.path.join("/foo/bar/b/0/9", "myslide-64x-Nonex234-192xNone.png"),
-            ),
-            (
-                (123, 234, 192, None),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                64,
-                os.path.join("/foo/bar/b/0/9", "myslide-64x-123x234-192xNone.png"),
-            ),
-            (
-                (None, None, 192, None),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                64,
-                os.path.join("/foo/bar/b/0/9", "myslide-64x-NonexNone-192xNone.png"),
-            ),
-        ]
-    )
-    def breadcumb_fixture(self, request):
-        (
-            resampled_dims,
-            dir_path,
-            slide_path,
-            proc_path,
-            scale_factor,
-            expected_path,
-        ) = request.param
-        return (
-            resampled_dims,
-            dir_path,
-            slide_path,
-            proc_path,
-            scale_factor,
-            expected_path,
-        )
-
-    @pytest.fixture(
-        params=[("/foo/bar/myslide.svs", "myslide"), ("/foo/myslide.svs", "myslide")]
-    )
-    def slide_name_fixture(self, request):
-        slide_path, expceted_value = request.param
-        return slide_path, expceted_value
-
-    @pytest.fixture(
-        params=[
-            (CoordinatePair(0, 128, 0, 128), True),
-            (CoordinatePair(800000, 90000, 8000010, 90010), False),
-            (CoordinatePair(800000, 90000, -1, 90010), False),
-        ]
-    )
-    def valid_coords_fixture(self, request):
-        coords, expected_result = request.param
-        return coords, expected_result
 
     # fixture components ---------------------------------------------
 
