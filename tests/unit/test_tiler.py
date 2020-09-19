@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from histolab.exceptions import LevelError
-from histolab.scorer import RandomScorer, Scorer
+from histolab.scorer import RandomScorer
 from histolab.slide import Slide
 from histolab.tile import Tile
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, Tiler
@@ -635,7 +635,6 @@ class Describe_ScoreTiler:
         scorer_ = score_tiler.scorer
 
         assert callable(scorer_)
-        assert isinstance(scorer_, Scorer)
         assert isinstance(scorer_, RandomScorer)
 
     def it_knows_its_n_tiles(self):
