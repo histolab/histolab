@@ -11,7 +11,7 @@ from histolab.types import CoordinatePair
 from ..base import COMPLEX_MASK
 from ..unitutil import (
     ANY,
-    PILImageMock,
+    PILImageMock as PILIMG,
     class_mock,
     initializer_mock,
     method_mock,
@@ -22,7 +22,7 @@ from ..unitutil import (
 class Describe_Tile:
     def it_constructs_from_args(self, request):
         _init = initializer_mock(request, Tile)
-        _image = PILImageMock.RGBA_COLOR_50X50_155_0_0
+        _image = PILIMG.RGBA_COLOR_50X50_155_0_0
         _level = 0
         _coords = CoordinatePair(0, 0, 50, 50)
 
@@ -50,7 +50,7 @@ class Describe_Tile:
         assert coords == _coords
 
     def it_knows_its_image(self):
-        _image = PILImageMock.RGBA_COLOR_50X50_155_0_0
+        _image = PILIMG.RGBA_COLOR_50X50_155_0_0
         tile = Tile(_image, None, 0)
 
         image = tile.image
@@ -66,7 +66,7 @@ class Describe_Tile:
 
     def it_can_save_the_tile_image(self, tmpdir):
         tmp_path_ = os.path.join(tmpdir.mkdir("mydir"), "mytile.png")
-        _image = PILImageMock.RGBA_COLOR_50X50_155_0_0
+        _image = PILIMG.RGBA_COLOR_50X50_155_0_0
         tile = Tile(_image, None, 0)
 
         tile.save(tmp_path_)
@@ -75,7 +75,7 @@ class Describe_Tile:
 
     def and_it_can_save_the_tile_image_also_without_ext(self, tmpdir):
         tmp_path_ = os.path.join(tmpdir.mkdir("mydir"), "mytile")
-        _image = PILImageMock.RGBA_COLOR_50X50_155_0_0
+        _image = PILIMG.RGBA_COLOR_50X50_155_0_0
         tile = Tile(_image, None, 0)
 
         tile.save(tmp_path_)
@@ -157,7 +157,7 @@ class Describe_Tile:
         _tissue_mask_filters.return_value = Compose(
             [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
         )
-        image = PILImageMock.RGBA_COLOR_50X50_155_0_0
+        image = PILIMG.RGBA_COLOR_50X50_155_0_0
         tile = Tile(image, None, 0)
 
         tile._has_only_some_tissue()
@@ -177,7 +177,7 @@ class Describe_Tile:
         filters = Compose(
             [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
         )
-        image = PILImageMock.RGBA_COLOR_50X50_155_0_0
+        image = PILIMG.RGBA_COLOR_50X50_155_0_0
         tile = Tile(image, None, 0)
 
         tissue_mask = tile._tissue_mask(filters)
@@ -201,7 +201,7 @@ class Describe_Tile:
         _tile_tissue_mask_filters.return_value = filters
         _call = method_mock(request, Compose, "__call__")
         _call.return_value = COMPLEX_MASK
-        image = PILImageMock.RGB_RANDOM_COLOR_10X10
+        image = PILIMG.RGB_RANDOM_COLOR_10X10
         tile = Tile(image, None, 0)
 
         tissue_ratio = tile.tissue_ratio
@@ -212,8 +212,8 @@ class Describe_Tile:
         assert tissue_ratio == 0.61
 
     def it_knows_how_to_apply_filters_PIL(self, RgbToGrayscale_):
-        image_before = PILImageMock.RGB_RANDOM_COLOR_10X10
-        image_after = PILImageMock.GRAY_RANDOM_10X10
+        image_before = PILIMG.RGB_RANDOM_COLOR_10X10
+        image_after = PILIMG.GRAY_RANDOM_10X10
         RgbToGrayscale_.return_value = image_after
         tile = Tile(image_before, None, 0)
 
@@ -226,8 +226,8 @@ class Describe_Tile:
         assert filtered_image.level == 0
 
     def it_knows_how_to_apply_filters_np(self, OtsuThreshold_):
-        image_before = PILImageMock.RGB_RANDOM_COLOR_10X10
-        image_after = PILImageMock.GRAY_RANDOM_10X10
+        image_before = PILIMG.RGB_RANDOM_COLOR_10X10
+        image_after = PILIMG.GRAY_RANDOM_10X10
         OtsuThreshold_.return_value = np.array(image_after)
         tile = Tile(image_before, None, 0)
 
