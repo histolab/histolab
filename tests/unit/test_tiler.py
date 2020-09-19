@@ -2,20 +2,20 @@ import csv
 import os
 from unittest.mock import call
 
-import numpy as np
 import pytest
 
+import numpy as np
 from histolab.exceptions import LevelError
 from histolab.scorer import RandomScorer
 from histolab.slide import Slide
 from histolab.tile import Tile
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, Tiler
-from histolab.types import CoordinatePair as CP
+from histolab.types import CP
 
 from ..unitutil import (
     ANY,
+    PILIMG,
     NpArrayMock,
-    PILImageMock as PILIMG,
     function_mock,
     initializer_mock,
     instance_mock,

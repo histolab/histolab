@@ -7,7 +7,7 @@ import operator
 import pytest
 
 import numpy as np
-from histolab.types import CoordinatePair, Region
+from histolab.types import CP, Region
 from histolab.util import (
     apply_mask_image,
     lazyproperty,
@@ -39,8 +39,8 @@ from ..util import load_expectation, load_python_expression
 @pytest.mark.parametrize(
     "ref_coords, ref_size, target_size, expected_value",
     (
-        (CoordinatePair(0, 2, 4, 5), (10, 10), (5, 5), (0, 1, 2, 2)),
-        (CoordinatePair(90, 112, 124, 125), (100, 100), (95, 95), (85, 106, 117, 118)),
+        (CP(0, 2, 4, 5), (10, 10), (5, 5), (0, 1, 2, 2)),
+        (CP(90, 112, 124, 125), (100, 100), (95, 95), (85, 106, 117, 118)),
     ),
 )
 def test_scale_coordinates(ref_coords, ref_size, target_size, expected_value):
@@ -48,7 +48,7 @@ def test_scale_coordinates(ref_coords, ref_size, target_size, expected_value):
 
     scaled_coords = scale_coordinates(ref_coords, ref_size, target_size)
 
-    assert scaled_coords == CoordinatePair(x_ul, y_ul, x_br, y_br)
+    assert scaled_coords == CP(x_ul, y_ul, x_br, y_br)
 
 
 @pytest.mark.parametrize(
@@ -140,9 +140,9 @@ def test_apply_mask_image(img, mask, expected_array):
 @pytest.mark.parametrize(
     "dims, vertices, expected_array",
     (
-        ((5, 5), CoordinatePair(0, 3, 2, 5), "mask-arrays/polygon-to-mask-array-0325"),
-        ((5, 6), CoordinatePair(1, 0, 2, 0), "mask-arrays/polygon-to-mask-array-1020"),
-        ((5, 5), CoordinatePair(2, 1, 4, 3), "mask-arrays/polygon-to-mask-array-2143"),
+        ((5, 5), CP(0, 3, 2, 5), "mask-arrays/polygon-to-mask-array-0325"),
+        ((5, 6), CP(1, 0, 2, 0), "mask-arrays/polygon-to-mask-array-1020"),
+        ((5, 5), CP(2, 1, 4, 3), "mask-arrays/polygon-to-mask-array-2143"),
     ),
 )
 def test_util_polygon_to_mask_array(dims, vertices, expected_array):
@@ -157,7 +157,7 @@ def test_region_coordinates():
     region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5))
     region_coords_ = region_coordinates(region)
 
-    assert region_coords_ == CoordinatePair(x_ul=1, y_ul=0, x_br=2, y_br=1)
+    assert region_coords_ == CP(x_ul=1, y_ul=0, x_br=2, y_br=1)
 
 
 class DescribeLazyPropertyDecorator:

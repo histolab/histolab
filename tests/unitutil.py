@@ -117,3 +117,6 @@ class NpArrayMock:
     ONES_500X500X4_BOOL = np.ones([500, 500, 4], dtype="bool")
     ONES_500X500_BOOL = np.ones([500, 500], dtype="bool")
     RANDOM_500X500_BOOL = np.random.rand(500, 500) > 0.5
+
+
+PILIMG = PILImageMock

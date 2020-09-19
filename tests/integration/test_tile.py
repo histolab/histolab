@@ -1,7 +1,7 @@
 import pytest
 
 from histolab.tile import Tile
-from histolab.types import CoordinatePair
+from histolab.types import CP
 
 from ..fixtures import TILES
 
@@ -21,7 +21,7 @@ class Describe_Tile:
         ),
     )
     def it_knows_if_is_is_almost_white(self, tile_img, expected_result):
-        coords = CoordinatePair(0, 512, 0, 512)
+        coords = CP(0, 512, 0, 512)
         tile = Tile(tile_img, coords)
 
         is_almost_white = tile._is_almost_white

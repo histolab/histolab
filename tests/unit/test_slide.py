@@ -6,22 +6,22 @@ import os
 from collections import namedtuple
 from unittest.mock import call
 
+import pytest
+
 import numpy as np
 import openslide
 import PIL
-import pytest
-from PIL import ImageShow
-
 from histolab.exceptions import LevelError
 from histolab.filters.compositions import _SlideFiltersComposition
 from histolab.filters.image_filters import Compose
 from histolab.slide import Slide, SlideSet
-from histolab.types import CoordinatePair, Region
+from histolab.types import CP, Region
 from histolab.util import regions_from_binary_mask
+from PIL import ImageShow
 
 from ..unitutil import (
     ANY,
-    PILImageMock as PILIMG,
+    PILIMG,
     class_mock,
     dict_list_eq,
     function_mock,
@@ -439,20 +439,21 @@ class Describe_Slide:
         region_coordinates_ = function_mock(
             request, "histolab.slide.region_coordinates"
         )
-        region_coordinates_.return_values = CoordinatePair(0, 0, 2, 2)
+        region_coordinates_.return_values = CP(0, 0, 2, 2)
         polygon_to_mask_array_ = function_mock(
             request, "histolab.util.polygon_to_mask_array"
         )
-        polygon_to_mask_array_(
-            (1000, 1000), CoordinatePair(0, 0, 2, 2)
-        ).return_value = [[True, True], [False, True]]
+        polygon_to_mask_array_((1000, 1000), CP(0, 0, 2, 2)).return_value = [
+            [True, True],
+            [False, True],
+        ]
 
         biggest_mask_tissue_box = slide.biggest_tissue_box_mask
 
         region_coordinates_.assert_called_once_with(regions[0])
         biggest_regions_.assert_called_once_with(slide, regions, n=1)
         polygon_to_mask_array_.assert_called_once_with(
-            (1000, 1000), CoordinatePair(x_ul=0, y_ul=0, x_br=2, y_br=2)
+            (1000, 1000), CP(x_ul=0, y_ul=0, x_br=2, y_br=2)
         )
         np.testing.assert_almost_equal(biggest_mask_tissue_box, np.zeros((500, 500)))
 
@@ -508,9 +509,9 @@ class Describe_Slide:
     @pytest.mark.parametrize(
         "coords, expected_result",
         (
-            (CoordinatePair(0, 128, 0, 128), True),
-            (CoordinatePair(800000, 90000, 8000010, 90010), False),
-            (CoordinatePair(800000, 90000, -1, 90010), False),
+            (CP(0, 128, 0, 128), True),
+            (CP(800000, 90000, 8000010, 90010), False),
+            (CP(800000, 90000, -1, 90010), False),
         ),
     )
     def it_knows_if_coords_are_valid(self, coords, expected_result, tmpdir):

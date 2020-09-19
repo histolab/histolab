@@ -20,3 +20,5 @@ from collections import namedtuple
 
 CoordinatePair = namedtuple("CoordinatePair", ("x_ul", "y_ul", "x_br", "y_br"))
 Region = namedtuple("Region", ("index", "area", "bbox", "center"))
+
+CP = CoordinatePair

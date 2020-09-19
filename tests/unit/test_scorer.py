@@ -1,17 +1,10 @@
 import numpy as np
 import PIL
-
 from histolab import scorer
 from histolab.tile import Tile
 
 from ..base import COMPLEX_MASK
-from ..unitutil import (
-    PILImageMock as PILIMG,
-    function_mock,
-    instance_mock,
-    method_mock,
-    property_mock,
-)
+from ..unitutil import PILIMG, function_mock, instance_mock, method_mock, property_mock
 
 
 class DescribeScorers:

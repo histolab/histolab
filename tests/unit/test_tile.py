@@ -1,8 +1,8 @@
 import os
 
-import numpy as np
 import pytest
 
+import numpy as np
 from histolab.filters.compositions import _TileFiltersComposition
 from histolab.filters.image_filters import Compose
 from histolab.tile import Tile
@@ -11,7 +11,7 @@ from histolab.types import CoordinatePair
 from ..base import COMPLEX_MASK
 from ..unitutil import (
     ANY,
-    PILImageMock as PILIMG,
+    PILIMG,
     class_mock,
     initializer_mock,
     method_mock,
