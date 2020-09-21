@@ -28,9 +28,11 @@ class Describe_RandomTiler:
     def it_constructs_from_args(self, request):
         _init = initializer_mock(request, RandomTiler)
 
-        random_tiler = RandomTiler((512, 512), 10, 2, 7, True, "", ".png", 1e4)
+        random_tiler = RandomTiler((512, 512), 10, 2, 7, True, "", ".png", int(1e4))
 
-        _init.assert_called_once_with(ANY, (512, 512), 10, 2, 7, True, "", ".png", 1e4)
+        _init.assert_called_once_with(
+            ANY, (512, 512), 10, 2, 7, True, "", ".png", int(1e4)
+        )
         assert isinstance(random_tiler, RandomTiler)
         assert isinstance(random_tiler, Tiler)
 

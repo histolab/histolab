@@ -19,12 +19,12 @@
 import csv
 import os
 from abc import abstractmethod
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 import numpy as np
 
 from .exceptions import LevelError
-from .scorer import RandomScorer, NucleiScorer
+from .scorer import Scorer
 from .slide import Slide
 from .tile import Tile
 from .types import CoordinatePair
@@ -355,7 +355,7 @@ class RandomTiler(Tiler):
         check_tissue: bool = True,
         prefix: str = "",
         suffix: str = ".png",
-        max_iter: float = 1e4,
+        max_iter: int = int(1e4),
     ):
 
         super().__init__()
@@ -405,7 +405,7 @@ class RandomTiler(Tiler):
         return self._valid_max_iter
 
     @max_iter.setter
-    def max_iter(self, max_iter_: int = 1e4):
+    def max_iter(self, max_iter_: int = int(1e4)):
         if max_iter_ < self.n_tiles:
             raise ValueError(
                 f"The maximum number of iterations ({max_iter_}) must be grater than or"
@@ -537,7 +537,7 @@ class ScoreTiler(GridTiler):
 
     def __init__(
         self,
-        scorer: Union[NucleiScorer, RandomScorer],
+        scorer: Scorer,
         tile_size: Tuple[int, int],
         n_tiles: int = 0,
         level: int = 0,
