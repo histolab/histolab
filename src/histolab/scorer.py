@@ -33,7 +33,7 @@ except ImportError:
 
 
 @runtime_checkable
-class _Scorer(Protocol):
+class Scorer(Protocol):
     """General scorer object
 
     .. automethod:: __call__
@@ -44,7 +44,7 @@ class _Scorer(Protocol):
         raise NotImplementedError
 
 
-class RandomScorer(_Scorer):
+class RandomScorer(Scorer):
     """Implement a Scorer that returns a random float score between 0 and 1.
 
     .. automethod:: __call__
@@ -66,7 +66,7 @@ class RandomScorer(_Scorer):
         return np.random.random()
 
 
-class NucleiScorer(_Scorer):
+class NucleiScorer(Scorer):
     r"""Implement a Scorer that estimates the presence of nuclei in an H&E-stained tile.
 
     A higher presence of nuclei is associated with a higher scorer, following this
