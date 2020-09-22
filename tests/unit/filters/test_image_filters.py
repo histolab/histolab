@@ -4,6 +4,7 @@ import operator
 
 import numpy as np
 import PIL
+
 from histolab.filters import image_filters as imf
 
 from ...unitutil import PILIMG, NpArrayMock, function_mock
@@ -407,3 +408,16 @@ class DescribeImageFilters:
 
         F_yen_threshold.assert_called_once_with(image, operator.lt)
         assert type(yen_threshold(image)) == np.ndarray
+
+    def it_calls_rgb_to_lab_functional(self, request):
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        F_rgb_to_lab = function_mock(
+            request, "histolab.filters.image_filters_functional.rgb_to_lab"
+        )
+        F_rgb_to_lab.return_value = image
+        rgb_to_lab = imf.RgbToLab()
+
+        rgb_to_lab(image)
+
+        F_rgb_to_lab.assert_called_once_with(image)
+        assert type(rgb_to_lab(image)) == PIL.Image.Image

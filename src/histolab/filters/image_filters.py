@@ -185,6 +185,43 @@ class RgbToHed:
         return self.__class__.__name__ + "()"
 
 
+class RgbToLab:
+    """Convert from the sRGB color space to the CIE Lab colorspace.
+
+    sRGB color space reference: IEC 61966-2-1:1999
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
+    illuminant : {“A”, “D50”, “D55”, “D65”, “D75”, “E”}, optional
+        The name of the illuminant (the function is NOT case sensitive).
+    observer : {“2”, “10”}, optional
+        The aperture angle of the observer.
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image in LAB space
+
+    Raises
+    ------
+    Exception
+        If the image mode is not RGB
+    """
+
+    def __init__(self, illuminant: str = "D65", observer: int = "2") -> None:
+        self.illuminant = illuminant
+        self.observer = observer
+
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+        lab = F.rgb_to_lab(img)
+        return lab
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "()"
+
+
 class HematoxylinChannel:
     """Obtain Hematoxylin channel from RGB image.
 

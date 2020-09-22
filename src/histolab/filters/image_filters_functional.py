@@ -468,6 +468,11 @@ def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
     -------
     PIL.Image.Image
         Image in HED space
+
+    Raises
+    ------
+    Exception
+        If the image mode is not RGB
     """
     if img.mode != "RGB":
         raise Exception("Input image must be RGB")
@@ -475,6 +480,40 @@ def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
     hsv_arr = sk_color.rgb2hsv(img_arr)
     hsv = np_to_pil(hsv_arr)
     return hsv
+
+
+def rgb_to_lab(
+    img: PIL.Image.Image, illuminant: str = "D65", observer: int = "2"
+) -> PIL.Image.Image:
+    """Convert from the sRGB color space to the CIE Lab colorspace.
+
+    sRGB color space reference: IEC 61966-2-1:1999
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
+    illuminant : {“A”, “D50”, “D55”, “D65”, “D75”, “E”}, optional
+        The name of the illuminant (the function is NOT case sensitive).
+    observer : {“2”, “10”}, optional
+        The aperture angle of the observer.
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image in LAB space
+
+    Raises
+    ------
+    Exception
+        If the image mode is not RGB
+    """
+    if img.mode != "RGB":
+        raise Exception("Input image must be RGB")
+    img_arr = np.array(img)
+    lab_arr = sk_color.rgb2lab(img_arr)
+    lab = np_to_pil(lab_arr)
+    return lab
 
 
 def stretch_contrast(
