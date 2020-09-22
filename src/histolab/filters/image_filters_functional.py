@@ -511,7 +511,7 @@ def rgb_to_lab(
     if img.mode != "RGB":
         raise Exception("Input image must be RGB")
     img_arr = np.array(img)
-    lab_arr = sk_color.rgb2lab(img_arr)
+    lab_arr = sk_color.rgb2lab(img_arr, illuminant=illuminant, observer=observer)
     lab = np_to_pil(lab_arr)
     return lab
 
