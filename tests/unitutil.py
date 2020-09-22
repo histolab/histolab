@@ -6,7 +6,7 @@ import os
 import sys
 
 import numpy as np
-import PIL
+from PIL import Image
 
 from unittest.mock import ANY, call  # noqa # isort:skip
 from unittest.mock import create_autospec, patch, PropertyMock  # isort:skip
@@ -94,22 +94,20 @@ def is_win32():
 
 
 class PILImageMock:
-    RGBA_COLOR_500X500_155_249_240 = PIL.Image.new(
+    RGBA_COLOR_500X500_155_249_240 = Image.new(
         "RGBA", size=(500, 500), color=(155, 249, 240)
     )
-    RGBA_COLOR_50X50_155_0_0 = PIL.Image.new("RGBA", size=(50, 50), color=(155, 0, 0))
+    RGBA_COLOR_50X50_155_0_0 = Image.new("RGBA", size=(50, 50), color=(155, 0, 0))
 
-    RGB_RANDOM_COLOR_500X500 = PIL.Image.fromarray(
+    RGB_RANDOM_COLOR_500X500 = Image.fromarray(
         (np.random.rand(500, 500, 3) * 255).astype("uint8")
     ).convert("RGB")
 
-    RGB_RANDOM_COLOR_10X10 = PIL.Image.fromarray(
+    RGB_RANDOM_COLOR_10X10 = Image.fromarray(
         (np.random.rand(10, 10, 3) * 255).astype("uint8")
     ).convert("RGB")
 
-    GRAY_RANDOM_10X10 = PIL.Image.fromarray(
-        (np.random.rand(10, 10) * 255).astype("uint8")
-    )
+    GRAY_RANDOM_10X10 = Image.fromarray((np.random.rand(10, 10) * 255).astype("uint8"))
 
 
 class NpArrayMock:
