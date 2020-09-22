@@ -232,7 +232,7 @@ def _load_svs(filename: str) -> Tuple[openslide.OpenSlide, str]:
     """
     try:
         svs = openslide.open_slide(_fetch(filename))
-    except openslide.OpenSlideError:
+    except openslide.OpenSlideError:  # pragma: no cover
         raise openslide.OpenSlideError(
             "Your wsi has something broken inside, a doctor is needed"
         )
