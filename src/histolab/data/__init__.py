@@ -399,7 +399,7 @@ def ovarian_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     Ovarian tissue, TCGA-OV dataset.
 
     This image is available here
-    https://portal.gdc.cancer.gov/cases/b777ec99-2811-4aa4-9568-13f68e380c86
+    https://portal.gdc.cancer.gov/files/b777ec99-2811-4aa4-9568-13f68e380c86
     or through the API
     https://api.gdc.cancer.gov/data/b777ec99-2811-4aa4-9568-13f68e380c86
 
