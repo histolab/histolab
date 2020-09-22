@@ -305,7 +305,7 @@ def test_stretch_contrast_filter_on_gs_image():
     (
         (300, 40),
         (300, 600),
-        (40, 500,),
+        (40, 500),
         (-10, 340),
         (-200, 300),
         (-40, -60),
@@ -449,7 +449,7 @@ def test_adaptive_equalization_filter_on_gs_image():
 
 
 @pytest.mark.parametrize(
-    "nbins, clip_limit", ((-10, 340), (-40, -60), (None, 50), (None, None),),
+    "nbins, clip_limit", ((-10, 340), (-40, -60), (None, 50), (None, None))
 )
 def test_adaptive_equalization_raises_exception_on_params(nbins, clip_limit):
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
@@ -488,7 +488,6 @@ def test_local_equalization_filter_on_gs_image():
     ),
 )
 def test_local_equalization_raises_exception_on_rgb_images(pil_rgb_image):
-
     with pytest.raises(Exception) as err:
         imf.local_equalization(pil_rgb_image, 80)
 
@@ -696,9 +695,7 @@ def test_hysteresis_threshold_filter_on_gs_image():
     )
 
 
-@pytest.mark.parametrize(
-    "low, high", ((None, 50), (-250, None), (None, None),),
-)
+@pytest.mark.parametrize("low, high", ((None, 50), (-250, None), (None, None)))
 def test_hysteresis_threshold_raises_exception_on_thresholds(low, high):
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
 
@@ -779,7 +776,6 @@ def test_local_otsu_threshold_filter_on_gs_image(pil_image, expected_image, disk
 def test_local_otsu_threshold_raises_right_exceptions(
     pil_image, disk_size, expected_exception, expected_message
 ):
-
     with pytest.raises(expected_exception) as err:
         imf.local_otsu_threshold(pil_image, disk_size)
 
@@ -801,9 +797,7 @@ def test_hysteresis_threshold_mask_filter_on_rgba_image():
     np.testing.assert_array_equal(hysteresis_threshold_mask, expected_value)
 
 
-@pytest.mark.parametrize(
-    "low, high", ((None, 50), (-250, None), (None, None),),
-)
+@pytest.mark.parametrize("low, high", ((None, 50), (-250, None), (None, None)))
 def test_hysteresis_threshold_mask_raises_exception_on_thresholds(low, high):
     rgb_img = RGB.DIAGNOSTIC_SLIDE_THUMB_RGB
 
@@ -939,7 +933,6 @@ def test_filter_entropy_filter_on_gs_image():
     ),
 )
 def test_filter_entropy_raises_exception_on_rgb_image(pil_image):
-
     with pytest.raises(Exception) as err:
         imf.filter_entropy(pil_image)
 
@@ -968,7 +961,6 @@ def test_canny_edges_filter_on_gs_image():
     ),
 )
 def test_canny_edges_raises_exception_on_rgb_image(pil_image):
-
     with pytest.raises(Exception) as err:
         imf.canny_edges(pil_image)
 
@@ -1150,7 +1142,6 @@ def test_red_filter_on_rgb_image(
 def test_red_filter_raises_right_exceptions(
     pil_img, red_thresh, green_thresh, blue_thresh, expected_exception, expected_message
 ):
-
     with pytest.raises(expected_exception) as err:
         imf.red_filter(pil_img, red_thresh, green_thresh, blue_thresh)
 
@@ -1203,22 +1194,101 @@ def test_red_pen_filter_on_rgb_image(pil_img, expected_value):
 
 
 @pytest.mark.parametrize(
-    "red_thresh, green_thresh, blue_thresh, expected_value",
+    "red_thresh, green_thresh, blue_thresh, expectation",
     (
         (20, 190, 50, "mask-arrays/diagnostic-slide-thumb-rgba1-green-filter-mask"),
         (0, 40, 30, "mask-arrays/diagnostic-slide-thumb-rgba2-green-filter-mask"),
         (0, 180, 90, "mask-arrays/diagnostic-slide-thumb-rgba3-green-filter-mask"),
     ),
 )
-def test_green_filter_on_rgba_image(
-    red_thresh, green_thresh, blue_thresh, expected_value
+def test_green_filter_on_rgba_image(red_thresh, green_thresh, blue_thresh, expectation):
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+
+    green_filter_mask = imf.green_filter(
+        rgba_img, red_thresh, green_thresh, blue_thresh
+    )
+
+    np.testing.assert_array_equal(
+        green_filter_mask, load_expectation(expectation, type_="npy")
+    )
+
+
+@pytest.mark.parametrize(
+    "green_thresh, avoid_overmask, overmask_thresh, expectation",
+    (
+        (
+            200,
+            True,
+            50,
+            "mask-arrays/diagnostic-slide-thumb-rgba1-green-ch-filter-mask",
+        ),
+        (0, True, 50, "mask-arrays/diagnostic-slide-thumb-rgba2-green-ch-filter-mask"),
+        (
+            200,
+            False,
+            50,
+            "mask-arrays/diagnostic-slide-thumb-rgba3-green-ch-filter-mask",
+        ),
+        (0, False, 50, "mask-arrays/diagnostic-slide-thumb-rgba4-green-ch-filter-mask"),
+    ),
+)
+def test_green_channel_filter_on_rgba_image(
+    green_thresh, avoid_overmask, overmask_thresh, expectation
 ):
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
-    expected_value = load_expectation(expected_value, type_="npy")
 
-    red_filter_mask = imf.green_filter(rgba_img, red_thresh, green_thresh, blue_thresh)
+    green_ch_filter_mask = imf.green_channel_filter(
+        rgba_img, green_thresh, avoid_overmask, overmask_thresh
+    )
 
-    np.testing.assert_array_equal(red_filter_mask, expected_value)
+    np.testing.assert_array_equal(
+        green_ch_filter_mask, load_expectation(expectation, type_="npy")
+    )
+    assert rgba_img.size == green_ch_filter_mask.T.shape
+
+
+@pytest.mark.parametrize("green_threshold", (256, -1))
+def test_green_channel_filter_with_wrong_threshold(green_threshold):
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+    with pytest.raises(ValueError) as err:
+        imf.green_channel_filter(rgba_img, green_threshold)
+
+    assert isinstance(err.value, ValueError)
+    assert str(err.value) == "threshold must be in range [0, 255]"
+
+
+@pytest.mark.parametrize(
+    "rgb_img, expectation",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb-pen-marks-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "mask-arrays/diagnostic-slide-thumb-hsv-pen-marks-mask",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "mask-arrays/diagnostic-slide-thumb-ycbcr-pen-marks-mask",
+        ),
+        (RGB.TCGA_LUNG_RGB, "mask-arrays/tcga-lung-rgb-pen-marks-mask"),
+    ),
+)
+def test_pen_marks_filter_on_rgb_image(rgb_img, expectation):
+    pen_marks_filter = imf.pen_marks(rgb_img)
+
+    np.testing.assert_array_equal(
+        pen_marks_filter, load_expectation(expectation, type_="npy")
+    )
+
+
+def test_pen_marks_filter_with_wrong_img_mode():
+    with pytest.raises(ValueError) as err:
+        imf.pen_marks(RGBA.DIAGNOSTIC_SLIDE_THUMB)
+
+    assert isinstance(err.value, ValueError)
+    assert str(err.value) == "Image input must be RGB, got RGBA."
 
 
 @pytest.mark.parametrize(
@@ -1324,7 +1394,6 @@ def test_green_filter_on_rgb_image(
 def test_green_filter_raises_right_exceptions(
     pil_img, red_thresh, green_thresh, blue_thresh, expected_exception, expected_message
 ):
-
     with pytest.raises(expected_exception) as err:
         imf.green_filter(pil_img, red_thresh, green_thresh, blue_thresh)
 
@@ -1490,7 +1559,6 @@ def test_blue_filter_on_rgb_image(
 def test_blue_filter_raises_right_exceptions(
     pil_img, red_thresh, green_thresh, blue_thresh, expected_exception, expected_message
 ):
-
     with pytest.raises(expected_exception) as err:
         imf.blue_filter(pil_img, red_thresh, green_thresh, blue_thresh)
 

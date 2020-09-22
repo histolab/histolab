@@ -813,6 +813,8 @@ def pen_marks(img: PIL.Image.Image) -> np.ndarray:
     np.ndarray
         Boolean NumPy array representing the mask with the pen marks filtered out.
     """
+    if img.mode == "RGBA":
+        raise ValueError("Image input must be RGB, got RGBA.")
     np_img = np.array(img)
     np_hsv = sk_color.convert_colorspace(np_img, "RGB", "HSV")
     hue = np_hsv[:, :, 0]
