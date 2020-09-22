@@ -52,6 +52,13 @@ class DescribeExceptions:
 
         assert message is None
 
+    def it_knows_its_message_from_empty_level_error(self):
+        level_error = exp.LevelError()
+
+        message = level_error.message
+
+        assert message is None
+
     def it_knows_its_str_from_str_level_error(self):
         arg = "error"
         level_error = exp.LevelError(arg)
