@@ -17,7 +17,7 @@ jobs:
           pip install pytest pytest-benchmark numpy
           pytest benchmarks/test_benchmarks --benchmark-json output.json
       - name: Download previous benchmark data
-          uses: actions/cache@v1
+          uses: actions/cache@v2.1.1
           with:
             path: ./cache
             key: ${{ runner.os }}-benchmark

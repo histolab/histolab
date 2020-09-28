@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - uses: actions/setup-python@v1
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2.1.1
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2.1.1
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
@@ -52,7 +52,7 @@ jobs:
       - name: Run benchmark
         run: cd examples/go && go test -bench 'BenchmarkFib' | tee output.txt
       - name: Download previous benchmark data
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.1
         with:
           path: ./cache
           key: ${{ runner.os }}-ci-cache-test
