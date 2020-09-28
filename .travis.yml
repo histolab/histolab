@@ -61,7 +61,7 @@ before_script:
 # command to run tests
 script:
   - flake8 .
-  - pytest --ignore=tests/benchmarks --cov=histolab
+  - pytest --ignore=tests/benchmarks --cov=histolab # benchmarks must be in a separate pipeline - not on travis
 
 after_success:
   - coveralls
