@@ -1,6 +1,7 @@
 # Project
 **/__pycache__
 coverage_html_report
+.benchmarks/
 
 # IDE + OS
 .DS_Store

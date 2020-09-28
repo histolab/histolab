@@ -35,7 +35,14 @@ install_requires = [
     "typing_extensions",
 ]
 
-test_requires = ["pytest", "pytest-xdist", "coverage", "pytest-cov", "coveralls"]
+test_requires = [
+    "pytest",
+    "pytest-xdist",
+    "coverage",
+    "pytest-cov",
+    "coveralls",
+    "pytest-benchmark",
+]
 
 setuptools.setup(
     name="histolab",
