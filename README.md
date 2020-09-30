@@ -1,3 +1,4 @@
+[![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![Coverage Status](https://coveralls.io/repos/github/histolab/histolab/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/histolab/histolab?branch=master)
 [![Build Status](https://travis-ci.com/histolab/histolab.svg?branch=master)](https://travis-ci.com/histolab/histolab)
 [![Documentation Status](https://readthedocs.org/projects/histolab/badge/?version=latest)](https://histolab.readthedocs.io/en/latest/?badge=latest)
