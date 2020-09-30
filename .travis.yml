@@ -62,9 +62,9 @@ jobs:
         - python -m pip install --upgrade pip
         - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
         - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
-      env: PATH=/c/Python38:/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH CAN_FAIL=true
+      env: PATH=/c/Python38:/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
   allow_failures:
-    - env: CAN_FAIL=true
+    - os: windows
 
 # command to install dependencies
 install:
