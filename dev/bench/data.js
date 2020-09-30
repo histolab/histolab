@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1601463518710,
+  "lastUpdate": 1601470094161,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -76,6 +76,44 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0002706152879743462",
             "extra": "mean: 4.4963276006000115 msec\nrounds: 50"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "ernestoarbitrio",
+            "username": "ernestoarbitrio"
+          },
+          "committer": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "ernestoarbitrio",
+            "username": "ernestoarbitrio"
+          },
+          "distinct": true,
+          "id": "60f2f7bc89183f3b22e58046b1e1f3a5920a66f0",
+          "message": "autocommit in benchmarks",
+          "timestamp": "2020-09-30T14:46:05+02:00",
+          "tree_id": "9f75a8b9d4bc1ebe73e15966405a195582089bb8",
+          "url": "https://github.com/histolab/histolab/commit/60f2f7bc89183f3b22e58046b1e1f3a5920a66f0"
+        },
+        "date": 1601470092795,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUnit::test_mask_difference",
+            "value": 8.127163018938408,
+            "unit": "iter/sec",
+            "range": "stddev: 0.005388445489934203",
+            "extra": "mean: 123.04416654000164 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUnit::test_mask_percent",
+            "value": 293.9198114664037,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00041871956519548846",
+            "extra": "mean: 3.4022885187999803 msec\nrounds: 50"
           }
         ]
       }
