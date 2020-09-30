@@ -11,6 +11,7 @@ jobs:
       - uses: actions/setup-python@v1
       - name: Run Benchmarks
         run: |
+          sudo apt install -y openslide-tools
           pip install numpy pytest pytest-benchmark
           pip install -e .
           pytest tests/benchmarks/test_benchmarks.py --benchmark-json output.json
@@ -30,3 +31,7 @@ jobs:
           github-token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
           # Push and deploy GitHub pages branch automatically
           auto-push: true
+          fail-on-alert: true
+          comment-on-alert: true
+          alert-comment-cc-users: '@ernestoarbitrio'
+          alert-threshold: '200%'
