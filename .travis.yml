@@ -28,7 +28,7 @@ jobs:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
         - echo $PATH
-    - name: "Python 3.8.5 on macOS"
+    - name: "Python 3.8.3 on macOS"
       os: osx
       osx_image: xcode12u
       language: shell       # 'language: python' is an error on Travis CI macOS
@@ -62,7 +62,11 @@ jobs:
         - python -m pip install --upgrade pip
         - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
         - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
-      env: PATH=/c/Python38:/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
+      env:
+        - PATH=/c/Python38:/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
+        - CAN_FAIL=true
+  allow_failures:
+    - env: CAN_FAIL=true
 
 # command to install dependencies
 install:
