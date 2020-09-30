@@ -3,6 +3,7 @@
 language: python            # this works for Linux but is an error on macOS or Windows
 env:
   - CAN_FAIL=false
+  - PATH=''
 jobs:
   include:
     - name: "Python 3.6 on Xenial Linux"
@@ -65,7 +66,9 @@ jobs:
         - python -m pip install --upgrade pip
         - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
         - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
-      env: CAN_FAIL=true;PATH=/c/Python38:/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
+      env:
+        - PATH=/c/Python38:/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
+        - CAN_FAIL=true
   allow_failures:
     - env: CAN_FAIL=true
   fast_finish: true
