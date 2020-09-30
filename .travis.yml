@@ -7,9 +7,11 @@ jobs:
       python: 3.6           # this works for Linux but is ignored on macOS or Windows
     - name: "Python 3.7 on Xenial Linux"
       python: 3.7          # this works for Linux but is ignored on macOS or Windows
+    - name: "Python 3.8 on Xenial Linux"
+      python: 3.8          # this works for Linux but is ignored on macOS or Windows
     - name: "Python 3.6.5 on macOS"
       os: osx
-      osx_image: xcode9.4  # Python 3.7.4 running on macOS 10.14.4
+      osx_image: xcode9.4  # Python 3.6.5 running on macOS 10.14.4
       language: shell       # 'language: python' is an error on Travis CI macOS
       before_install:
         - brew update-reset
@@ -22,6 +24,17 @@ jobs:
       os: osx
       osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
       language: shell       # 'language: python' is an error on Travis CI macOS
+      before_install:
+        - brew install openslide
+        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+        - echo $PATH
+    - name: "Python: 3.8"
+      os: osx
+      language: shell
+      python: 3.8
+      cache:
+        - directories:
+            - $HOME/Library/Caches/pip
       before_install:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
@@ -44,6 +57,15 @@ jobs:
         - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
         - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
       env: PATH=/c/Python37:/c/Python37/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
+    - name: "Python 3.8 on Windows"
+      os: windows           # Windows 10.0.17134 N/A Build 17134
+      language: shell       # 'language: python' is an error on Travis CI Windows
+      before_install:
+        - choco install python --version 3.8
+        - python -m pip install --upgrade pip
+        - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
+        - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
+      env: PATH=/c/Python38:/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
 
 # command to install dependencies
 install:
