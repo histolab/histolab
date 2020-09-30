@@ -12,6 +12,14 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/histolab)
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/histolab)
 
+**Compatibility Details**
+
+| Operating System  | Python version  |
+|-------------------|-----------------|
+|  Linux            | 3.6, 3.7, 3.8 |
+|  MacOs            | 3.6, 3.7, 3.8 |
+|  Windows          | 3.6, 3.7       |
+
 <img width="390" alt="histolab" src="https://user-images.githubusercontent.com/4196091/84828232-048fcc00-b026-11ea-8caa-5c14bb8565bd.png">
 
 
@@ -21,7 +29,6 @@
  
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
   * [Quickstart](#quickstart)
 * [Versioning](#versioning)
 * [Authors](#authors)
