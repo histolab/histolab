@@ -29,13 +29,9 @@ jobs:
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
         - echo $PATH
     - name: "Python 3.8.5 on macOS"
-        os: osx
-        osx_image: xcode12u
-        language: shell       # 'language: python' is an error on Travis CI macOS
-        before_install:
-          - brew install openslide
-          - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
-          - echo $PATH
+      os: osx
+      osx_image: xcode12u
+      language: shell       # 'language: python' is an error on Travis CI macOS
       before_install:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
