@@ -1,6 +1,8 @@
 # Wire up travis
 
 language: python            # this works for Linux but is an error on macOS or Windows
+env:
+  - CAN_FAIL=false
 jobs:
   include:
     - name: "Python 3.6 on Xenial Linux"
@@ -20,6 +22,7 @@ jobs:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
         - echo $PATH
+      env: CAN_FAIL=true
     - name: "Python 3.7.4 on macOS"
       os: osx
       osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
@@ -62,9 +65,10 @@ jobs:
         - python -m pip install --upgrade pip
         - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
         - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
-      env: PATH=/c/Python38:/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH
+      env: PATH=/c/Python38:/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH CAN_FAIL=true
   allow_failures:
-    - os: windows
+    - env: CAN_FAIL=true
+  fast_finish: true
 
 # command to install dependencies
 install:
