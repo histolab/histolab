@@ -72,7 +72,7 @@ subfolder of the current working directory:
    PROCESS_PATH_OVARIAN = os.path.join(BASE_PATH, 'ovarian', 'processed')
 
    prostate_slide = Slide(prostate_path, processed_path=PROCESS_PATH_PROSTATE)
-   ovarian_slide = Slide(ovarian_path, processed_path=PROCESS_PATH_PROSTATE)
+   ovarian_slide = Slide(ovarian_path, processed_path=PROCESS_PATH_OVARIAN)
 
 **Note:** If the slides were stored in the same folder, this can be
 done directly on the whole dataset by using the ``SlideSet`` object
