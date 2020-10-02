@@ -57,9 +57,9 @@ class RemoveSmallObjects:
         self.avoid_overmask = avoid_overmask
         self.overmask_thresh = overmask_thresh
 
-    def __call__(self, np_img) -> np.ndarray:
+    def __call__(self, np_mask: np.ndarray) -> np.ndarray:
         return F.remove_small_objects(
-            np_img, self.min_size, self.avoid_overmask, self.overmask_thresh
+            np_mask, self.min_size, self.avoid_overmask, self.overmask_thresh
         )
 
     def __repr__(self):
@@ -85,7 +85,7 @@ class RemoveSmallHoles:
     def __init__(self, area_threshold: int = 3000):
         self.area_threshold = area_threshold
 
-    def __call__(self, np_mask) -> np.ndarray:
+    def __call__(self, np_mask: np.ndarray) -> np.ndarray:
         return skimage.morphology.remove_small_holes(np_mask, self.area_threshold)
 
     def __repr__(self):
@@ -208,7 +208,7 @@ class BinaryOpening:
         self.disk_size = disk_size
         self.iterations = iterations
 
-    def __call__(self, np_mask) -> np.ndarray:
+    def __call__(self, np_mask: np.ndarray) -> np.ndarray:
         if not np.array_equal(np_mask, np_mask.astype(bool)):
             raise ValueError("Mask must be binary")
         return scipy.ndimage.morphology.binary_opening(
@@ -244,7 +244,7 @@ class BinaryClosing:
         self.disk_size = disk_size
         self.iterations = iterations
 
-    def __call__(self, np_mask) -> np.ndarray:
+    def __call__(self, np_mask: np.ndarray) -> np.ndarray:
         if not np.array_equal(np_mask, np_mask.astype(bool)):
             raise ValueError("Mask must be binary")
         return scipy.ndimage.morphology.binary_closing(
@@ -252,6 +252,34 @@ class BinaryClosing:
         )
 
     def __repr__(self):
+        return self.__class__.__name__ + "()"
+
+
+class WatershedSegmentation:
+    """Segment and label an binary mask with Watershed segmentation [1]_
+
+    The watershed algorithm treats pixels values as a local topography (elevation).
+
+    Parameters
+    ----------
+    np_mask : np.ndarray
+        Input mask
+
+    Returns
+    -------
+    np.ndarray
+        Labelled segmentation mask
+
+    References
+    --------
+    .. [1] Watershed segmentation.
+       https://scikit-image.org/docs/dev/auto_examples/segmentation/plot_watershed.html
+    """
+
+    def __call__(self, np_mask: np.ndarray) -> np.ndarray:
+        return F.watershed_segmentation(np_mask)
+
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
 
 

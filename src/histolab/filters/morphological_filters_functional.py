@@ -17,7 +17,10 @@
 # ------------------------------------------------------------------------
 
 import numpy as np
+import scipy.ndimage as sc_ndimage
+import skimage.feature as sk_feature
 import skimage.morphology as sk_morphology
+import skimage.segmentation as sk_segmentation
 
 from .util import mask_percent
 
@@ -60,3 +63,32 @@ def remove_small_objects(
             np_mask, new_min_size, avoid_overmask, overmask_thresh
         )
     return mask_no_small_object
+
+
+def watershed_segmentation(np_mask: np.ndarray) -> np.ndarray:
+    """Segment and label an binary mask with Watershed segmentation [1]_
+
+    The watershed algorithm treats pixels values as a local topography (elevation).
+
+    Parameters
+    ----------
+    np_mask : np.ndarray
+        Input mask
+
+    Returns
+    -------
+    np.ndarray
+        Labelled segmentation mask
+
+    References
+    --------
+    .. [1] Watershed segmentation.
+       https://scikit-image.org/docs/dev/auto_examples/segmentation/plot_watershed.html
+    """
+    distance = sc_ndimage.distance_transform_edt(np_mask)
+    local_maxi = sk_feature.peak_local_max(
+        distance, indices=False, footprint=np.ones((6, 6)), labels=np_mask
+    )
+    markers = sc_ndimage.label(local_maxi)[0]
+    labels = sk_segmentation.watershed(-distance, markers, mask=np_mask)
+    return labels
