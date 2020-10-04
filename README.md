@@ -175,7 +175,7 @@ Dimensions at level 2: (1875, 2124)
 
 Moreover, we can save and show the slide thumbnail in a separate window.
 In particular, the thumbnail image will be automatically saved in a
-subdirectory of the processedpath:
+subdirectory of the `processed_path`:
 
 ```python
 prostate_slide.save_thumbnail()
@@ -227,16 +227,13 @@ if they have at least 80% of tissue inside. We then initialize our
 `RandomTiler` extractor as follows:
 
 ```python
-# save tiles in the 'random' subdirectory
-PROSTATE_RANDOM_TILES_PATH = os.path.join(PROCESS_PATH_PROSTATE, 'random')
-
 random_tiles_extractor = RandomTiler(
     tile_size=(512, 512),
     n_tiles=6,
     level=2,
     seed=42,
     check_tissue=True, # default
-    prefix=PROSTATE_RANDOM_TILES_PATH,
+    prefix="random", # save tiles in the "random" subdirectory of slide's processed_path
     suffix=".png" # default
 )
 ```
@@ -271,15 +268,12 @@ number of overlapping pixels between two adjacent tiles,
 `pixel_overlap`, is set to zero:
 
 ```python
-# save tiles in the 'grid' subdirectory
-OVARIAN_GRID_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'grid')
-
 grid_tiles_extractor = GridTiler(
    tile_size=(512, 512),
    level=0,
    check_tissue=False,
    pixel_overlap=0, # default
-   prefix=OVARIAN_GRID_TILES_PATH,
+   prefix="grid", # save tiles in the "grid" subdirectory of slide's processed_path 
    suffix=".png" # default
 )
 ```
@@ -321,9 +315,6 @@ As the `ScoreTiler` extends the `GridTiler` extractor, we also set the
 number of the top tiles we want to save with the `n_tile` parameter:
 
 ```python
-# save tiles in the 'scored' subdirectory
-OVARIAN_SCORED_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'scored')
-
 scored_tiles_extractor = ScoreTiler(
     scorer = NucleiScorer(),
     tile_size=(512, 512),
@@ -331,7 +322,7 @@ scored_tiles_extractor = ScoreTiler(
     level=0,
     check_tissue=True,
     pixel_overlap=0, # default
-    prefix=OVARIAN_SCORED_TILES_PATH,
+    prefix="scored", # save tiles in the "scored" subdirectory of slide's processed_path 
     suffix=".png" # default
 )
 ```
@@ -340,7 +331,7 @@ Finally, when we extract our cropped images, we can also write a report
 of the saved tiles and their scores in a CSV file:
 
 ```python
-summary_filename = 'summary_ovarian_tiles.csv'
+summary_filename = "summary_ovarian_tiles.csv"
 SUMMARY_PATH = os.path.join(OVARIAN_SCORED_TILES_PATH, summary_filename)
 
 scored_tiles_extractor.extract(ovarian_slide, report_path=SUMMARY_PATH)

@@ -116,7 +116,7 @@ dimensions at native magnification or at a specified level:
 
 Moreover, we can save and show the slide thumbnail in a separate window.
 In particular, the thumbnail image will be automatically saved in a subdirectory
-of the processedpath:
+of the ``processed_path``:
 
 .. code-block:: ipython3
 
@@ -177,16 +177,13 @@ extractor as follows:
 
 .. code-block:: ipython3
 
-   # save tilesin the 'random' subdirectory
-   PROSTATE_RANDOM_TILES_PATH = os.path.join(PROCESS_PATH_PROSTATE, 'random')
-
    random_tiles_extractor = RandomTiler(
        tile_size=(512, 512),
        n_tiles=6,
        level=2,
        seed=42,
        check_tissue=True, # default
-       prefix=PROSTATE_RANDOM_TILES_PATH,
+       prefix="random", # save tiles in the "random" subdirectory of slide's processed_path
        suffix=".png" # default
    )
 
@@ -223,15 +220,12 @@ defining the number of overlapping pixels between two adjacent tiles,
 
 .. code-block:: ipython3
 
-   # save tiles in the 'grid' subdirectory
-   OVARIAN_GRID_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'grid')
-
    grid_tiles_extractor = GridTiler(
       tile_size=(512, 512),
       level=0,
       check_tissue=False,
       pixel_overlap=0, # default
-      prefix=OVARIAN_GRID_TILES_PATH,
+      prefix=prefix="grid", # save tiles in the "grid" subdirectory of slide's processed_path
       suffix=".png" # default
    )
 
@@ -278,9 +272,6 @@ specify the number of the top tiles we want to save with the
 
 .. code-block:: ipython3
 
-   # save tiles in the 'scored' subdirectory
-   OVARIAN_SCORED_TILES_PATH = os.path.join(PROCESS_PATH_OVARIAN, 'scored')
-
    scored_tiles_extractor = ScoreTiler(
        scorer = NucleiScorer(),
        tile_size=(512, 512),
@@ -288,7 +279,7 @@ specify the number of the top tiles we want to save with the
        level=0,
        check_tissue=True,
        pixel_overlap=0, # default
-       prefix=OVARIAN_SCORED_TILES_PATH,
+       prefix="scored", # save tiles in the "scored" subdirectory of slide's processed_path
        suffix=".png" # default
    )
 
@@ -297,7 +288,7 @@ of the saved tiles and their scores in a CSV file:
 
 .. code-block:: ipython3
 
-   summary_filename = 'summary_ovarian_tiles.csv'
+   summary_filename = "summary_ovarian_tiles.csv"
    SUMMARY_PATH = os.path.join(OVARIAN_SCORED_TILES_PATH, summary_filename)
 
    scored_tiles_extractor.extract(ovarian_slide, report_path=SUMMARY_PATH)
