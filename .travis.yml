@@ -3,82 +3,101 @@
 language: python            # this works for Linux but is an error on macOS or Windows
 env:
   - CAN_FAIL=false
-jobs:
-  include:
-    - name: "Python 3.6 on Xenial Linux"
-      python: 3.6           # this works for Linux but is ignored on macOS or Windows
-    - name: "Python 3.7 on Xenial Linux"
-      python: 3.7          # this works for Linux but is ignored on macOS or Windows
-    - name: "Python 3.8 on Xenial Linux"
-      python: 3.8          # this works for Linux but is ignored on macOS or Windows
-    - name: "Python 3.6.5 on macOS"
-      os: osx
-      osx_image: xcode9.4  # Python 3.6.5 running on macOS 10.14.4
-      language: shell       # 'language: python' is an error on Travis CI macOS
-      before_install:
-        - brew update-reset
-        - source ~/.bash_profile
-        - brew update
-        - brew install openslide
-        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
-        - echo $PATH
-      env: CAN_FAIL=true
-    - name: "Python 3.7.4 on macOS"
-      os: osx
-      osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
-      language: shell       # 'language: python' is an error on Travis CI macOS
-      before_install:
-        - brew install openslide
-        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
-        - echo $PATH
-    - name: "Python 3.8.3 on macOS"
-      os: osx
-      osx_image: xcode12u
-      language: shell       # 'language: python' is an error on Travis CI macOS
-      before_install:
-        - brew install openslide
-        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
-        - echo $PATH
-    - name: "Python 3.6.8 on Windows"
-      os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: shell       # 'language: python' is an error on Travis CI Windows
-      before_install:
-        - choco install python --version 3.6.8
-        - export "PATH=/c/Python36:$PATH"
-        - python -m pip install --upgrade pip
-        - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
-        - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
-        - export "PATH=/c/Python36/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH"
-    - name: "Python 3.7 on Windows"
-      os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: shell       # 'language: python' is an error on Travis CI Windows
-      before_install:
-        - choco install python --version 3.7
-        - export "PATH=/c/Python37:$PATH"
-        - python -m pip install --upgrade pip
-        - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
-        - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
-        - export "PATH=/c/Python37/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH"
-    - name: "Python 3.8.0 on Windows"
-      os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: shell       # 'language: python' is an error on Travis CI Windows
-      before_install:
-        - choco install python --version 3.8.0
-        - export "PATH=/c/Python38:$PATH"
-        - python -m pip install --upgrade pip
-        - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
-        - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
-        - export "PATH=/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH"
-      env: CAN_FAIL=true
-  allow_failures:
-    - env: CAN_FAIL=true
-  fast_finish: true
+#
+#jobs:
+#  include:
+#    - name: "Python 3.6 on Xenial Linux"
+#      python: 3.6           # this works for Linux but is ignored on macOS or Windows
+#    - name: "Python 3.7 on Xenial Linux"
+#      python: 3.7          # this works for Linux but is ignored on macOS or Windows
+#    - name: "Python 3.8 on Xenial Linux"
+#      python: 3.8          # this works for Linux but is ignored on macOS or Windows
+#    - name: "Python 3.6.5 on macOS"
+#      os: osx
+#      osx_image: xcode9.4  # Python 3.6.5 running on macOS 10.14.4
+#      language: shell       # 'language: python' is an error on Travis CI macOS
+#      before_install:
+#        - brew update-reset
+#        - source ~/.bash_profile
+#        - brew update
+#        - brew install openslide
+#        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+#        - echo $PATH
+#      env: CAN_FAIL=true
+#    - name: "Python 3.7.4 on macOS"
+#      os: osx
+#      osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
+#      language: shell       # 'language: python' is an error on Travis CI macOS
+#      before_install:
+#        - brew install openslide
+#        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+#        - echo $PATH
+#    - name: "Python 3.8.3 on macOS"
+#      os: osx
+#      osx_image: xcode12u
+#      language: shell       # 'language: python' is an error on Travis CI macOS
+#      before_install:
+#        - brew install openslide
+#        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+#        - echo $PATH
+#    - name: "Python 3.6.8 on Windows"
+#      os: windows           # Windows 10.0.17134 N/A Build 17134
+#      language: shell       # 'language: python' is an error on Travis CI Windows
+#      before_install:
+#        - choco install python --version 3.6.8
+#        - export "PATH=/c/Python36:$PATH"
+#        - python -m pip install --upgrade pip
+#        - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
+#        - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
+#        - export "PATH=/c/Python36/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH"
+#    - name: "Python 3.7 on Windows"
+#      os: windows           # Windows 10.0.17134 N/A Build 17134
+#      language: shell       # 'language: python' is an error on Travis CI Windows
+#      before_install:
+#        - choco install python --version 3.7
+#        - export "PATH=/c/Python37:$PATH"
+#        - python -m pip install --upgrade pip
+#        - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
+#        - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
+#        - export "PATH=/c/Python37/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH"
+#    - name: "Python 3.8.0 on Windows"
+#      os: windows           # Windows 10.0.17134 N/A Build 17134
+#      language: shell       # 'language: python' is an error on Travis CI Windows
+#      before_install:
+#        - choco install python --version 3.8.0
+#        - export "PATH=/c/Python38:$PATH"
+#        - python -m pip install --upgrade pip
+#        - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
+#        - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
+#        - export "PATH=/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH"
+#      env: CAN_FAIL=true
+#  allow_failures:
+#    - env: CAN_FAIL=true
+#  fast_finish: true
+
+matrix:
+    include:
+        - python: 3.6
+        - python: 3.7
+        - python: 3.8
+        - python: 3.9
+        - python: 3.6
+          env: TOXENV=py27,py36,coverage,coveralls
+        - python: nightly
+          env: TOXENV=py37
+        - python: 3.6
+          env: TOXENV=lint
+    allow_failures:
+        - env: CAN_FAIL=true
+        - env: TOXENV=lint
 
 # command to install dependencies
+#install:
+#  - pip3 install -e .[testing]
+#  - pip3 install flake8
+#  - pip3 install pooch
 install:
-  - pip3 install -e .[testing]
-  - pip3 install flake8
-  - pip3 install pooch
+  - travis_retry pip install tox tox-travis
 
 services:
   - xvfb
@@ -88,12 +107,14 @@ before_script:
   - sleep 3 # give xvfb some time to start
 
 # command to run tests
+#script:
+#  - flake8 .
+#  - pytest --ignore=tests/benchmarks --cov=histolab # benchmarks must be in a separate pipeline - not on travis
+#
+#after_success:
+#  - coveralls
 script:
-  - flake8 .
-  - pytest --ignore=tests/benchmarks --cov=histolab # benchmarks must be in a separate pipeline - not on travis
-
-after_success:
-  - coveralls
+  - travis_retry tox
 
 notifications:
   slack: mpba:fBrjUWlUSa3XKeCA8zFsTFu2
