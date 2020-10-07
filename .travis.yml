@@ -89,7 +89,7 @@ before_script:
   - export DISPLAY=:99.0
   - sleep 3 # give xvfb some time to start
 
- command to run tests
+# command to run tests
 script:
   - flake8 .
   - pytest --ignore=tests/benchmarks --cov=histolab # benchmarks must be in a separate pipeline - not on travis
