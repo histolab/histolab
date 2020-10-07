@@ -76,7 +76,7 @@ jobs:
     - env: CAN_FAIL=true
   fast_finish: true
 
- command to install dependencies
+# command to install dependencies
 install:
   - pip3 install -e .[testing]
   - pip3 install flake8
