@@ -15,7 +15,7 @@ jobs:
     - python: 3.8
       os: linux
       dist: focal
-    - python: 3.9
+    - python: 3.9-dev
       os: linux
       dist: focal
       env: CAN_FAIL=true
