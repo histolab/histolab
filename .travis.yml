@@ -21,8 +21,8 @@ jobs:
       env: CAN_FAIL=true
     - name: Python 3.6.5
       os: osx
-      osx_image: xcode9.4  # Python 3.6.5 running on macOS 10.14.4
-      language: generic       # 'language: python' is an error on Travis CI macOS
+      osx_image: xcode9.4   # Python 3.6.5 running on macOS 10.14.4
+      language: generic     # 'language: python' is an error on Travis CI macOS
       before_install:
         - brew update-reset
         - source ~/.bash_profile
@@ -34,7 +34,7 @@ jobs:
     - name: Python 3.7.4
       os: osx
       osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
-      language: generic       # 'language: python' is an error on Travis CI macOS
+      language: generic     # 'language: python' is an error on Travis CI macOS
       before_install:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
@@ -49,7 +49,7 @@ jobs:
         - echo $PATH
     - name: Python 3.6.8
       os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: generic       # 'language: python' is an error on Travis CI Windows
+      language: generic     # 'language: python' is an error on Travis CI Windows
       before_install:
         - choco install python --version 3.6.8
         - export "PATH=/c/Python36:$PATH"
@@ -59,7 +59,7 @@ jobs:
         - export "PATH=/c/Python36/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH"
     - name: Python 3.7
       os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: generic       # 'language: python' is an error on Travis CI Windows
+      language: generic     # 'language: python' is an error on Travis CI Windows
       before_install:
         - choco install python --version 3.7
         - export "PATH=/c/Python37:$PATH"
@@ -69,7 +69,7 @@ jobs:
         - export "PATH=/c/Python37/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH"
     - name: Python 3.8.0
       os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: generic       # 'language: python' is an error on Travis CI Windows
+      language: generic     # 'language: python' is an error on Travis CI Windows
       before_install:
         - choco install python --version 3.8.0
         - export "PATH=/c/Python38:$PATH"
@@ -82,7 +82,6 @@ jobs:
     - env: CAN_FAIL=true
   fast_finish: true
 
-# command to install dependencies
 install:
   - pip3 install -e .[testing]
   - pip3 install flake8
@@ -95,7 +94,6 @@ before_script:
   - export DISPLAY=:99.0
   - sleep 3 # give xvfb some time to start
 
-# command to run tests
 script:
   - flake8 .
   - pytest --ignore=tests/benchmarks --cov=histolab # benchmarks must be in a separate pipeline - not on travis
@@ -104,7 +102,8 @@ after_success:
   - coveralls
 
 notifications:
-  slack: mpba:fBrjUWlUSa3XKeCA8zFsTFu2
+  slack:
+    secure: "Ba1nSeDgSZxbqzpcsMbr3NGILnDUP8Bved4/exSox2MMPlPpXKzFXIjVimRQfWOfW4eR//Z4ZbIgVYzgSB95T9AUkhxScfGkOLMr+VHaJHojcRsZmy2JYxGb9PULfouZ/v8AtfM8vnrVy0HHlTSDFPxO7X+bWvYYJ9Up/y0ZG5rEqeOIwjNw8mAKbgG2JwonxacdMDPoocHZNjMNXXvW6+Db6EjiA3EJRar3cB20jKcJEF0n9dbXuKgTqOVSnL4CYTFLkntjPBpEBOVe+RjLja72EO0zDwdh2bh5vbctuSesSyZmVB+12RAH516lczWn5+5pm/gsPsaGZEDLI4VclC+iJ+Mk/iFirvA2jS3mD384R8+bA1ypBCt9KpbjfAUlXv/TqTZKW3odGewx3NOUM1zdWrePR0rXXRMvR4m1YShCVxiAKAFCNSKkR17XuudEKGNK3eHwK6g9bMH25jeBWs8SCfu+HPwWj12t3LUaHCvoCNJMhbU3rQvokCXnyDTY+VwitnLmiRTIouL36AnT5WBNGgKTzUKxYxEWApQHsYXMNQisfZ6zHAmp2yJZHHAChIwl3kmvU9nFRHb5IWwNkAwAK68CP0tbOjrgcAAT64ZyDLxx3IogsOhGEOqSE19h4x6RbOJNfuB1XR4ruCNsSMfCLD04Suzh1W2NyYhvd2I="
 
 addons:
   apt:
