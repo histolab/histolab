@@ -22,7 +22,7 @@ jobs:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
         - shopt -s expand_aliases
-        - echo 'alias python3="python"' >> /Users/travis/.bash_profile
+        - echo 'alias python="python3"' >> /Users/travis/.bash_profile
         - source ~/.bash_profile
         - echo $PATH
       env: CAN_FAIL=true
@@ -34,7 +34,7 @@ jobs:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
         - shopt -s expand_aliases
-        - echo 'alias python3="python"' >> /Users/travis/.bash_profile
+        - echo 'alias python="python3"' >> /Users/travis/.bash_profile
         - source ~/.bash_profile
         - echo $PATH
     - name: "Python 3.8.3 on macOS"
@@ -45,7 +45,7 @@ jobs:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
         - shopt -s expand_aliases
-        - echo 'alias python3="python"' >> /Users/travis/.bash_profile
+        - echo 'alias python="python3"' >> /Users/travis/.bash_profile
         - source ~/.bash_profile
         - echo $PATH
     - name: "Python 3.6.8 on Windows"
