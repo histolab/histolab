@@ -21,6 +21,8 @@ jobs:
         - brew update
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+        - shopt -s expand_aliases
+        - echo 'alias python3="python"' >> /Users/travis/.bash_profile
         - source ~/.bash_profile
         - echo $PATH
       env: CAN_FAIL=true
@@ -31,6 +33,8 @@ jobs:
       before_install:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+        - shopt -s expand_aliases
+        - echo 'alias python3="python"' >> /Users/travis/.bash_profile
         - source ~/.bash_profile
         - echo $PATH
     - name: "Python 3.8.3 on macOS"
@@ -40,6 +44,8 @@ jobs:
       before_install:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+        - shopt -s expand_aliases
+        - echo 'alias python3="python"' >> /Users/travis/.bash_profile
         - source ~/.bash_profile
         - echo $PATH
     - name: "Python 3.6.8 on Windows"
@@ -72,8 +78,6 @@ jobs:
         - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
         - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
         - export "PATH=/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH"
-        - echo alias python3=\'python\' >> ~.bashrc
-        - source ~/.bashrc
       env: CAN_FAIL=true
   allow_failures:
     - env: CAN_FAIL=true
@@ -81,9 +85,9 @@ jobs:
 
 # command to install dependencies
 install:
-  - python3 -m pip install -e .[testing]
-  - python3 -m pip install flake8
-  - python3 -m pip install pooch
+  - python -m pip install -e .[testing]
+  - python -m pip install flake8
+  - python -m pip install pooch
 
 services:
   - xvfb
