@@ -30,16 +30,8 @@ jobs:
       language: shell       # 'language: python' is an error on Travis CI macOS
       before_install:
         - brew install openslide
-        - which pip3
-        - which pip
-        - which python3
-        - which python
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
         - source ~/.bash_profile
-        - which pip3
-        - which pip
-        - which python3
-        - which python
         - echo $PATH
     - name: "Python 3.8.3 on macOS"
       os: osx
@@ -87,9 +79,9 @@ jobs:
 
 # command to install dependencies
 install:
-  - python -m pip install -e .[testing]
-  - python -m pip install flake8
-  - python -m pip install pooch
+  - python3 -m pip install -e .[testing]
+  - python3 -m pip install flake8
+  - python3 -m pip install pooch
 
 services:
   - xvfb
