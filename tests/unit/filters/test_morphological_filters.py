@@ -3,6 +3,7 @@
 import numpy as np
 import pytest
 import skimage.morphology
+
 from histolab.filters import morphological_filters as mof
 
 from ...base import IMAGE1_RGB, IMAGE2_RGBA
@@ -190,5 +191,5 @@ class DescribeMorphologicalFilters:
 
         watershed_segmentation(mask_arr)
 
-        F_watershed_segmentation.assert_called_once_with(mask_arr)
+        F_watershed_segmentation.assert_called_once_with(mask_arr, 6)
         assert type(watershed_segmentation(mask_arr)) == np.ndarray

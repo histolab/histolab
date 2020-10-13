@@ -1,6 +1,7 @@
-import histolab.filters.morphological_filters_functional as mof
 import numpy as np
 import pytest
+
+import histolab.filters.morphological_filters_functional as mof
 
 from ..fixtures import MASKNPY
 from ..util import load_expectation
@@ -56,16 +57,18 @@ def test_remove_small_objects_filter(
 
 
 @pytest.mark.parametrize(
-    "mask_array, expected_array",
+    "mask_array, region_shape, expected_array",
     (
-        (MASKNPY.YTMA1, "mask-arrays/ytma1-watershed-segmentation"),
-        (MASKNPY.YTMA2, "mask-arrays/ytma2-watershed-segmentation"),
+        (MASKNPY.YTMA1, 6, "mask-arrays/ytma1-watershed-segmentation-region6"),
+        (MASKNPY.YTMA2, 6, "mask-arrays/ytma2-watershed-segmentation-region6"),
+        (MASKNPY.YTMA1, 3, "mask-arrays/ytma1-watershed-segmentation-region3"),
+        (MASKNPY.YTMA2, 3, "mask-arrays/ytma2-watershed-segmentation-region3"),
     ),
 )
-def test_watershed_segmentation_filter(mask_array, expected_array):
+def test_watershed_segmentation_filter(mask_array, region_shape, expected_array):
     expected_value = load_expectation(expected_array, type_="npy")
 
-    mask_watershed = mof.watershed_segmentation(mask_array)
+    mask_watershed = mof.watershed_segmentation(mask_array, region_shape)
 
     np.testing.assert_array_equal(mask_watershed, expected_value)
     assert type(mask_watershed) == np.ndarray
