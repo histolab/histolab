@@ -76,9 +76,9 @@ jobs:
 
 # command to install dependencies
 install:
-  - pip3 install -e .[testing]
-  - pip3 install flake8
-  - pip3 install pooch
+  - python -m pip3 install -e .[testing]
+  - python -m pip3 install flake8
+  - python -m pip3 install pooch
 
 services:
   - xvfb
