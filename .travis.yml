@@ -72,6 +72,8 @@ jobs:
         - wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
         - 7z e /c/downloads/openslide-win64-20171122.zip -aoa
         - export "PATH=/c/Python38/Scripts:/c/downloads/openslide-win64-20171122/bin:$PATH"
+        - echo alias python3=\'python\' >> ~.bashrc
+        - source ~/.bashrc
       env: CAN_FAIL=true
   allow_failures:
     - env: CAN_FAIL=true
