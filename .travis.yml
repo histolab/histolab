@@ -21,6 +21,7 @@ jobs:
         - brew update
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+        - source ~/.bash_profile
         - echo $PATH
       env: CAN_FAIL=true
     - name: "Python 3.7.4 on macOS"
@@ -30,6 +31,7 @@ jobs:
       before_install:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+        - source ~/.bash_profile
         - echo $PATH
     - name: "Python 3.8.3 on macOS"
       os: osx
@@ -38,6 +40,7 @@ jobs:
       before_install:
         - brew install openslide
         - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
+        - source ~/.bash_profile
         - echo $PATH
     - name: "Python 3.6.8 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
