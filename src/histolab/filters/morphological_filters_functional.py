@@ -65,7 +65,7 @@ def remove_small_objects(
     return mask_no_small_object
 
 
-def watershed_segmentation(np_mask: np.ndarray) -> np.ndarray:
+def watershed_segmentation(np_mask: np.ndarray, region_shape: int = 6) -> np.ndarray:
     """Segment and label an binary mask with Watershed segmentation [1]_
 
     The watershed algorithm treats pixels values as a local topography (elevation).
@@ -74,6 +74,9 @@ def watershed_segmentation(np_mask: np.ndarray) -> np.ndarray:
     ----------
     np_mask : np.ndarray
         Input mask
+    region_shape : int, optional
+        The local region within which to search for image peaks is defined as a squared
+        area region_shape x region_shape. Default is 6.
 
     Returns
     -------
@@ -87,7 +90,10 @@ def watershed_segmentation(np_mask: np.ndarray) -> np.ndarray:
     """
     distance = sc_ndimage.distance_transform_edt(np_mask)
     local_maxi = sk_feature.peak_local_max(
-        distance, indices=False, footprint=np.ones((6, 6)), labels=np_mask
+        distance,
+        indices=False,
+        footprint=np.ones((region_shape, region_shape)),
+        labels=np_mask,
     )
     markers = sc_ndimage.label(local_maxi)[0]
     labels = sk_segmentation.watershed(-distance, markers, mask=np_mask)
