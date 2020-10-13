@@ -183,7 +183,7 @@ extractor as follows:
        level=2,
        seed=42,
        check_tissue=True, # default
-       prefix="random", # save tiles in the "random" subdirectory of slide's processed_path
+       prefix="random/", # save tiles in the "random" subdirectory of slide's processed_path
        suffix=".png" # default
    )
 
@@ -225,7 +225,7 @@ defining the number of overlapping pixels between two adjacent tiles,
       level=0,
       check_tissue=False,
       pixel_overlap=0, # default
-      prefix=prefix="grid", # save tiles in the "grid" subdirectory of slide's processed_path
+      prefix="grid/", # save tiles in the "grid" subdirectory of slide's processed_path
       suffix=".png" # default
    )
 
@@ -279,7 +279,7 @@ specify the number of the top tiles we want to save with the
        level=0,
        check_tissue=True,
        pixel_overlap=0, # default
-       prefix="scored", # save tiles in the "scored" subdirectory of slide's processed_path
+       prefix="scored/", # save tiles in the "scored" subdirectory of slide's processed_path
        suffix=".png" # default
    )
 
