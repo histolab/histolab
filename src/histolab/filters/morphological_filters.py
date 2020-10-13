@@ -264,6 +264,9 @@ class WatershedSegmentation:
     ----------
     np_mask : np.ndarray
         Input mask
+    region_shape : int, optional
+        The local region within which to search for image peaks is defined as a squared
+        area region_shape x region_shape. Default is 6.
 
     Returns
     -------
@@ -276,8 +279,11 @@ class WatershedSegmentation:
        https://scikit-image.org/docs/dev/auto_examples/segmentation/plot_watershed.html
     """
 
+    def __init__(self, region_shape: int = 6) -> None:
+        self.region_shape = region_shape
+
     def __call__(self, np_mask: np.ndarray) -> np.ndarray:
-        return F.watershed_segmentation(np_mask)
+        return F.watershed_segmentation(np_mask, self.region_shape)
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
