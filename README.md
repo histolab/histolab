@@ -233,7 +233,7 @@ random_tiles_extractor = RandomTiler(
     level=2,
     seed=42,
     check_tissue=True, # default
-    prefix="random", # save tiles in the "random" subdirectory of slide's processed_path
+    prefix="random/", # save tiles in the "random" subdirectory of slide's processed_path
     suffix=".png" # default
 )
 ```
@@ -273,7 +273,7 @@ grid_tiles_extractor = GridTiler(
    level=0,
    check_tissue=False,
    pixel_overlap=0, # default
-   prefix="grid", # save tiles in the "grid" subdirectory of slide's processed_path 
+   prefix="grid/", # save tiles in the "grid" subdirectory of slide's processed_path 
    suffix=".png" # default
 )
 ```
@@ -322,7 +322,7 @@ scored_tiles_extractor = ScoreTiler(
     level=0,
     check_tissue=True,
     pixel_overlap=0, # default
-    prefix="scored", # save tiles in the "scored" subdirectory of slide's processed_path 
+    prefix="scored/", # save tiles in the "scored" subdirectory of slide's processed_path 
     suffix=".png" # default
 )
 ```
