@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v0.1.1
+------
+
+- Add RgbToLab image filter (`#147 <https://github.com/histolab/histolab/pull/147>`_)
+- Add Watershed segmentation filter (`#153 <https://github.com/histolab/histolab/pull/153>`_)
+- Support Python 3.8 on Linux and macOS (`#151 <https://github.com/histolab/histolab/pull/151>`_)
 
 v0.0.1
 ------
