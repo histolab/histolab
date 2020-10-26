@@ -261,6 +261,3 @@ def lazyproperty(f: Callable[..., Any]):
     is not callable.
     """
     return property(functools.lru_cache(maxsize=100)(f))
-
-
-memoize = functools.lru_cache(100)
