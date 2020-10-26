@@ -655,8 +655,8 @@ class ScoreTiler(GridTiler):
             dict(zip(header, values))
             for values in zip(
                 filenames,
-                np.array(highest_score_tiles)[:, 0],
-                np.array(highest_scaled_score_tiles)[:, 0],
+                np.array(highest_score_tiles, dtype=object)[:, 0],
+                np.array(highest_scaled_score_tiles, dtype=object)[:, 0],
             )
         ]
 
@@ -683,8 +683,8 @@ class ScoreTiler(GridTiler):
         List[Tuple[float, CoordinatePair]])
             Scaled scores
         """
-        scores_ = np.array(scores)[:, 0]
-        coords = np.array(scores)[:, 1]
+        scores_ = np.array(scores, dtype=object)[:, 0]
+        coords = np.array(scores, dtype=object)[:, 1]
         scores_scaled = (scores_ - np.min(scores_)) / (
             np.max(scores_) - np.min(scores_)
         )
