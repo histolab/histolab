@@ -31,13 +31,13 @@ import numpy as np
 import openslide
 import PIL
 
+from functools import lru_cache
 from .exceptions import LevelError
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair, Region
 from .util import (
     lazyproperty,
-    lru_cache,
     polygon_to_mask_array,
     region_coordinates,
     regions_from_binary_mask,

@@ -28,12 +28,7 @@ from .scorer import Scorer
 from .slide import Slide
 from .tile import Tile
 from .types import CoordinatePair
-from .util import (
-    lru_cache,
-    region_coordinates,
-    regions_from_binary_mask,
-    scale_coordinates,
-)
+from .util import region_coordinates, regions_from_binary_mask, scale_coordinates
 
 try:
     from typing import Protocol, runtime_checkable
@@ -48,7 +43,6 @@ class Tiler(Protocol):
     level: int
     tile_size: int
 
-    @lru_cache(maxsize=100)
     def box_mask(self, slide: Slide) -> np.ndarray:
         """Return binary mask, at thumbnail level, of the box for tiles extraction.
 

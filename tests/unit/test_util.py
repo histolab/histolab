@@ -163,15 +163,8 @@ def test_region_coordinates():
 class DescribeLazyPropertyDecorator:
     """Tests @lazyproperty decorator class."""
 
-    def it_is_a_lazyproperty_object_on_class_access(self, Obj):
-        assert isinstance(Obj.fget, lazyproperty)
-
-    def but_it_adopts_the_name_of_the_decorated_method(self, Obj):
-        assert Obj.fget.__name__ == "fget"
-
-    def and_it_adopts_the_module_of_the_decorated_method(self, Obj):
-        # ---the module name actually, not a module object
-        assert Obj.fget.__module__ == __name__
+    def it_is_a_property_object_on_class_access(self, Obj):
+        assert isinstance(Obj.fget, property)
 
     def and_it_adopts_the_docstring_of_the_decorated_method(self, Obj):
         assert Obj.fget.__doc__ == "Docstring of Obj.fget method definition."
