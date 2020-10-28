@@ -272,7 +272,8 @@ class Slide:
 
     # ------- implementation helpers -------
 
-    def _biggest_regions(self, regions: List[Region], n: int = 1) -> List[Region]:
+    @staticmethod
+    def _biggest_regions(regions: List[Region], n: int = 1) -> List[Region]:
         """Return the biggest ``n`` regions.
 
         Parameters

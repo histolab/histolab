@@ -253,4 +253,5 @@ def lazyproperty(f: Callable[..., Any]):
     Not suitable for wrapping a function (as opposed to a method) because it
     is not callable.
     """
+    # pylint: disable=unused-variable
     return property(functools.lru_cache(maxsize=100)(f))
