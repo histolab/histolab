@@ -25,6 +25,7 @@ class HistolabException(Exception):
             self.message = args[0]
         else:
             self.message = None
+        super(HistolabException, self).__init__()
 
     def __str__(self):
         if self.message:
