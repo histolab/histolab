@@ -486,8 +486,6 @@ class SlideSet:
         n: int. optional
             First n slides in dataset folder. Default is 0, meaning that the thumbnails
             of all the slides will be saved.
-        scale_factor : int, optional
-            Image scaling factor. Default is 32.
         """
         os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
