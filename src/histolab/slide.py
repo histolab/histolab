@@ -243,7 +243,7 @@ class Slide:
         -------
         img_path : str
         """
-        img_path = self._breadcumb(self._processed_path, scale_factor)
+        img_path = self._breadcrumb(self._processed_path, scale_factor)
         return img_path
 
     def show(self) -> None:
@@ -300,7 +300,7 @@ class Slide:
         sorted_regions = sorted(regions, key=lambda r: r.area, reverse=True)
         return sorted_regions[:n]
 
-    def _breadcumb(self, directory_path: str, scale_factor: int = 32) -> str:
+    def _breadcrumb(self, directory_path: str, scale_factor: int = 32) -> str:
         """Returns a complete path according to the give directory path
 
         Parameters

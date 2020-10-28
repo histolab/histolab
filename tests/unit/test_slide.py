@@ -124,7 +124,7 @@ class Describe_Slide:
             ),
         ),
     )
-    def it_generates_the_correct_breadcumb(
+    def it_generates_the_correct_breadcrumb(
         self,
         request,
         resampled_dims,
@@ -138,9 +138,9 @@ class Describe_Slide:
         _resampled_dimensions.return_value = resampled_dims
         slide = Slide(slide_path, proc_path)
 
-        _breadcumb = slide._breadcumb(dir_path, scale_factor)
+        _breadcrumb = slide._breadcrumb(dir_path, scale_factor)
 
-        assert _breadcumb == expected_path
+        assert _breadcrumb == expected_path
 
     @pytest.mark.parametrize(
         "slide_path, expected_value",
