@@ -207,13 +207,6 @@ def threshold_to_mask(
     return relate(img_arr, threshold)
 
 
-class Counter(dict):
-    """Mapping where default values are zero"""
-
-    def __missing__(self, key):
-        return 0
-
-
 def lazyproperty(f: Callable[..., Any]):
     """Decorator like @property, but evaluated only on first access.
 
