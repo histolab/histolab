@@ -19,6 +19,7 @@
 import csv
 import os
 from abc import abstractmethod
+from functools import lru_cache
 from typing import List, Tuple
 
 import numpy as np
@@ -43,6 +44,7 @@ class Tiler(Protocol):
     level: int
     tile_size: int
 
+    @lru_cache(maxsize=100)
     def box_mask(self, slide: Slide) -> np.ndarray:
         """Return binary mask, at thumbnail level, of the box for tiles extraction.
 
