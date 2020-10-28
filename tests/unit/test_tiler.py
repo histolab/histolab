@@ -150,7 +150,7 @@ class Describe_RandomTiler:
 
         random_tiler._random_tile_coordinates(slide)
 
-        _box_mask_thumb.assert_called_once_with(random_tiler, slide)
+        _box_mask_thumb.assert_called_once_with(slide)
         _tile_size.assert_has_calls([call((128, 128))])
         _scale_coordinates.assert_called_once_with(
             reference_coords=CP(x_ul=0, y_ul=0, x_br=128, y_br=128),
