@@ -11,43 +11,31 @@ jobs:
       python: 3.7          # this works for Linux but is ignored on macOS or Windows
     - name: "Python 3.8 on Xenial Linux"
       python: 3.8          # this works for Linux but is ignored on macOS or Windows
-    - name: "Python 3.6.5 on macOS"
+    - name: "Python 3.6.8 on macOS"
       os: osx
-      osx_image: xcode9.4  # Python 3.6.5 running on macOS 10.14.4
+      osx_image: xcode10.2
       language: shell       # 'language: python' is an error on Travis CI macOS
       before_install:
-        - brew update-reset
-        - source ~/.bash_profile
-        - brew update
         - brew install openslide
-        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
-        - shopt -s expand_aliases
-        - echo 'alias python="python3"' >> /Users/travis/.bash_profile
-        - source ~/.bash_profile
-        - echo $PATH
+        - export PATH=/Users/travis/.pyenv/shims:$PATH PYENV_VERSION=3.6.8
+        - CFLAGS="-I$(xcrun --show-sdk-path)/usr/include" pyenv install $PYENV_VERSION
       env: CAN_FAIL=true
-    - name: "Python 3.7.4 on macOS"
+    - name: "Python 3.7.6 on macOS"
       os: osx
-      osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
+      osx_image: xcode10.2
       language: shell       # 'language: python' is an error on Travis CI macOS
       before_install:
         - brew install openslide
-        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
-        - shopt -s expand_aliases
-        - echo 'alias python="python3"' >> /Users/travis/.bash_profile
-        - source ~/.bash_profile
-        - echo $PATH
-    - name: "Python 3.8.3 on macOS"
+        - export PATH=/Users/travis/.pyenv/shims:$PATH PYENV_VERSION=3.7.6
+        - travis_wait brew upgrade pyenv && pyenv install $PYENV_VERSION
+    - name: "Python 3.8.1 on macOS"
       os: osx
-      osx_image: xcode12u
+      osx_image: xcode10.2
       language: shell       # 'language: python' is an error on Travis CI macOS
       before_install:
         - brew install openslide
-        - echo 'export PATH="/usr/local/Frameworks/Python.framework/Versions/Current/bin:$PATH"' >> /Users/travis/.bash_profile
-        - shopt -s expand_aliases
-        - echo 'alias python="python3"' >> /Users/travis/.bash_profile
-        - source ~/.bash_profile
-        - echo $PATH
+        - export PATH=/Users/travis/.pyenv/shims:$PATH PYENV_VERSION=3.8.1
+        - travis_wait brew upgrade pyenv && pyenv install $PYENV_VERSION
     - name: "Python 3.6.8 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows
@@ -98,8 +86,8 @@ before_script:
 
 # command to run tests
 script:
-  - flake8 .
-  - pytest --ignore=tests/benchmarks --cov=histolab # benchmarks must be in a separate pipeline - not on travis
+  - python -m flake8 .
+  - python -m pytest --ignore=tests/benchmarks --cov=histolab # benchmarks must be in a separate pipeline - not on travis
 
 after_success:
   - coveralls
