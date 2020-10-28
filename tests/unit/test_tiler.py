@@ -859,7 +859,7 @@ class Describe_ScoreTiler:
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
         ]
-        _save_report = method_mock(request, ScoreTiler, "_save_report")
+        _save_report = method_mock(request, ScoreTiler, "_save_report", autospec=False)
         random_scorer = RandomScorer()
         score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 2)
 
@@ -881,7 +881,6 @@ class Describe_ScoreTiler:
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
         _save_report.assert_called_once_with(
-            score_tiler,
             "report.csv",
             [(0.8, coords), (0.7, coords)],
             [(0.8, coords), (0.7, coords)],

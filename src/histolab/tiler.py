@@ -626,8 +626,8 @@ class ScoreTiler(GridTiler):
 
         return highest_score_tiles, highest_scaled_score_tiles
 
+    @staticmethod
     def _save_report(
-        self,
         report_path: str,
         highest_score_tiles: List[Tuple[float, CoordinatePair]],
         highest_scaled_score_tiles: List[Tuple[float, CoordinatePair]],
