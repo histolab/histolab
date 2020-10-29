@@ -332,7 +332,7 @@ of the saved tiles and their scores in a CSV file:
 
 ```python
 summary_filename = "summary_ovarian_tiles.csv"
-SUMMARY_PATH = os.path.join(OVARIAN_SCORED_TILES_PATH, summary_filename)
+SUMMARY_PATH = os.path.join(ovarian_slide.processed_path, summary_filename)
 
 scored_tiles_extractor.extract(ovarian_slide, report_path=SUMMARY_PATH)
 ```
