@@ -1,0 +1,266 @@
+Tissue Sample ID,Tissue,Subject ID,Sex,Age Bracket,Hardy Scale,Pathology Categories,Pathology Notes
+GTEX-N7MT-0526,Adrenal Gland,GTEX-N7MT,female,60-69,Slow death,,13x5 mm; cortex; 50% of aliquot is adipose
+GTEX-O5YT-1326,Adrenal Gland,GTEX-O5YT,male,20-29,Ventilator case,,"3 pieces; cortex, well preserved"
+GTEX-P4QS-1326,Adrenal Gland,GTEX-P4QS,male,60-69,Ventilator case,,2  ~ 8x6mm pieces.  Both cortex and medulla well-preserved
+GTEX-NFK9-1726,Adrenal Gland,GTEX-NFK9,male,40-49,Ventilator case,,"All cortex, OK for analysis"
+GTEX-P4QR-1626,Adrenal Gland,GTEX-P4QR,male,60-69,Ventilator case,,"2  ~10x8mm pieces, all cortex."
+GTEX-PW2O-0226,Adrenal Gland,GTEX-PW2O,male,20-29,Ventilator case,,2   ~6.5x4.5mm aliquots; both with partially autolyzed medulla and well-preserved cortex
+GTEX-P4QT-1326,Adrenal Gland,GTEX-P4QT,female,50-59,Ventilator case,,"2  ~9x5mm pieces, well-preserved"
+GTEX-NL3G-1126,Adrenal Gland,GTEX-NL3G,female,60-69,Fast death - natural causes,,30% adipose tissue; remarkably well-preserved cortex; no medulla
+GTEX-O5YV-1126,Adrenal Gland,GTEX-O5YV,female,60-69,Intermediate death,,25% adipose
+GTEX-OHPM-1326,Adrenal Gland,GTEX-OHPM,male,50-59,Ventilator case,,"Cortex is ~95% of specimen, rest is adipose tissue"
+GTEX-OHPL-1326,Adrenal Gland,GTEX-OHPL,female,60-69,Ventilator case,,1 piece
+GTEX-NL3H-1826,Adrenal Gland,GTEX-NL3H,male,60-69,Intermediate death,,5x4 mm; cortex; 5% fat
+GTEX-OHPJ-0426,Adrenal Gland,GTEX-OHPJ,male,60-69,Ventilator case,,"Adrenal cortex is l~10% of specimen, a 0.5-1mm fragment on the edge of a 6 x8mm aliquot of fat"
+GTEX-OXRL-1326,Adrenal Gland,GTEX-OXRL,male,50-59,Ventilator case,,40% adipose . 7x6.5mm
+GTEX-PLZ6-0226,Adrenal Gland,GTEX-PLZ6,male,30-39,Ventilator case,,"2, ~3x7mm adrenal cortex and medulla, well preserved. 3x0.6mm attached nerve in one"
+GTEX-NL4W-0726,Adrenal Gland,GTEX-NL4W,male,50-59,Slow death,,"90% of specimen is cortex, moderate autolysis"
+GTEX-OHPK-1326,Adrenal Gland,GTEX-OHPK,female,50-59,Ventilator case,clean_specimens,surprisingly good quality for an autopsy. Both cortex and medulla are present
+GTEX-OXRN-0826,Adrenal Gland,GTEX-OXRN,male,50-59,Ventilator case,,95% aliquot is fat (centrally unfixed)
+GTEX-NPJ7-0826,Adrenal Gland,GTEX-NPJ7,female,60-69,Slow death,,Moderate autolysis (“score 2”)—cortex is 90+% of specimen
+GTEX-QVJO-1126,Adrenal Gland,GTEX-QVJO,female,60-69,Slow death,,"2   ~9x8mm aliquots; one is   ~85% fat; cannot be used; unable to monitor corresponding aliquot"
+GTEX-OXRO-0826,Adrenal Gland,GTEX-OXRO,female,60-69,Slow death,,"Two pieces: 26x5mm, 10x3mm.  40% fat"
+GTEX-NPJ8-0826,Adrenal Gland,GTEX-NPJ8,male,40-49,Slow death,,"Cortex is ~75% of specimen, 25% adipose"
+GTEX-OIZF-1326,Adrenal Gland,GTEX-OIZF,male,60-69,Ventilator case,,21x4 mm. Abundant well preserved cortex.
+GTEX-P44H-1526,Adrenal Gland,GTEX-P44H,male,40-49,Slow death,,focally autolysis is 3; 11.5x11mm. 6x2.4mm nubbin of fat on one edge
+GTEX-NFK9-2126,Bladder,GTEX-NFK9,male,40-49,Ventilator case,,Mucosa 90% sloughed/autolyzed
+GTEX-NPJ8-1126,Bladder,GTEX-NPJ8,male,40-49,Slow death,,"1-2 cell layers of basal urothelium present, autolyzed.  Urothelial thickness ave 15 microns or 0.3% of total specimen thickness."
+GTEX-O5YT-1926,Bladder,GTEX-O5YT,male,20-29,Ventilator case,,epithelium slightly sloughed
+GTEX-OHPJ-1926,Bladder,GTEX-OHPJ,male,60-69,Ventilator case,,(stroma and fat). urothelium completely sloughed and not evaluable
+GTEX-OHPK-1926,Bladder,GTEX-OHPK,female,50-59,Ventilator case,clean_specimens,good preservation
+GTEX-OHPL-1926,Bladder,GTEX-OHPL,female,60-69,Ventilator case,,3 pieces
+GTEX-OHPM-1926,Bladder,GTEX-OHPM,male,50-59,Ventilator case,,mucosa is ~ 1.5% of specimen thickness
+GTEX-OHPN-1826,Bladder,GTEX-OHPN,female,60-69,Ventilator case,,urothelium totally sloughed.  Specimen thickness is ~4.3mm
+GTEX-OIZH-1926,Bladder,GTEX-OIZH,male,50-59,Ventilator case,,"urothelium is 50-60% sloughed, less than 0.5% of specimen thickness"
+GTEX-OIZI-1926,Bladder,GTEX-OIZI,male,40-49,Ventilator case,,1 of the 3 pieces has little mucosa
+GTEX-OOBJ-1926,Bladder,GTEX-OOBJ,male,60-69,Ventilator case,,"Two of five sections poorly fixed/extreme separation.  Mucosa sub-totally sloughed/degraded, about 31 microns thick where present"
+GTEX-OOBK-1926,Bladder,GTEX-OOBK,male,40-49,Ventilator case,,"1.  10 x 4mm pieces (3); urothelium remarkably well preserved, up to 6-70 microns thick"
+GTEX-OXRK-1926,Bladder,GTEX-OXRK,female,50-59,Ventilator case,,Mucosa largely sloughed
+GTEX-P4PQ-1926,Bladder,GTEX-P4PQ,male,60-69,Ventilator case,,6   ~9x4mm pieces.  Urothelium largely denuded/sloughed.  Areas of poor fixation with holes/tears
+GTEX-P4QR-2326,Bladder,GTEX-P4QR,male,60-69,Ventilator case,,"6  ~8x4mm pieces. Urothelium totally sloughed, areas of poor fixation with tears/holes"
+GTEX-P4QS-1926,Bladder,GTEX-P4QS,male,60-69,Ventilator case,,"6  ~6x4mm pieces.  Urothelium well-preserved, 0.5-1% of specimen thickness"
+GTEX-P4QT-1926,Bladder,GTEX-P4QT,female,50-59,Ventilator case,cyst,"6  ~6-10x4mm pieces.  Urothelium unusually well- preserved, with patchy chronic cystitis. ~ 1% of specimen thickness"
+GTEX-PLZ5-1326,Bladder,GTEX-PLZ5,male,50-59,Ventilator case,,"6  ~8x4 mm pieces, 4 with urothelium, reasonably well-preserved, ~2.5% of specimen thickness"
+GTEX-PLZ6-1026,Bladder,GTEX-PLZ6,male,30-39,Ventilator case,edema,6  ~10x4.8mm pieces. Well preserved epithelium in 3 pieces; none in other 3. Moderate submucosal edema. Moderate fixation artifacts.
+GTEX-P78B-1526,Breast - Mammary Tissue,GTEX-P78B,female,40-49,Ventilator case,,2 ~9x8mm; ducts and lobules; abundant fat 75-90%.
+GTEX-QEL4-2126,Breast - Mammary Tissue,GTEX-QEL4,male,50-59,Intermediate death,,2   ~9.5x6.5mm aliquots.  Ductal elements visible in both
+GTEX-11DZ1-0326,Breast - Mammary Tissue,GTEX-11DZ1,male,50-59,Slow death,,2 pieces; fibroadipose with ducts in one; over 90% adipose in other
+GTEX-RN64-2126,Breast - Mammary Tissue,GTEX-RN64,male,50-59,Fast death - violent,"gynecomastoid, hyperplasia","2 aliquots,  ~9x8mm.  Gynecomastoid hyperplasia in mammary ductal uniits, background gynecomastoid change"
+GTEX-S32W-2026,Breast - Mammary Tissue,GTEX-S32W,female,50-59,Ventilator case,,"2 pieces 10x8 & 9x7 mm; atrophic; one large duct, several small ductal units; ~50% adipose content"
+GTEX-PLZ4-0326,Breast - Mammary Tissue,GTEX-PLZ4,female,50-59,Ventilator case,,"2  ~10x7.5mm pieces,  ~50% adipose.  Rare ductal elements"
+GTEX-QMR6-0226,Breast - Mammary Tissue,GTEX-QMR6,male,50-59,Slow death,,"2   ~11x8mm aliquots, all adipose + fibrous tissue, no mammary ductal elements"
+GTEX-R3RS-0626,Breast - Mammary Tissue,GTEX-R3RS,female,40-49,Slow death,,2 pieces 7x7 & 7x6 mm; 1 piece has 90% adjacent adipose tissue; other has ducts and lobules with ~20% admixed adipose tissue
+GTEX-RTLS-2826,Breast - Mammary Tissue,GTEX-RTLS,female,60-69,Slow death,,"2 pieces, 8x6 & 7x7 mm; atrophic,  ducts no lobules; 40 & 60% adipose"
+GTEX-S341-1526,Breast - Mammary Tissue,GTEX-S341,female,40-49,Ventilator case,cyst,"2 aliquots,  ~8x5mm.  Focal areas of fibrocystic (microcystic) change encircled; normal TDLUs en squared"
+GTEX-ZYY3-2526,Breast - Mammary Tissue,GTEX-ZYY3,female,60-69,Slow death,mastopathy,"2 pieces, largely atrophic TDLUS (rep delineated), fibrous mastopathy"
+GTEX-Q2AG-0326,Breast - Mammary Tissue,GTEX-Q2AG,female,40-49,Fast death - natural causes,clean_specimens,"2   ~9x7mm aliquots,   ~ 70% ductal/lobular units, good specimen"
+GTEX-R45C-0626,Breast - Mammary Tissue,GTEX-R45C,female,60-69,Ventilator case,,"2 pieces, 8x8 & 9x9 mm; ducts and lobules present; 80% adipose tissue"
+GTEX-RU1J-0626,Breast - Mammary Tissue,GTEX-RU1J,female,20-29,Ventilator case,,"2 pieces, 11x10 & 10x10 mm; 50 & 70% adipose tissue; abundant lobular and ductal components; unfixed central areas in adipose tissue"
+GTEX-PWO3-0226,Breast - Mammary Tissue,GTEX-PWO3,female,60-69,Slow death,,"2    ~9x6mm aliquots, few atrophic ductal structures; one aliquot with extensive ‘contaminating’ skeletal muscle (?pectoralis)"
+GTEX-QV44-1626,Breast - Mammary Tissue,GTEX-QV44,male,50-59,Ventilator case,gynecomastoid,2 pieces ~12x6.5&8.3x3.8 mm Gynecomastia: fibrous stroma and ducts; ~2% fat
+GTEX-R55D-0826,Breast - Mammary Tissue,GTEX-R55D,male,50-59,Ventilator case,,"2 aliquots.  One all adipose tissue, the other with focal ductal elements"
+GTEX-RU72-0626,Breast - Mammary Tissue,GTEX-RU72,female,50-59,Fast death - natural causes,,"2 aliquots,  ~9x7mm.  Multiple atrophic TDLUs noted on images"
+GTEX-QDT8-0626,Breast - Mammary Tissue,GTEX-QDT8,female,30-39,Slow death,,"2   ~10x8mm pieces, both with atrophic TDLUs, one with more adipose tissue; the other with more stroma"
+GTEX-QDT8-1826,Breast - Mammary Tissue,GTEX-QVJO,female,60-69,Slow death,,2   11x9mm aliquots. Atrophic mammary ductal and lobular elements noted.
+GTEX-R55F-1726,Breast - Mammary Tissue,GTEX-R55F,male,50-59,Slow death,gynecomastoid,"2 pieces, 12x6 & 10x4 mm; gynecomastia: ducts and fibrous tissue"
+GTEX-11P7K-0726,Breast - Mammary Tissue,GTEX-11P7K,male,30-39,Ventilator case,"fibrosis, gynecomastoid, hyperplasia",2 pieces; stromal fibrosis & ducts: gynecomastoid hyperplasia
+GTEX-QDVJ-0326,Breast - Mammary Tissue,GTEX-QDVJ,male,50-59,Ventilator case,,"2 pieces, up to 10.7x5 with ducts; ~70% adipose"
+GTEX-QVUS-0326,Breast - Mammary Tissue,GTEX-QVUS,female,60-69,Slow death,,"2   ~ 10x8mm pieces.  Ductal & lobular elements noted, early epithelial sloughing noted"
+GTEX-REY6-2426,Breast - Mammary Tissue,GTEX-REY6,male,60-69,Ventilator case,,"2 pieces, 8x8 & 8x7 mm; all adipose tissue; no mammary ducts"
+GTEX-12BJ1-1826,Breast - Mammary Tissue,GTEX-12BJ1,male,60-69,Ventilator case,,"2 pieces, fibroadipose tissue, no ductal elements noted"
+GTEX-N7MS-1825,Liver,GTEX-N7MS,male,60-69,Fast death - natural causes,steatosis,30-40% steatotic (macrovesicular)
+GTEX-O5YV-0726,Liver,GTEX-O5YV,female,60-69,Intermediate death,,12x7 mm; apsule present; should be 1 cm deeper
+GTEX-OXRN-0626,Liver,GTEX-OXRN,male,50-59,Ventilator case,"congestion, ischemic_changes",Centrilobular ischemia and congestion 9x8.3mm. Capsule present in aliquot
+GTEX-POYW-1926,Liver,GTEX-POYW,male,60-69,Ventilator case,"cirrhosis, hepatitis, nodularity, steatosis",2 pieces ~7.5x7.5mm. Established micronodular cirrhosis with micro and macrovesicular steatosis and chronic hepatitis
+GTEX-QDVN-0826,Liver,GTEX-QDVN,male,50-59,Ventilator case,"cirrhosis, fibrosis, hepatitis, inflammation","2   ~9.5x8mm aliquots.  Macrovesicular steatohepatitis (~20% fat), bridging fibrosis focally approaching early cirrhosis; moderate chronic inflammation"
+GTEX-NL3G-0426,Liver,GTEX-NL3G,female,60-69,Fast death - natural causes,steatosis,"Mico/macrovesicular steatosis, 30—40%, confirmed by glass slide review"
+GTEX-O5YW-0826,Liver,GTEX-O5YW,male,50-59,Ventilator case,steatosis,"10x7 mm; Mod.  macrovesicular steatosis; Central chatter, probably poor fixation ; refix-recut"
+GTEX-OXRO-2226,Liver,GTEX-OXRO,female,60-69,Slow death,,"11.4x7.8. Central round hole, 1.3mm, corresponds to cassette’s central ‘domes’ on the base and lid."
+GTEX-PVOW-0926,Liver,GTEX-PVOW,male,40-49,Fast death - natural causes,congestion,"2 pieces,~7.5x5.5mm;6.5 mm sq. slightly congested"
+GTEX-QEG5-1526,Liver,GTEX-QEG5,male,20-29,Ventilator case,congestion,"2 pieces, 9x8 & 10x6mm; severe vascular congestion mainly centrolobular"
+GTEX-NL4W-1926,Liver,GTEX-NL4W,male,50-59,Slow death,congestion,Mild congestion
+GTEX-OHPM-0826,Liver,GTEX-OHPM,male,50-59,Ventilator case,"cirrhosis, fibrosis, hepatitis, steatosis",Macovesicular steatosis (50%). Mild chronic hepatitis with severe bridging fibrosis/early cirrhosis
+GTEX-OXRP-0826,Liver,GTEX-OXRP,female,60-69,Intermediate death,steatosis,"9.7x6.7mm.  Patchy macrovesicular steatosis, 3-40%.  Focal central areas appear under-fixed with tears/holes."
+GTEX-PWOO-0826,Liver,GTEX-PWOO,female,40-49,Ventilator case,steatosis,"2   ~9X8mm aliquots, extensive patterned microvesicular steatosis ? drug/toxic effect"
+GTEX-NPJ8-0726,Liver,GTEX-NPJ8,male,40-49,Slow death,cirrhosis,"Established cirrhosis, diffuse."
+GTEX-OHPN-0726,Liver,GTEX-OHPN,female,60-69,Ventilator case,,Subcapsular aliquot (9 .5 x 7.5mm aqliquot)
+GTEX-P44G-1126,Liver,GTEX-P44G,male,30-39,Ventilator case,,"11 x 6.8mm.  Focal area poor fixation, hole/tears"
+GTEX-PX3G-0826,Liver,GTEX-PX3G,female,20-29,Ventilator case,,"2 pieces,~ 6x8 mm; central sinusoidal dilatation; focal fragmentation"
+GTEX-O5YT-0826,Liver,GTEX-O5YT,male,20-29,Ventilator case,,Mild central hypoxia
+GTEX-OIZF-0826,Liver,GTEX-OIZF,male,60-69,Ventilator case,steatosis,50-60% macrovesicular steatosis
+GTEX-P4QR-0926,Liver,GTEX-P4QR,male,60-69,Ventilator case,congestion,2  ~8x7.5mm pieces.  Pronounced centrilobular chronic passive congestion
+GTEX-Q2AG-1126,Liver,GTEX-Q2AG,female,40-49,Fast death - natural causes,steatosis,"2   ~9x7.5mm aliquots, patchy mixed micro-and macro-vesicular steatosis,  ~25%"
+GTEX-O5YU-0326,Liver,GTEX-O5YU,male,60-69,Slow death,congestion,mild congestion
+GTEX-OXRK-1226,Liver,GTEX-OXRK,female,50-59,Ventilator case,steatosis,Mild macrovesicluarsteatosis. Aliquot contains liver capsule
+GTEX-P78B-1326,Liver,GTEX-P78B,female,40-49,Ventilator case,steatosis,2 pieces ~8x7mm; mild steatosis
+GTEX-Q734-0326,Liver,GTEX-Q734,female,40-49,Ventilator case,"cirrhosis, fibrosis, hepatitis",2  ~7.5x7.5mm aliquots.  Severe bridging fibrosis/early cirrhosis with steatotis and chronic hepatitis.
+GTEX-N7MS-0926,Lung,GTEX-N7MS,male,60-69,Fast death - natural causes,,OK for analysis
+GTEX-OHPK-0526,Lung,GTEX-OHPK,female,50-59,Ventilator case,pneumonia,looks like severe aspiration pneumonia. Sloughing of alveolar epithelium is probably postmortem. There are large cells vs. aspirated material throughout. Aliquot is oversized (14.7x13.7mm).  Central part is poorly fixed. REFIX.
+GTEX-OIZH-0526,Lung,GTEX-OIZH,male,50-59,Ventilator case,emphysema,Mild emphysematous changes.  11.7 x 9.4 mm
+GTEX-P4PP-0526,Lung,GTEX-P4PP,female,30-39,Ventilator case,"hemorrhage, pneumonia","~9x8mm.  Dense areas granulomatous pneumonitis /hemorrhage.  Foreign body giant cells, and lipoid-like structures.  Probable Aspiration pneumonia."
+GTEX-PLZ5-0726,Lung,GTEX-PLZ5,male,50-59,Ventilator case,"emphysema, inflammation",2  ~6.5x5mm pieces.  Well preserved; no inflammation; pronounced emphasymatous changes
+GTEX-N7MT-0126,Lung,GTEX-N7MT,female,60-69,Slow death,,10x9 mm
+GTEX-OHPL-0526,Lung,GTEX-OHPL,female,60-69,Ventilator case,pneumonia,Bronchopneumonia; aspiration?
+GTEX-OXRK-0926,Lung,GTEX-OXRK,female,50-59,Ventilator case,"atelectasis, emphysema",Mild-moderate emphysema; focal atelectasis. Pleura sampled
+GTEX-P4PQ-0526,Lung,GTEX-P4PQ,male,60-69,Ventilator case,"atelectasis, clean_specimens, inflammation","2   ~12x7mm pieces, fairly clean, minimal inflammation, patchy atelectasis"
+GTEX-NFK9-1026,Lung,GTEX-NFK9,male,40-49,Ventilator case,"atelectasis, congestion",mild congestion with atalectasis
+GTEX-OHPM-0526,Lung,GTEX-OHPM,male,50-59,Ventilator case,clean_specimens,"bronchial mucosal sloughing, early. No significant inflammation; clean specimen"
+GTEX-OXRL-0526,Lung,GTEX-OXRL,male,50-59,Ventilator case,"emphysema, hemorrhage, sclerotic","Moderate emphysema, vascular sclerosis. Focal hemorrhage. 10x8.6mm"
+GTEX-P4QS-0526,Lung,GTEX-P4QS,male,60-69,Ventilator case,congestion,2  ~9x 6mm pieces. Moderate congestion
+GTEX-NL4W-0326,Lung,GTEX-NL4W,male,50-59,Slow death,"congestion, edema",Mild congestion/edema
+GTEX-OHPN-0526,Lung,GTEX-OHPN,female,60-69,Ventilator case,,Diffuse chronic (?acute) interstitial pneumonitis—pending glass slide review.
+GTEX-OXRN-0526,Lung,GTEX-OXRN,male,50-59,Ventilator case,"congestion, fibrosis",Mild fibrosis and congestion. 11x6.6mm
+GTEX-P4QT-0526,Lung,GTEX-P4QT,female,50-59,Ventilator case,congestion,"2  ~7x5mm pieces.  Chronic congestion, ? diffuse alveolar damage sequence"
+GTEX-NPJ7-1826,Lung,GTEX-NPJ7,female,60-69,Slow death,congestion,Mild congestion
+GTEX-OIZF-0526,Lung,GTEX-OIZF,male,60-69,Ventilator case,,"Alveolar cellular exudates, possible ventilator damage"
+GTEX-OXRO-0326,Lung,GTEX-OXRO,female,60-69,Slow death,,Alveolar exudates. 10x10mm
+GTEX-P78B-0926,Lung,GTEX-P78B,female,40-49,Ventilator case,"emphysema, fibrosis","2 ~8 mm pieces.  Emphysema, fibrosis"
+GTEX-NPJ7-1026,Ovary,GTEX-NPJ7,female,60-69,Slow death,post_menopausal,Normal post-menopausal ovary; good specimen
+GTEX-PLZ4-2826,Ovary,GTEX-PLZ4,female,50-59,Ventilator case,corpora_albicantia,2  ~7x5mm pieces.  Numerous corpora albicantia
+GTEX-PX3G-2426,Ovary,GTEX-PX3G,female,20-29,Ventilator case,,"2 pieces, 15x2mm & 11x3 mm; ova and corpora"
+GTEX-R45C-2526,Ovary,GTEX-R45C,female,60-69,Ventilator case,corpora_albicantia,"2 pieces, 11x8 & 10x7 mm; corpora albicans, no ova"
+GTEX-RWS6-1026,Ovary,GTEX-RWS6,female,60-69,Ventilator case,corpora_albicantia,"2 pieces, 9x6 & 8x7 mm; atrophic, a few corpora albicans"
+GTEX-OHPK-2426,Ovary,GTEX-OHPK,female,50-59,Ventilator case,corpora_albicantia,lots of corpora albicantia
+GTEX-POMQ-1426,Ovary,GTEX-POMQ,female,20-29,Ventilator case,,"2 pieces, ~8x8 & 13x5mm; a few primordial follicles; probable old endometriosis"
+GTEX-Q2AG-2626,Ovary,GTEX-Q2AG,female,40-49,Fast death - natural causes,,"2   ~7x6.5mm aliquots, late stage corpus luteum.  No ova noted."
+GTEX-R55G-1526,Ovary,GTEX-R55G,female,40-49,Ventilator case,corpora_albicantia,"2 aliquots,  ~9x6mm.  Prominent corpora albicantia, no visible oocytes noted"
+GTEX-S32W-1226,Ovary,GTEX-S32W,female,50-59,Ventilator case,corpora_albicantia,2 pieces 9x8 & 7x7 mm; atrophic; lots of corpora albicans
+GTEX-OHPN-1626,Ovary,GTEX-OHPN,female,60-69,Ventilator case,,2mm ovarian fragment with large fibroma (?) pending review of glass
+GTEX-PWCY-1326,Ovary,GTEX-PWCY,female,20-29,Ventilator case,,"2 pieces, 10x4 mm; numerous ova and follicles in various stages of normal function"
+GTEX-Q734-0726,Ovary,GTEX-Q734,female,40-49,Ventilator case,corpora_albicantia,2   ~ 15x11mm aliquots.  Corpora albicantia and an occasional ovum noted.
+GTEX-RN5K-1026,Ovary,GTEX-RN5K,female,50-59,Slow death,"atrophy, post_menopausal","2 aliquots, ~10x8mm, post menopausal atrophy"
+GTEX-OXRO-0926,Ovary,GTEX-OXRO,female,60-69,Slow death,,Atrophic. 9.5x11mm.
+GTEX-PWN1-2426,Ovary,GTEX-PWN1,female,40-49,Ventilator case,,"2 pieces up to 13x8 mm; recent corpora lutea, no ova; 1 with 60% vessels and stroma"
+GTEX-QCQG-1426,Ovary,GTEX-QCQG,female,50-59,Ventilator case,,"2 pieces each ~10x4.5mm; corpora, no ova"
+GTEX-RTLS-2326,Ovary,GTEX-RTLS,female,60-69,Slow death,corpora_albicantia,"2 pieces, 10x6 & 10x5 mm; corpora albicans; no ova"
+GTEX-P4PP-2426,Ovary,GTEX-P4PP,female,30-39,Ventilator case,post_menopausal,"15x9mm, postmenopausal"
+GTEX-PWO3-2826,Ovary,GTEX-PWO3,female,60-69,Slow death,"corpora_albicantia, post_menopausal",2   ~12x7.5mm aliquots.  Typical involuted/post-menopausal appearance; ~70% corpora albicantia
+GTEX-QDT8-2226,Ovary,GTEX-QDT8,female,30-39,Slow death,corpora_albicantia,"2  9x8mm aliquots.  Post-menopausal-appearing, remote corpora albicantia present"
+GTEX-RU1J-0826,Ovary,GTEX-RU1J,female,20-29,Ventilator case,,"2 pieces, 10x8 & 9x8 mm; numerous ova and follicles present"
+GTEX-P4QT-2426,Ovary,GTEX-P4QT,female,50-59,Ventilator case,post_menopausal,"2 ~6.6x4.3mm pieces, post-menopausal stroma"
+GTEX-PWOO-1726,Ovary,GTEX-PWOO,female,40-49,Ventilator case,,"2  ~9x5mm aliquots.  No visible ova, involuted corpus luteum noted"
+GTEX-QVJO-3126,Ovary,GTEX-QVJO,female,60-69,Slow death,"corpora_albicantia, post_menopausal","2  ~10x8mm aliquots.  Post menopausal atrophic cortex, corpora albicantia noted"
+GTEX-RU72-2226,Ovary,GTEX-RU72,female,50-59,Fast death - natural causes,"atrophy, corpora_albicantia, post_menopausal","2 aliquots, ~9x7mm.  Postmenopausal atrophy, prominent corpora albicantia"
+GTEX-N7MT-1626,Pancreas,GTEX-N7MT,female,60-69,Slow death,,10x8 mm; good parenchymal preservation; autolysis of ducts; ~10% of aliquot is adipose
+GTEX-O5YU-1326,Pancreas,GTEX-O5YU,male,60-69,Slow death,sclerotic,parenchymal hyaline sclerosis 25%; fat is 50% of aliquot
+GTEX-OIZG-1226,Pancreas,GTEX-OIZG,male,50-59,Ventilator case,,8x8 mm. Well preserved. ~5%fat
+GTEX-OXRO-2326,Pancreas,GTEX-OXRO,female,60-69,Slow death,,One piece 12.9x12.5mm. 50% is fat  interspersed with pancreatic lobules
+GTEX-P4QS-1026,Pancreas,GTEX-P4QS,male,60-69,Ventilator case,,"2   ~7x8mm pieces, well preserved.   Islets well represented."
+GTEX-NL3G-0926,Pancreas,GTEX-NL3G,female,60-69,Fast death - natural causes,,Mild-moderate autolysis
+GTEX-O5YV-1426,Pancreas,GTEX-O5YV,female,60-69,Intermediate death,,10x9.5 mm
+GTEX-OIZH-1026,Pancreas,GTEX-OIZH,male,50-59,Ventilator case,,"Remarkably well preserved parenchyma. 12 x 6.9mm aliquot, 80% parenchyma"
+GTEX-P44G-1226,Pancreas,GTEX-P44G,male,30-39,Ventilator case,fibrosis,"8.7x 5.4mm.  No fat, prominent fibrosis"
+GTEX-P4QT-1026,Pancreas,GTEX-P4QT,female,50-59,Ventilator case,clean_specimens,"2 ~ 7x6mm pieces, clean specimens, no fat"
+GTEX-NL3H-1526,Pancreas,GTEX-NL3H,male,60-69,Intermediate death,,"10x9 mm; Severe autolysis, but cells intact; 10% fat"
+GTEX-OHPJ-1526,Pancreas,GTEX-OHPJ,male,60-69,Ventilator case,saponification,Remarkably well preserved. Mild focal saponifcation. Parenchyma is about 70% of specimen
+GTEX-OIZI-1526,Pancreas,GTEX-OIZI,male,40-49,Ventilator case,,9 x 9 mm
+GTEX-P44H-1926,Pancreas,GTEX-P44H,male,40-49,Slow death,saponification,8.3x6.3mm. Peripancreatic fat shows moderate saponification
+GTEX-NL4W-0826,Pancreas,GTEX-NL4W,male,50-59,Slow death,saponification,Moderate autolysis & peripancreatic saponification
+GTEX-OHPL-1026,Pancreas,GTEX-OHPL,female,60-69,Ventilator case,,Fat is about 20% of aliquot
+GTEX-OXRK-1526,Pancreas,GTEX-OXRK,female,50-59,Ventilator case,,"Well preserved, minimal fat. 9 x 6 mm"
+GTEX-P4PP-1026,Pancreas,GTEX-P4PP,female,30-39,Ventilator case,,"~9x9mm, well fixed, about 20% intermingled fat"
+GTEX-NPJ7-0726,Pancreas,GTEX-NPJ7,female,60-69,Slow death,,Severe autolysis (“3”) and very fibrotic. Parenchyma ~40-50% of specimen
+GTEX-OHPN-1126,Pancreas,GTEX-OHPN,female,60-69,Ventilator case,saponification,Typical post mortem peripancreatic saponification. 2.8mm segment of small muscular artery appended to one edge of specimen
+GTEX-OXRL-1026,Pancreas,GTEX-OXRL,male,50-59,Ventilator case,,50% fat within and outside parenchyma; 13x10mm
+GTEX-P4PQ-1026,Pancreas,GTEX-P4PQ,male,60-69,Ventilator case,,2  ~9x9mm pieces; ~20-30% intermingled fat
+GTEX-O5YT-1026,Pancreas,GTEX-O5YT,male,20-29,Ventilator case,,large aliquot 20.5 x 12.8
+GTEX-OIZF-1026,Pancreas,GTEX-OIZF,male,60-69,Ventilator case,,Well preserved pancreas with about 40% fat in aliquot
+GTEX-OXRN-1126,Pancreas,GTEX-OXRN,male,50-59,Ventilator case,,Aliquot contains about 40% fat
+GTEX-P4QR-1526,Pancreas,GTEX-P4QR,male,60-69,Ventilator case,,"2    ~8x7mm pieces, each 40-50% adipose tissue, partly saponified"
+GTEX-N7MS-2226,Prostate,GTEX-N7MS,male,60-69,Fast death - natural causes,,extensive autolysis in glands
+GTEX-OIZF-2026,Prostate,GTEX-OIZF,male,60-69,Ventilator case,"atrophy, hyperplasia",Mixed atrophy and hyperplasia
+GTEX-OXRL-2026,Prostate,GTEX-OXRL,male,50-59,Ventilator case,,10 x 11 mm
+GTEX-POYW-2526,Prostate,GTEX-POYW,male,60-69,Ventilator case,,"2 ~8x8mm pieces, all stroma, no glandular component present. ?stromal nodule vs exuberant"
+GTEX-QDVN-1526,Prostate,GTEX-QDVN,male,50-59,Ventilator case,hyperplasia,"2  ~9x6mm aliquots, patchy glandular hyperplasia"
+GTEX-NL3H-2326,Prostate,GTEX-NL3H,male,60-69,Intermediate death,,"Severe glandular autolysis, but cells still identifiable"
+GTEX-OIZG-1626,Prostate,GTEX-OIZG,male,50-59,Ventilator case,hyperplasia,8x7 mm. Hyperplasia.  Stroma 50%
+GTEX-OXRN-2126,Prostate,GTEX-OXRN,male,50-59,Ventilator case,"atrophy, hyperplasia",Stromal hyperplasia and atrophy. 8x8mm
+GTEX-PSDG-1926,Prostate,GTEX-PSDG,male,50-59,Ventilator case,atrophy,"2 pieces, ~8x8 mm; mild atrophy"
+GTEX-QEL4-2026,Prostate,GTEX-QEL4,male,50-59,Intermediate death,"atrophy, hyperplasia","2   ~9x6.5mm aliquots, patchy glandular hyperplasia and atrophy"
+GTEX-NL4W-1226,Prostate,GTEX-NL4W,male,50-59,Slow death,,Glands ~80% autolyzed
+GTEX-OIZH-2026,Prostate,GTEX-OIZH,male,50-59,Ventilator case,atrophy,"Peripheral specimen, glandular atrophy"
+GTEX-P44G-2126,Prostate,GTEX-P44G,male,30-39,Ventilator case,hyperplasia,8x7.4mm.  Glandular hyperplasia
+GTEX-PW2O-1126,Prostate,GTEX-PW2O,male,20-29,Ventilator case,hyperplasia,2   ~8x8mm aliquots.  Glandular hyperplasia
+GTEX-QLQ7-1326,Prostate,GTEX-QLQ7,male,60-69,Ventilator case,"atrophy, cyst, prostatitis",2  ~11x8.5mm aliquots. Diffuse cystic glandular atrophy and patchy chronic prostatits
+GTEX-NPJ8-2426,Prostate,GTEX-NPJ8,male,40-49,Slow death,,Glands poorly preserved
+GTEX-OIZI-1826,Prostate,GTEX-OIZI,male,40-49,Ventilator case,atrophy,Moderate atrophy. 10x8.6mm
+GTEX-P4QR-2426,Prostate,GTEX-P4QR,male,60-69,Ventilator case,"hyperplasia, prostatitis","2 pieces, each ~9x8mm. Glandular and stromal hyperplasia, chronic prostatitis"
+GTEX-Q2AH-1426,Prostate,GTEX-Q2AH,male,40-49,Ventilator case,hyperplasia,"2 pieces, ~10x 7x5 & 8.8x5 mm; hyperplasia"
+GTEX-QLQW-0926,Prostate,GTEX-QLQW,male,30-39,Ventilator case,,2 pieces ~9x9mm each; no significant hyperplasia
+GTEX-OHPJ-2026,Prostate,GTEX-OHPJ,male,60-69,Ventilator case,,Glandular component is approximately 20% of specimen
+GTEX-OOBJ-2026,Prostate,GTEX-OOBJ,male,60-69,Ventilator case,"hyperplasia, prostatitis","13 x 9.7mm. Remarkably well preserved. Patchy glandular (papillary) hyperplasia, focal chronic prostatitis"
+GTEX-PLZ6-1126,Prostate,GTEX-PLZ6,male,30-39,Ventilator case,atrophy,2 ~10x10  & 9 x 6mm; focal atrophy
+GTEX-Q2AI-1126,Prostate,GTEX-Q2AI,male,40-49,Ventilator case,,2 pieces 9x6 & 7x7 mm; hyperplastic
+GTEX-N7MS-0125,Testis,GTEX-N7MS,male,60-69,Fast death - natural causes,,OK
+GTEX-OHPM-2126,Testis,GTEX-OHPM,male,50-59,Ventilator case,clean_specimens,good clean specimen; all parenchyma
+GTEX-OXRL-2126,Testis,GTEX-OXRL,male,50-59,Ventilator case,spermatogenesis,Spermatogenesis. 12x8mm
+GTEX-PLZ5-1526,Testis,GTEX-PLZ5,male,50-59,Ventilator case,,"2  ~ 8 .56mm pieces,  one with attached 7x4mm piece of fibrous tissue"
+GTEX-QDVN-1926,Testis,GTEX-QDVN,male,50-59,Ventilator case,spermatogenesis,2   ~11x5mm aliquots.  Spermatogenesis appears reduced/arrested
+GTEX-NFK9-0126,Testis,GTEX-NFK9,male,40-49,Ventilator case,,Mild autolysis
+GTEX-OIZF-2126,Testis,GTEX-OIZF,male,60-69,Ventilator case,,13x8 mm.
+GTEX-OXRN-2326,Testis,GTEX-OXRN,male,50-59,Ventilator case,spermatogenesis,Reduced spermatogenesis. 8.2x8
+GTEX-PLZ6-1226,Testis,GTEX-PLZ6,male,30-39,Ventilator case,"sclerotic, spermatogenesis","2 pieces ~10mm sq; >60% atrophic, sclerotic tubules; remainder with minimal spermatogenesis. Capsule partially present."
+GTEX-QLQ7-1426,Testis,GTEX-QLQ7,male,60-69,Ventilator case,spermatogenesis,2  ~11x9mm aliquots.  Spermatogenesis is present but appears reduced
+GTEX-NL4W-1026,Testis,GTEX-NL4W,male,50-59,Slow death,,~50% autolyzed
+GTEX-OIZG-0126,Testis,GTEX-OIZG,male,50-59,Ventilator case,,12x5 mm
+GTEX-P44G-0126,Testis,GTEX-P44G,male,30-39,Ventilator case,,10x5.6mm.  Maturational arrest evident
+GTEX-PSDG-0126,Testis,GTEX-PSDG,male,50-59,Ventilator case,spermatogenesis,"2, 9x5 mm pieces; reduced spermatogenesis"
+GTEX-NPJ8-1226,Testis,GTEX-NPJ8,male,40-49,Slow death,"atrophy, hyalinization",Complete seminiferous tubular atrophy/hyalinization.
+GTEX-OIZH-2126,Testis,GTEX-OIZH,male,50-59,Ventilator case,spermatogenesis,10.5 x 4.5.  Complete spermatogenesis is present
+GTEX-P44H-0126,Testis,GTEX-P44H,male,40-49,Slow death,,6x5mm
+GTEX-PW2O-1426,Testis,GTEX-PW2O,male,20-29,Ventilator case,,"2   ~10x8mm aliquots, one with area of central under-fixation"
+GTEX-O5YT-2126,Testis,GTEX-O5YT,male,20-29,Ventilator case,,2 pieces
+GTEX-OOBJ-2126,Testis,GTEX-OOBJ,male,60-69,Ventilator case,spermatogenesis,12 x 8.8mm.  Good spermatogenesis evident
+GTEX-P4PQ-2126,Testis,GTEX-P4PQ,male,60-69,Ventilator case,,"11x6.4mm, slightly fragmented, well preserved"
+GTEX-Q2AH-1526,Testis,GTEX-Q2AH,male,40-49,Ventilator case,spermatogenesis,"2 pieces, 9x4, 13x8 mm; both contain thick capsule; spermatogenesis present"
+GTEX-O5YU-2326,Testis,GTEX-O5YU,male,60-69,Slow death,,1  piece 10x8 mm
+GTEX-OOBK-2126,Testis,GTEX-OOBK,male,40-49,Ventilator case,,1-2.   11.7 x 5 mm.
+GTEX-P4QR-0226,Testis,GTEX-P4QR,male,60-69,Ventilator case,,2  ~8x5mm pieces
+GTEX-Q2AI-1226,Testis,GTEX-Q2AI,male,40-49,Ventilator case,spermatogenesis,2 pieces up to 10x6 mm; spermatogenesis
+GTEX-N7MS-2326,Thyroid,GTEX-N7MS,male,60-69,Fast death - natural causes,,OK to analyze
+GTEX-OHPJ-0526,Thyroid,GTEX-OHPJ,male,60-69,Ventilator case,adenoma,"2 x 1 mm adenomatoid nodule, peripheral"
+GTEX-OIZH-2626,Thyroid,GTEX-OIZH,male,50-59,Ventilator case,,"10.5 x 11.5 mm specimen, no adenomatoid nodules noted"
+GTEX-OXRN-1526,Thyroid,GTEX-OXRN,male,50-59,Ventilator case,fibrosis,"Focal fibrosis, 20%. 9x7 mm"
+GTEX-P4QS-2626,Thyroid,GTEX-P4QS,male,60-69,Ventilator case,,2   ~10x 3-7mm pieces
+GTEX-NFK9-0726,Thyroid,GTEX-NFK9,male,40-49,Ventilator case,,OK for analysis
+GTEX-OHPK-2626,Thyroid,GTEX-OHPK,female,50-59,Ventilator case,nodularity,nodular change. Aliquot is oversized (15x9mm).  Central part is poorly fixed. REFIX.
+GTEX-OIZI-0726,Thyroid,GTEX-OIZI,male,40-49,Ventilator case,,8 x 6.7 mm. Focal scar <10%
+GTEX-OXRO-1226,Thyroid,GTEX-OXRO,female,60-69,Slow death,,12x12mm. Moderate fractures.  Foci of microadenosis
+GTEX-P4QT-2626,Thyroid,GTEX-P4QT,female,50-59,Ventilator case,cyst,16.7x7.1mm. 1.8mm colloid cyst
+GTEX-NL3H-1126,Thyroid,GTEX-NL3H,male,60-69,Intermediate death,,Moderate autolysis
+GTEX-OHPL-2626,Thyroid,GTEX-OHPL,female,60-69,Ventilator case,"atrophy, fibrosis, hashimoto, inflammation","Chronic inflammation, atrophy, fibrosis (severe) consistent with Hashimoto’s thyroiditis"
+GTEX-OOBJ-2626,Thyroid,GTEX-OOBJ,male,60-69,Ventilator case,,"Possible 0.4 x 0.6mm occult papillary ca, pending slide review.  Patchy areas of peripheral adipose tissue are poorly fixed, tears and holes in section."
+GTEX-OXRP-0326,Thyroid,GTEX-OXRP,female,60-69,Intermediate death,fibrosis,8x5mm.  Regressive changes/fibrosis
+GTEX-NL4W-2426,Thyroid,GTEX-NL4W,male,50-59,Slow death,,Remarkably well-preserved for endocrine organ
+GTEX-OHPN-0626,Thyroid,GTEX-OHPN,female,60-69,Ventilator case,"fibrosis, hashimoto",Regressive changes/fibrosis.  ? late stage Hashimoto’s or medical thyroid suppression
+GTEX-OOBK-2626,Thyroid,GTEX-OOBK,male,40-49,Ventilator case,,1.  13.2x8mm.  A few central holes
+GTEX-P44H-0926,Thyroid,GTEX-P44H,male,40-49,Slow death,,10x6.3mm.
+GTEX-O5YT-2626,Thyroid,GTEX-O5YT,male,20-29,Ventilator case,,central fracture
+GTEX-OIZF-2626,Thyroid,GTEX-OIZF,male,60-69,Ventilator case,,10x6 mm.
+GTEX-OXRK-0626,Thyroid,GTEX-OXRK,female,50-59,Ventilator case,nodularity,Slight nodularity. 9x8.6mm
+GTEX-P4PQ-2626,Thyroid,GTEX-P4PQ,male,60-69,Ventilator case,,2  ~11x7mm pieces
+GTEX-O5YV-1526,Thyroid,GTEX-O5YV,female,60-69,Intermediate death,,8x4 mm
+GTEX-OIZG-0226,Thyroid,GTEX-OIZG,male,50-59,Ventilator case,,9x8mm
+GTEX-OXRL-2626,Thyroid,GTEX-OXRL,male,50-59,Ventilator case,,9.4x6.7.  no lesion
+GTEX-P4QR-0826,Thyroid,GTEX-P4QR,male,60-69,Ventilator case,,"2 pieces,  ~ 8x6mm.  One ~ 25% adipose on one edge"
+GTEX-N7MT-0726,Uterus,GTEX-N7MT,female,60-69,Slow death,calcification,"11x8 mm; atrophic endometrium, calcified arteries"
+GTEX-OXRP-1926,Uterus,GTEX-OXRP,female,60-69,Intermediate death,,6x8mm.  atrophic endometrial stroma is ~30% of thickness.  No viable glands.
+GTEX-PWCY-1426,Uterus,GTEX-PWCY,female,20-29,Ventilator case,,"2 pieces, 10x9mm, 11x11mm; endometrium is 5x1 mm maximum"
+GTEX-Q2AG-2726,Uterus,GTEX-Q2AG,female,40-49,Fast death - natural causes,,"2   ~6x3.5mm aliquots, all myometrium; no visible glandular components"
+GTEX-R45C-2826,Uterus,GTEX-R45C,female,60-69,Ventilator case,,"2 pieces, 9x8 & 8x7 mm; no endometrium, only myometrium"
+GTEX-NL3G-2426,Uterus,GTEX-NL3G,female,60-69,Fast death - natural causes,,Basalis endometrium <5% of specimen. Endometrium moderately autolyzed
+GTEX-P4QT-2026,Uterus,GTEX-P4QT,female,50-59,Ventilator case,,"No endometrial glands/ stroma.  2 ~ 6x8mm pieces, one with a 4.6x4mm leiomyoma.  Some areas poorly fixed with tears/holes"
+GTEX-PWN1-2026,Uterus,GTEX-PWN1,female,40-49,Ventilator case,,"2 pieces, 1, 6x6 mm with secretory endometrium 2mm thick; 1, 14x7.7 mm without endometrium"
+GTEX-Q734-1626,Uterus,GTEX-Q734,female,40-49,Ventilator case,,"2 aliquots   ~10x3mm.  Trace minute glands, adenomyosis."
+GTEX-OHPK-2026,Uterus,GTEX-OHPK,female,50-59,Ventilator case,,"myometrium, lots of parametrical vessels, no endomterium"
+GTEX-S32W-1426,Uterus,GTEX-S32W,female,50-59,Ventilator case,,2 pieces 11x7 & 8x7 mm; one piece has proliferative endometrium; other has no glands
+GTEX-PWO3-3126,Uterus,GTEX-PWO3,female,60-69,Slow death,,"2   ~ 8.5x7mm aliquots, few foci of completely autolyzed mucosa/adenomyosis; mainly myometrium"
+GTEX-QCQG-1326,Uterus,GTEX-QCQG,female,50-59,Ventilator case,,"2 pieces up to ~8x3mm,  atrophic endometrium"
+GTEX-OHPL-2026,Uterus,GTEX-OHPL,female,60-69,Ventilator case,,small number of glands
+GTEX-PLZ4-2426,Uterus,GTEX-PLZ4,female,50-59,Ventilator case,,"2   ~11x3.5mm pieces, mainly myometrium.  1 aliquot has a ~ 3x1.6mm focus of autolyzed atrophic glands/stroma"
+GTEX-PWOO-1526,Uterus,GTEX-PWOO,female,40-49,Ventilator case,,"2  ~10x4mm aliquots.  99% myometrium; rare focal glands, probably lower uterine segment/upper endocervix"
+GTEX-QDT8-2426,Uterus,GTEX-QDT8,female,30-39,Slow death,,"2   ~8.5x3mm aliquots.  Autolyzed, atrophic endometrium is <10% of both."
+GTEX-OHPN-1926,Uterus,GTEX-OHPN,female,60-69,Ventilator case,,(glands/stroma); 1 (myometrium. A 0.8 x 2.8mm glandular focus on one pole of a 10x 4mm aliquot
+GTEX-POMQ-1226,Uterus,GTEX-POMQ,female,20-29,Ventilator case,,"2 pieces  ~8 x 7mm; No endometrium , only myometium"
+GTEX-PX3G-2026,Uterus,GTEX-PX3G,female,20-29,Ventilator case,,"2 pieces; only one, 8.7x3.8 mm, has endometrium, 0.8x1.8mm; other all muscle"
+GTEX-QVJO-2926,Uterus,GTEX-QVJO,female,60-69,Slow death,,2   ~9x8mm aliquots.  No viable endometrium; completely autolyzed focus along edge of one aliquot
