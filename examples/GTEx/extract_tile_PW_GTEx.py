@@ -1,15 +1,16 @@
 import argparse
 import os
+import time
 from typing import List, Tuple
 
+import numpy as np
 import pandas as pd
 import requests
+from sklearn.model_selection import train_test_split
+from tqdm import tqdm
+
 from histolab.slide import SlideSet
 from histolab.tiler import RandomTiler
-from tqdm import tqdm
-import numpy as np
-import time
-from sklearn.model_selection import train_test_split
 
 URL_ROOT = "https://brd.nci.nih.gov/brd/imagedownload"
 
@@ -27,11 +28,11 @@ def download_wsi_gtex(dataset_dir: str, sample_ids: List[str]) -> None:
     for sample_id in tqdm(sample_ids):
         if f"{sample_id}.svs" not in os.listdir(dataset_dir):
 
-            r = requests.get(f"{URL_ROOT}/{sample_id}")
+            request = requests.get(f"{URL_ROOT}/{sample_id}")
             with open(
                 os.path.join(dataset_dir, f"{sample_id}.svs"), "wb"
             ) as output_file:
-                output_file.write(r.content)
+                output_file.write(request.content)
 
             time.sleep(np.random.randint(60, 100))
 
