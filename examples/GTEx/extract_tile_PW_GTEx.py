@@ -28,13 +28,15 @@ def download_wsi_gtex(dataset_dir: str, sample_ids: List[str]) -> None:
     for sample_id in tqdm(sample_ids):
         if f"{sample_id}.svs" not in os.listdir(dataset_dir):
 
-            request = requests.get(f"{URL_ROOT}/{sample_id}")
-            with open(
-                os.path.join(dataset_dir, f"{sample_id}.svs"), "wb"
-            ) as output_file:
-                output_file.write(request.content)
+            with requests.get(f"{URL_ROOT}/{sample_id}", stream=True) as request:
+                request.raise_for_status()
+                with open(
+                    os.path.join(dataset_dir, f"{sample_id}.svs"), "wb"
+                ) as output_file:
+                    for chunk in request.iter_content(chunk_size=8192):
+                        output_file.write(chunk)
 
-            time.sleep(np.random.randint(60, 100))
+                time.sleep(np.random.randint(60, 100))
 
 
 def extract_random_tiles(
@@ -193,7 +195,7 @@ def main():
     parser.add_argument(
         "--metadata_csv",
         type=str,
-        default="examples/GTEx_AIDP2021.csv",
+        default="examples/GTEx/GTEx_AIDP2021.csv",
         help="CSV with WSI metadata",
     )
     parser.add_argument(
