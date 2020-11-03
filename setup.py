@@ -58,7 +58,7 @@ setuptools.setup(
     install_requires=install_requires,
     tests_require=test_requires,
     extras_require={"testing": test_requires},
-    packages=setuptools.find_packages("src", exclude=["tests"]),
+    packages=setuptools.find_packages("src", exclude=["tests", "examples"]),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
