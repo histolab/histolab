@@ -4,6 +4,7 @@ branch = True
 omit =
     */site-packages/*
     */distutils/*
+    */examples/*
 
 [report]
 show_missing = true
