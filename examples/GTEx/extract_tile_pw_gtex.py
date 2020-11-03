@@ -186,54 +186,53 @@ def split_tiles_patient_wise(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Retrieve a leakage-free dataset of tiles using a collection of WSI"
-        "from the GTEx repository. The WSIs that will be used for tile extraction are "
-        "specified in the 'metadata_csv'. First, slides are downloaded from the GTEx "
-        "portal. Then, tiles are randomly cropped from each WSI and saved only if they "
-        "consist of, at least, 80% of tissue. Finally, tiles are sorted ...."
+        description="Retrieve a leakage-free dataset of tiles using a collection of WSI."
     )
     parser.add_argument(
         "--metadata_csv",
         type=str,
         default="examples/GTEx/GTEx_AIDP2021.csv",
-        help="CSV with WSI metadata",
+        help="CSV with WSI metadata. Default examples/GTEx/GTEx_AIDP2021.csv.",
     )
     parser.add_argument(
         "--wsi_dataset_dir",
         type=str,
         default="WSI_GTEx",
-        help="Path where to save the WSIs",
+        help="Path where to save the WSIs. Default WSI_GTEx.",
     )
     parser.add_argument(
         "--tile_dataset_dir",
         type=str,
         default="tiles_GTEx",
-        help="Path where to save the WSIs",
+        help="Path where to save the WSIs. Default tiles_GTEx.",
     )
     parser.add_argument(
         "--tile_size",
         type=int,
         nargs=2,
         default=(512, 512),
-        help="width and height of the cropped tiles",
+        help="width and height of the cropped tiles. Default (512, 512).",
     )
     parser.add_argument(
-        "--n_tiles", type=int, default=100, help="Maximum number of tiles to extract"
+        "--n_tiles",
+        type=int,
+        default=100,
+        help="Maximum number of tiles to extract. Default 100.",
     )
     parser.add_argument(
         "--level",
         type=int,
         default=2,
-        help="Magnification level from which extract the tiles",
+        help="Magnification level from which extract the tiles. Default 2.",
     )
     parser.add_argument(
-        "--seed", type=int, default=7, help="Seed for RandomState",
+        "--seed", type=int, default=7, help="Seed for RandomState. Default 7.",
     )
     parser.add_argument(
         "--check_tissue",
         type=bool,
         default=True,
-        help="Whether to check if the tile has enough tissue to be saved",
+        help="Whether to check if the tile has enough tissue to be saved. Default True.",
     )
     args = parser.parse_args()
 
