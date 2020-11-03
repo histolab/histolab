@@ -1,6 +1,6 @@
 # Create a leakage-free dataset of tiles for GTEx
 
-`extract_tile_pw_gtex.py` is a Python script proposed as reference to retrieve a reproducible dataset of tiles using a collection of WSIs from the [GTEx](https://gtexportal.org/home/) public repository. In particular, it can be easily integrated in deep learning pipeline for computational pathology.
+`extract_tile_pw_gtex.py` is a Python script proposed as reference to retrieve a reproducible dataset of tiles using a collection of WSIs from the [GTEx](https://gtexportal.org/home/) public repository. In particular, it can be easily integrated in deep learning pipeline(s) for computational pathology.
 
 ## Prerequisites
 To run this script you will need the following packages, other than `histolab`:
