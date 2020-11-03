@@ -186,7 +186,7 @@ def split_tiles_patient_wise(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Retrieve a leakage-free dataset of tiles using a collection of WSI."
+        description="Retrieve a leakage-free dataset of tiles using a collection of WSI"
     )
     parser.add_argument(
         "--metadata_csv",
@@ -232,7 +232,8 @@ def main():
         "--check_tissue",
         type=bool,
         default=True,
-        help="Whether to check if the tile has enough tissue to be saved. Default True.",
+        help="Whether to check if the tile has enough tissue to be saved. "
+        "Default True.",
     )
     args = parser.parse_args()
 
