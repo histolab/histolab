@@ -166,7 +166,7 @@ def main():
         "--clinical_csv",
         type=str,
         default="examples/TCGA/clinical_csv_example.csv",
-        help="CSV with WSI clinical data. Default examples/TCGA/clinical_csv_example.csv.",
+        help="CSV with clinical data. Default examples/TCGA/clinical_csv_example.csv",
     )
     parser.add_argument(
         "--wsi_dataset_dir",

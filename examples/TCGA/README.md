@@ -41,7 +41,7 @@ Retrieve a leakage-free dataset of tiles using a collection of WSI.
 optional arguments:
   -h, --help            show this help message and exit
   --clinical_csv CLINICAL_CSV
-                        CSV with WSI clinical data. Default examples/TCGA/clinical_csv_example.csv.
+                        CSV with clinical data. Default examples/TCGA/clinical_csv_example.csv.
   --wsi_dataset_dir WSI_DATASET_DIR
                         Path where to save the WSIs. Default WSI_TCGA.
   --tile_dataset_dir TILE_DATASET_DIR
