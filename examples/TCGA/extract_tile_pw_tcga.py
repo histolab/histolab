@@ -1,12 +1,13 @@
 import argparse
 import os
 from typing import Tuple
-import pandas as pd
-from sklearn.model_selection import train_test_split
+
 from tqdm import tqdm
 
+import pandas as pd
 from histolab.slide import SlideSet
 from histolab.tiler import RandomTiler
+from sklearn.model_selection import train_test_split
 
 PATIENT_COL_NAME = "case_submitter_id"
 
@@ -146,7 +147,7 @@ def split_tiles_patient_wise(
     )
 
     tiles_clinical = clinical_df.join(
-        tiles_filenames_df.set_index(f"{PATIENT_COL_NAME}"), on=f"{PATIENT_COL_NAME}"
+        tiles_filenames_df.set_index(PATIENT_COL_NAME), on=PATIENT_COL_NAME
     )
 
     train_df, test_df = train_test_df_patient_wise(
@@ -165,7 +166,7 @@ def main():
         "--clinical_csv",
         type=str,
         default="examples/TCGA/clinical_csv_example.csv",
-        help="CSV with WSI clincial data. Default examples/TCGA/clinical_csv_example.csv.",
+        help="CSV with WSI clinical data. Default examples/TCGA/clinical_csv_example.csv.",
     )
     parser.add_argument(
         "--wsi_dataset_dir",

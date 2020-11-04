@@ -6,6 +6,7 @@
 To run this script you will need the following packages, other than `histolab`:
 
 - `pandas`
+- `tqdm`
 - `scikit-learn`
 
 Moreover, a CSV file of patient clinical data (`clinical_csv`) is required; this file can be retrieved from the TCGA [data portal](https://portal.gdc.cancer.gov/) and it is structured as follows:
