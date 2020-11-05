@@ -19,6 +19,10 @@ Moreover, a CSV file of patient clinical data (`clinical_csv`) is required; this
 
 ## Workflow
 
+:warning: Currently, the WSI collection needs to be downloaded upfront from the TCGA 
+repository using, for example, the [gdc-client](https://gdc.cancer.gov/access-data/gdc-data-transfer-tool).
+The automatic download of WSIs via the [GDC wrapper](https://github.com/histolab/gdc-api-wrapper) of histolab will be available soon.
+
 The `extract_tile_pw_tcga.py` will perform the following steps:
 
 1. a fixed number of tiles (100 by default) are randomly extracted from each WSI by the `extract_random_tiles` function. The directory where to store the tiles, along with several parameters that detail the extraction protocol (i.e. `n_tiles`, `seed`, `check_tissue`), can be defined as command-line arguments. 
