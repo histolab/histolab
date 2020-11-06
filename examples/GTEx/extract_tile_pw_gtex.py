@@ -31,8 +31,8 @@ def download_wsi_gtex(dataset_dir: str, sample_ids: List[str]) -> None:
     downloaded = set(filter(lambda sid: f"{sid}.svs" in dir_files, sample_ids))
     to_download = set(sample_ids).difference(downloaded)
 
-    if len(to_download):
-        if len(downloaded):
+    if len(to_download) > 0:
+        if len(downloaded) > 0:
             print(f"{len(downloaded)} out of {len(sample_ids)} found. Resuming:")
         else:
             print(
