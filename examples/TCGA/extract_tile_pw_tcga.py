@@ -1,6 +1,7 @@
 import argparse
 import os
 from typing import Tuple
+from pathlib import Path
 
 from tqdm import tqdm
 
@@ -45,7 +46,6 @@ def extract_random_tiles(
 
     for slide in tqdm(slideset.slides):
         prefix = f"{slide.name}_"
-
         random_tiles_extractor = RandomTiler(
             tile_size=tile_size,
             n_tiles=n_tiles,
@@ -154,8 +154,8 @@ def split_tiles_patient_wise(
         tiles_clinical, patient_col, label_col, test_size, seed,
     )
 
-    train_df.to_csv(train_csv_path, index=None)
-    test_df.to_csv(test_csv_path, index=None)
+    train_df.to_csv(train_csv_path, index=False)
+    test_df.to_csv(test_csv_path, index=False)
 
 
 def main():
@@ -165,8 +165,8 @@ def main():
     parser.add_argument(
         "--clinical_csv",
         type=str,
-        default="examples/TCGA/clinical_csv_example.csv",
-        help="CSV with clinical data. Default examples/TCGA/clinical_csv_example.csv",
+        default="clinical_csv_example.csv",
+        help="CSV with clinical data. Default clinical_csv_example.csv",
     )
     parser.add_argument(
         "--wsi_dataset_dir",
@@ -211,9 +211,9 @@ def main():
     )
     args = parser.parse_args()
 
-    clinical_csv = args.clinical_csv
-    wsi_dataset_dir = args.wsi_dataset_dir
-    tile_dataset_dir = args.tile_dataset_dir
+    clinical_csv = Path(args.clinical_csv)
+    wsi_dataset_dir = Path(args.wsi_dataset_dir)
+    tile_dataset_dir = Path(args.tile_dataset_dir)
     tile_size = args.tile_size
     n_tiles = args.n_tiles
     level = args.level
