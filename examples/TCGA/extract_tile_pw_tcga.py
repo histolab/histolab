@@ -220,13 +220,19 @@ def main():
     seed = args.seed
     check_tissue = args.check_tissue
 
-    tcga_df = pd.read_csv(clinical_csv)
-    os.makedirs(wsi_dataset_dir)
+    try:
+        tcga_df = pd.read_csv(clinical_csv)
+    except FileNotFoundError:
+        print(f"Metadata CSV filepath {clinical_csv} does not exist. Please check.")
+        return
 
+    print("Extracting Random Tiles...", end=" ")
     extract_random_tiles(
         wsi_dataset_dir, tile_dataset_dir, tile_size, n_tiles, level, seed, check_tissue
     )
+    print(f"..saved in {tile_dataset_dir}")
 
+    print("Split Tiles Patient-wise...", end=" ")
     split_tiles_patient_wise(
         tiles_dir=os.path.join(tile_dataset_dir, "tiles"),
         clinical_df=tcga_df,
@@ -236,11 +242,12 @@ def main():
         test_csv_path=os.path.join(
             tile_dataset_dir, f"test_tiles_PW_{os.path.basename(clinical_csv)}"
         ),
-        label_col="Tissue",
+        label_col="tissue_or_organ_of_origin",
         patient_col=PATIENT_COL_NAME,
         test_size=0.2,
         seed=1234,
     )
+    print("..done!")
 
 
 if __name__ == "__main__":
