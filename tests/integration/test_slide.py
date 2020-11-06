@@ -4,8 +4,9 @@ import os
 
 import numpy as np
 import ntpath
-
+import pytest
 from PIL import Image
+from openslide.lowlevel import OpenSlideError
 
 from histolab.slide import Slide
 
@@ -46,3 +47,14 @@ class Describe_Slide:
         assert image.size == dimensions
         assert slide.dimensions == (2220, 2967)
         assert image.size == (2220, 2967)
+
+    def it_raises_openslideerror_with_broken_wsi(self):
+        slide = Slide(SVS.BROKEN_HTML, os.path.join(SVS.BROKEN_HTML, "processed"))
+
+        with pytest.raises(OpenSlideError) as err:
+            slide._wsi
+
+        assert isinstance(err.value, OpenSlideError)
+        assert (
+            str(err.value) == "Your wsi has something broken inside, a doctor is needed"
+        )
