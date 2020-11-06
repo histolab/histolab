@@ -9,7 +9,15 @@ To run this script you will need the following packages, other than `histolab`:
 - `tqdm`
 - `scikit-learn`
 
-Moreover, a CSV file of patient clinical data (`clinical_csv`) is required; this file can be retrieved from the TCGA [data portal](https://portal.gdc.cancer.gov/) and it is structured as follows:
+Extra requirements are available in the `examples_reqs.txt` file located in the parent`examples` folder.
+All dependencies can be installed via command line, using `pip`:
+
+```shell
+pip install -f examples_reqs.txt
+```
+
+A sample CSV file of patient clinical data is required by the script. 
+This file can be retrieved from the TCGA [data portal](https://portal.gdc.cancer.gov/) and it is structured as follows:
 
 |   case_id  |   case_submitter_id                          |   project_id  |   age_at_index     |   ...  |   primary_diagnosis  |   ...  |   treatment_type                                               |
 |---------------------|-----------------------------------|---------------|-----------|----------------|----------------|-------------------------|-----------------------------------------------------------------|
@@ -17,10 +25,15 @@ Moreover, a CSV file of patient clinical data (`clinical_csv`) is required; this
 |   928c48a0-68ee-4e28-ae83-9832e52850ca   |   TCGA-CH-5753          |   TCGA-PRAD  |   70  |   ...      |   Adenocarcinoma, NOS    |       ...                  |   Radiation Therapy, NOS                  |
 | ...                 | ...                               | ...           | ...       | ...            | ...            | ...                     | ...                                                             | 
 
+An example file is available in the current folder (i.e. `clinical_csv_example.csv`), and used as default by the script.
+
+
 ## Workflow
 
-:warning: Currently, the WSI collection needs to be downloaded upfront from the TCGA 
-repository using, for example, the [gdc-client](https://gdc.cancer.gov/access-data/gdc-data-transfer-tool).
+:warning: In order to run the script, the WSI collection is required to be downloaded upfront from the TCGA 
+repository. 
+The recommended way is to use the [gdc-client](https://gdc.cancer.gov/access-data/gdc-data-transfer-tool).
+
 The automatic download of WSIs via the [GDC wrapper](https://github.com/histolab/gdc-api-wrapper) of histolab will be available soon.
 
 The `extract_tile_pw_tcga.py` will perform the following steps:
