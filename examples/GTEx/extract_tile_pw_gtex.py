@@ -2,8 +2,9 @@ import argparse
 import os
 import time
 from typing import List, Tuple
+from pathlib import Path
+from random import randint
 
-import numpy as np
 import pandas as pd
 import requests
 from sklearn.model_selection import train_test_split
@@ -25,9 +26,22 @@ def download_wsi_gtex(dataset_dir: str, sample_ids: List[str]) -> None:
     sample_ids : List[str]
         List of GTEx WSI ids
     """
-    for sample_id in tqdm(sample_ids):
-        if f"{sample_id}.svs" not in os.listdir(dataset_dir):
+    dir_files = os.listdir(dataset_dir)
+    sample_ids = set(sample_ids)  # avoid any possible repetition
+    downloaded = set(filter(lambda sid: f"{sid}.svs" in dir_files, sample_ids))
+    to_download = set(sample_ids).difference(downloaded)
 
+    if len(to_download):
+        if len(downloaded):
+            print(f"{len(downloaded)} out of {len(sample_ids)} found. Resuming:")
+        else:
+            print(
+                "downloading GTEx WSI dataset. "
+                "This may take several minutes to complete."
+            )
+        for sample_id in tqdm(
+            to_download, initial=len(downloaded), total=len(sample_ids)
+        ):
             with requests.get(f"{URL_ROOT}/{sample_id}", stream=True) as request:
                 request.raise_for_status()
                 with open(
@@ -35,8 +49,7 @@ def download_wsi_gtex(dataset_dir: str, sample_ids: List[str]) -> None:
                 ) as output_file:
                     for chunk in request.iter_content(chunk_size=8192):
                         output_file.write(chunk)
-
-                time.sleep(np.random.randint(60, 100))
+            time.sleep(randint(3, 7))  # slight delay to avoid over-flooding
 
 
 def extract_random_tiles(
@@ -71,7 +84,6 @@ def extract_random_tiles(
 
     for slide in tqdm(slideset.slides):
         prefix = f"{slide.name}_"
-
         random_tiles_extractor = RandomTiler(
             tile_size=tile_size,
             n_tiles=n_tiles,
@@ -180,8 +192,8 @@ def split_tiles_patient_wise(
         tiles_metadata, patient_col, label_col, test_size, seed,
     )
 
-    train_df.to_csv(train_csv_path, index=None)
-    test_df.to_csv(test_csv_path, index=None)
+    train_df.to_csv(train_csv_path, index=False)
+    test_df.to_csv(test_csv_path, index=False)
 
 
 def main():
@@ -191,8 +203,8 @@ def main():
     parser.add_argument(
         "--metadata_csv",
         type=str,
-        default="examples/GTEx/GTEx_AIDP2021.csv",
-        help="CSV with WSI metadata. Default examples/GTEx/GTEx_AIDP2021.csv.",
+        default="GTEx_AIDP2021.csv",
+        help="CSV with WSI metadata. Default GTEx_AIDP2021.csv.",
     )
     parser.add_argument(
         "--wsi_dataset_dir",
@@ -237,26 +249,35 @@ def main():
     )
     args = parser.parse_args()
 
-    metadata_csv = args.metadata_csv
-    wsi_dataset_dir = args.wsi_dataset_dir
-    tile_dataset_dir = args.tile_dataset_dir
+    metadata_csv = Path(args.metadata_csv)
+    wsi_dataset_dir = Path(args.wsi_dataset_dir)
+    tile_dataset_dir = Path(args.tile_dataset_dir)
     tile_size = args.tile_size
     n_tiles = args.n_tiles
     level = args.level
     seed = args.seed
     check_tissue = args.check_tissue
 
-    gtex_df = pd.read_csv(metadata_csv)
-    os.makedirs(wsi_dataset_dir)
+    try:
+        gtex_df = pd.read_csv(metadata_csv)
+    except FileNotFoundError:
+        print(f"Metadata CSV filepath {metadata_csv} does not exist. Please check.")
+        return
+    else:
+        sample_ids = gtex_df["Tissue Sample ID"].tolist()
 
-    sample_ids = gtex_df["Tissue Sample ID"].tolist()
-
+    os.makedirs(wsi_dataset_dir, exist_ok=True)
+    print("Check GTEX dataset...")
     download_wsi_gtex(wsi_dataset_dir, sample_ids)
+    print("done.")
 
+    print("Extracting Random Tiles...", end=" ")
     extract_random_tiles(
         wsi_dataset_dir, tile_dataset_dir, tile_size, n_tiles, level, seed, check_tissue
     )
+    print(f"..saved in {tile_dataset_dir}")
 
+    print("Split Tiles Patient-wise...", end=" ")
     split_tiles_patient_wise(
         tiles_dir=os.path.join(tile_dataset_dir, "tiles"),
         metadata_df=gtex_df,
@@ -271,6 +292,7 @@ def main():
         test_size=0.2,
         seed=1234,
     )
+    print("..done!")
 
 
 if __name__ == "__main__":
