@@ -15,6 +15,8 @@ from histolab.exceptions import LevelError
 from histolab.filters.compositions import _SlideFiltersComposition
 from histolab.filters.image_filters import Compose
 from histolab.slide import Slide, SlideSet
+from openslide.lowlevel import OpenSlideError
+
 from histolab.types import CP, Region
 from histolab.util import regions_from_binary_mask
 from PIL import ImageShow
@@ -286,14 +288,13 @@ class Describe_Slide:
     def or_it_raises_an_PIL_exception(self, tmpdir):
         slide_path = tmpdir.mkdir("sub").join("hello.txt")
         slide_path.write("content")
-        with pytest.raises(PIL.UnidentifiedImageError) as err:
+        with pytest.raises(OpenSlideError) as err:
             slide = Slide(os.path.join(slide_path), "processed")
             slide._wsi
 
-        assert isinstance(err.value, PIL.UnidentifiedImageError)
+        assert isinstance(err.value, OpenSlideError)
         assert (
-            str(err.value) == "cannot identify image file "
-            f"{repr(os.path.join(slide_path))}"
+            str(err.value) == "Your wsi has something broken inside, a doctor is needed"
         )
 
     def it_can_resample_itself(self, tmpdir, resampled_dims_):

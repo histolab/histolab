@@ -441,10 +441,10 @@ class Slide:
         """
         try:
             slide = openslide.open_slide(self._path)
-        except openslide.OpenSlideError:
+        except (openslide.OpenSlideError, PIL.UnidentifiedImageError):
             raise openslide.OpenSlideError(
                 "Your wsi has something broken inside, a doctor is needed"
-            )  # pragma: no cover
+            )
         except FileNotFoundError:
             raise FileNotFoundError("The wsi path resource doesn't exist")
         return slide
