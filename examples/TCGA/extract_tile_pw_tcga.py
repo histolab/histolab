@@ -1,6 +1,7 @@
 import argparse
 import os
 from typing import Tuple
+from pathlib import Path
 
 from tqdm import tqdm
 
@@ -45,7 +46,6 @@ def extract_random_tiles(
 
     for slide in tqdm(slideset.slides):
         prefix = f"{slide.name}_"
-
         random_tiles_extractor = RandomTiler(
             tile_size=tile_size,
             n_tiles=n_tiles,
@@ -151,11 +151,15 @@ def split_tiles_patient_wise(
     )
 
     train_df, test_df = train_test_df_patient_wise(
-        tiles_clinical, patient_col, label_col, test_size, seed,
+        tiles_clinical,
+        patient_col,
+        label_col,
+        test_size,
+        seed,
     )
 
-    train_df.to_csv(train_csv_path, index=None)
-    test_df.to_csv(test_csv_path, index=None)
+    train_df.to_csv(train_csv_path, index=False)
+    test_df.to_csv(test_csv_path, index=False)
 
 
 def main():
@@ -165,8 +169,8 @@ def main():
     parser.add_argument(
         "--clinical_csv",
         type=str,
-        default="examples/TCGA/clinical_csv_example.csv",
-        help="CSV with clinical data. Default examples/TCGA/clinical_csv_example.csv",
+        default="clinical_csv_example.csv",
+        help="CSV with clinical data. Default clinical_csv_example.csv",
     )
     parser.add_argument(
         "--wsi_dataset_dir",
@@ -200,7 +204,10 @@ def main():
         help="Magnification level from which extract the tiles. Default 2.",
     )
     parser.add_argument(
-        "--seed", type=int, default=7, help="Seed for RandomState. Default 7.",
+        "--seed",
+        type=int,
+        default=7,
+        help="Seed for RandomState. Default 7.",
     )
     parser.add_argument(
         "--check_tissue",
@@ -211,22 +218,28 @@ def main():
     )
     args = parser.parse_args()
 
-    clinical_csv = args.clinical_csv
-    wsi_dataset_dir = args.wsi_dataset_dir
-    tile_dataset_dir = args.tile_dataset_dir
+    clinical_csv = Path(args.clinical_csv)
+    wsi_dataset_dir = Path(args.wsi_dataset_dir)
+    tile_dataset_dir = Path(args.tile_dataset_dir)
     tile_size = args.tile_size
     n_tiles = args.n_tiles
     level = args.level
     seed = args.seed
     check_tissue = args.check_tissue
 
-    tcga_df = pd.read_csv(clinical_csv)
-    os.makedirs(wsi_dataset_dir)
+    try:
+        tcga_df = pd.read_csv(clinical_csv)
+    except FileNotFoundError:
+        print(f"Metadata CSV filepath {clinical_csv} does not exist. Please check.")
+        return
 
+    print("Extracting Random Tiles...", end=" ")
     extract_random_tiles(
         wsi_dataset_dir, tile_dataset_dir, tile_size, n_tiles, level, seed, check_tissue
     )
+    print(f"..saved in {tile_dataset_dir}")
 
+    print("Split Tiles Patient-wise...", end=" ")
     split_tiles_patient_wise(
         tiles_dir=os.path.join(tile_dataset_dir, "tiles"),
         clinical_df=tcga_df,
@@ -236,11 +249,12 @@ def main():
         test_csv_path=os.path.join(
             tile_dataset_dir, f"test_tiles_PW_{os.path.basename(clinical_csv)}"
         ),
-        label_col="Tissue",
+        label_col="tissue_or_organ_of_origin",
         patient_col=PATIENT_COL_NAME,
         test_size=0.2,
         seed=1234,
     )
+    print("..done!")
 
 
 if __name__ == "__main__":
