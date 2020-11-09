@@ -10,6 +10,13 @@ To run this script you will need the following packages, other than `histolab`:
 - `tqdm`
 - `scikit-learn`
 
+Extra requirements are available in the `examples_reqs.txt` file located in the `examples` folder.
+All dependencies can be installed via command line, using `pip`:
+
+```shell
+pip install -f examples_reqs.txt
+```
+
 Moreover, a CSV file of patient metadata (`metadata_csv`) is required; this file can be retrieved from the GTEx [data portal](https://gtexportal.org/home/histologyPage) and it is structured as follows:
 
 |   Tissue Sample ID  |   Tissue                          |   Subject ID  |   Sex     |   Age Bracket  |   Hardy Scale  |   Pathology Categories  |   Pathology Notes                                               |
