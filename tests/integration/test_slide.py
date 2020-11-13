@@ -2,11 +2,11 @@
 
 import os
 
-import numpy as np
 import ntpath
+import numpy as np
 import pytest
-from PIL import Image
 from openslide.lowlevel import OpenSlideError
+from PIL import Image
 
 from histolab.slide import Slide
 
@@ -49,7 +49,7 @@ class Describe_Slide:
         assert image.size == (2220, 2967)
 
     def it_raises_openslideerror_with_broken_wsi(self):
-        slide = Slide(SVS.BROKEN_HTML, os.path.join(SVS.BROKEN_HTML, "processed"))
+        slide = Slide(SVS.BROKEN, os.path.join(SVS.BROKEN, "processed"))
 
         with pytest.raises(OpenSlideError) as err:
             slide._wsi
