@@ -442,7 +442,7 @@ class Slide:
         try:
             slide = openslide.open_slide(self._path)
         except PIL.UnidentifiedImageError:
-            raise openslide.OpenSlideError(
+            raise PIL.UnidentifiedImageError(
                 "Your wsi has something broken inside, a doctor is needed"
             )
         except FileNotFoundError:
