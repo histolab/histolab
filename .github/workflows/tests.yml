@@ -1,6 +1,12 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+  pull_request:
 
 jobs:
 
@@ -62,7 +68,7 @@ jobs:
       - name: Test with pytest
         id: tests
         run: |
-          python -m pytest --ignore=tests/benchmarks
+          python -m pytest -n auto --ignore=tests/benchmarks
       - name: Slack Notification
         uses: act10ns/slack@v1
         with:
