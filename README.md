@@ -1,6 +1,5 @@
 [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
-[![Coverage Status](https://coveralls.io/repos/github/histolab/histolab/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/histolab/histolab?branch=master)
-[![Build Status](https://travis-ci.com/histolab/histolab.svg?branch=master)](https://travis-ci.com/histolab/histolab)
+[![Coverage Status](https://coveralls.io/repos/github/histolab/histolab/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/histolab/histolab?branch=master)![CI](https://github.com/histolab/histolab/workflows/CI/badge.svg?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/histolab/badge/?version=latest)](https://histolab.readthedocs.io/en/latest/?badge=latest)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/histolab/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/histolab/histolab/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/histolab/histolab.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/histolab/histolab/context:python)
