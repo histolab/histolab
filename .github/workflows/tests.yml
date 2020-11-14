@@ -12,22 +12,15 @@ jobs:
 
   build:
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
         os: [windows-latest, macOS-latest, ubuntu-latest]
         python-version: [3.6, 3.7]
-        experimental: [false]
         include:
-          - os: windows-latest
-            python-version: 3.8
-            experimental: true
           - os: macOS-latest
             python-version: 3.8
-            experimental: false
           - os: ubuntu-latest
             python-version: 3.8
-            experimental: false
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
