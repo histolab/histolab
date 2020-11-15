@@ -1,0 +1,12 @@
+numpy
+Pillow
+scikit-image
+scipy
+openslide-python
+typing_extensions
+pytest
+pytest-xdist
+coverage
+pytest-cov
+coveralls
+pytest-benchmark
