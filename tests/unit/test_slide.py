@@ -4,7 +4,6 @@ import errno
 import math
 import os
 from collections import namedtuple
-from unittest.mock import call
 
 import numpy as np
 import openslide
@@ -603,16 +602,15 @@ class Describe_Slideset:
         )
         assert isinstance(slideset, SlideSet)
 
-    def it_can_constructs_slides(self, request, tmpdir):
+    def it_can_constructs_slides(self, request, tmpdir, Slide_):
         tmp_path_ = tmpdir.mkdir("myslide")
-        slides_ = tuple(instance_mock(request, Slide) for _ in range(10))
-        _slides_ = property_mock(request, SlideSet, "slides")
-        _slides_.return_value = slides_
+        slides_ = method_mock(request, SlideSet, "__iter__")
+        slides_.return_value = [Slide_ for _ in range(10)]
         slideset = SlideSet(tmp_path_, os.path.join(tmp_path_, "b"), [".svs"])
 
-        slides = slideset.slides
+        slides = slideset.__iter__()
 
-        _slides_.assert_called_once_with()
+        slides_.assert_called_once_with(slideset)
         assert len(slides) == 10
 
     def it_knows_its_slides(self, tmpdir):
@@ -621,46 +619,37 @@ class Describe_Slideset:
         image.save(os.path.join(tmp_path_, "mywsi.svs"), "TIFF")
         slideset = SlideSet(tmp_path_, "proc", [".svs"])
 
-        slides = slideset.slides
-
-        assert len(slides) == 1
+        assert len(slideset) == 1
 
         slideset = SlideSet(None, "proc", [".svs"])
 
-        slides = slideset.slides
-
-        assert len(slides) == 0
+        assert len(slideset) == 0
 
         with pytest.raises(FileNotFoundError) as err:
             slideset = SlideSet("fake/path", "proc", [".svs"])
-            slides = slideset.slides
+            list(slideset)
 
         assert isinstance(err.value, FileNotFoundError)
         assert err.value.errno == errno.ENOENT
 
-    def it_constructs_its_sequence_of_slides_to_help(self, request, Slide_, tmpdir):
-        slides_path = tmpdir.mkdir("mypath")
-        for i in range(4):
-            open(os.path.join(slides_path, f"myfile{i}.svs"), "a")
-        slides_ = tuple(instance_mock(request, Slide) for _ in range(4))
-        Slide_.side_effect = iter(slides_)
-        slide_set = SlideSet(
-            slides_path=slides_path,
-            processed_path=os.path.join(slides_path, "processed"),
-            valid_extensions=[".svs"],
-        )
-        slides = tuple(slide_set.slides)
+    def it_constructs_its_sequence_of_slides_to_help(self, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.svs"), "TIFF")
+        image2 = PILIMG.RGBA_COLOR_50X50_155_0_0
+        image2.save(os.path.join(tmp_path_, "mywsi2.svs"), "TIFF")
+        slideset = SlideSet(tmp_path_, "proc", [".svs"])
+        expected_slides = [
+            Slide(os.path.join(tmp_path_, _path), "proc")
+            for _path in os.listdir(tmp_path_)
+        ]
 
-        assert sorted(Slide_.call_args_list) == sorted(
-            [
-                call(
-                    os.path.join(slides_path, f"myfile{i}.svs"),
-                    os.path.join(slides_path, "processed"),
-                )
-                for i in range(4)
-            ]
-        )
-        assert slides == slides_
+        slides = slideset.__iter__()
+
+        for i, slide in enumerate(slides):
+            np.testing.assert_array_almost_equal(
+                slide.resampled_array(), expected_slides[i].resampled_array()
+            )
 
     def it_knows_the_slides_dimensions(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
@@ -691,11 +680,11 @@ class Describe_Slideset:
         assert sorted(_slides_dimensions_list) == sorted([(500, 500), (50, 50)])
 
     def it_knows_its_total_slides(self, request, Slide_):
-        slides = property_mock(request, SlideSet, "slides")
+        slides = method_mock(request, SlideSet, "__iter__")
         slides.return_value = [Slide_ for _ in range(4)]
         slideset = SlideSet("the/path", "proc", [".svs"])
 
-        total_slides = slideset.total_slides
+        total_slides = len(slideset)
 
         assert total_slides == 4
 
@@ -819,7 +808,7 @@ class Describe_Slideset:
         slide2 = instance_mock(request, Slide)
 
         slideset = SlideSet(tmp_path_, os.path.join(tmp_path_, "processed"), [])
-        slides = property_mock(request, SlideSet, "slides")
+        slides = method_mock(request, SlideSet, "__iter__")
         slides.return_value = [slide1, slide2]
         slideset.save_scaled_slides(32, 2)
 
@@ -832,7 +821,7 @@ class Describe_Slideset:
         slide2 = instance_mock(request, Slide)
 
         slideset = SlideSet(tmp_path_, os.path.join(tmp_path_, "processed"), [])
-        slides = property_mock(request, SlideSet, "slides")
+        slides = method_mock(request, SlideSet, "__iter__")
         slides.return_value = [slide1, slide2]
         slideset.save_thumbnails(2)
 
