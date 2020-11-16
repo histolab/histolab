@@ -475,12 +475,17 @@ class SlideSet:
             ]
         )
 
+    def __getitem__(self, slide_id):
+        """Slide object given the correspondent id"""
+        return list(self.__iter__())[slide_id]
+
     def __len__(self) -> int:
         """Total number of the slides of this Slideset
 
         Returns
         -------
-        int representing the number of the Slides.
+        int
+            number of the Slides.
         """
         return len(list(self.__iter__()))
 

@@ -632,6 +632,14 @@ class Describe_Slideset:
         assert isinstance(err.value, FileNotFoundError)
         assert err.value.errno == errno.ENOENT
 
+    def it_can_access_directly_to_the_slides(self, request, Slide_):
+        slideset = instance_mock(request, SlideSet)
+        slideset.__iter__.side_effect = iter([Slide_])
+
+        slideset[0]
+
+        slideset.__getitem__.assert_called_once()
+
     def it_constructs_its_sequence_of_slides_to_help(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
