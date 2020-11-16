@@ -546,7 +546,7 @@ class SlideSet:
         n: int
             Number of slides.
         """
-        return len(list(self.__iter__()))
+        return self.__len__()
 
     # ---private interface methods and properties---
 
