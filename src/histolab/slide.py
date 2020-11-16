@@ -22,12 +22,12 @@ Slide is the main API class for manipulating slide objects.
 """
 
 import math
-import ntpath
 import os
 import pathlib
 from functools import lru_cache
 from typing import List, Tuple, Union
 
+import ntpath
 import numpy as np
 import openslide
 import PIL
@@ -441,10 +441,10 @@ class Slide:
         """
         try:
             slide = openslide.open_slide(self._path)
-        except openslide.OpenSlideError:
-            raise openslide.OpenSlideError(
+        except PIL.UnidentifiedImageError:
+            raise PIL.UnidentifiedImageError(
                 "Your wsi has something broken inside, a doctor is needed"
-            )  # pragma: no cover
+            )
         except FileNotFoundError:
             raise FileNotFoundError("The wsi path resource doesn't exist")
         return slide

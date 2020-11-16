@@ -2,10 +2,10 @@
 
 import os
 
-import numpy as np
 import ntpath
-
-from PIL import Image
+import numpy as np
+import PIL
+import pytest
 
 from histolab.slide import Slide
 
@@ -39,10 +39,21 @@ class Describe_Slide:
         slide = Slide(
             SVS.CMU_1_SMALL_REGION, os.path.join(SVS.CMU_1_SMALL_REGION, "processed")
         )
-        image = Image.open(SVS.CMU_1_SMALL_REGION)
+        image = PIL.Image.open(SVS.CMU_1_SMALL_REGION)
 
         dimensions = slide.dimensions
 
         assert image.size == dimensions
         assert slide.dimensions == (2220, 2967)
         assert image.size == (2220, 2967)
+
+    def it_raises_openslideerror_with_broken_wsi(self):
+        slide = Slide(SVS.BROKEN, os.path.join(SVS.BROKEN, "processed"))
+
+        with pytest.raises(PIL.UnidentifiedImageError) as err:
+            slide._wsi
+
+        assert isinstance(err.value, PIL.UnidentifiedImageError)
+        assert (
+            str(err.value) == "Your wsi has something broken inside, a doctor is needed"
+        )

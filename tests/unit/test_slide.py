@@ -6,18 +6,18 @@ import os
 from collections import namedtuple
 from unittest.mock import call
 
-import pytest
-
 import numpy as np
 import openslide
 import PIL
+import pytest
+from PIL import ImageShow
+
 from histolab.exceptions import LevelError
 from histolab.filters.compositions import _SlideFiltersComposition
 from histolab.filters.image_filters import Compose
 from histolab.slide import Slide, SlideSet
 from histolab.types import CP, Region
 from histolab.util import regions_from_binary_mask
-from PIL import ImageShow
 
 from ..unitutil import (
     ANY,
@@ -292,8 +292,7 @@ class Describe_Slide:
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert (
-            str(err.value) == "cannot identify image file "
-            f"{repr(os.path.join(slide_path))}"
+            str(err.value) == "Your wsi has something broken inside, a doctor is needed"
         )
 
     def it_can_resample_itself(self, tmpdir, resampled_dims_):
