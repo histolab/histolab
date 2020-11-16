@@ -25,7 +25,7 @@ import math
 import os
 import pathlib
 from functools import lru_cache
-from typing import List, Tuple, Union
+from typing import Iterator, List, Tuple, Union
 
 import ntpath
 import numpy as np
@@ -460,6 +460,30 @@ class SlideSet:
         self._processed_path = processed_path
         self._valid_extensions = valid_extensions
 
+    def __iter__(self) -> Iterator[Slide]:
+        """Slides of the slideset
+
+        Returns
+        -------
+        generator of `Slide` objects.
+        """
+        return iter(
+            [
+                Slide(os.path.join(self._slides_path, _path), self._processed_path)
+                for _path in os.listdir(self._slides_path)
+                if os.path.splitext(_path)[1] in self._valid_extensions
+            ]
+        )
+
+    def __len__(self) -> int:
+        """Total number of the slides of this Slideset
+
+        Returns
+        -------
+        int representing the number of the Slides.
+        """
+        return len(list(self.__iter__()))
+
     # ---public interface methods and properties---
 
     def save_scaled_slides(self, scale_factor: int = 32, n: int = 0) -> None:
@@ -475,7 +499,7 @@ class SlideSet:
         """
         os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
-        for slide in self.slides[:n]:
+        for slide in list(self.__iter__())[:n]:
             slide.save_scaled_image(scale_factor)
 
     def save_thumbnails(self, n: int = 0) -> None:
@@ -489,22 +513,8 @@ class SlideSet:
         """
         os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
-        for slide in self.slides[:n]:
+        for slide in list(self.__iter__())[:n]:
             slide.save_thumbnail()
-
-    @lazyproperty
-    def slides(self) -> List[Slide]:
-        """Retrieve all the slides of the slideset
-
-        Returns
-        ----------
-        slides: list, list of `Slide` objects
-        """
-        return [
-            Slide(os.path.join(self._slides_path, _path), self._processed_path)
-            for _path in os.listdir(self._slides_path)
-            if os.path.splitext(_path)[1] in self._valid_extensions
-        ]
 
     @lazyproperty
     def slides_stats(self) -> dict:
@@ -536,7 +546,7 @@ class SlideSet:
         n: int
             Number of slides.
         """
-        return len(self.slides)
+        return len(list(self.__iter__()))
 
     # ---private interface methods and properties---
 
@@ -591,9 +601,9 @@ class SlideSet:
                 "height": slide.dimensions[1],
                 "size": slide.dimensions[0] * slide.dimensions[1],
             }
-            for slide in self.slides
+            for slide in list(self.__iter__())
         ]
 
     @lazyproperty
     def _slides_dimensions_list(self):
-        return [slide.dimensions for slide in self.slides]
+        return [slide.dimensions for slide in list(self.__iter__())]
