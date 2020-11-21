@@ -475,7 +475,7 @@ class SlideSet:
             ]
         )
 
-    def __getitem__(self, slide_id):
+    def __getitem__(self, slide_id: int) -> Slide:
         """Slide object given the correspondent id"""
         return list(self.__iter__())[slide_id]
 
