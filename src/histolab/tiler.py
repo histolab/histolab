@@ -23,6 +23,7 @@ from functools import lru_cache
 from typing import List, Tuple
 
 import numpy as np
+from PIL import Image, ImageDraw
 
 from .exceptions import LevelError
 from .scorer import Scorer
@@ -395,6 +396,19 @@ class RandomTiler(Tiler):
         if level_ < 0:
             raise LevelError(f"Level cannot be negative ({level_})")
         self._valid_level = level_
+
+    def locate_tiles(self, slide: Slide) -> None:
+        tiles_coords = (s[1] for s in self._random_tiles_generator(slide))
+        source_img = Image.open(slide.thumbnail_path)
+        source_img.putalpha(128)
+        draw = ImageDraw.Draw(source_img)
+        for coords in tiles_coords:
+            coords = np.array([[coords.x_ul, coords.x_br], [coords.y_ul, coords.y_br]])
+            rescaled = coords / np.power(
+                10, np.ceil(np.log10(slide.dimensions)) - 3
+            ).astype(int)
+            draw.rectangle([rescaled[0], rescaled[1]], outline="red")
+        source_img.save("a", "PNG")
 
     @property
     def max_iter(self) -> int:
