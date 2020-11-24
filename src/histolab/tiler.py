@@ -69,6 +69,17 @@ class Tiler(Protocol):
         raise NotImplementedError
 
     def locate_tiles(self, slide: Slide, path: str = ".", filename: str = None) -> None:
+        """Place tiles references on the slide thumbnail image
+
+        Parameters
+        ----------
+        slide : Slide
+            Slide reference where placing the tiles
+        path : str
+            local path where to save the final image with the tiles references
+        filename: str
+            name of the file of the final composed image
+        """
         tiles_coords = (tc[1] for tc in self._tiles_generator(slide))
         source_img = Image.open(slide.thumbnail_path)
         source_img.putalpha(128)
@@ -113,7 +124,7 @@ class Tiler(Protocol):
 
         return tile_filename
 
-    def _tiles_generator(self, slide: Slide, path: str) -> None:
+    def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
         raise NotImplementedError
 
 
