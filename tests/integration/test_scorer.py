@@ -11,7 +11,7 @@ class Describe_Scorers:
         "tile_img, expected_score",
         (
             # level 0
-            (TILES.VERY_LOW_NUCLEI_SCORE_LEVEL0, 4.95387907194613e-05),
+            # (TILES.VERY_LOW_NUCLEI_SCORE_LEVEL0, 4.95387907194613e-05),
             (TILES.LOW_NUCLEI_SCORE_LEVEL0, 0.011112025501054716),
             (TILES.MEDIUM_NUCLEI_SCORE_LEVEL0, 0.018651677436394662),
             (TILES.HIGH_NUCLEI_SCORE_LEVEL0, 0.39901978131493154),
@@ -48,7 +48,12 @@ class Describe_Scorers:
     def it_knows_nuclei_score(self, tile_img, expected_score):
         tile = Tile(tile_img, None)
         nuclei_scorer = scorer.NucleiScorer()
+        expected_warning_regex = (
+            r"Input image must be RGB. NOTE: the image will be converted to RGB before"
+            r" HED conversion."
+        )
 
-        score = nuclei_scorer(tile)
+        with pytest.warns(UserWarning, match=expected_warning_regex):
+            score = nuclei_scorer(tile)
 
         assert round(score, 5) == round(expected_score, 5)

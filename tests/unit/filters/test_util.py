@@ -28,7 +28,6 @@ from ...base import (
 )
 def test_mask_difference(array1, array2, expected_mask_difference):
     mask_difference_ = mask_difference(array1, array2)
-    print(mask_difference_)
 
     assert type(mask_difference_) == np.ndarray
     assert mask_difference_.dtype == "bool"
