@@ -103,8 +103,13 @@ def test_rgb_to_hed_filter_with_rgba_image():
     expected_value = load_expectation(
         "pil-images-rgba/diagnostic-slide-thumb-rgba-to-hed", type_="png"
     )
+    expected_warning_regex = (
+        r"Input image must be RGB. NOTE: the image will be converted to RGB before"
+        r" HED conversion."
+    )
 
-    hed_img = imf.rgb_to_hed(img)
+    with pytest.warns(UserWarning, match=expected_warning_regex):
+        hed_img = imf.rgb_to_hed(img)
 
     np.testing.assert_array_almost_equal(np.array(hed_img), np.array(expected_value))
     assert np.unique(np.array(ImageChops.difference(hed_img, expected_value)))[0] == 0
@@ -137,8 +142,13 @@ def test_hematoxylin_channel_filter_with_rgba_image():
     expected_value = load_expectation(
         "pil-images-rgba/tcga-lung-hematoxylin-channel", type_="png"
     )
+    expected_warning_regex = (
+        r"Input image must be RGB. NOTE: the image will be converted to RGB before"
+        r" HED conversion."
+    )
 
-    hematoxylin_img = imf.hematoxylin_channel(img)
+    with pytest.warns(UserWarning, match=expected_warning_regex):
+        hematoxylin_img = imf.hematoxylin_channel(img)
 
     np.testing.assert_array_almost_equal(
         np.array(hematoxylin_img), np.array(expected_value)
@@ -176,8 +186,13 @@ def test_eosin_channel_filter_with_rgba_image():
     expected_value = load_expectation(
         "pil-images-rgba/tcga-lung-eosin-channel", type_="png"
     )
+    expected_warning_regex = (
+        r"Input image must be RGB. NOTE: the image will be converted to RGB before"
+        r" HED conversion."
+    )
 
-    eosin_img = imf.eosin_channel(img)
+    with pytest.warns(UserWarning, match=expected_warning_regex):
+        eosin_img = imf.eosin_channel(img)
 
     np.testing.assert_array_almost_equal(np.array(eosin_img), np.array(expected_value))
     assert np.unique(np.array(ImageChops.difference(eosin_img, expected_value)))[0] == 0
@@ -870,8 +885,13 @@ def test_otsu_threshold_filter_on_rgba_image():
     expected_value = load_expectation(
         "mask-arrays/diagnostic-slide-thumb-otsu-threshold-mask", type_="npy"
     )
+    expected_warning_regex = (
+        r"otsu_threshold is expected to work correctly only for grayscale images.NOTE: "
+        r"the image will be converted to grayscale before applying Otsuthreshold"
+    )
 
-    otsu_threshold_mask = imf.otsu_threshold(rgba_img, operator.gt)
+    with pytest.warns(UserWarning, match=expected_warning_regex):
+        otsu_threshold_mask = imf.otsu_threshold(rgba_img, operator.gt)
 
     np.testing.assert_array_equal(otsu_threshold_mask, expected_value)
 
@@ -895,8 +915,13 @@ def test_otsu_threshold_filter_on_rgba_image():
 )
 def test_otsu_threshold_filter_on_rgb_image(pil_image, expected_array):
     expected_value = load_expectation(expected_array, type_="npy")
+    expected_warning_regex = (
+        r"otsu_threshold is expected to work correctly only for grayscale images.NOTE: "
+        r"the image will be converted to grayscale before applying Otsuthreshold"
+    )
 
-    otsu_threshold_mask = imf.otsu_threshold(pil_image, operator.gt)
+    with pytest.warns(UserWarning, match=expected_warning_regex):
+        otsu_threshold_mask = imf.otsu_threshold(pil_image, operator.gt)
 
     np.testing.assert_array_equal(otsu_threshold_mask, expected_value)
 
@@ -1679,7 +1704,8 @@ def test_rgb_to_lab_filter_with_rgb_image(pil_image, expected_image):
 
 
 @pytest.mark.parametrize(
-    "pil_image", (RGBA.DIAGNOSTIC_SLIDE_THUMB, GS.DIAGNOSTIC_SLIDE_THUMB_GS),
+    "pil_image",
+    (RGBA.DIAGNOSTIC_SLIDE_THUMB, GS.DIAGNOSTIC_SLIDE_THUMB_GS),
 )
 def test_rgb_to_lab_raises_exception_on_gs_and_rgba_image(pil_image):
     with pytest.raises(Exception) as err:
