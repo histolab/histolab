@@ -68,6 +68,21 @@ class Tiler(Protocol):
     def extract(self, slide: Slide):
         raise NotImplementedError
 
+    def locate_tiles(self, slide: Slide, path: str = ".", filename: str = None) -> None:
+        tiles_coords = (tc[1] for tc in self._tiles_generator(slide))
+        source_img = Image.open(slide.thumbnail_path)
+        source_img.putalpha(128)
+        draw = ImageDraw.Draw(source_img)
+        for coords in tiles_coords:
+            coords = np.array([[coords.x_ul, coords.x_br], [coords.y_ul, coords.y_br]])
+            rescaled = coords.T / np.power(
+                10, np.ceil(np.log10(slide.dimensions)) - 3
+            ).astype(int)
+            draw.rectangle(tuple(map(tuple, rescaled)), outline="red")
+        if not filename:
+            filename = f"{slide.name}-tiles-location.png"
+        source_img.save(os.path.join(path, filename), "PNG")
+
     # ------- implementation helpers -------
 
     def _tile_filename(
@@ -97,6 +112,9 @@ class Tiler(Protocol):
         )
 
         return tile_filename
+
+    def _tiles_generator(self, slide: Slide, path: str) -> None:
+        raise NotImplementedError
 
 
 class GridTiler(Tiler):
@@ -152,7 +170,7 @@ class GridTiler(Tiler):
                 f"{len(slide.levels)}"
             )
 
-        grid_tiles = self._grid_tiles_generator(slide)
+        grid_tiles = self._tiles_generator(slide)
 
         tiles_counter = 0
 
@@ -257,7 +275,7 @@ class GridTiler(Tiler):
                 bbox_coordinates, slide
             )
 
-    def _grid_tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
+    def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
         """Generator of tiles arranged in a grid.
 
         Parameters
@@ -378,7 +396,7 @@ class RandomTiler(Tiler):
 
         np.random.seed(self.seed)
 
-        random_tiles = self._random_tiles_generator(slide)
+        random_tiles = self._tiles_generator(slide)
 
         tiles_counter = 0
         for tiles_counter, (tile, tile_wsi_coords) in enumerate(random_tiles):
@@ -396,19 +414,6 @@ class RandomTiler(Tiler):
         if level_ < 0:
             raise LevelError(f"Level cannot be negative ({level_})")
         self._valid_level = level_
-
-    def locate_tiles(self, slide: Slide) -> None:
-        tiles_coords = (s[1] for s in self._random_tiles_generator(slide))
-        source_img = Image.open(slide.thumbnail_path)
-        source_img.putalpha(128)
-        draw = ImageDraw.Draw(source_img)
-        for coords in tiles_coords:
-            coords = np.array([[coords.x_ul, coords.x_br], [coords.y_ul, coords.y_br]])
-            rescaled = coords / np.power(
-                10, np.ceil(np.log10(slide.dimensions)) - 3
-            ).astype(int)
-            draw.rectangle([rescaled[0], rescaled[1]], outline="red")
-        source_img.save("a", "PNG")
 
     @property
     def max_iter(self) -> int:
@@ -473,7 +478,7 @@ class RandomTiler(Tiler):
 
         return tile_wsi_coords
 
-    def _random_tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
+    def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
         """Generate Random Tiles within a slide box.
 
         Stops if:
@@ -721,12 +726,12 @@ class ScoreTiler(GridTiler):
             List of tuples containing the score and the extraction coordinates for each
             tile. Each tuple represents a tile.
         """
-        if next(self._grid_tiles_generator(slide), None) is None:
+        if next(self._tiles_generator(slide), None) is None:
             raise RuntimeError(
                 "No tiles have been generated. This could happen if `check_tissue=True`"
             )
 
-        grid_tiles = self._grid_tiles_generator(slide)
+        grid_tiles = self._tiles_generator(slide)
         scores = []
 
         for tile, tile_wsi_coords in grid_tiles:
