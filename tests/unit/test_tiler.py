@@ -264,7 +264,7 @@ class Describe_RandomTiler:
             (10, 10), 2, level=0, max_iter=max_iter, check_tissue=check_tissue
         )
 
-        generated_tiles = list(random_tiler._random_tiles_generator(slide))
+        generated_tiles = list(random_tiler._tiles_generator(slide))
 
         _random_tile_coordinates.assert_called_with(random_tiler, slide)
         assert _random_tile_coordinates.call_count <= random_tiler.max_iter
@@ -278,12 +278,10 @@ class Describe_RandomTiler:
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
-        _random_tiles_generator = method_mock(
-            request, RandomTiler, "_random_tiles_generator"
-        )
+        _tiles_generator = method_mock(request, RandomTiler, "_tiles_generator")
         coords = CP(0, 10, 0, 10)
         tile = Tile(image, coords)
-        _random_tiles_generator.return_value = [(tile, coords), (tile, coords)]
+        _tiles_generator.return_value = [(tile, coords), (tile, coords)]
         _tile_filename = method_mock(request, RandomTiler, "_tile_filename")
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
@@ -510,7 +508,7 @@ class Describe_GridTiler:
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=check_tissue)
         tiles = [tile1, tile2]
 
-        generated_tiles = list(grid_tiler._grid_tiles_generator(slide))
+        generated_tiles = list(grid_tiler._tiles_generator(slide))
 
         _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
         assert _extract_tile.call_args_list == (
@@ -536,7 +534,7 @@ class Describe_GridTiler:
         _grid_coordinates_generator.return_value = [coords1, coords2]
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=False)
 
-        generated_tiles = list(grid_tiler._grid_tiles_generator(slide))
+        generated_tiles = list(grid_tiler._tiles_generator(slide))
 
         _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
         assert len(generated_tiles) == 1
@@ -557,7 +555,7 @@ class Describe_GridTiler:
         )
         _grid_coordinates_generator.return_value = [coords]
         grid_tiler = GridTiler((10, 10))
-        generated_tiles = list(grid_tiler._grid_tiles_generator(slide))
+        generated_tiles = list(grid_tiler._tiles_generator(slide))
 
         assert len(generated_tiles) == 0
         _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
@@ -568,10 +566,10 @@ class Describe_GridTiler:
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
-        _grid_tiles_generator = method_mock(request, GridTiler, "_grid_tiles_generator")
+        _tiles_generator = method_mock(request, GridTiler, "_tiles_generator")
         coords = CP(0, 10, 0, 10)
         tile = Tile(image, coords)
-        _grid_tiles_generator.return_value = [(tile, coords), (tile, coords)]
+        _tiles_generator.return_value = [(tile, coords), (tile, coords)]
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
             os.path.join(
@@ -630,18 +628,16 @@ class Describe_ScoreTiler:
         coords = CP(0, 10, 0, 10)
         image = PILIMG.RGB_RANDOM_COLOR_500X500
         tile = Tile(image, coords)
-        _grid_tiles_generator = method_mock(
-            request, ScoreTiler, "_grid_tiles_generator"
-        )
+        _tiles_generator = method_mock(request, ScoreTiler, "_tiles_generator")
         # it needs to be a generator
-        _grid_tiles_generator.return_value = ((tile, coords) for i in range(3))
+        _tiles_generator.return_value = ((tile, coords) for i in range(3))
         _scorer = instance_mock(request, RandomScorer)
         _scorer.side_effect = [0.5, 0.7]
         score_tiler = ScoreTiler(_scorer, (10, 10), 2, 0)
 
         scores = score_tiler._scores(slide)
 
-        assert _grid_tiles_generator.call_args_list == [
+        assert _tiles_generator.call_args_list == [
             call(score_tiler, slide),
             call(score_tiler, slide),
         ]
@@ -654,17 +650,15 @@ class Describe_ScoreTiler:
 
     def but_it_raises_runtimeerror_if_no_tiles_are_extracted(self, request):
         slide = instance_mock(request, Slide)
-        _grid_tiles_generator = method_mock(
-            request, ScoreTiler, "_grid_tiles_generator"
-        )
+        _tiles_generator = method_mock(request, ScoreTiler, "_tiles_generator")
         # it needs to be an empty generator
-        _grid_tiles_generator.return_value = (n for n in [])
+        _tiles_generator.return_value = (n for n in [])
         score_tiler = ScoreTiler(None, (10, 10), 2, 0)
 
         with pytest.raises(RuntimeError) as err:
             score_tiler._scores(slide)
 
-        _grid_tiles_generator.assert_called_once_with(score_tiler, slide)
+        _tiles_generator.assert_called_once_with(score_tiler, slide)
         assert isinstance(err.value, RuntimeError)
         assert (
             str(err.value)
