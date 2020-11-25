@@ -10,6 +10,7 @@ from typing import Tuple
 
 from requests.exceptions import HTTPError
 
+import PIL
 import openslide
 
 from .. import __version__
@@ -236,8 +237,8 @@ def _load_svs(filename: str) -> Tuple[openslide.OpenSlide, str]:
     """
     try:
         svs = openslide.open_slide(_fetch(filename))
-    except openslide.OpenSlideError:  # pragma: no cover
-        raise openslide.OpenSlideError(
+    except PIL.UnidentifiedImageError:
+        raise PIL.UnidentifiedImageError(
             "Your wsi has something broken inside, a doctor is needed"
         )
     return svs, _fetch(filename)

@@ -7,6 +7,8 @@ legacy_datasets = ["cmu_small_region.svs"]
 # To generate the SHA256 hash, use the command
 # openssl sha256 filename
 registry = {
+    "histolab/broken.svs": "b1325916876afa17ad5e02d2e7298ee883e758ed25369470d85bc0990e928e11",
+    "histolab/kidney.png": "5c6dc1b9ae10a2865302d9c8eda360362ec47732cb3e9766c38ed90cb9f4c371",
     "data/cmu_small_region.svs": "ed92d5a9f2e86df67640d6f92ce3e231419ce127131697fbbce42ad5e002c8a7",
     "aperio/JP2K-33003-1.svs": "6205ccf75a8fa6c32df7c5c04b7377398971a490fb6b320d50d91f7ba6a0e6fd",
     "aperio/JP2K-33003-2.svs": "1a13cef86b55b51127cebd94a1f6069f7de494c98e3e708640d1ce7181d9e3fd",
@@ -22,6 +24,8 @@ APERIO_REPO_URL = "http://openslide.cs.cmu.edu/download/openslide-testdata/Aperi
 TCGA_REPO_URL = "https://api.gdc.cancer.gov/data"
 
 registry_urls = {
+    "histolab/broken.svs": "https://raw.githubusercontent.com/histolab/histolab/master/tests/fixtures/svs-images/broken.svs",
+    "histolab/kidney.png": "https://user-images.githubusercontent.com/4196091/100275351-132cc880-2f60-11eb-8cc8-7a3bf3723260.png",
     "aperio/JP2K-33003-1.svs": f"{APERIO_REPO_URL}/JP2K-33003-1.svs",
     "aperio/JP2K-33003-2.svs": f"{APERIO_REPO_URL}/JP2K-33003-2.svs",
     "tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8": f"{TCGA_REPO_URL}/9c960533-2e58-4e54-97b2-8454dfb4b8c8",
