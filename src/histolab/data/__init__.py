@@ -377,7 +377,7 @@ def cmu_small_region() -> Tuple[openslide.OpenSlide, str]:
     return _load_svs("data/cmu_small_region.svs")
 
 
-def heart_tissue() -> Tuple[openslide.OpenSlide, str]:
+def heart_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """heart_tissue() -> Tuple[openslide.OpenSlide, str]
 
     Heart tissue, brightfield, JPEG 2000, YCbCr
