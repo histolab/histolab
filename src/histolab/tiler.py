@@ -68,30 +68,35 @@ class Tiler(Protocol):
     def extract(self, slide: Slide):
         raise NotImplementedError
 
-    def locate_tiles(self, slide: Slide) -> Image:
+    def locate_tiles(
+        self, slide: Slide, alpha: int = 128, outline: str = "red"
+    ) -> Image:
         """Place tiles references on the slide thumbnail image
 
         Parameters
         ----------
         slide : Slide
             Slide reference where placing the tiles
-
+        alpha: int
+            The alpha level to be applied to the slide thumbnail, default to 128.
+        outline: str
+            The outline color for the tile annotations, default to 'red'.
         Returns
         -------
         img
-            PIL Image with tiles annotations
+            PIL Image of the slide thumbnail with the extracted tiles outlined
         """
         if not os.path.exists(slide.thumbnail_path):
             slide.save_thumbnail()
         tiles_coords = (tc[1] for tc in self._tiles_generator(slide))
         img = Image.open(slide.thumbnail_path)
-        img.putalpha(128)
+        img.putalpha(alpha)
         draw = ImageDraw.Draw(img)
         for coords in tiles_coords:
             rescaled = np.array(tuple(coords)).reshape(2, 2) / np.power(
                 10, np.ceil(np.log10(slide.dimensions)) - 3
             ).astype(int)
-            draw.rectangle(tuple(map(tuple, rescaled)), outline="red")
+            draw.rectangle(tuple(map(tuple, rescaled)), outline=outline)
         return img
 
     # ------- implementation helpers -------
