@@ -68,31 +68,31 @@ class Tiler(Protocol):
     def extract(self, slide: Slide):
         raise NotImplementedError
 
-    def locate_tiles(self, slide: Slide, path: str = ".", filename: str = None) -> None:
+    def locate_tiles(self, slide: Slide) -> Image:
         """Place tiles references on the slide thumbnail image
 
         Parameters
         ----------
         slide : Slide
             Slide reference where placing the tiles
-        path : str
-            local path where to save the final image with the tiles references
-        filename: str
-            name of the file of the final composed image
+
+        Returns
+        -------
+        img
+            PIL Image with tiles annotations
         """
+        if not os.path.exists(slide.thumbnail_path):
+            slide.save_thumbnail()
         tiles_coords = (tc[1] for tc in self._tiles_generator(slide))
-        source_img = Image.open(slide.thumbnail_path)
-        source_img.putalpha(128)
-        draw = ImageDraw.Draw(source_img)
+        img = Image.open(slide.thumbnail_path)
+        img.putalpha(128)
+        draw = ImageDraw.Draw(img)
         for coords in tiles_coords:
-            coords = np.array([[coords.x_ul, coords.x_br], [coords.y_ul, coords.y_br]])
-            rescaled = coords.T / np.power(
+            rescaled = np.array(tuple(coords)).reshape(2, 2) / np.power(
                 10, np.ceil(np.log10(slide.dimensions)) - 3
             ).astype(int)
             draw.rectangle(tuple(map(tuple, rescaled)), outline="red")
-        if not filename:
-            filename = f"{slide.name}-tiles-location.png"
-        source_img.save(os.path.join(path, filename), "PNG")
+        return img
 
     # ------- implementation helpers -------
 
@@ -405,8 +405,6 @@ class RandomTiler(Tiler):
             Slide from which to extract the tiles
         """
 
-        np.random.seed(self.seed)
-
         random_tiles = self._tiles_generator(slide)
 
         tiles_counter = 0
@@ -508,7 +506,7 @@ class RandomTiler(Tiler):
         coords : CoordinatePair
             The level-0 coordinates of the extracted tile
         """
-
+        np.random.seed(self.seed)
         iteration = valid_tile_counter = 0
 
         while True:
