@@ -8,8 +8,9 @@ import os
 import shutil
 from typing import Tuple
 
-import openslide
 from requests.exceptions import HTTPError
+
+import openslide
 
 from .. import __version__
 from ._registry import legacy_registry, registry, registry_urls
