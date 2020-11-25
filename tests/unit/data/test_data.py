@@ -1,26 +1,28 @@
 # coding: utf-8
 
 import copy
-
 import os
 import sys
-from unittest.mock import patch
 from importlib import reload
-
-import pytest
+from unittest.mock import patch
 
 import openslide
+import pytest
+from requests.exceptions import HTTPError
+
+from histolab import __version__ as v
 from histolab.data import (
     _fetch,
     _has_hash,
     _load_svs,
+    _registry,
     cmu_small_region,
     data_dir,
     registry,
 )
 
 from ...fixtures import SVS
-from ...unitutil import function_mock, ANY
+from ...unitutil import ANY, function_mock
 
 
 def test_data_dir():
@@ -33,6 +35,19 @@ def test_cmu_small_region():
     """ Test that "cmu_small_region" svs can be loaded. """
     cmu_small_region_image, path = cmu_small_region()
     assert cmu_small_region_image.dimensions == (2220, 2967)
+
+
+@patch.dict(registry, {"data/cmu_small_region_broken.svs": "bar"}, clear=True)
+@patch.object(_registry, "legacy_datasets", ["data/cmu_small_region_broken.svs"])
+def test_file_url_not_found():
+    data_filename = "data/cmu_small_region_broken.svs"
+    with pytest.raises(HTTPError) as err:
+        _fetch(data_filename)
+
+    assert (
+        str(err.value) == f"404 Client Error: Not Found for url: "
+        f"https://github.com/histolab/histolab/raw/{v}/histolab/{data_filename}"
+    )
 
 
 def test_load_svs(request):

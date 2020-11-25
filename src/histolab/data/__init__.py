@@ -9,6 +9,7 @@ import shutil
 from typing import Tuple
 
 import openslide
+from requests.exceptions import HTTPError
 
 from .. import __version__
 from ._registry import legacy_registry, registry, registry_urls
@@ -186,7 +187,9 @@ def _fetch(data_filename: str) -> str:
     # available.
     try:
         resolved_path = image_fetcher.fetch(data_filename)
-    except ConnectionError as err:
+    except HTTPError as httperror:
+        raise HTTPError(f"{httperror}")
+    except ConnectionError:  # pragma: no cover
         # If we decide in the future to suppress the underlying 'requests'
         # error, change this to `raise ... from None`. See PEP 3134.
         raise ConnectionError(
@@ -194,7 +197,7 @@ def _fetch(data_filename: str) -> str:
             "connection is available. To avoid this message in the "
             "future, try `histolab.data.download_all()` when you are "
             "connected to the internet."
-        ) from err
+        )
     return resolved_path
 
 
@@ -373,7 +376,7 @@ def cmu_small_region() -> Tuple[openslide.OpenSlide, str]:
     return _load_svs("data/cmu_small_region.svs")
 
 
-def heart_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
+def heart_tissue() -> Tuple[openslide.OpenSlide, str]:
     """heart_tissue() -> Tuple[openslide.OpenSlide, str]
 
     Heart tissue, brightfield, JPEG 2000, YCbCr
