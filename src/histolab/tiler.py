@@ -81,9 +81,10 @@ class Tiler(Protocol):
             The alpha level to be applied to the slide thumbnail, default to 128.
         outline: str
             The outline color for the tile annotations, default to 'red'.
+
         Returns
         -------
-        img
+        Image
             PIL Image of the slide thumbnail with the extracted tiles outlined
         """
         if not os.path.exists(slide.thumbnail_path):
