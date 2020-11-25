@@ -638,7 +638,19 @@ class Describe_Slideset:
 
         slideset[0]
 
-        slideset.__getitem__.assert_called_once()
+        slideset.__getitem__.assert_called_once_with(0)
+
+    def and_it_is_exaclty_what_expected(self, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.svs"), "TIFF")
+        slideset = SlideSet(tmp_path_, "proc", [".svs"])
+
+        slide = slideset[0]
+
+        np.testing.assert_array_almost_equal(
+            slide.resampled_array(), slideset[0].resampled_array()
+        )
 
     def it_constructs_its_sequence_of_slides_to_help(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
