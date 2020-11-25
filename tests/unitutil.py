@@ -5,11 +5,14 @@
 import os
 import sys
 
+import pytest
 import numpy as np
 from PIL import Image
 
 from unittest.mock import ANY, call  # noqa # isort:skip
 from unittest.mock import create_autospec, patch, PropertyMock  # isort:skip
+
+from histolab import data
 
 
 def dict_list_eq(l1, l2):
@@ -82,6 +85,14 @@ def property_mock(request, cls, prop_name, **kwargs):
     _patch = patch.object(cls, prop_name, new_callable=PropertyMock, **kwargs)
     request.addfinalizer(_patch.stop)
     return _patch.start()
+
+
+def fetch(data_filename):
+    """Attempt to fetch data, but if unavailable, skip the tests."""
+    try:
+        return data._fetch(data_filename)
+    except (ConnectionError, ModuleNotFoundError):
+        pytest.skip(f"Unable to download {data_filename}")
 
 
 def on_ci():

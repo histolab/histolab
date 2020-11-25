@@ -7,7 +7,9 @@ from importlib import reload
 from unittest.mock import patch
 
 import openslide
+import PIL
 import pytest
+import numpy as np
 from requests.exceptions import HTTPError
 
 from histolab import __version__ as v
@@ -22,13 +24,31 @@ from histolab.data import (
 )
 
 from ...fixtures import SVS
-from ...unitutil import ANY, function_mock
+from ...unitutil import ANY, fetch, function_mock
 
 
 def test_data_dir():
     # data_dir should be a directory that can be used as a standard directory
     data_directory = data_dir
     assert "cmu_small_region.svs" in os.listdir(data_directory)
+
+
+def test_download_file_from_internet():
+    # NOTE: This test will be skipped when internet connection is not available
+    fetch("histolab/kidney.png")
+    kidney_path = _fetch("histolab/kidney.png")
+    kidney_image = np.array(PIL.Image.open(kidney_path))
+
+    assert kidney_image.shape == (537, 809, 4)
+
+
+def test_download_file_from_internet_but_it_is_broken():
+    # NOTE: This test will be skipped when internet connection is not available
+    fetch("histolab/broken.svs")
+    with pytest.raises(PIL.UnidentifiedImageError) as err:
+        _load_svs("histolab/broken.svs")
+
+    assert str(err.value) == "Your wsi has something broken inside, a doctor is needed"
 
 
 def test_cmu_small_region():
