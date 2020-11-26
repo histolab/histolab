@@ -23,7 +23,7 @@ class DescribeRandomTiler:
             "tiles-location-images/cmu-1-small-region-tiles-location-random",
             type_="png",
         )
-        tiles_location_img = random_tiles_extractor.locate_tiles(slide)
+        tiles_location_img = random_tiles_extractor.locate_tiles(slide, scale_factor=10)
 
         np.testing.assert_array_almost_equal(
             np.asarray(tiles_location_img), expectation
@@ -41,7 +41,7 @@ class DescribeGridTiler:
         expectation = load_expectation(
             "tiles-location-images/cmu-1-small-region-tiles-location-grid", type_="png"
         )
-        tiles_location_img = grid_tiles_extractor.locate_tiles(slide)
+        tiles_location_img = grid_tiles_extractor.locate_tiles(slide, scale_factor=10)
 
         np.testing.assert_array_almost_equal(
             np.asarray(tiles_location_img), expectation
@@ -62,7 +62,9 @@ class DescribeScoreTiler:
             "tiles-location-images/cmu-1-small-region-tiles-location-scored",
             type_="png",
         )
-        scored_location_img = scored_tiles_extractor.locate_tiles(slide)
+        scored_location_img = scored_tiles_extractor.locate_tiles(
+            slide, scale_factor=10
+        )
 
         np.testing.assert_array_almost_equal(
             np.asarray(scored_location_img), expectation
