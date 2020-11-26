@@ -74,7 +74,7 @@ class Tiler(Protocol):
         alpha: int = 128,
         outline: str = "red",
     ) -> PIL.Image.Image:
-        """Place tiles references on the slide thumbnail image
+        """Draw tile box references on a rescaled version of the slide
 
         Parameters
         ----------
