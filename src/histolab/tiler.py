@@ -89,7 +89,7 @@ class Tiler(Protocol):
 
         Returns
         -------
-        Image
+        PIL.Image.Image
             PIL Image of the slide thumbnail with the extracted tiles outlined
         """
         if not os.path.exists(slide.scaled_image_path(scale_factor)):
