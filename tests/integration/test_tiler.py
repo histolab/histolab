@@ -15,7 +15,7 @@ from ..util import load_expectation
 class DescribeRandomTiler:
     def it_locates_tiles_on_the_slide(self, tmpdir):
         slide = Slide(SVS.CMU_1_SMALL_REGION, os.path.join(tmpdir, "processed"))
-        slide.save_thumbnail()
+        slide.save_scaled_image(10)
         random_tiles_extractor = RandomTiler(
             tile_size=(512, 512), n_tiles=2, level=0, seed=42, check_tissue=False
         )
