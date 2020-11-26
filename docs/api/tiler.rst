@@ -7,6 +7,7 @@ Tiler
 
 .. automodule:: src.histolab.tiler
     :members:
+    :inherited-members: locate_tiles
     :exclude-members: Tiler
 
 .. toctree::
