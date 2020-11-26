@@ -12,7 +12,7 @@ jobs:
       - name: Run Benchmarks
         run: |
           sudo apt install -y openslide-tools
-          pip install numpy pytest pytest-benchmark
+          pip install numpy pytest pytest-benchmark requests
           pip install -e .
           pytest tests/benchmarks/test_benchmarks.py --benchmark-json output.json
       # Download previous benchmark result from cache (if exists)
