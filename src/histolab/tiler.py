@@ -23,7 +23,7 @@ from functools import lru_cache
 from typing import List, Tuple
 
 import numpy as np
-from PIL import Image, ImageDraw
+import PIL
 
 from .exceptions import LevelError
 from .scorer import Scorer
@@ -73,7 +73,7 @@ class Tiler(Protocol):
         scale_factor: int = 32,
         alpha: int = 128,
         outline: str = "red",
-    ) -> Image:
+    ) -> PIL.Image.Image:
         """Place tiles references on the slide thumbnail image
 
         Parameters
@@ -95,9 +95,9 @@ class Tiler(Protocol):
         if not os.path.exists(slide.scaled_image_path(scale_factor)):
             slide.save_scaled_image(scale_factor)
         tiles_coords = (tc[1] for tc in self._tiles_generator(slide))
-        img = Image.open(slide.scaled_image_path(scale_factor))
+        img = PIL.Image.open(slide.scaled_image_path(scale_factor))
         img.putalpha(alpha)
-        draw = ImageDraw.Draw(img)
+        draw = PIL.ImageDraw.Draw(img)
         for coords in tiles_coords:
             rescaled = np.array(scale_coordinates(coords, slide.dimensions, img.size))
             draw.rectangle(tuple(map(tuple, rescaled.reshape(2, 2))), outline=outline)
