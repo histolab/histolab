@@ -61,7 +61,6 @@ class Tiler(Protocol):
         np.ndarray
             Extraction mask at thumbnail level
         """
-
         return slide.biggest_tissue_box_mask
 
     @abstractmethod
@@ -119,7 +118,6 @@ class Tiler(Protocol):
             `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}"
             "-{y_br_wsi}{suffix}`
         """
-
         x_ul_wsi, y_ul_wsi, x_br_wsi, y_br_wsi = tile_wsi_coords
         tile_filename = (
             f"{self.prefix}tile_{tiles_counter}_level{self.level}_{x_ul_wsi}-{y_ul_wsi}"
@@ -305,7 +303,6 @@ class GridTiler(Tiler):
         CoordinatePair
             Coordinates of the slide at level 0 from which the tile has been extracted
         """
-
         grid_coordinates_generator = self._grid_coordinates_generator(slide)
         for coords in grid_coordinates_generator:
             try:
@@ -408,7 +405,6 @@ class RandomTiler(Tiler):
         slide : Slide
             Slide from which to extract the tiles
         """
-
         random_tiles = self._tiles_generator(slide)
 
         tiles_counter = 0
@@ -514,7 +510,6 @@ class RandomTiler(Tiler):
         iteration = valid_tile_counter = 0
 
         while True:
-
             tile_wsi_coords = self._random_tile_coordinates(slide)
             try:
                 tile = slide.extract_tile(tile_wsi_coords, self.level)
@@ -683,7 +678,6 @@ class ScoreTiler(GridTiler):
         filenames : List[str]
             List of the tiles' filename
         """
-
         header = ["filename", "score", "scaled_score"]
         rows = [
             dict(zip(header, values))
