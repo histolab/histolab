@@ -94,10 +94,8 @@ class Tiler(Protocol):
         img.putalpha(alpha)
         draw = ImageDraw.Draw(img)
         for coords in tiles_coords:
-            rescaled = np.array(tuple(coords)).reshape(2, 2) / np.power(
-                10, np.ceil(np.log10(slide.dimensions)) - 3
-            ).astype(int)
-            draw.rectangle(tuple(map(tuple, rescaled)), outline=outline)
+            rescaled = np.array(scale_coordinates(coords, slide.dimensions, img.size))
+            draw.rectangle(tuple(map(tuple, rescaled.reshape(2, 2))), outline=outline)
         return img
 
     # ------- implementation helpers -------
