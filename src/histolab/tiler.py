@@ -68,7 +68,11 @@ class Tiler(Protocol):
         raise NotImplementedError
 
     def locate_tiles(
-        self, slide: Slide, alpha: int = 128, outline: str = "red"
+        self,
+        slide: Slide,
+        scale_factor: int = 32,
+        alpha: int = 128,
+        outline: str = "red",
     ) -> Image:
         """Place tiles references on the slide thumbnail image
 
@@ -76,6 +80,8 @@ class Tiler(Protocol):
         ----------
         slide : Slide
             Slide reference where placing the tiles
+        scale_factor: int
+            Scaling factor for the returned image. Default is 32.
         alpha: int
             The alpha level to be applied to the slide thumbnail, default to 128.
         outline: str
@@ -86,10 +92,10 @@ class Tiler(Protocol):
         Image
             PIL Image of the slide thumbnail with the extracted tiles outlined
         """
-        if not os.path.exists(slide.thumbnail_path):
-            slide.save_thumbnail()
+        if not os.path.exists(slide.scaled_image_path(scale_factor)):
+            slide.save_scaled_image(scale_factor)
         tiles_coords = (tc[1] for tc in self._tiles_generator(slide))
-        img = Image.open(slide.thumbnail_path)
+        img = Image.open(slide.scaled_image_path(scale_factor))
         img.putalpha(alpha)
         draw = ImageDraw.Draw(img)
         for coords in tiles_coords:
