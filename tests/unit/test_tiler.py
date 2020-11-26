@@ -246,6 +246,7 @@ class Describe_RandomTiler:
         has_enough_tissue,
         max_iter,
         expected_value,
+        _random_tile_coordinates,
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
@@ -255,9 +256,6 @@ class Describe_RandomTiler:
         _extract_tile = method_mock(request, Slide, "extract_tile")
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.side_effect = has_enough_tissue * (max_iter // 2)
-        _random_tile_coordinates = method_mock(
-            request, RandomTiler, "_random_tile_coordinates"
-        )
         tiles = [tile1, tile2]
         _extract_tile.side_effect = tiles * (max_iter // 2)
         random_tiler = RandomTiler(
@@ -271,6 +269,22 @@ class Describe_RandomTiler:
         assert len(generated_tiles) == expected_value
         for i, tile in enumerate(generated_tiles):
             assert tile[0] == tiles[i]
+
+    def it_can_generate_random_tiles_even_when_coords_are_not_valid(
+        self, tmpdir, _random_tile_coordinates
+    ):
+        random_tiler = RandomTiler((10, 10), 1, level=0, max_iter=1, check_tissue=False)
+        _random_tile_coordinates.side_effect = [CP(-1, -1, -1, -1), CP(0, 10, 0, 10)]
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+
+        generated_tiles = list(random_tiler._tiles_generator(slide))
+
+        assert generated_tiles[0][1] == CP(0, 10, 0, 10)
+        assert isinstance(generated_tiles[0][0], Tile)
 
     def it_can_extract_random_tiles(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
@@ -300,6 +314,12 @@ class Describe_RandomTiler:
         assert os.path.exists(
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
+
+    # fixture components ---------------------------------------------
+
+    @pytest.fixture
+    def _random_tile_coordinates(self, request):
+        return method_mock(request, RandomTiler, "_random_tile_coordinates")
 
 
 class Describe_GridTiler:
