@@ -85,6 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7
@@ -102,9 +103,4 @@ jobs:
       - name: Test with pytest
         run: python -m pytest --ignore=tests/benchmarks --cov=histolab
       - name: Coveralls
-        run: coveralls
-
-
-
-
-
+        run: COVERALLS_REPO_TOKEN=WquFrdNuEoMpweOBIaJpljJnTfOgYQUKv coveralls
