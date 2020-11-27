@@ -103,4 +103,4 @@ jobs:
       - name: Test with pytest
         run: python -m pytest --ignore=tests/benchmarks --cov=histolab
       - name: Coveralls
-        run: COVERALLS_REPO_TOKEN=WquFrdNuEoMpweOBIaJpljJnTfOgYQUKv coveralls
+        run: coveralls
