@@ -43,10 +43,9 @@ class FiltersComposition:
         if FiltersSubCls:
             instance = super(FiltersComposition, FiltersSubCls).__new__(FiltersSubCls)
             return instance
-        else:
-            raise FilterCompositionError(
-                f"Filters composition for the class {cls_.__name__} is not available"
-            )
+        raise FilterCompositionError(
+            f"Filters composition for the class {cls_.__name__} is not available"
+        )
 
 
 class _SlideFiltersComposition(FiltersComposition):
