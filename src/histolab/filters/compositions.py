@@ -51,7 +51,7 @@ class FiltersComposition:
 class _SlideFiltersComposition(FiltersComposition):
     @lazyproperty
     def tissue_mask_filters(self) -> imf.Compose:
-        """Return a filters composition to get a binary mask to estimate tissue in a slide.
+        """Filters composition for slide's tissue estimation.
 
         Returns
         -------
@@ -72,7 +72,7 @@ class _SlideFiltersComposition(FiltersComposition):
 class _TileFiltersComposition(FiltersComposition):
     @lazyproperty
     def tissue_mask_filters(self) -> imf.Compose:
-        """Return a filters composition to get a binary mask to estimate tissue in a tile.
+        """Filters composition for tile's tissue estimation.
 
         Returns
         -------

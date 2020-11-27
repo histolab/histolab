@@ -1,10 +1,12 @@
 [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![GitHub](https://img.shields.io/github/license/histolab/histolab)](https://github.com/histolab/histolab/blob/master/LICENSE.txt)
+
 [![Coverage Status](https://coveralls.io/repos/github/histolab/histolab/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/histolab/histolab?branch=master)
 ![CI](https://github.com/histolab/histolab/workflows/CI/badge.svg?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/histolab/badge/?version=latest)](https://histolab.readthedocs.io/en/latest/?badge=latest)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 [![PyPI](https://img.shields.io/pypi/v/histolab)](https://pypi.org/project/histolab/)
-[![GitHub](https://img.shields.io/github/license/histolab/histolab)](https://github.com/histolab/histolab/blob/master/LICENSE.txt)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/histolab)
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/histolab)
 
