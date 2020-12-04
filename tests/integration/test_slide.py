@@ -64,22 +64,26 @@ class Describe_Slide:
             (
                 SVS.CMU_1_SMALL_REGION,
                 True,
-                "bbox-location-images/cmu-1-small-region-bbox-location-tissue-mask-true",
+                "bbox-location-images/"
+                "cmu-1-small-region-bbox-location-tissue-mask-true",
             ),
             (
                 SVS.CMU_1_SMALL_REGION,
                 False,
-                "bbox-location-images/cmu-1-small-region-bbox-location-tissue-mask-false",
+                "bbox-location-images/"
+                "cmu-1-small-region-bbox-location-tissue-mask-false",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
                 True,
-                "bbox-location-images/tcga-cr-7395-01a-01-ts1-bbox-location-tissue-mask-true",
+                "bbox-location-images/"
+                "tcga-cr-7395-01a-01-ts1-bbox-location-tissue-mask-true",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
                 False,
-                "bbox-location-images/tcga-cr-7395-01a-01-ts1-bbox-location-tissue-mask-false",
+                "bbox-location-images/"
+                "tcga-cr-7395-01a-01-ts1-bbox-location-tissue-mask-false",
             ),
         ],
     )
