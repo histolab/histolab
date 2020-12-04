@@ -2,10 +2,25 @@
 
 """Utilities for histolab tests."""
 
+import base64
 import os
+
+from io import BytesIO
 
 import numpy as np
 from PIL import Image
+
+
+def pil_to_base64(pilimage):  # pragma: no cover
+    """Returns base64 encoded image given a PIL Image"""
+    buffer = BytesIO()
+    pilimage.save(buffer, "png")
+    return base64.b64encode(buffer.getvalue()).decode()
+
+
+def expand_tests_report(request, **kwargs):  # pragma: no cover
+    """Augment request with key value args that will be passed to pytest markreport."""
+    setattr(request.node, "extra_args", kwargs)
 
 
 def load_expectation(expectation_file_name, type_=None):  # pragma: no cover
