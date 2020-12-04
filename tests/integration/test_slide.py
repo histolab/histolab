@@ -59,20 +59,34 @@ class Describe_Slide:
         )
 
     @pytest.mark.parametrize(
-        "tissue_mask, expectation",
+        "slide_fixture, tissue_mask, expectation",
         [
             (
+                SVS.CMU_1_SMALL_REGION,
                 True,
                 "bbox-location-images/cmu-1-small-region-bbox-location-tissue-mask-true",
             ),
             (
+                SVS.CMU_1_SMALL_REGION,
                 False,
                 "bbox-location-images/cmu-1-small-region-bbox-location-tissue-mask-false",
             ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                True,
+                "bbox-location-images/tcga-cr-7395-01a-01-ts1-bbox-location-tissue-mask-true",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                False,
+                "bbox-location-images/tcga-cr-7395-01a-01-ts1-bbox-location-tissue-mask-false",
+            ),
         ],
     )
-    def it_locates_the_biggest_bbox(self, tmpdir, tissue_mask, expectation):
-        slide = Slide(SVS.CMU_1_SMALL_REGION, os.path.join(tmpdir, "processed"))
+    def it_locates_the_biggest_bbox(
+        self, tmpdir, slide_fixture, tissue_mask, expectation
+    ):
+        slide = Slide(slide_fixture, os.path.join(tmpdir, "processed"))
         slide.save_scaled_image(3)
         expected_img = load_expectation(
             expectation,
