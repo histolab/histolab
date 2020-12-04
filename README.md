@@ -16,8 +16,6 @@
     <td>
         <a href="https://lgtm.com/projects/g/histolab/histolab/alerts/" target="_blank"><img src="https://img.shields.io/lgtm/alerts/g/histolab/histolab.svg?logo=lgtm&logoWidth=18"></a>
         <a href="https://lgtm.com/projects/g/histolab/histolab/context:python" target="_blank"><img src="https://img.shields.io/lgtm/grade/python/g/histolab/histolab.svg?logo=lgtm&logoWidth=18"></a>
-        <a href="https://www.code-inspector.com" target="_blank"><img src="https://www.code-inspector.com/project/13419/score/svg?kill_cache=1"></a> 
-        <a href="https://www.code-inspector.com" target="_blank"><img src="https://www.code-inspector.com/project/13419/status/svg?kill_cache=1"></a>
         <a href="https://www.codefactor.io/repository/github/histolab/histolab" target="_blank"><img src="https://www.codefactor.io/repository/github/histolab/histolab/badge"></a>
         <a href="https://github.com/psf/black" target="_blank"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </tr>
