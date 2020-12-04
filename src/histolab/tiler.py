@@ -247,8 +247,8 @@ class GridTiler(Tiler):
 
         for i in range(n_tiles_row):
             for j in range(n_tiles_column):
-                x_ul_lvl = bbox_coordinates.x_ul + tile_w_lvl * j - self.pixel_overlap
-                y_ul_lvl = bbox_coordinates.y_ul + tile_h_lvl * i - self.pixel_overlap
+                x_ul_lvl = bbox_coordinates.x_ul + tile_w_lvl * i - self.pixel_overlap
+                y_ul_lvl = bbox_coordinates.y_ul + tile_h_lvl * j - self.pixel_overlap
 
                 x_ul_lvl = np.clip(x_ul_lvl, bbox_coordinates.x_ul, None)
                 y_ul_lvl = np.clip(y_ul_lvl, bbox_coordinates.y_ul, None)
