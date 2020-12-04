@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1607099941513,
+  "lastUpdate": 1607103211453,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -1584,6 +1584,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0000017865977673262714",
             "extra": "mean: 40.096042103997206 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "ernestoarbitrio",
+            "username": "ernestoarbitrio"
+          },
+          "committer": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "pamaron",
+            "username": "ernestoarbitrio"
+          },
+          "distinct": true,
+          "id": "72a598eb0e35536581ed1227e0ebacc57a17e915",
+          "message": "remove code inspector",
+          "timestamp": "2020-12-04T18:25:18+01:00",
+          "tree_id": "b3e8447d95512249d56f95f59788a09badb35f62",
+          "url": "https://github.com/histolab/histolab/commit/72a598eb0e35536581ed1227e0ebacc57a17e915"
+        },
+        "date": 1607103210839,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 6.9806882471455785,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00259950648814608",
+            "extra": "mean: 143.25235057000327 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 303.9696291492878,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000009819282976032176",
+            "extra": "mean: 3.289802349000047 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1049.8083344767883,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000006985187376383355",
+            "extra": "mean: 952.5548303999585 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 34551.97489061501,
+            "unit": "iter/sec",
+            "range": "stddev: 3.2923607793748623e-7",
+            "extra": "mean: 28.941905727988342 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 37527.311998641555,
+            "unit": "iter/sec",
+            "range": "stddev: 2.703631095660591e-7",
+            "extra": "mean: 26.64725893600371 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 31533.13221013447,
+            "unit": "iter/sec",
+            "range": "stddev: 3.4740788766132084e-7",
+            "extra": "mean: 31.712675840004522 usec\nrounds: 250"
           }
         ]
       }
