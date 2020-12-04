@@ -10,7 +10,7 @@ from histolab.slide import Slide
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler
 
 from ..fixtures import SVS
-from ..util import load_expectation
+from ..util import load_expectation, expand_tests_report
 
 
 class DescribeRandomTiler:
@@ -27,7 +27,9 @@ class DescribeRandomTiler:
             ),
         ],
     )
-    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation, tmpdir):
+    def it_locates_tiles_on_the_slide(
+        self, request, fixture_slide, expectation, tmpdir
+    ):
         slide = Slide(fixture_slide, os.path.join(tmpdir, "processed"))
         slide.save_scaled_image(10)
         random_tiles_extractor = RandomTiler(
@@ -38,6 +40,8 @@ class DescribeRandomTiler:
             type_="png",
         )
         tiles_location_img = random_tiles_extractor.locate_tiles(slide, scale_factor=10)
+        # --- Expanding test report with actual and expected images ---
+        expand_tests_report(request, actual=tiles_location_img, expected=expectation)
 
         np.testing.assert_array_almost_equal(
             np.asarray(tiles_location_img), expected_img
@@ -58,7 +62,9 @@ class DescribeGridTiler:
             ),
         ],
     )
-    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation, tmpdir):
+    def it_locates_tiles_on_the_slide(
+        self, request, fixture_slide, expectation, tmpdir
+    ):
         slide = Slide(fixture_slide, os.path.join(tmpdir, "processed"))
         grid_tiles_extractor = GridTiler(
             tile_size=(512, 512),
@@ -67,6 +73,8 @@ class DescribeGridTiler:
         )
         expected_img = load_expectation(expectation, type_="png")
         tiles_location_img = grid_tiles_extractor.locate_tiles(slide, scale_factor=10)
+        # --- Expanding test report with actual and expected images ---
+        expand_tests_report(request, expected=expectation, actual=tiles_location_img)
 
         np.testing.assert_array_almost_equal(
             np.asarray(tiles_location_img), expected_img
@@ -87,7 +95,9 @@ class DescribeScoreTiler:
             ),
         ],
     )
-    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation, tmpdir):
+    def it_locates_tiles_on_the_slide(
+        self, request, fixture_slide, expectation, tmpdir
+    ):
         slide = Slide(fixture_slide, os.path.join(tmpdir, "processed"))
         scored_tiles_extractor = ScoreTiler(
             scorer=NucleiScorer(),
@@ -100,10 +110,10 @@ class DescribeScoreTiler:
             expectation,
             type_="png",
         )
-        scored_location_img = scored_tiles_extractor.locate_tiles(
-            slide, scale_factor=10
-        )
+        tiles_location_img = scored_tiles_extractor.locate_tiles(slide, scale_factor=10)
+        # --- Expanding test report with actual and expected images ---
+        expand_tests_report(request, expected=expectation, actual=tiles_location_img)
 
         np.testing.assert_array_almost_equal(
-            np.asarray(scored_location_img), expected_img
+            np.asarray(tiles_location_img), expected_img
         )
