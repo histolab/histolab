@@ -174,6 +174,55 @@ class Slide:
         """
         return list(range(len(self._wsi.level_dimensions)))
 
+    def locate_biggest_tissue_box(
+        self,
+        scale_factor: int = 32,
+        tissue_mask: bool = False,
+        alpha: int = 128,
+        outline: str = "red",
+    ) -> PIL.Image.Image:
+        """Draw biggest tissue box reference on a rescaled version of the slide
+
+        Parameters
+        ----------
+        scale_factor : int
+            Scaling factor for the returned image. Default is 32.
+        tissue_mask : bool, optional
+            Whether to draw the biggest tissue box on the binary tissue mask instead of
+            the rescaled version of the slide. Default is False.
+        alpha : int
+            The alpha level to be applied to the rescaled slide, default to 128.
+        outline : str
+            The outline color for the annotation, default to 'red'.
+
+        Returns
+        -------
+        PIL.Image.Image
+            PIL Image of the rescaled slide with the biggest tissue bounding box
+            outlined.
+        """
+        if not os.path.exists(self.scaled_image_path(scale_factor)):
+            self.save_scaled_image(scale_factor)
+        img = PIL.Image.open(self.scaled_image_path(scale_factor))
+
+        filters = FiltersComposition(Slide).tissue_mask_filters
+
+        img_tissue_mask = filters(img)
+        regions = regions_from_binary_mask(img_tissue_mask)
+        biggest_region = self._biggest_regions(regions, n=1)[0]
+
+        biggest_region_coordinates = region_coordinates(biggest_region)
+
+        if tissue_mask:
+            img = PIL.Image.fromarray(img_tissue_mask).convert("RGB")
+        else:
+            img.putalpha(alpha)
+
+        draw = PIL.ImageDraw.Draw(img)
+        draw.rectangle(tuple(biggest_region_coordinates), outline=outline)
+
+        return img
+
     @lazyproperty
     def name(self) -> str:
         """Retrieve the slide name without extension.
