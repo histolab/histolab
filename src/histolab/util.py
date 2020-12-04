@@ -18,7 +18,7 @@
 
 import functools
 import warnings
-from typing import Callable, List, Tuple, Any
+from typing import Any, Callable, List, Tuple
 
 import numpy as np
 import PIL
