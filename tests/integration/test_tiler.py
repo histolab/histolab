@@ -15,7 +15,7 @@ from ..util import load_expectation
 
 class DescribeRandomTiler:
     @pytest.mark.parametrize(
-        "fixture_slide, expectation_path",
+        "fixture_slide, expectation",
         [
             (
                 SVS.CMU_1_SMALL_REGION,
@@ -27,26 +27,26 @@ class DescribeRandomTiler:
             ),
         ],
     )
-    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation_path, tmpdir):
+    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation, tmpdir):
         slide = Slide(fixture_slide, os.path.join(tmpdir, "processed"))
         slide.save_scaled_image(10)
         random_tiles_extractor = RandomTiler(
             tile_size=(512, 512), n_tiles=2, level=0, seed=42, check_tissue=False
         )
-        expectation = load_expectation(
-            expectation_path,
+        expected_img = load_expectation(
+            expectation,
             type_="png",
         )
         tiles_location_img = random_tiles_extractor.locate_tiles(slide, scale_factor=10)
 
         np.testing.assert_array_almost_equal(
-            np.asarray(tiles_location_img), expectation
+            np.asarray(tiles_location_img), expected_img
         )
 
 
 class DescribeGridTiler:
     @pytest.mark.parametrize(
-        "fixture_slide, expectation_path",
+        "fixture_slide, expectation",
         [
             (
                 SVS.CMU_1_SMALL_REGION,
@@ -58,24 +58,24 @@ class DescribeGridTiler:
             ),
         ],
     )
-    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation_path, tmpdir):
+    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation, tmpdir):
         slide = Slide(fixture_slide, os.path.join(tmpdir, "processed"))
         grid_tiles_extractor = GridTiler(
             tile_size=(512, 512),
             level=0,
             check_tissue=False,
         )
-        expectation = load_expectation(expectation_path, type_="png")
+        expected_img = load_expectation(expectation, type_="png")
         tiles_location_img = grid_tiles_extractor.locate_tiles(slide, scale_factor=10)
 
         np.testing.assert_array_almost_equal(
-            np.asarray(tiles_location_img), expectation
+            np.asarray(tiles_location_img), expected_img
         )
 
 
 class DescribeScoreTiler:
     @pytest.mark.parametrize(
-        "fixture_slide, expectation_path",
+        "fixture_slide, expectation",
         [
             (
                 SVS.CMU_1_SMALL_REGION,
@@ -87,7 +87,7 @@ class DescribeScoreTiler:
             ),
         ],
     )
-    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation_path, tmpdir):
+    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation, tmpdir):
         slide = Slide(fixture_slide, os.path.join(tmpdir, "processed"))
         scored_tiles_extractor = ScoreTiler(
             scorer=NucleiScorer(),
@@ -96,8 +96,8 @@ class DescribeScoreTiler:
             level=0,
             check_tissue=True,
         )
-        expectation = load_expectation(
-            expectation_path,
+        expected_img = load_expectation(
+            expectation,
             type_="png",
         )
         scored_location_img = scored_tiles_extractor.locate_tiles(
@@ -105,5 +105,5 @@ class DescribeScoreTiler:
         )
 
         np.testing.assert_array_almost_equal(
-            np.asarray(scored_location_img), expectation
+            np.asarray(scored_location_img), expected_img
         )
