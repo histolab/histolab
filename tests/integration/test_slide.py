@@ -57,3 +57,32 @@ class Describe_Slide:
         assert (
             str(err.value) == "Your wsi has something broken inside, a doctor is needed"
         )
+
+    @pytest.mark.parametrize(
+        "tissue_mask, expectation",
+        [
+            (
+                True,
+                "bbox-location-images/cmu-1-small-region-bbox-location-tissue-mask-true",
+            ),
+            (
+                False,
+                "bbox-location-images/cmu-1-small-region-bbox-location-tissue-mask-false",
+            ),
+        ],
+    )
+    def it_locates_the_biggest_bbox(self, tmpdir, tissue_mask, expectation):
+        slide = Slide(SVS.CMU_1_SMALL_REGION, os.path.join(tmpdir, "processed"))
+        slide.save_scaled_image(3)
+        expected_img = load_expectation(
+            expectation,
+            type_="png",
+        )
+
+        bbox_location_img = slide.locate_biggest_tissue_box(
+            tissue_mask=tissue_mask, scale_factor=3
+        )
+
+        np.testing.assert_array_almost_equal(
+            np.asarray(bbox_location_img), expected_img
+        )
