@@ -83,14 +83,14 @@ class Tiler(Protocol):
         scale_factor: int
             Scaling factor for the returned image. Default is 32.
         alpha: int
-            The alpha level to be applied to the slide thumbnail, default to 128.
+            The alpha level to be applied to the rescaled slide, default to 128.
         outline: str
             The outline color for the tile annotations, default to 'red'.
 
         Returns
         -------
         PIL.Image.Image
-            PIL Image of the slide thumbnail with the extracted tiles outlined
+            PIL Image of the rescaled slide with the extracted tiles outlined
         """
         if not os.path.exists(slide.scaled_image_path(scale_factor)):
             slide.save_scaled_image(scale_factor)
@@ -99,8 +99,8 @@ class Tiler(Protocol):
         img.putalpha(alpha)
         draw = PIL.ImageDraw.Draw(img)
         for coords in tiles_coords:
-            rescaled = np.array(scale_coordinates(coords, slide.dimensions, img.size))
-            draw.rectangle(tuple(map(tuple, rescaled.reshape(2, 2))), outline=outline)
+            rescaled = scale_coordinates(coords, slide.dimensions, img.size)
+            draw.rectangle(tuple(rescaled), outline=outline)
         return img
 
     # ------- implementation helpers -------
