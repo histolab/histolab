@@ -3,24 +3,38 @@
 import os
 
 import numpy as np
+import pytest
 
+from histolab.scorer import NucleiScorer
 from histolab.slide import Slide
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler
-from histolab.scorer import NucleiScorer
 
 from ..fixtures import SVS
 from ..util import load_expectation
 
 
 class DescribeRandomTiler:
-    def it_locates_tiles_on_the_slide(self, tmpdir):
-        slide = Slide(SVS.CMU_1_SMALL_REGION, os.path.join(tmpdir, "processed"))
+    @pytest.mark.parametrize(
+        "fixture_slide, expectation_path",
+        [
+            (
+                SVS.CMU_1_SMALL_REGION,
+                "tiles-location-images/cmu-1-small-region-tiles-location-random",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                "tiles-location-images/TCGA-CR-7395-01A-01-TS1-tiles-location-random",
+            ),
+        ],
+    )
+    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation_path, tmpdir):
+        slide = Slide(fixture_slide, os.path.join(tmpdir, "processed"))
         slide.save_scaled_image(10)
         random_tiles_extractor = RandomTiler(
             tile_size=(512, 512), n_tiles=2, level=0, seed=42, check_tissue=False
         )
         expectation = load_expectation(
-            "tiles-location-images/cmu-1-small-region-tiles-location-random",
+            expectation_path,
             type_="png",
         )
         tiles_location_img = random_tiles_extractor.locate_tiles(slide, scale_factor=10)
@@ -31,16 +45,27 @@ class DescribeRandomTiler:
 
 
 class DescribeGridTiler:
-    def it_locates_tiles_on_the_slide(self, tmpdir):
-        slide = Slide(SVS.CMU_1_SMALL_REGION, os.path.join(tmpdir, "processed"))
+    @pytest.mark.parametrize(
+        "fixture_slide, expectation_path",
+        [
+            (
+                SVS.CMU_1_SMALL_REGION,
+                "tiles-location-images/cmu-1-small-region-tiles-location-grid",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                "tiles-location-images/TCGA-CR-7395-01A-01-TS1-tiles-location-grid",
+            ),
+        ],
+    )
+    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation_path, tmpdir):
+        slide = Slide(fixture_slide, os.path.join(tmpdir, "processed"))
         grid_tiles_extractor = GridTiler(
             tile_size=(512, 512),
             level=0,
             check_tissue=False,
         )
-        expectation = load_expectation(
-            "tiles-location-images/cmu-1-small-region-tiles-location-grid", type_="png"
-        )
+        expectation = load_expectation(expectation_path, type_="png")
         tiles_location_img = grid_tiles_extractor.locate_tiles(slide, scale_factor=10)
 
         np.testing.assert_array_almost_equal(
@@ -49,17 +74,30 @@ class DescribeGridTiler:
 
 
 class DescribeScoreTiler:
-    def it_locates_tiles_on_the_slide(self, tmpdir):
-        slide = Slide(SVS.CMU_1_SMALL_REGION, os.path.join(tmpdir, "processed"))
+    @pytest.mark.parametrize(
+        "fixture_slide, expectation_path",
+        [
+            (
+                SVS.CMU_1_SMALL_REGION,
+                "tiles-location-images/cmu-1-small-region-tiles-location-scored",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                "tiles-location-images/TCGA-CR-7395-01A-01-TS1-tiles-location-scored",
+            ),
+        ],
+    )
+    def it_locates_tiles_on_the_slide(self, fixture_slide, expectation_path, tmpdir):
+        slide = Slide(fixture_slide, os.path.join(tmpdir, "processed"))
         scored_tiles_extractor = ScoreTiler(
             scorer=NucleiScorer(),
             tile_size=(512, 512),
-            n_tiles=100,
+            n_tiles=2,
             level=0,
-            check_tissue=False,
+            check_tissue=True,
         )
         expectation = load_expectation(
-            "tiles-location-images/cmu-1-small-region-tiles-location-scored",
+            expectation_path,
             type_="png",
         )
         scored_location_img = scored_tiles_extractor.locate_tiles(
