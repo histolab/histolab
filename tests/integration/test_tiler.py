@@ -23,7 +23,7 @@ class DescribeRandomTiler:
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
-                "tiles-location-images/TCGA-CR-7395-01A-01-TS1-tiles-location-random",
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tiles-location-random",
             ),
         ],
     )
@@ -54,7 +54,7 @@ class DescribeGridTiler:
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
-                "tiles-location-images/TCGA-CR-7395-01A-01-TS1-tiles-location-grid",
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tiles-location-grid",
             ),
         ],
     )
@@ -83,7 +83,7 @@ class DescribeScoreTiler:
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
-                "tiles-location-images/TCGA-CR-7395-01A-01-TS1-tiles-location-scored",
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tiles-location-scored",
             ),
         ],
     )
