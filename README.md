@@ -93,7 +93,7 @@ Read the full documentation here https://histolab.readthedocs.io/en/latest/.
 
 ### Communication
 
-Join our user group on [Slack](https://communityinviter.com/apps/histolab/histolab)!
+Join our user group on <img src=https://user-images.githubusercontent.com/4196091/101638148-01522780-3a2e-11eb-8502-f718564ffd43.png> [Slack](https://communityinviter.com/apps/histolab/histolab) 
 
 # Quickstart 
 Here we present a step-by-step tutorial on the use of `histolab` to
