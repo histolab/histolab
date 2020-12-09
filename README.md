@@ -91,6 +91,10 @@ You can download and install it from [OpenSlide](https://openslide.org/download/
 
 Read the full documentation here https://histolab.readthedocs.io/en/latest/.
 
+### Communication
+
+Join our user group on [Slack](https://communityinviter.com/apps/histolab/histolab)!
+
 # Quickstart 
 Here we present a step-by-step tutorial on the use of `histolab` to
 extract a tile dataset from example WSIs. The corresponding Jupyter
