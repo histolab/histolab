@@ -41,7 +41,7 @@ class DescribeRandomTiler:
         )
         tiles_location_img = random_tiles_extractor.locate_tiles(slide, scale_factor=10)
         # --- Expanding test report with actual and expected images ---
-        expand_tests_report(request, actual=tiles_location_img, expected=expectation)
+        expand_tests_report(request, actual=tiles_location_img, expected=expected_img)
 
         np.testing.assert_array_almost_equal(
             np.asarray(tiles_location_img), expected_img
@@ -74,7 +74,7 @@ class DescribeGridTiler:
         expected_img = load_expectation(expectation, type_="png")
         tiles_location_img = grid_tiles_extractor.locate_tiles(slide, scale_factor=10)
         # --- Expanding test report with actual and expected images ---
-        expand_tests_report(request, expected=expectation, actual=tiles_location_img)
+        expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
 
         np.testing.assert_array_almost_equal(
             np.asarray(tiles_location_img), expected_img
@@ -112,7 +112,7 @@ class DescribeScoreTiler:
         )
         tiles_location_img = scored_tiles_extractor.locate_tiles(slide, scale_factor=10)
         # --- Expanding test report with actual and expected images ---
-        expand_tests_report(request, expected=expectation, actual=tiles_location_img)
+        expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
 
         np.testing.assert_array_almost_equal(
             np.asarray(tiles_location_img), expected_img

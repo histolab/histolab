@@ -12,8 +12,7 @@ class HTMLRenderer:
     """HTML object for rendering header and body on the pytest html report."""
 
     def __init__(self, items):
-        self._keys = items.keys()
-        self._values = items.values()
+        self._items = items
 
     @property
     def body(self):
@@ -25,12 +24,20 @@ class HTMLRenderer:
         """Table header for the html report."""
         return "".join([f"<th>{item.title()}</th>" for item in self._keys])
 
+    @property
+    def _keys(self):
+        return self._items.keys() if self._items else []
+
     @staticmethod
     def _html_tag(item):
         """Convert the given item in a proper html tag."""
         if isinstance(item, PIL.Image.Image):
             return f"<img src='data:image/png;base64,{pil_to_base64(item)}'>"
         return item
+
+    @property
+    def _values(self):
+        return self._items.values() if self._items else []
 
 
 @pytest.mark.hookwrapper
