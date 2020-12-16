@@ -1,6 +1,10 @@
 Changelog
 =========
 
+v0.2.1
+------
+- Pin dependencies in requirements.txt to avoid discrepancy with scikit-image v0.18.0
+
 v0.2.0
 ------
 - Add diagnostic method to locate tiles on a slide with every Tiler (`#179 <https://github.com/histolab/histolab/pull/179>`_)
