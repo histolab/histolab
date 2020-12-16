@@ -1,12 +1,6 @@
-numpy
+numpy >=1.18.4,<=1.19.4
 Pillow
-scikit-image
-scipy
+scikit-image >=0.17.1,<0.18.0
+scipy >=1.5.0,<=1.5.4
 openslide-python
 typing_extensions
-pytest
-pytest-xdist
-coverage
-pytest-cov
-coveralls
-pytest-benchmark
