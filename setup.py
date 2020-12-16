@@ -7,8 +7,8 @@ import setuptools
 
 
 def ascii_bytes_from(path, *paths):
-    """
-    Return the ASCII characters in the file specified by *path* and *paths*.
+    """Return the ASCII characters in the file specified by *path* and *paths*.
+
     The file path is determined by concatenating *path* and any members of
     *paths* with a directory separator in between.
     """
@@ -16,6 +16,12 @@ def ascii_bytes_from(path, *paths):
     with open(file_path) as f:
         ascii_bytes = f.read()
     return ascii_bytes
+
+
+def parse_requirements(filename):
+    """Load requirements from a pip requirements file."""
+    lineiter = (line.strip() for line in open(filename))
+    return [line for line in lineiter if line and not line.startswith("#")]
 
 
 # read required text from files
@@ -26,14 +32,7 @@ readme = ascii_bytes_from(thisdir, "README.md")
 # `python -c 'from histolab import __version__; print(__version__)'`
 version = re.search('__version__ = "([^"]+)"', init_py).group(1)
 
-install_requires = [
-    "numpy",
-    "Pillow",
-    "scikit-image",
-    "scipy",
-    "openslide-python",
-    "typing_extensions",
-]
+install_requires = parse_requirements("requirements.txt")
 
 test_requires = [
     "pytest",
