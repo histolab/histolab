@@ -20,8 +20,9 @@ def ascii_bytes_from(path, *paths):
 
 def parse_requirements(filename):
     """Load requirements from a pip requirements file."""
-    lineiter = (line.strip() for line in open(filename))
-    return [line for line in lineiter if line and not line.startswith("#")]
+    with open(filename) as f:
+        reqs = (req.strip() for req in f.readlines() if req and not req.startswith("#"))
+    return list(reqs)
 
 
 # read required text from files
