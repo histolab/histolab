@@ -10,7 +10,7 @@ from histolab.slide import Slide
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler
 
 from ..fixtures import SVS
-from ..util import load_expectation, expand_tests_report
+from ..util import expand_tests_report, load_expectation
 
 
 class DescribeRandomTiler:

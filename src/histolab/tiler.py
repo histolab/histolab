@@ -147,6 +147,10 @@ class GridTiler(Tiler):
         Level from which extract the tiles. Default is 0.
     check_tissue : bool, optional
         Whether to check if the tile has enough tissue to be saved. Default is True.
+    tissue_percent : float, optional
+        Number between 0.0 and 100.0 representing the minimum required percentage of
+        tissue over the total area of the image, default is 80.0. This is considered
+        only if ``check_tissue`` equals to True.
     pixel_overlap : int, optional
        Number of overlapping pixels (for both height and width) between two adjacent
        tiles. If negative, two adjacent tiles will be strided by the absolute value of
@@ -162,6 +166,7 @@ class GridTiler(Tiler):
         tile_size: Tuple[int, int],
         level: int = 0,
         check_tissue: bool = True,
+        tissue_percent: float = 80.0,
         pixel_overlap: int = 0,
         prefix: str = "",
         suffix: str = ".png",
@@ -169,6 +174,7 @@ class GridTiler(Tiler):
         self.tile_size = tile_size
         self.level = level
         self.check_tissue = check_tissue
+        self.tissue_percent = tissue_percent
         self.pixel_overlap = pixel_overlap
         self.prefix = prefix
         self.suffix = suffix
@@ -316,7 +322,7 @@ class GridTiler(Tiler):
             except ValueError:
                 continue
 
-            if not self.check_tissue or tile.has_enough_tissue():
+            if not self.check_tissue or tile.has_enough_tissue(self.tissue_percent):
                 yield tile, coords
 
     def _n_tiles_column(self, bbox_coordinates: CoordinatePair) -> int:
@@ -370,6 +376,10 @@ class RandomTiler(Tiler):
         is 7.
     check_tissue : bool, optional
         Whether to check if the tile has enough tissue to be saved. Default is True.
+    tissue_percent : float, optional
+        Number between 0.0 and 100.0 representing the minimum required percentage of
+        tissue over the total area of the image, default is 80.0. This is considered
+        only if ``check_tissue`` equals to True.
     prefix : str, optional
         Prefix to be added to the tile filename. Default is an empty string.
     suffix : str, optional
@@ -386,6 +396,7 @@ class RandomTiler(Tiler):
         level: int = 0,
         seed: int = 7,
         check_tissue: bool = True,
+        tissue_percent: float = 80.0,
         prefix: str = "",
         suffix: str = ".png",
         max_iter: int = int(1e4),
@@ -399,6 +410,7 @@ class RandomTiler(Tiler):
         self.level = level
         self.seed = seed
         self.check_tissue = check_tissue
+        self.tissue_percent = tissue_percent
         self.prefix = prefix
         self.suffix = suffix
 
@@ -523,7 +535,7 @@ class RandomTiler(Tiler):
                 iteration -= 1
                 continue
 
-            if not self.check_tissue or tile.has_enough_tissue():
+            if not self.check_tissue or tile.has_enough_tissue(self.tissue_percent):
                 yield tile, tile_wsi_coords
                 valid_tile_counter += 1
             iteration += 1
@@ -554,6 +566,10 @@ class ScoreTiler(GridTiler):
         Level from which extract the tiles. Default is 0.
     check_tissue : bool, optional
         Whether to check if the tile has enough tissue to be saved. Default is True.
+    tissue_percent : float, optional
+        Number between 0.0 and 100.0 representing the minimum required percentage of
+        tissue over the total area of the image, default is 80.0. This is considered
+        only if ``check_tissue`` equals to True.
     pixel_overlap : int, optional
        Number of overlapping pixels (for both height and width) between two adjacent
        tiles. If negative, two adjacent tiles will be strided by the absolute value of
@@ -571,6 +587,7 @@ class ScoreTiler(GridTiler):
         n_tiles: int = 0,
         level: int = 0,
         check_tissue: bool = True,
+        tissue_percent: float = 80.0,
         pixel_overlap: int = 0,
         prefix: str = "",
         suffix: str = ".png",
@@ -578,7 +595,15 @@ class ScoreTiler(GridTiler):
         self.scorer = scorer
         self.n_tiles = n_tiles
 
-        super().__init__(tile_size, level, check_tissue, pixel_overlap, prefix, suffix)
+        super().__init__(
+            tile_size,
+            level,
+            check_tissue,
+            tissue_percent,
+            pixel_overlap,
+            prefix,
+            suffix,
+        )
 
     def extract(self, slide: Slide, report_path: str = None):
         """Extract grid tiles and save them to disk, according to a scoring function and
