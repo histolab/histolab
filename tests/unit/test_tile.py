@@ -9,6 +9,7 @@ from histolab.tile import Tile
 from histolab.types import CoordinatePair
 
 from ..base import COMPLEX_MASK
+from ..fixtures import TILES
 from ..unitutil import (
     ANY,
     PILIMG,
@@ -144,7 +145,6 @@ class Describe_Tile:
 
     def it_calls_tile_tissue_mask_filters(
         self,
-        request,
         RgbToGrayscale_,
         OtsuThreshold_,
         BinaryDilation_,
@@ -159,7 +159,6 @@ class Describe_Tile:
 
     def it_knows_its_tissue_mask(
         self,
-        request,
         RgbToGrayscale_,
         OtsuThreshold_,
         BinaryDilation_,
@@ -230,6 +229,20 @@ class Describe_Tile:
         assert filtered_image.image == image_after
         assert filtered_image.coords is None
         assert filtered_image.level == 0
+
+    @pytest.mark.parametrize(
+        "tile_image, expected_value",
+        (
+            (TILES.LIVER_LEVEl2_10907_7808_11707_8608, False),  # all tissue
+            (TILES.LIVER_LEVEl2_20914_13715_21714_14515, True),  # some tissue
+            (TILES.LIVER_LEVEl2_57138_8209_57938_9009, True),  # some tissue
+            (TILES.LIVER_LEVEl2_38626_13514_39426_14315, False),  # no tissue
+        ),
+    )
+    def it_knows_if_it_has_only_some_tissue(self, tile_image, expected_value):
+        tile = Tile(tile_image, CoordinatePair(5, 5, 5, 5))
+
+        assert tile._has_only_some_tissue() == expected_value
 
     # fixture components ---------------------------------------------
 
