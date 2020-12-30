@@ -1283,40 +1283,6 @@ def test_green_channel_filter_with_wrong_threshold(green_threshold):
 
 
 @pytest.mark.parametrize(
-    "rgb_img, expectation",
-    (
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "mask-arrays/diagnostic-slide-thumb-rgb-pen-marks-mask",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
-            "mask-arrays/diagnostic-slide-thumb-hsv-pen-marks-mask",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
-            "mask-arrays/diagnostic-slide-thumb-ycbcr-pen-marks-mask",
-        ),
-        (RGB.TCGA_LUNG_RGB, "mask-arrays/tcga-lung-rgb-pen-marks-mask"),
-    ),
-)
-def test_pen_marks_filter_on_rgb_image(rgb_img, expectation):
-    pen_marks_filter = imf.pen_marks(rgb_img)
-
-    np.testing.assert_array_equal(
-        pen_marks_filter, load_expectation(expectation, type_="npy")
-    )
-
-
-def test_pen_marks_filter_with_wrong_img_mode():
-    with pytest.raises(ValueError) as err:
-        imf.pen_marks(RGBA.DIAGNOSTIC_SLIDE_THUMB)
-
-    assert isinstance(err.value, ValueError)
-    assert str(err.value) == "Image input must be RGB, got RGBA."
-
-
-@pytest.mark.parametrize(
     "pil_img, red_thresh, green_thresh, blue_thresh, expected_value",
     (
         (
@@ -1704,8 +1670,7 @@ def test_rgb_to_lab_filter_with_rgb_image(pil_image, expected_image):
 
 
 @pytest.mark.parametrize(
-    "pil_image",
-    (RGBA.DIAGNOSTIC_SLIDE_THUMB, GS.DIAGNOSTIC_SLIDE_THUMB_GS),
+    "pil_image", (RGBA.DIAGNOSTIC_SLIDE_THUMB, GS.DIAGNOSTIC_SLIDE_THUMB_GS),
 )
 def test_rgb_to_lab_raises_exception_on_gs_and_rgba_image(pil_image):
     with pytest.raises(Exception) as err:

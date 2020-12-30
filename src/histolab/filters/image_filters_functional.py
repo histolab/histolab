@@ -836,31 +836,6 @@ def otsu_threshold(
     return threshold_to_mask(image, otsu_thresh, relate)
 
 
-def pen_marks(img: PIL.Image.Image) -> np.ndarray:
-    """Filter out pen marks from a diagnostic slide.
-
-    Pen marks are removed by applying Otsu threshold on the H channel of the image
-    converted to the HSV space.
-
-    Parameters
-    ---------
-    img : PIL.Image.Image
-        Input RGB image
-
-    Returns
-    -------
-    np.ndarray
-        Boolean NumPy array representing the mask with the pen marks filtered out.
-    """
-    if img.mode == "RGBA":
-        raise ValueError("Image input must be RGB, got RGBA.")
-    np_img = np.array(img)
-    np_hsv = sk_color.convert_colorspace(np_img, "RGB", "HSV")
-    hue = np_hsv[:, :, 0]
-    threshold = sk_filters.threshold_otsu(hue)
-    return threshold_to_mask(hue, threshold, operator.gt)
-
-
 def red_filter(
     img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
 ) -> np.ndarray:
