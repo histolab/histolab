@@ -348,19 +348,6 @@ class DescribeImageFilters:
         F_blue_pen_filter.assert_called_once_with(image)
         assert type(blue_pen_filter(image)) == np.ndarray
 
-    def it_calls_pen_marks_filter_functional(self, request):
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        F_pen_marks = function_mock(
-            request, "histolab.filters.image_filters_functional.pen_marks"
-        )
-        F_pen_marks.return_value = np.array(image)
-        pen_marks = imf.PenMarks()
-
-        pen_marks(image)
-
-        F_pen_marks.assert_called_once_with(image)
-        assert type(pen_marks(image)) == np.ndarray
-
     def it_calls_np_to_pil(self, request):
         array = NpArrayMock.ONES_30X30_UINT8
         util_np_to_pil = function_mock(request, "histolab.util.np_to_pil")

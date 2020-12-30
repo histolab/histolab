@@ -953,30 +953,6 @@ class BluePenFilter:
         return self.__class__.__name__ + "()"
 
 
-class PenMarks:
-    """Filter out pen marks from a diagnostic slide.
-
-    Pen marks are removed by applying Otsu threshold on the H channel of the image
-    converted to the HSV space.
-
-    Parameters
-    ---------
-    img : PIL.Image.Image
-        Input RGB image
-
-    Returns
-    -------
-    np.ndarray
-        Boolean NumPy array representing the mask with the pen marks filtered out.
-    """
-
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
-        return F.pen_marks(img)
-
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
-
-
 class YenThreshold:
     """Mask image based on pixel above Yen threshold.
 
