@@ -240,7 +240,7 @@ each extraction method is customizable with several common parameters:
     save the tiles;
 -  `tissue_percent`: number between 0.0 and 100.0 representing the 
     minimum required percentage of tissue over the total area of the image
-    (default is 80.0)
+    (default is 80.0);
 -   `prefix`: a prefix to be added at the beginning of the tiles’
     filename (default is the empty string);
 -   `suffix`: a suffix to be added to the end of the tiles’ filename
