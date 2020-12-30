@@ -5,7 +5,11 @@ from unittest.mock import call
 import numpy as np
 import pytest
 
+<<<<<<< 51d1465d3c1408c9857a54aaf216076e2a770bdb
 from histolab.exceptions import LevelError
+=======
+from histolab.exceptions import LevelError, TileSizeError
+>>>>>>> Raise TileSizeError if the tile size is larger than the slide size
 from histolab.scorer import RandomScorer
 from histolab.slide import Slide
 from histolab.tile import Tile
@@ -394,6 +398,31 @@ class Describe_RandomTiler:
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
 
+    @pytest.mark.parametrize(
+        "image, size",
+        [
+            (PILIMG.RGBA_COLOR_50X50_155_0_0, (50, 50)),
+            (PILIMG.RGBA_COLOR_49X51_155_0_0, (49, 51)),
+        ],
+    )
+    def but_it_raises_tilesizeerror_if_tilesize_larger_than_slidesize(
+        self, tmpdir, image, size
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        grid_tiler = RandomTiler((50, 52), n_tiles=10, level=0)
+
+        with pytest.raises(TileSizeError) as err:
+            grid_tiler.extract(slide)
+
+        assert isinstance(err.value, TileSizeError)
+        assert (
+            str(err.value)
+            == f"Tile size (50, 52) is larger than slide size {size} at level 0"
+        )
+
     # fixture components ---------------------------------------------
 
     @pytest.fixture
@@ -729,6 +758,31 @@ class Describe_GridTiler:
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
 
+    @pytest.mark.parametrize(
+        "image, size",
+        [
+            (PILIMG.RGBA_COLOR_50X50_155_0_0, (50, 50)),
+            (PILIMG.RGBA_COLOR_49X51_155_0_0, (49, 51)),
+        ],
+    )
+    def but_it_raises_tilesizeerror_if_tilesize_larger_than_slidesize(
+        self, tmpdir, image, size
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        grid_tiler = GridTiler((50, 52), level=0)
+
+        with pytest.raises(TileSizeError) as err:
+            grid_tiler.extract(slide)
+
+        assert isinstance(err.value, TileSizeError)
+        assert (
+            str(err.value)
+            == f"Tile size (50, 52) is larger than slide size {size} at level 0"
+        )
+
 
 class Describe_ScoreTiler:
     def it_constructs_from_args(self, request):
@@ -945,6 +999,31 @@ class Describe_ScoreTiler:
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
         _save_report.assert_not_called()
+
+    @pytest.mark.parametrize(
+        "image, size",
+        [
+            (PILIMG.RGBA_COLOR_50X50_155_0_0, (50, 50)),
+            (PILIMG.RGBA_COLOR_49X51_155_0_0, (49, 51)),
+        ],
+    )
+    def but_it_raises_tilesizeerror_if_tilesize_larger_than_slidesize(
+        self, tmpdir, image, size
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        grid_tiler = RandomTiler((50, 52), n_tiles=10, level=0)
+
+        with pytest.raises(TileSizeError) as err:
+            grid_tiler.extract(slide)
+
+        assert isinstance(err.value, TileSizeError)
+        assert (
+            str(err.value)
+            == f"Tile size (50, 52) is larger than slide size {size} at level 0"
+        )
 
     def it_can_save_report(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("path")

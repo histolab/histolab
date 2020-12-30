@@ -5,14 +5,14 @@
 import os
 import sys
 
-import pytest
 import numpy as np
+import pytest
 from PIL import Image
+
+from histolab import data
 
 from unittest.mock import ANY, call  # noqa # isort:skip
 from unittest.mock import create_autospec, patch, PropertyMock  # isort:skip
-
-from histolab import data
 
 
 def dict_list_eq(l1, l2):
@@ -108,7 +108,10 @@ class PILImageMock:
     RGBA_COLOR_500X500_155_249_240 = Image.new(
         "RGBA", size=(500, 500), color=(155, 249, 240)
     )
+
     RGBA_COLOR_50X50_155_0_0 = Image.new("RGBA", size=(50, 50), color=(155, 0, 0))
+
+    RGBA_COLOR_49X51_155_0_0 = Image.new("RGBA", size=(49, 51), color=(155, 0, 0))
 
     RGB_RANDOM_COLOR_500X500 = Image.fromarray(
         (np.random.rand(500, 500, 3) * 255).astype("uint8")
