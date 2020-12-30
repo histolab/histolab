@@ -153,7 +153,11 @@ parameters:
    levels);
 
 -  ``check_tissue``: if a minimum percentage of tissue is required to
-   save the tiles (default is 80%);
+   save the tiles;
+
+-  `` tissue_percent``: number between 0.0 and 100.0 representing the 
+   minimum required percentage of tissue over the total area of the image
+   (default is 80.0)
 
 -  ``prefix``: a prefix to be added at the beginning of the tiles’
    filename (default is the empty string);
@@ -183,6 +187,7 @@ extractor as follows:
        level=2,
        seed=42,
        check_tissue=True, # default
+       tissue_percent=80.0, # default
        prefix="random/", # save tiles in the "random" subdirectory of slide's processed_path
        suffix=".png" # default
    )
@@ -278,6 +283,7 @@ specify the number of the top tiles we want to save with the
        n_tiles=100,
        level=0,
        check_tissue=True,
+       tissue_percent=80.0,
        pixel_overlap=0, # default
        prefix="scored/", # save tiles in the "scored" subdirectory of slide's processed_path
        suffix=".png" # default
