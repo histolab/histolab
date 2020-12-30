@@ -168,10 +168,8 @@ class Tile:
             True if the image is composed by only some tissue. False if the tile is
             composed by all tissue or by no tissue at all.
         """
-        filters = FiltersComposition(Tile).tissue_mask_filters
-        tissue_mask = filters(self._image)
 
-        return np.var(tissue_mask) > near_zero_var_threshold
+        return np.var(np.array(self._image)) > near_zero_var_threshold
 
     def _has_tissue_more_than_percent(self, tissue_percent: float = 80.0) -> bool:
         """Check if tissue represent more than ``tissue_percent`` % of the image.
