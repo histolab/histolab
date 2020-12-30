@@ -39,3 +39,7 @@ class LevelError(HistolabException):
 
 class FilterCompositionError(HistolabException):
     """Raised when a filter composition for the class is not available"""
+
+
+class TileSizeError(HistolabException):
+    """Raised when the tile size is larger than the slide size"""

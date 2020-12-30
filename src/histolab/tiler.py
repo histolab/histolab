@@ -25,7 +25,7 @@ from typing import List, Tuple
 import numpy as np
 import PIL
 
-from .exceptions import LevelError
+from .exceptions import LevelError, TileSizeError
 from .scorer import Scorer
 from .slide import Slide
 from .tile import Tile
@@ -188,11 +188,25 @@ class GridTiler(Tiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
+
+        Raises
+        ------
+        TileSizeError
+            If the tile size is larger than the slide size
         """
         if self.level not in slide.levels:
             raise LevelError(
                 f"Level {self.level} not available. Number of available levels: "
                 f"{len(slide.levels)}"
+            )
+
+        if (
+            self.tile_size[0] > slide.level_dimensions(self.level)[0]
+            or self.tile_size[1] > slide.level_dimensions(self.level)[1]
+        ):
+            raise TileSizeError(
+                f"Tile size {self.tile_size} is larger than slide size "
+                f"{slide.level_dimensions(self.level)} at level {self.level}"
             )
 
         grid_tiles = self._tiles_generator(slide)
@@ -422,7 +436,21 @@ class RandomTiler(Tiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
+
+        Raises
+        ------
+        TileSizeError
+            If the tile size is larger than the slide size
         """
+        if (
+            self.tile_size[0] > slide.level_dimensions(self.level)[0]
+            or self.tile_size[1] > slide.level_dimensions(self.level)[1]
+        ):
+            raise TileSizeError(
+                f"Tile size {self.tile_size} is larger than slide size "
+                f"{slide.level_dimensions(self.level)} at level {self.level}"
+            )
+
         random_tiles = self._tiles_generator(slide)
 
         tiles_counter = 0
@@ -618,7 +646,21 @@ class ScoreTiler(GridTiler):
             Slide from which to extract the tiles
         report_path : str, optional
             Path to the CSV report. If None, no report will be saved
+
+        Raises
+        ------
+        TileSizeError
+            If the tile size is larger than the slide size
         """
+        if (
+            self.tile_size[0] > slide.level_dimensions(self.level)[0]
+            or self.tile_size[1] > slide.level_dimensions(self.level)[1]
+        ):
+            raise TileSizeError(
+                f"Tile size {self.tile_size} is larger than slide size "
+                f"{slide.level_dimensions(self.level)} at level {self.level}"
+            )
+
         highest_score_tiles, highest_scaled_score_tiles = self._highest_score_tiles(
             slide
         )
