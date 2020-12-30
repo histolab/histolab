@@ -2,9 +2,9 @@ import csv
 import os
 from unittest.mock import call
 
+import numpy as np
 import pytest
 
-import numpy as np
 from histolab.exceptions import LevelError
 from histolab.scorer import RandomScorer
 from histolab.slide import Slide
@@ -124,7 +124,7 @@ class Describe_RandomTiler:
     def it_knows_its_tile_filename(
         self, level, prefix, suffix, tile_coords, tiles_counter, expected_filename
     ):
-        random_tiler = RandomTiler((512, 512), 10, level, 7, True, prefix, suffix)
+        random_tiler = RandomTiler((512, 512), 10, level, 7, True, 80, prefix, suffix)
 
         _filename = random_tiler._tile_filename(tile_coords, tiles_counter)
 
@@ -184,12 +184,11 @@ class Describe_RandomTiler:
         np.testing.assert_array_almost_equal(box_mask, expected_box)
 
     @pytest.mark.parametrize(
-        "tile1, tile2, check_tissue, has_enough_tissue, max_iter, expected_value",
+        "tile1, tile2, has_enough_tissue, max_iter, expected_value",
         (
             (
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                True,
                 [True, True],
                 10,
                 2,
@@ -197,7 +196,6 @@ class Describe_RandomTiler:
             (
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                True,
                 [True, False],
                 2,
                 1,
@@ -205,44 +203,18 @@ class Describe_RandomTiler:
             (
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(5900, 6000, 5900, 6000)),
-                True,
                 [True, True],
                 2,
                 2,
-            ),
-            (
-                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                False,
-                [True, True],
-                10,
-                2,
-            ),
-            (
-                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                False,
-                [False, False],
-                10,
-                2,
-            ),
-            (
-                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                True,
-                [False, False],
-                10,
-                0,
             ),
         ),
     )
-    def it_can_generate_random_tiles(
+    def it_can_generate_random_tiles_with_check_tissue(
         self,
         request,
         tmpdir,
         tile1,
         tile2,
-        check_tissue,
         has_enough_tissue,
         max_iter,
         expected_value,
@@ -259,12 +231,119 @@ class Describe_RandomTiler:
         tiles = [tile1, tile2]
         _extract_tile.side_effect = tiles * (max_iter // 2)
         random_tiler = RandomTiler(
-            (10, 10), 2, level=0, max_iter=max_iter, check_tissue=check_tissue
+            (10, 10),
+            2,
+            level=0,
+            max_iter=max_iter,
+            check_tissue=True,
+            tissue_percent=60,
         )
 
         generated_tiles = list(random_tiler._tiles_generator(slide))
 
         _random_tile_coordinates.assert_called_with(random_tiler, slide)
+        assert _has_enough_tissue.call_args_list == [call(tile1, 60), call(tile2, 60)]
+        assert _random_tile_coordinates.call_count <= random_tiler.max_iter
+        assert len(generated_tiles) == expected_value
+        for i, tile in enumerate(generated_tiles):
+            assert tile[0] == tiles[i]
+
+    def it_can_generate_random_tiles_with_check_tissue_but_tiles_without_tissue(
+        self,
+        request,
+        tmpdir,
+        _random_tile_coordinates,
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+        _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
+        _has_enough_tissue.side_effect = [False, False] * 5
+        tiles = [
+            Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+            Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+        ]
+        _extract_tile.side_effect = tiles * 5
+        random_tiler = RandomTiler(
+            (10, 10),
+            2,
+            level=0,
+            max_iter=10,
+            check_tissue=True,
+            tissue_percent=60,
+        )
+
+        generated_tiles = list(random_tiler._tiles_generator(slide))
+
+        _random_tile_coordinates.assert_called_with(random_tiler, slide)
+        assert (
+            _has_enough_tissue.call_args_list
+            == [
+                call(tiles[0], 60),
+                call(tiles[1], 60),
+            ]
+            * 5
+        )
+        assert _random_tile_coordinates.call_count <= random_tiler.max_iter
+        assert len(generated_tiles) == 0
+        for i, tile in enumerate(generated_tiles):
+            assert tile[0] == tiles[i]
+
+    @pytest.mark.parametrize(
+        "tile1, tile2, has_enough_tissue, max_iter, expected_value",
+        (
+            (
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                [True, True],
+                10,
+                2,
+            ),
+            (
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                [False, False],
+                10,
+                2,
+            ),
+        ),
+    )
+    def it_can_generate_random_tiles_with_no_check_tissue(
+        self,
+        request,
+        tmpdir,
+        tile1,
+        tile2,
+        has_enough_tissue,
+        max_iter,
+        expected_value,
+        _random_tile_coordinates,
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+        _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
+        _has_enough_tissue.side_effect = has_enough_tissue * (max_iter // 2)
+        tiles = [tile1, tile2]
+        _extract_tile.side_effect = tiles * (max_iter // 2)
+        random_tiler = RandomTiler(
+            (10, 10),
+            2,
+            level=0,
+            max_iter=max_iter,
+            check_tissue=False,
+        )
+
+        generated_tiles = list(random_tiler._tiles_generator(slide))
+
+        _random_tile_coordinates.assert_called_with(random_tiler, slide)
+        _has_enough_tissue.assert_not_called()
         assert _random_tile_coordinates.call_count <= random_tiler.max_iter
         assert len(generated_tiles) == expected_value
         for i, tile in enumerate(generated_tiles):
@@ -392,7 +471,9 @@ class Describe_GridTiler:
         tiles_counter,
         expected_filename,
     ):
-        grid_tiler = GridTiler((512, 512), level, True, pixel_overlap, prefix, ".png")
+        grid_tiler = GridTiler(
+            (512, 512), level, True, 80.0, pixel_overlap, prefix, ".png"
+        )
 
         _filename = grid_tiler._tile_filename(tile_coords, tiles_counter)
 
@@ -436,7 +517,7 @@ class Describe_GridTiler:
     def it_can_calculate_n_tiles_row(
         self, bbox_coordinates, pixel_overlap, expected_n_tiles_row
     ):
-        grid_tiler = GridTiler((512, 512), 2, True, pixel_overlap)
+        grid_tiler = GridTiler((512, 512), 2, True, 80.0, pixel_overlap)
 
         n_tiles_row = grid_tiler._n_tiles_row(bbox_coordinates)
 
@@ -455,7 +536,7 @@ class Describe_GridTiler:
     def it_can_calculate_n_tiles_column(
         self, bbox_coordinates, pixel_overlap, expected_n_tiles_column
     ):
-        grid_tiler = GridTiler((512, 512), 2, True, pixel_overlap)
+        grid_tiler = GridTiler((512, 512), 2, True, 80, pixel_overlap)
 
         n_tiles_column = grid_tiler._n_tiles_column(bbox_coordinates)
 
@@ -463,52 +544,34 @@ class Describe_GridTiler:
         assert n_tiles_column == expected_n_tiles_column
 
     @pytest.mark.parametrize(
-        "tile1, tile2, check_tissue, has_enough_tissue, expected_n_tiles",
+        "tile1, tile2, has_enough_tissue, expected_n_tiles",
         (
             (
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                True,
                 [True, True],
                 2,
             ),
             (
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                False,
-                [True, True],
-                2,
-            ),
-            (
-                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                False,
-                [False, False],
-                2,
-            ),
-            (
-                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                True,
                 [False, False],
                 0,
             ),
             (
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
                 Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
-                True,
                 [True, False],
                 1,
             ),
         ),
     )
-    def it_can_generate_grid_tiles(
+    def it_can_generate_grid_tiles_with_check_tissue(
         self,
         request,
         tmpdir,
         tile1,
         tile2,
-        check_tissue,
         has_enough_tissue,
         expected_n_tiles,
     ):
@@ -525,7 +588,7 @@ class Describe_GridTiler:
         )
         _grid_coordinates_generator.return_value = [CP(0, 10, 0, 10), CP(0, 10, 0, 10)]
         _extract_tile.side_effect = [tile1, tile2]
-        grid_tiler = GridTiler((10, 10), level=0, check_tissue=check_tissue)
+        grid_tiler = GridTiler((10, 10), level=0, check_tissue=True, tissue_percent=60)
         tiles = [tile1, tile2]
 
         generated_tiles = list(grid_tiler._tiles_generator(slide))
@@ -534,6 +597,60 @@ class Describe_GridTiler:
         assert _extract_tile.call_args_list == (
             [call(slide, CP(0, 10, 0, 10), 0), call(slide, CP(0, 10, 0, 10), 0)]
         )
+        assert _has_enough_tissue.call_args_list == [call(tile1, 60), call(tile2, 60)]
+        assert len(generated_tiles) == expected_n_tiles
+        for i, tile in enumerate(generated_tiles):
+            assert tile[0] == tiles[i]
+
+    @pytest.mark.parametrize(
+        "tile1, tile2, has_enough_tissue, expected_n_tiles",
+        (
+            (
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                [True, True],
+                2,
+            ),
+            (
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
+                [False, False],
+                2,
+            ),
+        ),
+    )
+    def it_can_generate_random_tiles_with_no_check_tissue(
+        self,
+        request,
+        tmpdir,
+        tile1,
+        tile2,
+        has_enough_tissue,
+        expected_n_tiles,
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+        _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
+        _has_enough_tissue.side_effect = has_enough_tissue
+        _grid_coordinates_generator = method_mock(
+            request, GridTiler, "_grid_coordinates_generator"
+        )
+        _grid_coordinates_generator.return_value = [CP(0, 10, 0, 10), CP(0, 10, 0, 10)]
+        _extract_tile.side_effect = [tile1, tile2]
+        grid_tiler = GridTiler((10, 10), level=0, check_tissue=False)
+        tiles = [tile1, tile2]
+
+        generated_tiles = list(grid_tiler._tiles_generator(slide))
+
+        _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
+        assert _extract_tile.call_args_list == (
+            [call(slide, CP(0, 10, 0, 10), 0), call(slide, CP(0, 10, 0, 10), 0)]
+        )
+        _has_enough_tissue.assert_not_called()
         assert len(generated_tiles) == expected_n_tiles
         for i, tile in enumerate(generated_tiles):
             assert tile[0] == tiles[i]
@@ -617,13 +734,15 @@ class Describe_ScoreTiler:
     def it_constructs_from_args(self, request):
         _init = initializer_mock(request, ScoreTiler)
         rs = RandomScorer()
-        grid_tiler = ScoreTiler(rs, (512, 512), 4, 2, True, 0, "", ".png")
+        score_tiler = ScoreTiler(rs, (512, 512), 4, 2, True, 80, 0, "", ".png")
 
-        _init.assert_called_once_with(ANY, rs, (512, 512), 4, 2, True, 0, "", ".png")
+        _init.assert_called_once_with(
+            ANY, rs, (512, 512), 4, 2, True, 80, 0, "", ".png"
+        )
 
-        assert isinstance(grid_tiler, ScoreTiler)
-        assert isinstance(grid_tiler, GridTiler)
-        assert isinstance(grid_tiler, Tiler)
+        assert isinstance(score_tiler, ScoreTiler)
+        assert isinstance(score_tiler, GridTiler)
+        assert isinstance(score_tiler, Tiler)
 
     def it_knows_its_scorer(self):
         random_scorer = RandomScorer()
