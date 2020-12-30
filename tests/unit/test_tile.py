@@ -150,19 +150,11 @@ class Describe_Tile:
         BinaryDilation_,
         BinaryFillHoles_,
     ):
-        _tissue_mask_filters = property_mock(
-            request, _TileFiltersComposition, "tissue_mask_filters"
-        )
-        BinaryFillHoles_.return_value = np.zeros((50, 50))
-        _tissue_mask_filters.return_value = Compose(
-            [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
-        )
         image = PILIMG.RGBA_COLOR_50X50_155_0_0
         tile = Tile(image, None, 0)
 
         tile._has_only_some_tissue()
 
-        _tissue_mask_filters.assert_called_once()
         assert type(tile._has_only_some_tissue()) == np.bool_
 
     def it_knows_its_tissue_mask(
