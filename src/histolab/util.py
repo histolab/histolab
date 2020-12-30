@@ -75,7 +75,11 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
         return image_array.astype(np.uint8) * 255
 
     def _transform_float(image_array):
-        return (image_array * 255).astype(np.uint8)
+        return (
+            image_array.astype(np.uint8)
+            if np.max(image_array) > 1
+            else (image_array * 255).astype(np.uint8)
+        )
 
     types_factory = {
         "bool": _transform_bool(np_img),

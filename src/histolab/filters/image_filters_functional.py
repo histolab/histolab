@@ -267,7 +267,7 @@ def invert(img: PIL.Image.Image) -> PIL.Image.Image:
 def kmeans_segmentation(
     img: PIL.Image.Image, n_segments: int = 800, compactness: float = 10.0
 ) -> PIL.Image.Image:
-    """Segment an RGB image with K-means segmentation
+    """Segment an image with K-means segmentation
 
     By using K-means segmentation (color/space proximity) each segment is
     colored based on the average color for that segment.
@@ -284,7 +284,7 @@ def kmeans_segmentation(
     Returns
     -------
     PIL.Image.Image
-        Image where each segment has been colored based on the average
+        RGB image where each segment has been colored based on the average
         color for that segment.
     """
     img_arr = np.array(img)
