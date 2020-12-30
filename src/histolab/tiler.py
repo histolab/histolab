@@ -193,6 +193,8 @@ class GridTiler(Tiler):
         ------
         TileSizeError
             If the tile size is larger than the slide size
+        LevelError
+            If the level is not available for the slide
         """
         if self.level not in slide.levels:
             raise LevelError(
@@ -441,7 +443,14 @@ class RandomTiler(Tiler):
         ------
         TileSizeError
             If the tile size is larger than the slide size
+        LevelError
+            If the level is not available for the slide
         """
+        if self.level not in slide.levels:
+            raise LevelError(
+                f"Level {self.level} not available. Number of available levels: "
+                f"{len(slide.levels)}"
+            )
         if (
             self.tile_size[0] > slide.level_dimensions(self.level)[0]
             or self.tile_size[1] > slide.level_dimensions(self.level)[1]
@@ -651,7 +660,14 @@ class ScoreTiler(GridTiler):
         ------
         TileSizeError
             If the tile size is larger than the slide size
+        LevelError
+            If the level is not available for the slide
         """
+        if self.level not in slide.levels:
+            raise LevelError(
+                f"Level {self.level} not available. Number of available levels: "
+                f"{len(slide.levels)}"
+            )
         if (
             self.tile_size[0] > slide.level_dimensions(self.level)[0]
             or self.tile_size[1] > slide.level_dimensions(self.level)[1]

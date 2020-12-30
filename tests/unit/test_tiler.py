@@ -383,7 +383,7 @@ class Describe_RandomTiler:
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
         ]
-        random_tiler = RandomTiler((10, 10), n_tiles=2, level=2)
+        random_tiler = RandomTiler((10, 10), n_tiles=2, level=0)
 
         random_tiler.extract(slide)
 
@@ -858,6 +858,20 @@ class Describe_ScoreTiler:
             == "No tiles have been generated. This could happen if `check_tissue=True`"
         )
 
+    def or_it_raises_levelerror_if_has_not_available_level_value(self, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGB_RANDOM_COLOR_500X500
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        score_tiler = ScoreTiler(None, (10, 10), 2, 3)
+
+        with pytest.raises(LevelError) as err:
+            score_tiler.extract(slide)
+
+        assert isinstance(err.value, LevelError)
+        assert str(err.value) == "Level 3 not available. Number of available levels: 1"
+
     def it_can_scale_scores(self):
         coords = [CP(0, 10 * i, 0, 10) for i in range(3)]
         scores = [0.3, 0.4, 0.7]
@@ -938,8 +952,12 @@ class Describe_ScoreTiler:
         _scores.assert_called_once_with(score_tiler, slide)
         assert highest_score_tiles == expected_value
 
-    def but_it_raises_error_with_negative_n_tiles_value(self, request):
-        slide = instance_mock(request, Slide)
+    def but_it_raises_error_with_negative_n_tiles_value(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
         _scores = method_mock(request, ScoreTiler, "_scores")
         coords = CP(0, 10, 0, 10)
         _scores.return_value = [
@@ -979,13 +997,13 @@ class Describe_ScoreTiler:
         ]
         _save_report = method_mock(request, ScoreTiler, "_save_report")
         random_scorer = RandomScorer()
-        score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 2)
+        score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 0)
 
         score_tiler.extract(slide)
 
         assert _extract_tile.call_args_list == [
-            call(slide, coords, 2),
-            call(slide, coords, 2),
+            call(slide, coords, 0),
+            call(slide, coords, 0),
         ]
         _highest_score_tiles.assert_called_once_with(score_tiler, slide)
         assert _tile_filename.call_args_list == [
@@ -1073,13 +1091,13 @@ class Describe_ScoreTiler:
         ]
         _save_report = method_mock(request, ScoreTiler, "_save_report", autospec=False)
         random_scorer = RandomScorer()
-        score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 2)
+        score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 0)
 
         score_tiler.extract(slide, "report.csv")
 
         assert _extract_tile.call_args_list == [
-            call(slide, coords, 2),
-            call(slide, coords, 2),
+            call(slide, coords, 0),
+            call(slide, coords, 0),
         ]
         _highest_score_tiles.assert_called_once_with(score_tiler, slide)
         assert _tile_filename.call_args_list == [
