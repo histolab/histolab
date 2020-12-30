@@ -412,10 +412,10 @@ class Describe_RandomTiler:
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
-        grid_tiler = RandomTiler((50, 52), n_tiles=10, level=0)
+        random_tiler = RandomTiler((50, 52), n_tiles=10, level=0)
 
         with pytest.raises(TileSizeError) as err:
-            grid_tiler.extract(slide)
+            random_tiler.extract(slide)
 
         assert isinstance(err.value, TileSizeError)
         assert (
@@ -1032,10 +1032,10 @@ class Describe_ScoreTiler:
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
-        grid_tiler = RandomTiler((50, 52), n_tiles=10, level=0)
+        score_tiler = ScoreTiler(None, (50, 52), 2, 0)
 
         with pytest.raises(TileSizeError) as err:
-            grid_tiler.extract(slide)
+            score_tiler.extract(slide)
 
         assert isinstance(err.value, TileSizeError)
         assert (
