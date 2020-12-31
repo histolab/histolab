@@ -159,8 +159,8 @@ class Tile:
         Parameters
         ----------
         min_var : float, optional
-            Minimum image variance after morphological operations (dilation, fill holes)
-            to consider the image to be composed by only some tissue, default is 150
+            Minimum image variance to consider the image to be composed by only some
+            tissue, default is 150.
 
         Returns
         -------
