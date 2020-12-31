@@ -153,14 +153,14 @@ class Tile:
 
     # ------- implementation helpers -------
 
-    def _has_only_some_tissue(self, near_zero_var_threshold: float = 150.0) -> np.bool_:
+    def _has_only_some_tissue(self, min_var: float = 150.0) -> np.bool_:
         """Check if the tile is composed by only some tissue.
 
         Parameters
         ----------
-        near_zero_var_threshold : float, optional
+        min_var : float, optional
             Minimum image variance after morphological operations (dilation, fill holes)
-            to consider the image to be composed by only some tissue, default is 0.1
+            to consider the image to be composed by only some tissue, default is 150
 
         Returns
         -------
@@ -169,7 +169,7 @@ class Tile:
             composed by all tissue or by no tissue at all.
         """
         np_img = np.array(self._image.convert("L"))
-        return np.var(np_img) > near_zero_var_threshold
+        return np.var(np_img) > min_var
 
     def _has_tissue_more_than_percent(self, tissue_percent: float = 80.0) -> bool:
         """Check if tissue represent more than ``tissue_percent`` % of the image.
