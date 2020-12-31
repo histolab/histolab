@@ -27,3 +27,17 @@ class Describe_Tile:
         is_almost_white = tile._is_almost_white
 
         assert is_almost_white == expected_result
+
+    @pytest.mark.parametrize(
+        "tile_image, expected_value",
+        (
+            (TILES.LIVER_LEVEl2_10907_7808_11707_8608, False),  # all tissue
+            (TILES.LIVER_LEVEl2_20914_13715_21714_14515, True),  # some tissue
+            (TILES.LIVER_LEVEl2_57138_8209_57938_9009, True),  # some tissue
+            (TILES.LIVER_LEVEl2_38626_13514_39426_14315, False),  # no tissue
+        ),
+    )
+    def it_knows_if_it_has_only_some_tissue(self, tile_image, expected_value):
+        tile = Tile(tile_image, CP(5, 5, 5, 5))
+
+        assert tile._has_only_some_tissue() == expected_value

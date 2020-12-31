@@ -6,10 +6,9 @@ import numpy as np
 from histolab.filters.compositions import _TileFiltersComposition
 from histolab.filters.image_filters import Compose
 from histolab.tile import Tile
-from histolab.types import CoordinatePair
+from histolab.types import CP
 
 from ..base import COMPLEX_MASK
-from ..fixtures import TILES
 from ..unitutil import (
     ANY,
     PILIMG,
@@ -25,7 +24,7 @@ class Describe_Tile:
         _init = initializer_mock(request, Tile)
         _image = PILIMG.RGBA_COLOR_50X50_155_0_0
         _level = 0
-        _coords = CoordinatePair(0, 0, 50, 50)
+        _coords = CP(0, 0, 50, 50)
 
         tile = Tile(_image, _coords, _level)
 
@@ -36,14 +35,14 @@ class Describe_Tile:
         """This test simulates a wrong user behaviour, using a None object instead of a
         PIL Image for image param"""
         with pytest.raises(AttributeError) as err:
-            tile = Tile(None, CoordinatePair(0, 0, 50, 50), 0)
+            tile = Tile(None, CP(0, 0, 50, 50), 0)
             tile.has_enough_tissue()
 
         assert isinstance(err.value, AttributeError)
         assert str(err.value) == "'NoneType' object has no attribute 'convert'"
 
     def it_knows_its_coords(self):
-        _coords = CoordinatePair(0, 0, 50, 50)
+        _coords = CP(0, 0, 50, 50)
         tile = Tile(None, _coords, 0)
 
         coords = tile.coords
@@ -229,20 +228,6 @@ class Describe_Tile:
         assert filtered_image.image == image_after
         assert filtered_image.coords is None
         assert filtered_image.level == 0
-
-    @pytest.mark.parametrize(
-        "tile_image, expected_value",
-        (
-            (TILES.LIVER_LEVEl2_10907_7808_11707_8608, False),  # all tissue
-            (TILES.LIVER_LEVEl2_20914_13715_21714_14515, True),  # some tissue
-            (TILES.LIVER_LEVEl2_57138_8209_57938_9009, True),  # some tissue
-            (TILES.LIVER_LEVEl2_38626_13514_39426_14315, False),  # no tissue
-        ),
-    )
-    def it_knows_if_it_has_only_some_tissue(self, tile_image, expected_value):
-        tile = Tile(tile_image, CoordinatePair(5, 5, 5, 5))
-
-        assert tile._has_only_some_tissue() == expected_value
 
     # fixture components ---------------------------------------------
 
