@@ -5,11 +5,7 @@ from unittest.mock import call
 import numpy as np
 import pytest
 
-<<<<<<< 51d1465d3c1408c9857a54aaf216076e2a770bdb
-from histolab.exceptions import LevelError
-=======
 from histolab.exceptions import LevelError, TileSizeError
->>>>>>> Raise TileSizeError if the tile size is larger than the slide size
 from histolab.scorer import RandomScorer
 from histolab.slide import Slide
 from histolab.tile import Tile
