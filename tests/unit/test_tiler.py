@@ -135,6 +135,22 @@ class Describe_RandomTiler:
         assert type(_filename) == str
         assert _filename == expected_filename
 
+    @pytest.mark.parametrize(
+        "tile_size, expected_result", [((512, 512), False), ((200, 200), True)]
+    )
+    def it_knows_if_it_has_valid_tile_size(self, tmpdir, tile_size, expected_result):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        random_tiler = RandomTiler(tile_size, 10, 0, 7)
+
+        result = random_tiler._has_valid_tile_size(slide)
+
+        assert type(result) == bool
+        assert result == expected_result
+
     def it_can_generate_random_coordinates(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
@@ -383,6 +399,8 @@ class Describe_RandomTiler:
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
         ]
+        _has_valid_tile_size = method_mock(request, RandomTiler, "_has_valid_tile_size")
+        _has_valid_tile_size.return_value = True
         random_tiler = RandomTiler((10, 10), n_tiles=2, level=0)
 
         random_tiler.extract(slide)
@@ -397,6 +415,7 @@ class Describe_RandomTiler:
         assert os.path.exists(
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
+        _has_valid_tile_size.assert_called_once_with(random_tiler, slide)
 
     @pytest.mark.parametrize(
         "image, size",
@@ -406,12 +425,14 @@ class Describe_RandomTiler:
         ],
     )
     def but_it_raises_tilesizeerror_if_tilesize_larger_than_slidesize(
-        self, tmpdir, image, size
+        self, request, tmpdir, image, size
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        _has_valid_tile_size = method_mock(request, RandomTiler, "_has_valid_tile_size")
+        _has_valid_tile_size.return_value = False
         random_tiler = RandomTiler((50, 52), n_tiles=10, level=0)
 
         with pytest.raises(TileSizeError) as err:
@@ -422,6 +443,7 @@ class Describe_RandomTiler:
             str(err.value)
             == f"Tile size (50, 52) is larger than slide size {size} at level 0"
         )
+        _has_valid_tile_size.assert_called_once_with(random_tiler, slide)
 
     # fixture components ---------------------------------------------
 
@@ -508,6 +530,22 @@ class Describe_GridTiler:
 
         assert type(_filename) == str
         assert _filename == expected_filename
+
+    @pytest.mark.parametrize(
+        "tile_size, expected_result", [((512, 512), False), ((200, 200), True)]
+    )
+    def it_knows_if_it_has_valid_tile_size(self, tmpdir, tile_size, expected_result):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        grid_tiler = GridTiler(tile_size, 0, True)
+
+        result = grid_tiler._has_valid_tile_size(slide)
+
+        assert type(result) == bool
+        assert result == expected_result
 
     @pytest.mark.parametrize(
         "check_tissue, expected_box",
@@ -743,6 +781,8 @@ class Describe_GridTiler:
             )
             for i in range(2)
         ]
+        _has_valid_tile_size = method_mock(request, GridTiler, "_has_valid_tile_size")
+        _has_valid_tile_size.return_value = True
         grid_tiler = GridTiler((10, 10), level=0)
 
         grid_tiler.extract(slide)
@@ -757,6 +797,7 @@ class Describe_GridTiler:
         assert os.path.exists(
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
+        _has_valid_tile_size.assert_called_once_with(grid_tiler, slide)
 
     @pytest.mark.parametrize(
         "image, size",
@@ -766,12 +807,14 @@ class Describe_GridTiler:
         ],
     )
     def but_it_raises_tilesizeerror_if_tilesize_larger_than_slidesize(
-        self, tmpdir, image, size
+        self, request, tmpdir, image, size
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        _has_valid_tile_size = method_mock(request, GridTiler, "_has_valid_tile_size")
+        _has_valid_tile_size.return_value = False
         grid_tiler = GridTiler((50, 52), level=0)
 
         with pytest.raises(TileSizeError) as err:
@@ -782,6 +825,7 @@ class Describe_GridTiler:
             str(err.value)
             == f"Tile size (50, 52) is larger than slide size {size} at level 0"
         )
+        _has_valid_tile_size.assert_called_once_with(grid_tiler, slide)
 
 
 class Describe_ScoreTiler:
@@ -815,6 +859,22 @@ class Describe_ScoreTiler:
 
         assert type(n_tiles_) == int
         assert n_tiles_ == n_tiles
+
+    @pytest.mark.parametrize(
+        "tile_size, expected_result", [((512, 512), False), ((200, 200), True)]
+    )
+    def it_knows_if_it_has_valid_tile_size(self, tmpdir, tile_size, expected_result):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+        score_tiler = ScoreTiler(RandomScorer(), tile_size, 2, 0)
+
+        result = score_tiler._has_valid_tile_size(slide)
+
+        assert type(result) == bool
+        assert result == expected_result
 
     def it_can_calculate_scores(self, request):
         slide = instance_mock(request, Slide)
@@ -997,6 +1057,8 @@ class Describe_ScoreTiler:
         ]
         _save_report = method_mock(request, ScoreTiler, "_save_report")
         random_scorer = RandomScorer()
+        _has_valid_tile_size = method_mock(request, ScoreTiler, "_has_valid_tile_size")
+        _has_valid_tile_size.return_value = True
         score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 0)
 
         score_tiler.extract(slide)
@@ -1017,6 +1079,7 @@ class Describe_ScoreTiler:
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
         _save_report.assert_not_called()
+        _has_valid_tile_size.assert_called_once_with(score_tiler, slide)
 
     @pytest.mark.parametrize(
         "image, size",
@@ -1026,12 +1089,14 @@ class Describe_ScoreTiler:
         ],
     )
     def but_it_raises_tilesizeerror_if_tilesize_larger_than_slidesize(
-        self, tmpdir, image, size
+        self, request, tmpdir, image, size
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        _has_valid_tile_size = method_mock(request, ScoreTiler, "_has_valid_tile_size")
+        _has_valid_tile_size.return_value = False
         score_tiler = ScoreTiler(None, (50, 52), 2, 0)
 
         with pytest.raises(TileSizeError) as err:
@@ -1042,6 +1107,7 @@ class Describe_ScoreTiler:
             str(err.value)
             == f"Tile size (50, 52) is larger than slide size {size} at level 0"
         )
+        _has_valid_tile_size.assert_called_once_with(score_tiler, slide)
 
     def it_can_save_report(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("path")
