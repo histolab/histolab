@@ -106,9 +106,7 @@ class Describe_Slide:
         )
 
     def it_knows_its_properties(self):
-        slide = Slide(
-            SVS.CMU_1_SMALL_REGION, os.path.join(SVS.CMU_1_SMALL_REGION, "processed")
-        )
+        slide = Slide(SVS.CMU_1_SMALL_REGION, "processed")
 
         properties = slide.properties
 
