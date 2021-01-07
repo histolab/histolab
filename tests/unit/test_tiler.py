@@ -619,7 +619,7 @@ class Describe_GridTiler:
             ),
         ),
     )
-    def it_can_generate_random_tiles_with_no_check_tissue(
+    def it_can_generate_grid_tiles_with_no_check_tissue(
         self,
         request,
         tmpdir,
