@@ -135,6 +135,25 @@ class Tiler(Protocol):
     def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
         raise NotImplementedError
 
+    def _has_valid_tile_size(self, slide: Slide) -> bool:
+        """Return True if the tile size is smaller or equal than the ``slide`` size.
+
+        Parameters
+        ----------
+        slide : Slide
+            The slide to check the tile size against.
+
+        Returns
+        -------
+        bool
+            True if the tile size is smaller or equal than the ``slide`` size at
+            extraction level, False otherwise
+        """
+        return (
+            self.tile_size[0] <= slide.level_dimensions(self.level)[0]
+            and self.tile_size[1] <= slide.level_dimensions(self.level)[1]
+        )
+
 
 class GridTiler(Tiler):
     """Extractor of tiles arranged in a grid, at the given level, with the given size.
@@ -202,10 +221,7 @@ class GridTiler(Tiler):
                 f"{len(slide.levels)}"
             )
 
-        if (
-            self.tile_size[0] > slide.level_dimensions(self.level)[0]
-            or self.tile_size[1] > slide.level_dimensions(self.level)[1]
-        ):
+        if not self._has_valid_tile_size(slide):
             raise TileSizeError(
                 f"Tile size {self.tile_size} is larger than slide size "
                 f"{slide.level_dimensions(self.level)} at level {self.level}"
@@ -451,10 +467,7 @@ class RandomTiler(Tiler):
                 f"Level {self.level} not available. Number of available levels: "
                 f"{len(slide.levels)}"
             )
-        if (
-            self.tile_size[0] > slide.level_dimensions(self.level)[0]
-            or self.tile_size[1] > slide.level_dimensions(self.level)[1]
-        ):
+        if not self._has_valid_tile_size(slide):
             raise TileSizeError(
                 f"Tile size {self.tile_size} is larger than slide size "
                 f"{slide.level_dimensions(self.level)} at level {self.level}"
@@ -668,10 +681,7 @@ class ScoreTiler(GridTiler):
                 f"Level {self.level} not available. Number of available levels: "
                 f"{len(slide.levels)}"
             )
-        if (
-            self.tile_size[0] > slide.level_dimensions(self.level)[0]
-            or self.tile_size[1] > slide.level_dimensions(self.level)[1]
-        ):
+        if not self._has_valid_tile_size(slide):
             raise TileSizeError(
                 f"Tile size {self.tile_size} is larger than slide size "
                 f"{slide.level_dimensions(self.level)} at level {self.level}"
