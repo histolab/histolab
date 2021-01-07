@@ -244,6 +244,17 @@ class Slide:
         """
         return self._processed_path
 
+    @lazyproperty
+    def properties(self) -> dict:
+        """Whole Slide Image properties.
+
+        Returns
+        -------
+        dict
+            WSI complete properties.
+        """
+        return dict(self._wsi.properties)
+
     def resampled_array(self, scale_factor: int = 32) -> np.array:
         """Retrieve the resampled array from the original slide
 
