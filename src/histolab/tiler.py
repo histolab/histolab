@@ -105,6 +105,25 @@ class Tiler(Protocol):
 
     # ------- implementation helpers -------
 
+    def _has_valid_tile_size(self, slide: Slide) -> bool:
+        """Return True if the tile size is smaller or equal than the ``slide`` size.
+
+        Parameters
+        ----------
+        slide : Slide
+            The slide to check the tile size against.
+
+        Returns
+        -------
+        bool
+            True if the tile size is smaller or equal than the ``slide`` size at
+            extraction level, False otherwise
+        """
+        return (
+            self.tile_size[0] <= slide.level_dimensions(self.level)[0]
+            and self.tile_size[1] <= slide.level_dimensions(self.level)[1]
+        )
+
     def _tile_filename(
         self, tile_wsi_coords: CoordinatePair, tiles_counter: int
     ) -> str:
@@ -134,25 +153,6 @@ class Tiler(Protocol):
 
     def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
         raise NotImplementedError
-
-    def _has_valid_tile_size(self, slide: Slide) -> bool:
-        """Return True if the tile size is smaller or equal than the ``slide`` size.
-
-        Parameters
-        ----------
-        slide : Slide
-            The slide to check the tile size against.
-
-        Returns
-        -------
-        bool
-            True if the tile size is smaller or equal than the ``slide`` size at
-            extraction level, False otherwise
-        """
-        return (
-            self.tile_size[0] <= slide.level_dimensions(self.level)[0]
-            and self.tile_size[1] <= slide.level_dimensions(self.level)[1]
-        )
 
 
 class GridTiler(Tiler):
