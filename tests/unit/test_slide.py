@@ -551,6 +551,13 @@ class Describe_Slide:
         assert type(levels) == list
         assert levels == [0]
 
+    def it_can_access_to_its_properties(self, request):
+        slide = Slide("path", "processed")
+        properties = property_mock(request, Slide, "properties")
+        properties.return_value = {"foo": "bar"}
+
+        assert slide.properties == {"foo": "bar"}
+
     # fixture components ---------------------------------------------
 
     @pytest.fixture

@@ -10,7 +10,7 @@ import pytest
 from histolab.slide import Slide
 
 from ..fixtures import SVS
-from ..util import load_expectation
+from ..util import load_expectation, load_python_expression
 
 
 class Describe_Slide:
@@ -104,3 +104,13 @@ class Describe_Slide:
         np.testing.assert_array_almost_equal(
             np.asarray(bbox_location_img), expected_img
         )
+
+    def it_knows_its_properties(self):
+        slide = Slide(
+            SVS.CMU_1_SMALL_REGION, os.path.join(SVS.CMU_1_SMALL_REGION, "processed")
+        )
+
+        properties = slide.properties
+
+        assert isinstance(properties, dict)
+        assert properties == load_python_expression("python-expr/slide_properties_dict")
