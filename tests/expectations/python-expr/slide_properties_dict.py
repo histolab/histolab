@@ -1,3 +1,4 @@
+# flake8: noqa
 {
     "aperio.AppMag": "20",
     "aperio.Date": "12/29/09",
