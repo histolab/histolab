@@ -293,7 +293,7 @@ slide as parameter:
 random_tiles_extractor.extract(prostate_slide)
 ```
 
-![](https://user-images.githubusercontent.com/4196091/92750145-1663df80-f387-11ea-8d98-7794eef2fd47.png)
+![](https://user-images.githubusercontent.com/31658006/104056327-9ba1b880-51f0-11eb-9a06-7f04ba2bb1dc.jpeg)
 
 Random tiles extracted from the prostate slide at level 2.
 
