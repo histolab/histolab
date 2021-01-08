@@ -496,28 +496,35 @@ class Describe_Slide:
             f"directory: {repr(os.path.join('processed', 'thumbnails', 'b.png'))}"
         )
 
-    def it_knows_its_level_dimensions(self, tmpdir):
+    @pytest.mark.parametrize(
+        "level, expected_value", ((0, (500, 500)), (-1, (500, 500)))
+    )
+    def it_knows_its_level_dimensions(self, level, expected_value, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
 
-        level_dimensions = slide.level_dimensions(level=0)
+        level_dimensions = slide.level_dimensions(level=level)
 
-        assert level_dimensions == (500, 500)
+        assert level_dimensions == expected_value
 
-    def but_it_raises_expection_when_level_does_not_exist(self, tmpdir):
+    @pytest.mark.parametrize("level", (3, -3))
+    def but_it_raises_expection_when_level_does_not_exist(self, level, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, "processed")
         with pytest.raises(LevelError) as err:
-            slide.level_dimensions(level=3)
+            slide.level_dimensions(level=level)
 
         assert isinstance(err.value, LevelError)
-        assert str(err.value) == "Level 3 not available. Number of available levels: 1"
+        assert (
+            str(err.value)
+            == f"Level {level} not available. Number of available levels: 1"
+        )
 
     @pytest.mark.parametrize(
         "coords, expected_result",
@@ -558,7 +565,35 @@ class Describe_Slide:
 
         assert slide.properties == {"foo": "bar"}
 
+    @pytest.mark.parametrize("level, expected_value", ((-1, 8), (-2, 7), (-9, 0)))
+    def it_can_remap_negative_level_indices(self, level, expected_value, levels_prop):
+        levels_prop.return_value = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
+        slide = Slide("path", "processed")
+
+        assert slide._remap_level(level) == expected_value
+
+    def but_it_raises_a_level_error_when_it_cannot_be_mapped(self, tmpdir, levels_prop):
+        levels_prop.return_value = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGB_RANDOM_COLOR_500X500
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, "processed")
+
+        with pytest.raises(LevelError) as err:
+            slide._remap_level(-10)
+
+        assert isinstance(err.value, LevelError)
+        assert (
+            str(err.value) == "Level -10 not available. Number of available levels: 1"
+        )
+
     # fixture components ---------------------------------------------
+
+    @pytest.fixture
+    def levels_prop(self, request):
+        return property_mock(request, Slide, "levels")
 
     @pytest.fixture
     def resampled_dims_(self, request):
