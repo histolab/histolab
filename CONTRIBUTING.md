@@ -1,7 +1,7 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change. 
+When contributing to this repository, please first discuss the change you wish to make via issue or any other 
+method with the owners of this repository before making a change. 
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
@@ -15,8 +15,9 @@ style.
 - Bug fixes also generally require unit tests, because the presence of bugs usually indicates insufficient test 
   coverage.
 - Keep API compatibility in mind when you change code in Histolab core.
-- Tests coverage cannot decrease from the current %.
+- Tests coverage cannot decrease from the current % (current coverage 100%).
 - Do not push integration tests without unit tests.
+- Pay attention to the CI required checks
 
 ## Contribution Workflow
 
@@ -87,7 +88,7 @@ Additional git and GitHub resources:
 
 Before starting contributing to Histolab, test that your local environment is up and running. Here some steps:
 
-- Create a python 3.6 - 3.7 `virtualenv`
+- Create a python 3.6, 3.7 or 3.8 `virtualenv`
 - Activate the env and in the project root run:
   
   `pip install -e .[testing]`
@@ -100,7 +101,11 @@ Before starting contributing to Histolab, test that your local environment is up
 
 - Run the tests
  
-   `pytest`
+   `pytest` or if you wanna skip the benchmarks `pytest --ignore=tests/benchmarks`
+
+- Run tests in parallel (requires `pytest-xdist`)
+
+   `pytest --ignore=tests/benchmarks -n auto`
 
 ## Code of Conduct
 
