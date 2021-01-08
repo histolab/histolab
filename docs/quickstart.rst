@@ -174,16 +174,16 @@ of tiles from our slides; in this case, we need the ``RandomTiler`` extractor:
 
    from histolab.tiler import RandomTiler
 
-Let us suppose that we want to randomly extract 6 squared tiles at level 2 of
-size 512 from our prostate slide, and that we want to save them only if
+Let us suppose that we want to randomly extract 30 squared tiles at level 2 of
+size 128 from our prostate slide, and that we want to save them only if
 they have at least 80% of tissue inside. We then initialize our ``RandomTiler``
 extractor as follows:
 
 .. code-block:: ipython3
 
    random_tiles_extractor = RandomTiler(
-       tile_size=(512, 512),
-       n_tiles=6,
+       tile_size=(128, 128),
+       n_tiles=30,
        level=2,
        seed=42,
        check_tissue=True, # default
@@ -193,14 +193,25 @@ extractor as follows:
    )
 
 Notice that we also specify the random seed to ensure the reproducibility of
-the extraction process. Starting the extraction is as simple as calling
-the ``extract`` method on the extractor, passing the slide as parameter:
+the extraction process.
+
+We may want to check which tiles have been selected by the tiler, before starting the extraction procedure and save them;
+the ``locate_tiles`` method of ``RandomTiler`` returns the thumbnail of the slide with the corresponding tiles outlined.
+
+.. code-block:: ipython3
+
+    random_tiles_extractor.locate_tiles(slide=prostate_slide)
+
+.. figure:: https://user-images.githubusercontent.com/31658006/104055082-6bf1b100-51ee-11eb-8353-1f5958d521d8.png
+
+
+Starting the extraction is then as simple as calling the ``extract`` method on the extractor, passing the slide as parameter:
 
 .. code-block:: ipython3
 
    random_tiles_extractor.extract(prostate_slide)
 
-.. figure:: https://user-images.githubusercontent.com/4196091/92750145-1663df80-f387-11ea-8d98-7794eef2fd47.png
+.. figure:: https://user-images.githubusercontent.com/31658006/104056327-9ba1b880-51f0-11eb-9a06-7f04ba2bb1dc.jpeg
    :alt: extracted tiles
 
 Random tiles extracted from the prostate slide at level 2.
@@ -228,13 +239,21 @@ defining the number of overlapping pixels between two adjacent tiles,
    grid_tiles_extractor = GridTiler(
       tile_size=(512, 512),
       level=0,
-      check_tissue=False,
+      check_tissue=True, # default
       pixel_overlap=0, # default
       prefix="grid/", # save tiles in the "grid" subdirectory of slide's processed_path
       suffix=".png" # default
    )
 
-Again, the extraction process starts when the extract method is called
+Again, we can exploit the ``locate_tiles`` method to visualize the selected tiles on the slide's thumbnail:
+
+.. code-block:: ipython3
+
+    grid_tiles_extractor.locate_tiles(slide=ovarian_slide)
+
+.. figure:: https://user-images.githubusercontent.com/31658006/104056833-65b10400-51f1-11eb-9262-f4091e6edc29.png
+
+and the extraction process starts when the extract method is called
 on our extractor:
 
 .. code-block:: ipython3
