@@ -240,16 +240,6 @@ class GridTiler(Tiler):
         print(f"{tiles_counter} Grid Tiles have been saved.")
 
     @property
-    def level(self) -> int:
-        return self._valid_level
-
-    @level.setter
-    def level(self, level_: int):
-        if level_ < 0:
-            raise LevelError(f"Level cannot be negative ({level_})")
-        self._valid_level = level_
-
-    @property
     def tile_size(self) -> Tuple[int, int]:
         return self._valid_tile_size
 
@@ -462,7 +452,7 @@ class RandomTiler(Tiler):
         LevelError
             If the level is not available for the slide
         """
-        if self.level not in slide.levels:
+        if abs(self.level) not in slide.levels:
             raise LevelError(
                 f"Level {self.level} not available. Number of available levels: "
                 f"{len(slide.levels)}"
@@ -481,16 +471,6 @@ class RandomTiler(Tiler):
             tile.save(os.path.join(slide.processed_path, "tiles", tile_filename))
             print(f"\t Tile {tiles_counter} saved: {tile_filename}")
         print(f"{tiles_counter+1} Random Tiles have been saved.")
-
-    @property
-    def level(self) -> int:
-        return self._valid_level
-
-    @level.setter
-    def level(self, level_: int):
-        if level_ < 0:
-            raise LevelError(f"Level cannot be negative ({level_})")
-        self._valid_level = level_
 
     @property
     def max_iter(self) -> int:
