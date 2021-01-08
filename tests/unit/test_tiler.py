@@ -15,6 +15,7 @@ from histolab.types import CP
 from ..unitutil import (
     ANY,
     PILIMG,
+    base_test_slide,
     NpArrayMock,
     function_mock,
     initializer_mock,
@@ -45,11 +46,7 @@ class Describe_RandomTiler:
         assert str(err.value) == "Tile size must be greater than 0 ((512, -1))"
 
     def or_it_has_not_available_level_value(self, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGB_RANDOM_COLOR_500X500
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
         random_tiler = RandomTiler((128, 128), 10, 3)
 
         with pytest.raises(LevelError) as err:
@@ -70,11 +67,7 @@ class Describe_RandomTiler:
         )
 
     def or_it_has_wrong_seed(self, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGB_RANDOM_COLOR_500X500
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
         random_tiler = RandomTiler((128, 128), 10, 0, seed=-1)
 
         with pytest.raises(ValueError) as err:
@@ -129,11 +122,7 @@ class Describe_RandomTiler:
         "tile_size, expected_result", [((512, 512), False), ((200, 200), True)]
     )
     def it_knows_if_it_has_valid_tile_size(self, tmpdir, tile_size, expected_result):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         random_tiler = RandomTiler(tile_size, 10, 0, 7)
 
         result = random_tiler._has_valid_tile_size(slide)
@@ -142,11 +131,7 @@ class Describe_RandomTiler:
         assert result == expected_result
 
     def it_can_generate_random_coordinates(self, request, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         _box_mask_thumb = method_mock(request, RandomTiler, "box_mask")
         _box_mask_thumb.return_value = NpArrayMock.ONES_500X500_BOOL
         _tile_size = property_mock(request, RandomTiler, "tile_size")
@@ -176,11 +161,7 @@ class Describe_RandomTiler:
         ),
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         _biggest_tissue_box_mask = property_mock(
             request, Slide, "biggest_tissue_box_mask"
         )
@@ -230,11 +211,7 @@ class Describe_RandomTiler:
         expected_value,
         _random_tile_coordinates,
     ):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         _extract_tile = method_mock(request, Slide, "extract_tile")
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.side_effect = has_enough_tissue * (max_iter // 2)
@@ -264,11 +241,7 @@ class Describe_RandomTiler:
         tmpdir,
         _random_tile_coordinates,
     ):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         _extract_tile = method_mock(request, Slide, "extract_tile")
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.side_effect = [False, False] * 5
@@ -332,11 +305,7 @@ class Describe_RandomTiler:
         expected_value,
         _random_tile_coordinates,
     ):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         _extract_tile = method_mock(request, Slide, "extract_tile")
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.side_effect = has_enough_tissue * (max_iter // 2)
@@ -364,11 +333,7 @@ class Describe_RandomTiler:
     ):
         random_tiler = RandomTiler((10, 10), 1, level=0, max_iter=1, check_tissue=False)
         _random_tile_coordinates.side_effect = [CP(-1, -1, -1, -1), CP(0, 10, 0, 10)]
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         generated_tiles = list(random_tiler._tiles_generator(slide))
 
@@ -461,11 +426,8 @@ class Describe_GridTiler:
         assert str(err.value) == "Tile size must be greater than 0 ((512, -1))"
 
     def or_it_has_not_available_level_value(self, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGB_RANDOM_COLOR_500X500
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
+
         grid_tiler = GridTiler((128, 128), 3)
 
         with pytest.raises(LevelError) as err:
@@ -519,11 +481,7 @@ class Describe_GridTiler:
         "tile_size, expected_result", [((512, 512), False), ((200, 200), True)]
     )
     def it_knows_if_it_has_valid_tile_size(self, tmpdir, tile_size, expected_result):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         grid_tiler = GridTiler(tile_size, 0, True)
 
         result = grid_tiler._has_valid_tile_size(slide)
@@ -539,11 +497,7 @@ class Describe_GridTiler:
         ),
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         _biggest_tissue_box_mask = property_mock(
             request, Slide, "biggest_tissue_box_mask"
         )
@@ -626,11 +580,7 @@ class Describe_GridTiler:
         has_enough_tissue,
         expected_n_tiles,
     ):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         _extract_tile = method_mock(request, Slide, "extract_tile")
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.side_effect = has_enough_tissue
@@ -679,11 +629,7 @@ class Describe_GridTiler:
         has_enough_tissue,
         expected_n_tiles,
     ):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         _extract_tile = method_mock(request, Slide, "extract_tile")
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.side_effect = has_enough_tissue
@@ -707,11 +653,7 @@ class Describe_GridTiler:
             assert tile[0] == tiles[i]
 
     def but_with_wrong_coordinates(self, request, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.return_value = False
         _grid_coordinates_generator = method_mock(
@@ -732,11 +674,7 @@ class Describe_GridTiler:
         assert generated_tiles[0][1] == coords2
 
     def and_doesnt_raise_error_with_wrong_coordinates(self, request, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         coords = CP(5800, 6000, 5800, 6000)
         _grid_coordinates_generator = method_mock(
             request, GridTiler, "_grid_coordinates_generator"
@@ -848,11 +786,7 @@ class Describe_ScoreTiler:
         "tile_size, expected_result", [((512, 512), False), ((200, 200), True)]
     )
     def it_knows_if_it_has_valid_tile_size(self, tmpdir, tile_size, expected_result):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         score_tiler = ScoreTiler(RandomScorer(), tile_size, 2, 0)
 
         result = score_tiler._has_valid_tile_size(slide)
@@ -903,11 +837,7 @@ class Describe_ScoreTiler:
         )
 
     def or_it_raises_levelerror_if_has_not_available_level_value(self, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGB_RANDOM_COLOR_500X500
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
         score_tiler = ScoreTiler(None, (10, 10), 2, 3)
 
         with pytest.raises(LevelError) as err:

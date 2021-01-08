@@ -10,9 +10,18 @@ import pytest
 from PIL import Image
 
 from histolab import data
+from histolab.slide import Slide
 
 from unittest.mock import ANY, call  # noqa # isort:skip
 from unittest.mock import create_autospec, patch, PropertyMock  # isort:skip
+
+
+def base_test_slide(tmpdir, image):
+    tmp_path_ = tmpdir.mkdir("myslide")
+    image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+    slide_path = os.path.join(tmp_path_, "mywsi.png")
+    slide = Slide(slide_path, "processed")
+    return slide, tmp_path_
 
 
 def dict_list_eq(l1, l2):
