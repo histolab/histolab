@@ -25,13 +25,14 @@ from ..unitutil import (
 
 
 class Describe_RandomTiler:
-    def it_constructs_from_args(self, request):
+    @pytest.mark.parametrize("level", (2, -2))
+    def it_constructs_from_args(self, level, request):
         _init = initializer_mock(request, RandomTiler)
 
-        random_tiler = RandomTiler((512, 512), 10, 2, 7, True, "", ".png", int(1e4))
+        random_tiler = RandomTiler((512, 512), 10, level, 7, True, "", ".png", int(1e4))
 
         _init.assert_called_once_with(
-            ANY, (512, 512), 10, 2, 7, True, "", ".png", int(1e4)
+            ANY, (512, 512), 10, level, 7, True, "", ".png", int(1e4)
         )
         assert isinstance(random_tiler, RandomTiler)
         assert isinstance(random_tiler, Tiler)
@@ -56,13 +57,6 @@ class Describe_RandomTiler:
 
         assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
-
-    def or_it_has_negative_level_value(self):
-        with pytest.raises(LevelError) as err:
-            RandomTiler((512, 512), 10, -1)
-
-        assert isinstance(err.value, LevelError)
-        assert str(err.value) == "Level cannot be negative (-1)"
 
     def or_it_has_wrong_max_iter(self):
         with pytest.raises(ValueError) as err:
@@ -449,12 +443,13 @@ class Describe_RandomTiler:
 
 
 class Describe_GridTiler:
-    def it_constructs_from_args(self, request):
+    @pytest.mark.parametrize("level", (2, -2))
+    def it_constructs_from_args(self, level, request):
         _init = initializer_mock(request, GridTiler)
 
-        grid_tiler = GridTiler((512, 512), 2, True, 0, "", ".png")
+        grid_tiler = GridTiler((512, 512), level, True, 0, "", ".png")
 
-        _init.assert_called_once_with(ANY, (512, 512), 2, True, 0, "", ".png")
+        _init.assert_called_once_with(ANY, (512, 512), level, True, 0, "", ".png")
         assert isinstance(grid_tiler, GridTiler)
         assert isinstance(grid_tiler, Tiler)
 
@@ -478,13 +473,6 @@ class Describe_GridTiler:
 
         assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
-
-    def or_it_has_negative_level_value(self):
-        with pytest.raises(LevelError) as err:
-            GridTiler((512, 512), -1)
-
-        assert isinstance(err.value, LevelError)
-        assert str(err.value) == "Level cannot be negative (-1)"
 
     @pytest.mark.parametrize("tile_size", ((512, 512), (128, 128), (10, 10)))
     def it_knows_its_tile_size(self, tile_size):

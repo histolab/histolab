@@ -155,6 +155,7 @@ class Slide:
         -------
         dimensions : tuple (width, height)
         """
+        level = level if level >= 0 else self._remap_level(level)
         try:
             return self._wsi.level_dimensions[level]
         except IndexError:
@@ -405,6 +406,15 @@ class Slide:
             and 0 <= coords.y_ul < self.dimensions[1]
             and 0 <= coords.y_br < self.dimensions[1]
         )
+
+    def _remap_level(self, level: int) -> int:
+        """..."""
+        if len(self.levels) - abs(level) < 0:
+            raise LevelError(
+                f"Level {level} not available. Number of available levels: "
+                f"{len(self._wsi.level_dimensions)}"
+            )
+        return len(self.levels) - abs(level)
 
     def _resample(self, scale_factor: int = 32) -> Tuple[PIL.Image.Image, np.array]:
         """Converts a slide to a scaled-down PIL image.
