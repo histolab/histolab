@@ -412,16 +412,17 @@ class Slide:
 
         Parameters
         ----------
-        level: int
+        level : int
             the level index to remap
 
         Raises
         ------
-        LevelError when the abs(level) is greater than the number of the levels.
+        LevelError
+            when the abs(level) is greater than the number of the levels.
 
         Returns
         -------
-        level: int
+        level : int
            positive level index
         """
         if len(self.levels) - abs(level) < 0:
