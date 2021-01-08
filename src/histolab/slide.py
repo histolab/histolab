@@ -408,7 +408,22 @@ class Slide:
         )
 
     def _remap_level(self, level: int) -> int:
-        """..."""
+        """Remap negative index for the given level onto a positive one.
+
+        Parameters
+        ----------
+        level: int
+            the level index to remap
+
+        Raises
+        ------
+        LevelError when the abs(level) is greater than the number of the levels.
+
+        Returns
+        -------
+        level: int
+           positive level index
+        """
         if len(self.levels) - abs(level) < 0:
             raise LevelError(
                 f"Level {level} not available. Number of available levels: "
