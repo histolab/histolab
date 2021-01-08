@@ -447,7 +447,7 @@ class Describe_Slide:
         not on_ci() or is_win32(), reason="Only run on CIs; hangs on Windows CIs"
     )
     def it_can_show_its_thumbnail(self, tmpdir):
-        slide = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         slide.save_thumbnail()
 
