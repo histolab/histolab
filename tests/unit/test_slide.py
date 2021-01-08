@@ -21,6 +21,7 @@ from histolab.util import regions_from_binary_mask
 from ..unitutil import (
     ANY,
     PILIMG,
+    base_test_slide,
     class_mock,
     dict_list_eq,
     function_mock,
@@ -201,11 +202,7 @@ class Describe_Slide:
         assert thumbnail_path == expected_value
 
     def it_knows_its_dimensions(self, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         slide_dims = slide.dimensions
 
@@ -240,11 +237,7 @@ class Describe_Slide:
         assert str(err.value) == "division by zero"
 
     def it_knows_its_resampled_array(self, tmpdir, resampled_dims_):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         resampled_dims_.return_value = (100, 200, 300, 400)
 
         resampled_array = slide.resampled_array(scale_factor=32)
@@ -253,22 +246,14 @@ class Describe_Slide:
         assert resampled_array.shape == (400, 300, 3)
 
     def it_knows_its_thumbnail_size(self, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         thumb_size = slide._thumbnail_size
 
         assert thumb_size == (500, 500)
 
     def it_creates_a_correct_slide_object(self, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_50X50_155_0_0
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_50X50_155_0_0)
 
         _wsi = slide._wsi
 
@@ -295,11 +280,7 @@ class Describe_Slide:
         )
 
     def it_can_resample_itself(self, tmpdir, resampled_dims_):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         resampled_dims_.return_value = (100, 200, 300, 400)
 
         _resample = slide._resample(32)
@@ -324,11 +305,7 @@ class Describe_Slide:
         assert _resample[0].mode == "RGB"
 
     def it_resamples_with_the_correct_scale_factor(self, tmpdir, resampled_dims_):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         resampled_dims_.return_value = (500, 500, 15, 15)
 
         _resample = slide._resample(32)
@@ -423,11 +400,7 @@ class Describe_Slide:
         RemoveSmallHoles_,
         RemoveSmallObjects_,
     ):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         regions = [Region(index=0, area=33, bbox=(0, 0, 2, 2), center=(0.5, 0.5))]
         main_tissue_areas_mask_filters_ = property_mock(
             request, _SlideFiltersComposition, "tissue_mask_filters"
@@ -474,11 +447,7 @@ class Describe_Slide:
         not on_ci() or is_win32(), reason="Only run on CIs; hangs on Windows CIs"
     )
     def it_can_show_its_thumbnail(self, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         slide.save_thumbnail()
 
@@ -500,11 +469,7 @@ class Describe_Slide:
         "level, expected_value", ((0, (500, 500)), (-1, (500, 500)))
     )
     def it_knows_its_level_dimensions(self, level, expected_value, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         level_dimensions = slide.level_dimensions(level=level)
 
@@ -512,11 +477,8 @@ class Describe_Slide:
 
     @pytest.mark.parametrize("level", (3, -3))
     def but_it_raises_expection_when_level_does_not_exist(self, level, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+
         with pytest.raises(LevelError) as err:
             slide.level_dimensions(level=level)
 
@@ -535,11 +497,7 @@ class Describe_Slide:
         ),
     )
     def it_knows_if_coords_are_valid(self, coords, expected_result, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         _are_valid = slide._has_valid_coords(coords)
 
@@ -547,11 +505,7 @@ class Describe_Slide:
         assert _are_valid == expected_result
 
     def it_knows_its_levels(self, tmpdir):
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         levels = slide.levels
 
@@ -575,11 +529,7 @@ class Describe_Slide:
 
     def but_it_raises_a_level_error_when_it_cannot_be_mapped(self, tmpdir, levels_prop):
         levels_prop.return_value = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        tmp_path_ = tmpdir.mkdir("myslide")
-        image = PILIMG.RGB_RANDOM_COLOR_500X500
-        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
-        slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, "processed")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
 
         with pytest.raises(LevelError) as err:
             slide._remap_level(-10)
