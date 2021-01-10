@@ -33,15 +33,26 @@ except ImportError:
 
 
 @runtime_checkable
-class ImageFilter(Protocol):
-    """Image filter base class"""
+class Filter(Protocol):
+    """Filter protocol"""
 
     @abstractmethod
-    def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
+    def __call__(
+        self, img: Union[PIL.Image.Image, np.ndarray]
+    ) -> Union[PIL.Image.Image, np.ndarray]:
         raise NotImplementedError
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
+
+
+@runtime_checkable
+class ImageFilter(Filter, Protocol):
+    """Image filter protocol"""
+
+    @abstractmethod
+    def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
+        raise NotImplementedError
 
 
 class Compose(ImageFilter):
@@ -87,7 +98,7 @@ class Lambda(ImageFilter):
         return self.lambd(img)
 
 
-class ToPILImage:
+class ToPILImage(Filter):
     """Convert a ndarray to a PIL Image, while preserving the value range.
 
     Parameters
@@ -104,11 +115,8 @@ class ToPILImage:
     def __call__(self, np_img: np.ndarray) -> PIL.Image.Image:
         return U.np_to_pil(np_img)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class ApplyMaskImage:
+class ApplyMaskImage(Filter):
     """Mask image with the provided binary mask.
 
     Parameters
@@ -129,9 +137,6 @@ class ApplyMaskImage:
 
     def __call__(self, mask: np.ndarray) -> PIL.Image.Image:
         return U.apply_mask_image(self.img, mask)
-
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
 
 class Invert(ImageFilter):
