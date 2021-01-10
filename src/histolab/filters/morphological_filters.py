@@ -16,14 +16,33 @@
 # limitations under the License.
 # ------------------------------------------------------------------------
 
+from abc import abstractmethod
+
 import numpy as np
 import scipy.ndimage.morphology
 import skimage.morphology
 
 from . import morphological_filters_functional as F
 
+try:
+    from typing import Protocol, runtime_checkable
+except ImportError:
+    from typing_extensions import Protocol, runtime_checkable
 
-class RemoveSmallObjects:
+
+@runtime_checkable
+class MorphologicalFilter(Protocol):
+    """Morphological filter base class"""
+
+    @abstractmethod
+    def __call__(self, np_mask: np.ndarray) -> np.ndarray:
+        raise NotImplementedError
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "()"
+
+
+class RemoveSmallObjects(MorphologicalFilter):
     """Remove objects smaller than the specified size.
 
     If avoid_overmask is True, this function can recursively call itself with
@@ -62,11 +81,8 @@ class RemoveSmallObjects:
             np_mask, self.min_size, self.avoid_overmask, self.overmask_thresh
         )
 
-    def __repr__(self):
-        return self.__class__.__name__ + "()"
 
-
-class RemoveSmallHoles:
+class RemoveSmallHoles(MorphologicalFilter):
     """Remove holes smaller than a specified size.
 
     Parameters
@@ -88,11 +104,8 @@ class RemoveSmallHoles:
     def __call__(self, np_mask: np.ndarray) -> np.ndarray:
         return skimage.morphology.remove_small_holes(np_mask, self.area_threshold)
 
-    def __repr__(self):
-        return self.__class__.__name__ + "()"
 
-
-class BinaryErosion:
+class BinaryErosion(MorphologicalFilter):
     """Erode a binary mask.
 
     Parameters
@@ -122,11 +135,8 @@ class BinaryErosion:
             np_mask, skimage.morphology.disk(self.disk_size), self.iterations
         )
 
-    def __repr__(self):
-        return self.__class__.__name__ + "()"
 
-
-class BinaryDilation:
+class BinaryDilation(MorphologicalFilter):
     """Dilate a binary mask.
 
     Parameters
@@ -155,11 +165,8 @@ class BinaryDilation:
             np_mask, skimage.morphology.disk(self.disk_size), self.iterations
         )
 
-    def __repr__(self):
-        return self.__class__.__name__ + "()"
 
-
-class BinaryFillHoles:
+class BinaryFillHoles(MorphologicalFilter):
     """Fill the holes in binary objects.
 
     Parameters
@@ -183,7 +190,7 @@ class BinaryFillHoles:
         return scipy.ndimage.morphology.binary_fill_holes(np_img, self.structure)
 
 
-class BinaryOpening:
+class BinaryOpening(MorphologicalFilter):
     """Open a binary mask.
 
     Opening is an erosion followed by a dilation. Opening can be used to remove
@@ -215,11 +222,8 @@ class BinaryOpening:
             np_mask, skimage.morphology.disk(self.disk_size), self.iterations
         )
 
-    def __repr__(self):
-        return self.__class__.__name__ + "()"
 
-
-class BinaryClosing:
+class BinaryClosing(MorphologicalFilter):
     """Close a binary mask.
 
     Closing is a dilation followed by an erosion. Closing can be used to remove
@@ -251,11 +255,8 @@ class BinaryClosing:
             np_mask, skimage.morphology.disk(self.disk_size), self.iterations
         )
 
-    def __repr__(self):
-        return self.__class__.__name__ + "()"
 
-
-class WatershedSegmentation:
+class WatershedSegmentation(MorphologicalFilter):
     """Segment and label an binary mask with Watershed segmentation [1]_
 
     The watershed algorithm treats pixels values as a local topography (elevation).
@@ -285,11 +286,8 @@ class WatershedSegmentation:
     def __call__(self, np_mask: np.ndarray) -> np.ndarray:
         return F.watershed_segmentation(np_mask, self.region_shape)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class WhiteTopHat:
+class WhiteTopHat(MorphologicalFilter):
     """Return white top hat of an image.
 
     The white top hat of an image is defined as the image minus its morphological
