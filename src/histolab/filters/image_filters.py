@@ -18,7 +18,7 @@
 
 import operator
 from abc import abstractmethod
-from typing import Any, Callable, List, Union
+from typing import Callable, List, Union
 
 import numpy as np
 import PIL
@@ -64,7 +64,7 @@ class Compose(ImageFilter):
         List of filters to compose
     """
 
-    def __init__(self, filters: List[Any]) -> None:
+    def __init__(self, filters: List[Filter]) -> None:
         self.filters = filters
 
     def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
