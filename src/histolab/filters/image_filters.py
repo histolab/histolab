@@ -17,6 +17,7 @@
 # ------------------------------------------------------------------------
 
 import operator
+from abc import abstractmethod
 from typing import Any, Callable, List, Union
 
 import numpy as np
@@ -25,8 +26,25 @@ import PIL
 from .. import util as U
 from . import image_filters_functional as F
 
+try:
+    from typing import Protocol, runtime_checkable
+except ImportError:
+    from typing_extensions import Protocol, runtime_checkable
 
-class Compose:
+
+@runtime_checkable
+class ImageFilter(Protocol):
+    """Image filter base class"""
+
+    @abstractmethod
+    def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
+        raise NotImplementedError
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "()"
+
+
+class Compose(ImageFilter):
     """Composes several filters together.
 
     Parameters
@@ -44,7 +62,7 @@ class Compose:
         return img
 
 
-class Lambda:
+class Lambda(ImageFilter):
     """Apply a user-defined lambda as a filter.
 
     Inspired from:
@@ -67,9 +85,6 @@ class Lambda:
 
     def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
         return self.lambd(img)
-
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
 
 class ToPILImage:
@@ -119,7 +134,7 @@ class ApplyMaskImage:
         return self.__class__.__name__ + "()"
 
 
-class Invert:
+class Invert(ImageFilter):
     """Invert an image, i.e. take the complement of the correspondent array.
 
     Parameters
@@ -136,11 +151,8 @@ class Invert:
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.invert(img)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class RgbToGrayscale:
+class RgbToGrayscale(ImageFilter):
     """Convert an RGB image to a grayscale image.
 
     Parameters
@@ -157,11 +169,8 @@ class RgbToGrayscale:
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return PIL.ImageOps.grayscale(img)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class RgbToHed:
+class RgbToHed(ImageFilter):
     """Convert RGB channels to HED channels.
 
     image color space (RGB) is converted to Hematoxylin-Eosin-Diaminobenzidine space.
@@ -181,11 +190,8 @@ class RgbToHed:
         hed = F.rgb_to_hed(img)
         return hed
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class RgbToLab:
+class RgbToLab(ImageFilter):
     """Convert from the sRGB color space to the CIE Lab colorspace.
 
     sRGB color space reference: IEC 61966-2-1:1999
@@ -218,11 +224,8 @@ class RgbToLab:
         lab = F.rgb_to_lab(img)
         return lab
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class HematoxylinChannel:
+class HematoxylinChannel(ImageFilter):
     """Obtain Hematoxylin channel from RGB image.
 
     Input image is first converted into HED space and the hematoxylin channel is
@@ -243,11 +246,8 @@ class HematoxylinChannel:
         hematoxylin = F.hematoxylin_channel(img)
         return hematoxylin
 
-    def __repr__(self):
-        return self.__class__.__name__ + "()"
 
-
-class EosinChannel:
+class EosinChannel(ImageFilter):
     """Obtain Eosin channel from RGB image.
 
     Input image is first converted into HED space and the Eosin channel is
@@ -268,11 +268,8 @@ class EosinChannel:
         eosin = F.eosin_channel(img)
         return eosin
 
-    def __repr__(self):
-        return self.__class__.__name__ + "()"
 
-
-class RgbToHsv:
+class RgbToHsv(ImageFilter):
     """Convert RGB channels to HSV channels.
 
     image color space (RGB) is converted to Hue - Saturation - Value (HSV) space.
@@ -292,11 +289,8 @@ class RgbToHsv:
         hsv = F.rgb_to_hsv(img)
         return hsv
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class StretchContrast:
+class StretchContrast(ImageFilter):
     """Increase image contrast.
 
     Th contrast in image is increased based on intensities in a specified range
@@ -324,11 +318,8 @@ class StretchContrast:
         stretch_contrast = F.stretch_contrast(img, self.low, self.high)
         return stretch_contrast
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class HistogramEqualization:
+class HistogramEqualization(ImageFilter):
     """Increase image contrast using histogram equalization.
 
     The input image (gray or RGB) is filterd using histogram equalization to increase
@@ -354,11 +345,8 @@ class HistogramEqualization:
         hist_equ = F.histogram_equalization(img, self.n_bins)
         return hist_equ
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class AdaptiveEqualization:
+class AdaptiveEqualization(ImageFilter):
     """Increase image contrast using adaptive equalization.
 
     Contrast in local region of input image (gray or RGB) is increased using
@@ -387,14 +375,8 @@ class AdaptiveEqualization:
         adaptive_equ = F.adaptive_equalization(img, self.n_bins, self.clip_limit)
         return adaptive_equ
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-# ------- LocalEqualization input must be 2D (grayscale)
-
-
-class LocalEqualization:
+class LocalEqualization(ImageFilter):
     """Filter gray image using local equalization.
 
     Local equalization method uses local histograms based on a disk structuring element.
@@ -402,7 +384,7 @@ class LocalEqualization:
     Parameters
     ---------
     img: PIL.Image.Image
-        Input image. Notice that it must be 2D
+        Grayscale input image
     disk_size: int, optional
         Radius of the disk structuring element used for the local histograms.
         Default is 50
@@ -410,7 +392,7 @@ class LocalEqualization:
     Returns
     -------
     PIL.Image.Image
-        2D image with contrast enhanced using local equalization.
+        Grayscale image with contrast enhanced using local equalization.
     """
 
     def __init__(self, disk_size: int = 50) -> None:
@@ -420,11 +402,8 @@ class LocalEqualization:
         local_equ = F.local_equalization(img, self.disk_size)
         return local_equ
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class KmeansSegmentation:
+class KmeansSegmentation(ImageFilter):
     """Segment an RGB image with K-means segmentation
 
     By using K-means segmentation (color/space proximity) each segment is colored based
@@ -456,11 +435,8 @@ class KmeansSegmentation:
         )
         return kmeans_segmentation
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class RagThreshold:
+class RagThreshold(ImageFilter):
     """Combine similar K-means segmented regions based on threshold value.
 
     Segment an image with K-means, build region adjacency graph based on
@@ -495,11 +471,8 @@ class RagThreshold:
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.rag_threshold(img, self.n_segments, self.compactness, self.threshold)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class HysteresisThreshold:
+class HysteresisThreshold(ImageFilter):
     """Apply two-level (hysteresis) threshold to an image.
 
     Parameters
@@ -524,14 +497,11 @@ class HysteresisThreshold:
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.hysteresis_threshold(img, self.low, self.high)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
-
 
 # ----------- Branching functions (grayscale/invert input)-------------------
 
 # invert --> grayscale ..> hysteresis
-class HysteresisThresholdMask:
+class HysteresisThresholdMask(ImageFilter):
     """Mask an image using hysteresis threshold
 
     Compute the Hysteresis threshold on the complement of a grayscale image,
@@ -562,11 +532,8 @@ class HysteresisThresholdMask:
         )
         return hysteresis_threshold_mask
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class OtsuThreshold:
+class OtsuThreshold(ImageFilter):
     """Mask image based on pixel above Otsu threshold.
 
     Compute Otsu threshold on image as a NumPy array and return boolean mask
@@ -588,11 +555,8 @@ class OtsuThreshold:
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.otsu_threshold(img)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class LocalOtsuThreshold:
+class LocalOtsuThreshold(ImageFilter):
     """Mask image based on local Otsu threshold.
 
     Compute local Otsu threshold for each pixel and return boolean mask
@@ -620,11 +584,8 @@ class LocalOtsuThreshold:
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.local_otsu_threshold(img, self.disk_size)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class FilterEntropy:
+class FilterEntropy(ImageFilter):
     """Filter image based on entropy (complexity).
 
     The area of the image included in the local neighborhood is defined by a square
@@ -654,11 +615,8 @@ class FilterEntropy:
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.filter_entropy(img, self.neighborhood, self.threshold)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class CannyEdges:
+class CannyEdges(ImageFilter):
     """Filter image based on Canny edge algorithm.
 
     Note that input image must be 2D
@@ -693,11 +651,8 @@ class CannyEdges:
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.canny_edges(img, self.sigma, self.low_threshold, self.high_threshold)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class Grays:
+class Grays(ImageFilter):
     """Filter out gray pixels in RGB image.
 
     Gray pixels are those pixels where the red, green, and blue channel values
@@ -723,11 +678,8 @@ class Grays:
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.grays(img, self.tolerance)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class GreenChannelFilter:
+class GreenChannelFilter(ImageFilter):
     """Mask pixels in an RGB image with G-channel greater than a specified threshold.
 
     Create a mask to filter out pixels with a green channel value greater than
@@ -769,11 +721,8 @@ class GreenChannelFilter:
             img, self.green_thresh, self.avoid_overmask, self.overmask_thresh
         )
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class RedFilter:
+class RedFilter(ImageFilter):
     """Mask reddish colors in an RGB image.
 
     Create a mask to filter out reddish colors, where the mask is based on a pixel
@@ -805,11 +754,8 @@ class RedFilter:
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.red_filter(img, self.red_thresh, self.green_thresh, self.blue_thresh)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class RedPenFilter:
+class RedPenFilter(ImageFilter):
     """Filter out red pen marks on diagnostic slides.
 
     The resulting mask is a composition of red filters with different thresholds
@@ -828,11 +774,8 @@ class RedPenFilter:
     def __call__(self, img: PIL.Image.Image):
         return F.red_pen_filter(img)
 
-    def __repr__(self):
-        return self.__class__.__name__ + "()"
 
-
-class GreenFilter:
+class GreenFilter(ImageFilter):
     """Filter out greenish colors in an RGB image.
     The mask is based on a pixel being above a red channel threshold value, below a
     green channel threshold value, and below a blue channel threshold value.
@@ -865,11 +808,8 @@ class GreenFilter:
     def __call__(self, img):
         return F.green_filter(img, self.red_thresh, self.green_thresh, self.blue_thresh)
 
-    def __repr__(self):
-        return self.__class__.__name__ + "()"
 
-
-class GreenPenFilter:
+class GreenPenFilter(ImageFilter):
     """Filter out green pen marks from a diagnostic slide.
 
     The resulting mask is a composition of green filters with different thresholds
@@ -889,11 +829,8 @@ class GreenPenFilter:
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.green_pen_filter(img)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class BlueFilter:
+class BlueFilter(ImageFilter):
     """Filter out blueish colors in an RGB image.
 
     Create a mask to filter out blueish colors, where the mask is based on a pixel
@@ -925,11 +862,8 @@ class BlueFilter:
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.blue_filter(img, self.red_thresh, self.green_thresh, self.blue_thresh)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class BluePenFilter:
+class BluePenFilter(ImageFilter):
     """Filter out blue pen marks from a diagnostic slide.
 
     The resulting mask is a composition of green filters with different thresholds
@@ -949,11 +883,8 @@ class BluePenFilter:
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.blue_pen_filter(img)
 
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
-
-class YenThreshold:
+class YenThreshold(ImageFilter):
     """Mask image based on pixel above Yen threshold.
 
     Compute Yen threshold on image and return boolean mask based on pixels below this
@@ -978,6 +909,3 @@ class YenThreshold:
 
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.yen_threshold(img, self.relate)
-
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
