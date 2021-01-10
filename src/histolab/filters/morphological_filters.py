@@ -23,6 +23,7 @@ import scipy.ndimage.morphology
 import skimage.morphology
 
 from . import morphological_filters_functional as F
+from .image_filters import Filter
 
 try:
     from typing import Protocol, runtime_checkable
@@ -31,15 +32,12 @@ except ImportError:
 
 
 @runtime_checkable
-class MorphologicalFilter(Protocol):
+class MorphologicalFilter(Filter, Protocol):
     """Morphological filter base class"""
 
     @abstractmethod
     def __call__(self, np_mask: np.ndarray) -> np.ndarray:
         raise NotImplementedError
-
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "()"
 
 
 class RemoveSmallObjects(MorphologicalFilter):
