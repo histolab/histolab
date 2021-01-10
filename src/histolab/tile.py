@@ -18,7 +18,7 @@
 
 import os
 from pathlib import Path
-from typing import Callable, Union
+from typing import Union
 
 import numpy as np
 import PIL
@@ -49,16 +49,13 @@ class Tile:
 
     def apply_filters(
         self,
-        filters: Union[
-            Callable[[PIL.Image.Image], Union[PIL.Image.Image, np.ndarray]], imf.Compose
-        ],
+        filters: imf.Filter,
     ) -> "Tile":
         """Apply a filter or composition of filters on a tile.
 
         Parameters
         ----------
-        filters : Union[ Callable[[PIL.Image.Image], Union[PIL.Image.Image, np.ndarray]]
-                , imf.Compose]
+        filters : imf.Filter
             Filter or composition of filters to be applied
 
         Returns
@@ -147,7 +144,7 @@ class Tile:
             The ratio of the tissue area over the total area of the tile
         """
         filters = FiltersComposition(Tile).tissue_mask_filters
-        tissue_mask = filters(self.image)
+        tissue_mask = filters(self._image)
         tissue_ratio = np.count_nonzero(tissue_mask) / tissue_mask.size
         return tissue_ratio
 
@@ -188,7 +185,7 @@ class Tile:
         """
 
         filters = FiltersComposition(Tile).tissue_mask_filters
-        return np.mean(self._tissue_mask(filters)) * 100 > tissue_percent
+        return np.mean(filters(self._image)) * 100 > tissue_percent
 
     @lazyproperty
     def _is_almost_white(self) -> bool:
@@ -208,18 +205,3 @@ class Tile:
             np.mean(image_gray_arr.ravel()) > 0.9
             and np.std(image_gray_arr.ravel()) < 0.09
         )
-
-    def _tissue_mask(self, filters: imf.Compose) -> np.ndarray:
-        """Return the tissue mask of the tile image
-
-        Parameters
-        ----------
-        imf.Compose
-            Filters composition
-
-        Returns
-        -------
-        np.ndarray
-             Tissue mask array
-        """
-        return filters(self._image)

@@ -1,8 +1,8 @@
 import os
 
+import numpy as np
 import pytest
 
-import numpy as np
 from histolab.filters.compositions import _TileFiltersComposition
 from histolab.filters.image_filters import Compose
 from histolab.tile import Tile
@@ -134,8 +134,8 @@ class Describe_Tile:
     def it_knows_if_has_tissue_more_than_percent(
         self, request, tissue_mask, percent, expected_value
     ):
-        _tissue_mask = method_mock(request, Tile, "_tissue_mask")
-        _tissue_mask.return_value = tissue_mask
+        _compose_call = method_mock(request, Compose, "__call__")
+        _compose_call.return_value = tissue_mask
 
         tile = Tile(None, None, 0)
         has_tissue_more_than_percent = tile._has_tissue_more_than_percent(percent)
@@ -144,10 +144,6 @@ class Describe_Tile:
 
     def it_calls_tile_tissue_mask_filters(
         self,
-        RgbToGrayscale_,
-        OtsuThreshold_,
-        BinaryDilation_,
-        BinaryFillHoles_,
     ):
         image = PILIMG.RGBA_COLOR_50X50_155_0_0
         tile = Tile(image, None, 0)
@@ -155,24 +151,6 @@ class Describe_Tile:
         tile._has_only_some_tissue()
 
         assert type(tile._has_only_some_tissue()) == np.bool_
-
-    def it_knows_its_tissue_mask(
-        self,
-        RgbToGrayscale_,
-        OtsuThreshold_,
-        BinaryDilation_,
-        BinaryFillHoles_,
-    ):
-        BinaryFillHoles_.return_value = np.zeros((50, 50))
-        filters = Compose(
-            [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
-        )
-        image = PILIMG.RGBA_COLOR_50X50_155_0_0
-        tile = Tile(image, None, 0)
-
-        tissue_mask = tile._tissue_mask(filters)
-
-        assert tissue_mask.shape == (50, 50)
 
     def it_knows_its_tissue_ratio(
         self,
