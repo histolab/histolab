@@ -69,21 +69,21 @@
 
 ## Motivation 
 The histo-pathological analysis of tissue sections is the gold standard to assess the presence of many complex diseases, such as tumors, and understand their nature. 
-In daily practice, pathologists usually perform microscopy examination of tissue slides considering a limited number of regions and the clinical evaulation relies on several factors such as nuclei morphology, cell distribution, and color (staining): this process is time consuming, could lead to information loss, and suffers from inter-observer variability.
+In daily practice, pathologists usually perform microscopy examination of tissue slides considering a limited number of regions and the clinical evaluation relies on several factors such as nuclei morphology, cell distribution, and color (staining): this process is time consuming, could lead to information loss, and suffers from inter-observer variability.
 
-The advent of digital pathology is changing the way patholgists work and collaborate, and has opened the way to a new era in computational pathology. In particular, histopathology is expected to be at the center of the AI revolution in medicine [1], prevision supported by the increasing success of deep learning applications to digital pathology.
+The advent of digital pathology is changing the way pathologists work and collaborate, and has opened the way to a new era in computational pathology. In particular, histopathology is expected to be at the center of the AI revolution in medicine [1], prevision supported by the increasing success of deep learning applications to digital pathology.
 
 Whole Slide Images (WSIs), namely the translation of tissue slides from glass to digital format, are a great source of information from both a medical and a computational point of view. WSIs can be coloured with different staining techniques (e.g. H&E or IHC), and are usually very large in size (up to several GB per slide). Because of WSIs typical pyramidal structure, images can be retrieved at different magnification factors, providing a further layer of information beyond color.
 
 However, processing WSIs is far from being trivial. First of all, WSIs can be stored in different proprietary formats, according to the scanner used to digitalize the slides, and a standard protocol is still missing. WSIs can also present artifacts, such as shadows, mold, or annotations (pen marks) that are not useful. Moreover, giving their dimensions, it is not possible to process a WSI all at once, or, for example, to feed a neural network: it is necessary to crop smaller regions of tissues (tiles), which in turns require a tissue detection step.  
 
-The aim of this project is to provide a tool for WSI processing in a reproducible environment to support clinical and scientific research. Histolab is designed to handle WSIs, automatically detect the tissue, and retrieve informative tiles, and it can thus be integrated in a deep learning pipeline.
+The aim of this project is to provide a tool for WSI processing in a reproducible environment to support clinical and scientific research. histolab is designed to handle WSIs, automatically detect the tissue, and retrieve informative tiles, and it can thus be integrated in a deep learning pipeline.
 
 ## Getting Started 
 
 ### Prerequisites 
 
-Histolab has only one system-wide dependency: OpenSlide.
+histolab has only one system-wide dependency: OpenSlide.
 
 You can download and install it from [OpenSlide](https://openslide.org/download/) according to your operating system.
 
@@ -278,10 +278,16 @@ Notice that we also specify the random seed to ensure the
 reproducibility of the extraction process.
 
 We may want to check which tiles have been selected by the tiler, before starting the extraction procedure and save them;
-the ``locate_tiles`` method of ``RandomTiler`` returns the thumbnail of the slide with the corresponding tiles outlined.
+the ``locate_tiles`` method of ``RandomTiler`` returns a scaled version of the slide with the corresponding tiles outlined. It is also possible to specify 
+the transparency of the background slide, and the color used for the border of each tile:
 
 ```python
-random_tiles_extractor.locate_tiles(slide=prostate_slide)
+ random_tiles_extractor.locate_tiles(
+        slide=prostate_slide,
+        scale_factor=24,  # default
+        alpha=128,  # default
+        outline="red",  # default
+    )
 ```
 
 ![](https://user-images.githubusercontent.com/31658006/104055082-6bf1b100-51ee-11eb-8353-1f5958d521d8.png)
@@ -324,13 +330,18 @@ grid_tiles_extractor = GridTiler(
 )
 ```
 
-Again, we can exploit the ``locate_tiles`` method to visualize the selected tiles on the slide's thumbnail:
+Again, we can exploit the ``locate_tiles`` method to visualize the selected tiles on a scaled version of the slide:
 
 ```python
-grid_tiles_extractor.locate_tiles(slide=ovarian_slide)
+grid_tiles_extractor.locate_tiles(
+        slide=ovarian_slide,
+        scale_factor=64,
+        alpha=64,
+        outline="#046C4C",
+    )
 ```
 
-![](https://user-images.githubusercontent.com/31658006/104056833-65b10400-51f1-11eb-9262-f4091e6edc29.png)
+![](https://user-images.githubusercontent.com/31658006/104107093-37e3c200-52ba-11eb-8750-67a62bf62ca5.png)
 
 ```python
 grid_tiles_extractor.extract(ovarian_slide)
@@ -382,6 +393,14 @@ scored_tiles_extractor = ScoreTiler(
 )
 ```
 
+Notice that also the ``ScoreTiler`` implements the ``locate_tiles`` method, which visualizes (on a scaled version of the slide) the first ``n_tiles`` with the highest scores:
+
+```python
+grid_tiles_extractor.locate_tiles(slide=ovarian_slide)
+```
+
+![](https://user-images.githubusercontent.com/31658006/104172715-fc094380-5404-11eb-942a-4130b5cdb037.png)
+
 Finally, when we extract our cropped images, we can also write a report
 of the saved tiles and their scores in a CSV file:
 
@@ -424,4 +443,4 @@ This project is licensed under `Apache License  Version 2.0` - see the [LICENSE.
 [1] Colling, Richard, et al. "Artificial intelligence in digital pathology: A roadmap to routine use in clinical practice." The Journal of pathology 249.2 (2019)
 
 ## Contribution guidelines
-If you want to contribute to Histolab, be sure to review the [contribution guidelines](CONTRIBUTING.md)
+If you want to contribute to histolab, be sure to review the [contribution guidelines](CONTRIBUTING.md)

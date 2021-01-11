@@ -656,7 +656,7 @@ class ScoreTiler(GridTiler):
         LevelError
             If the level is not available for the slide
         """
-        if self.level not in slide.levels:
+        if abs(self.level) not in slide.levels:
             raise LevelError(
                 f"Level {self.level} not available. Number of available levels: "
                 f"{len(slide.levels)}"
@@ -689,6 +689,46 @@ class ScoreTiler(GridTiler):
         print(f"{tiles_counter+1} Grid Tiles have been saved.")
 
     # ------- implementation helpers -------
+
+    def locate_tiles(
+        self,
+        slide: Slide,
+        scale_factor: int = 32,
+        alpha: int = 128,
+        outline: str = "red",
+    ) -> PIL.Image.Image:
+        """Draw tile box references on a rescaled version of the slide
+
+        Parameters
+        ----------
+        slide : Slide
+            Slide reference where placing the tiles
+        scale_factor: int
+            Scaling factor for the returned image. Default is 32.
+        alpha: int
+            The alpha level to be applied to the rescaled slide, default to 128.
+        outline: str
+            The outline color for the tile annotations, default to 'red'.
+
+        Returns
+        -------
+        PIL.Image.Image
+            PIL Image of the rescaled slide with the extracted tiles outlined
+        """
+        if not os.path.exists(slide.scaled_image_path(scale_factor)):
+            slide.save_scaled_image(scale_factor)
+
+        highest_score_tiles, _ = self._highest_score_tiles(slide)
+
+        tiles_coords = (tc[1] for tc in highest_score_tiles)
+        img = PIL.Image.open(slide.scaled_image_path(scale_factor))
+
+        img.putalpha(alpha)
+        draw = PIL.ImageDraw.Draw(img)
+        for coords in tiles_coords:
+            rescaled = scale_coordinates(coords, slide.dimensions, img.size)
+            draw.rectangle(tuple(rescaled), outline=outline)
+        return img
 
     def _highest_score_tiles(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
         """Calculate the tiles with the highest scores and their extraction coordinates.
