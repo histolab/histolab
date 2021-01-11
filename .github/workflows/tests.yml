@@ -74,7 +74,7 @@ jobs:
       - name: Test with pytest
         id: tests
         run: |
-          python -m pytest -n auto --ignore=tests/benchmarks --cov=histolab
+          python -m pytest --ignore=tests/benchmarks --cov=histolab
       - name: Sumbit coverage
         run: coveralls
       - name: Slack Notification

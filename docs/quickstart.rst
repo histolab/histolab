@@ -196,11 +196,17 @@ Notice that we also specify the random seed to ensure the reproducibility of
 the extraction process.
 
 We may want to check which tiles have been selected by the tiler, before starting the extraction procedure and save them;
-the ``locate_tiles`` method of ``RandomTiler`` returns the thumbnail of the slide with the corresponding tiles outlined.
+the ``locate_tiles`` method of ``RandomTiler`` returns a scaled version of the slide with the corresponding tiles outlined. It is also possible to specify 
+the transparency of the background slide, and the color used for the border of the tiles:
 
 .. code-block:: ipython3
 
-    random_tiles_extractor.locate_tiles(slide=prostate_slide)
+    random_tiles_extractor.locate_tiles(
+        slide=prostate_slide,
+        scale_factor=24,  # default
+        alpha=128,  # default
+        outline="red",  # default
+    )
 
 .. figure:: https://user-images.githubusercontent.com/31658006/104055082-6bf1b100-51ee-11eb-8353-1f5958d521d8.png
 
@@ -245,20 +251,25 @@ defining the number of overlapping pixels between two adjacent tiles,
       suffix=".png" # default
    )
 
-Again, we can exploit the ``locate_tiles`` method to visualize the selected tiles on the slide's thumbnail:
+Again, we can exploit the ``locate_tiles`` method to visualize the selected tiles on a scaled version of the slide:
 
 .. code-block:: ipython3
 
     grid_tiles_extractor.locate_tiles(slide=ovarian_slide)
 
-.. figure:: https://user-images.githubusercontent.com/31658006/104056833-65b10400-51f1-11eb-9262-f4091e6edc29.png
+.. figure:: https://user-images.githubusercontent.com/31658006/104107093-37e3c200-52ba-11eb-8750-67a62bf62ca5.png
 
 and the extraction process starts when the extract method is called
 on our extractor:
 
 .. code-block:: ipython3
 
-   grid_tiles_extractor.extract(ovarian_slide)
+    grid_tiles_extractor.locate_tiles(
+        slide=ovarian_slide,
+        scale_factor=64,
+        alpha=64,
+        outline="#046C4C",
+    )
 
 .. figure:: https://user-images.githubusercontent.com/4196091/92751173-0993bb80-f388-11ea-9d30-a6cd17769d76.png
    :alt: ovarian tile extraction
@@ -307,6 +318,14 @@ specify the number of the top tiles we want to save with the
        prefix="scored/", # save tiles in the "scored" subdirectory of slide's processed_path
        suffix=".png" # default
    )
+
+Notice that also the ``ScoreTiler`` implements the ``locate_tiles`` method, which visualizes (on a scaled version of the slide) the first ``n_tiles`` with the highest scores:
+
+.. code-block:: ipython3
+
+    grid_tiles_extractor.locate_tiles(slide=ovarian_slide)
+
+.. figure:: https://user-images.githubusercontent.com/31658006/104172715-fc094380-5404-11eb-942a-4130b5cdb037.png
 
 Finally, when we extract our cropped images, we can also write a report
 of the saved tiles and their scores in a CSV file:
