@@ -120,6 +120,7 @@ class Slide:
             Image containing the selected tile.
         """
 
+        level = level if level >= 0 else self._remap_level(level)
         if not self._has_valid_coords(coords):
             # OpenSlide doesn't complain if the coordinates for extraction are wrong,
             # but it returns an odd image.
