@@ -127,11 +127,12 @@ class DescribeGridTiler:
 
 class DescribeScoreTiler:
     @pytest.mark.parametrize(
-        "fixture_slide, level, check_tissue, expectation",
+        "fixture_slide, level, check_tissue, scaled_image_exists, expectation",
         [
             (
                 SVS.CMU_1_SMALL_REGION,
                 0,
+                False,
                 False,
                 "tiles-location-images/cmu-1-small-region-tl-scored-false",
             ),
@@ -139,17 +140,20 @@ class DescribeScoreTiler:
                 SVS.TCGA_CR_7395_01A_01_TS1,
                 0,
                 False,
+                True,
                 "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-scored-false",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
                 1,
                 False,
+                True,
                 "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-scored-false-1",
             ),
             (
                 SVS.CMU_1_SMALL_REGION,
                 0,
+                True,
                 True,
                 "tiles-location-images/cmu-1-small-region-tl-scored-true",
             ),
@@ -157,14 +161,24 @@ class DescribeScoreTiler:
                 SVS.TCGA_CR_7395_01A_01_TS1,
                 0,
                 True,
+                True,
                 "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-scored-true",
             ),
         ],
     )
     def it_locates_tiles_on_the_slide(
-        self, request, fixture_slide, level, check_tissue, expectation, tmpdir
+        self,
+        request,
+        fixture_slide,
+        level,
+        check_tissue,
+        scaled_image_exists,
+        expectation,
+        tmpdir,
     ):
         slide = Slide(fixture_slide, os.path.join(tmpdir, "processed"))
+        if not scaled_image_exists:
+            slide.save_scaled_image(10)
         scored_tiles_extractor = ScoreTiler(
             scorer=NucleiScorer(),
             tile_size=(512, 512),
