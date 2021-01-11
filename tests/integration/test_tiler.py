@@ -138,6 +138,13 @@ class DescribeScoreTiler:
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
+                -2,
+                False,
+                True,
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-scored-false",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
                 0,
                 False,
                 True,
@@ -166,7 +173,7 @@ class DescribeScoreTiler:
             ),
         ],
     )
-    def it_locates_tiles_on_the_slide(
+    def it_locates_tiles_on_the_slide22(
         self,
         request,
         fixture_slide,
