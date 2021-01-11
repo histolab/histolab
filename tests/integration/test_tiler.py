@@ -137,15 +137,15 @@ class DescribeScoreTiler:
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
-                -2,
+                0,
                 False,
                 "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-scored-false",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
-                0,
+                1,
                 False,
-                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-scored-false",
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-scored-false-1",
             ),
             (
                 SVS.CMU_1_SMALL_REGION,
