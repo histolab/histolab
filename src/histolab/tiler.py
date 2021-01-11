@@ -215,7 +215,7 @@ class GridTiler(Tiler):
         LevelError
             If the level is not available for the slide
         """
-        if self.level not in slide.levels:
+        if len(slide.levels) - abs(self.level) < 0:
             raise LevelError(
                 f"Level {self.level} not available. Number of available levels: "
                 f"{len(slide.levels)}"
@@ -452,7 +452,7 @@ class RandomTiler(Tiler):
         LevelError
             If the level is not available for the slide
         """
-        if abs(self.level) not in slide.levels:
+        if len(slide.levels) - abs(self.level) < 0:
             raise LevelError(
                 f"Level {self.level} not available. Number of available levels: "
                 f"{len(slide.levels)}"
@@ -656,7 +656,7 @@ class ScoreTiler(GridTiler):
         LevelError
             If the level is not available for the slide
         """
-        if abs(self.level) not in slide.levels:
+        if len(slide.levels) - abs(self.level) < 0:
             raise LevelError(
                 f"Level {self.level} not available. Number of available levels: "
                 f"{len(slide.levels)}"
