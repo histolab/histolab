@@ -23,7 +23,7 @@ from typing import Callable, List, Union
 import numpy as np
 import PIL
 
-from .. import util as U
+from .. import util
 from . import image_filters_functional as F
 
 try:
@@ -113,7 +113,7 @@ class ToPILImage(Filter):
     """
 
     def __call__(self, np_img: np.ndarray) -> PIL.Image.Image:
-        return U.np_to_pil(np_img)
+        return util.np_to_pil(np_img)
 
 
 class ApplyMaskImage(Filter):
@@ -136,7 +136,7 @@ class ApplyMaskImage(Filter):
         self.img = img
 
     def __call__(self, mask: np.ndarray) -> PIL.Image.Image:
-        return U.apply_mask_image(self.img, mask)
+        return util.apply_mask_image(self.img, mask)
 
 
 class Invert(ImageFilter):
