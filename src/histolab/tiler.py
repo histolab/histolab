@@ -166,27 +166,6 @@ class Tiler(Protocol):
             else self._tiles_generator
         )
 
-    # def _tiles_coords(self, slide: Slide) -> Tuple[CoordinatePair]:
-    #     """Return tile coordinates according to the invoked tiler.
-    #
-    #     Parameters
-    #     ----------
-    #     slide : Slide
-    #         Slide reference from which tile coordinates are retrieved.
-    #
-    #     Returns
-    #     -------
-    #     tile_coords : Tuple[CoordinatePair]
-    #         Tuple of tile coordinate pairs.
-    #     """
-    #     tiles = (
-    #         self._highest_score_tiles(slide)[0]
-    #         if isinstance(self, ScoreTiler)
-    #         else self._tiles_generator(slide)
-    #     )
-    #     tiles_coords = (tile[1] for tile in tiles)
-    #     return tiles_coords
-
     def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
         raise NotImplementedError
 
@@ -728,7 +707,7 @@ class ScoreTiler(GridTiler):
     def _highest_score_tiles(
         self, slide: Slide, scaled: bool = False
     ) -> List[Tuple[float, CoordinatePair]]:
-        """Calculate the tiles with the highest scores and their extraction coordinates.
+        r"""Calculate the tiles with the highest scores and their extraction coordinates.
 
         Parameters
         ----------
@@ -740,8 +719,17 @@ class ScoreTiler(GridTiler):
         Returns
         -------
         List[Tuple[float, CoordinatePair]]
-            List of tuples containing the (scaled) scores and the extraction coordinates
-            for the tiles with the highest scores. Each tuple represents a tile.
+            List of tuples containing the scores and the extraction coordinates
+            for the tiles with the highest scores. If scaled=True, each score `s_i` of
+            the i-th tile is normalized as
+
+            .. math::
+
+                s_{\hat{i}}=\frac{s_i-\min_{j\in T}{s_j}}{\max_{j\in T}{s_j}-\min_{j\in T}{s_j}}
+
+            where `T` is the set of all the retrieved tiles. Notice that the normalized
+            scores range between 0 and 1. This could be useful to have a more intuitive
+            comparison between the scores. Each tuple represents a tile.
 
         Raises
         ------
