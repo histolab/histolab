@@ -740,8 +740,8 @@ class ScoreTiler(GridTiler):
         Returns
         -------
         List[Tuple[float, CoordinatePair]]
-            List of tuples containing the (scaled) scores and the extraction coordinates for the
-            tiles with the highest scores. Each tuple represents a tile.
+            List of tuples containing the (scaled) scores and the extraction coordinates
+            for the tiles with the highest scores. Each tuple represents a tile.
 
         Raises
         ------
