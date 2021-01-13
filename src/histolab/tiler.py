@@ -30,7 +30,12 @@ from .scorer import Scorer
 from .slide import Slide
 from .tile import Tile
 from .types import CoordinatePair
-from .util import region_coordinates, regions_from_binary_mask, scale_coordinates
+from .util import (
+    lazyproperty,
+    region_coordinates,
+    regions_from_binary_mask,
+    scale_coordinates,
+)
 
 try:
     from typing import Protocol, runtime_checkable
@@ -94,10 +99,12 @@ class Tiler(Protocol):
         """
         if not os.path.exists(slide.scaled_image_path(scale_factor)):
             slide.save_scaled_image(scale_factor)
-        tiles_coords = (tc[1] for tc in self._tiles_generator(slide))
         img = PIL.Image.open(slide.scaled_image_path(scale_factor))
         img.putalpha(alpha)
         draw = PIL.ImageDraw.Draw(img)
+
+        tiles = list(self._tiles_locator(slide))
+        tiles_coords = (tile[1] for tile in tiles)
         for coords in tiles_coords:
             rescaled = scale_coordinates(coords, slide.dimensions, img.size)
             draw.rectangle(tuple(rescaled), outline=outline)
@@ -150,6 +157,35 @@ class Tiler(Protocol):
         )
 
         return tile_filename
+
+    @lazyproperty
+    def _tiles_locator(self):
+        return (
+            self._highest_score_tiles
+            if isinstance(self, ScoreTiler)
+            else self._tiles_generator
+        )
+
+    # def _tiles_coords(self, slide: Slide) -> Tuple[CoordinatePair]:
+    #     """Return tile coordinates according to the invoked tiler.
+    #
+    #     Parameters
+    #     ----------
+    #     slide : Slide
+    #         Slide reference from which tile coordinates are retrieved.
+    #
+    #     Returns
+    #     -------
+    #     tile_coords : Tuple[CoordinatePair]
+    #         Tuple of tile coordinate pairs.
+    #     """
+    #     tiles = (
+    #         self._highest_score_tiles(slide)[0]
+    #         if isinstance(self, ScoreTiler)
+    #         else self._tiles_generator(slide)
+    #     )
+    #     tiles_coords = (tile[1] for tile in tiles)
+    #     return tiles_coords
 
     def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
         raise NotImplementedError
@@ -667,9 +703,8 @@ class ScoreTiler(GridTiler):
                 f"{slide.level_dimensions(self.level)} at level {self.level}"
             )
 
-        highest_score_tiles, highest_scaled_score_tiles = self._highest_score_tiles(
-            slide
-        )
+        highest_score_tiles = self._highest_score_tiles(slide)
+        highest_scaled_score_tiles = self._highest_score_tiles(slide, scaled=True)
 
         tiles_counter = 0
         filenames = []
@@ -690,87 +725,45 @@ class ScoreTiler(GridTiler):
 
     # ------- implementation helpers -------
 
-    def locate_tiles(
-        self,
-        slide: Slide,
-        scale_factor: int = 32,
-        alpha: int = 128,
-        outline: str = "red",
-    ) -> PIL.Image.Image:
-        """Draw tile box references on a rescaled version of the slide
-
-        Parameters
-        ----------
-        slide : Slide
-            Slide reference where placing the tiles
-        scale_factor: int
-            Scaling factor for the returned image. Default is 32.
-        alpha: int
-            The alpha level to be applied to the rescaled slide, default to 128.
-        outline: str
-            The outline color for the tile annotations, default to 'red'.
-
-        Returns
-        -------
-        PIL.Image.Image
-            PIL Image of the rescaled slide with the extracted tiles outlined
-        """
-        if not os.path.exists(slide.scaled_image_path(scale_factor)):
-            slide.save_scaled_image(scale_factor)
-
-        highest_score_tiles, _ = self._highest_score_tiles(slide)
-
-        tiles_coords = (tc[1] for tc in highest_score_tiles)
-        img = PIL.Image.open(slide.scaled_image_path(scale_factor))
-
-        img.putalpha(alpha)
-        draw = PIL.ImageDraw.Draw(img)
-        for coords in tiles_coords:
-            rescaled = scale_coordinates(coords, slide.dimensions, img.size)
-            draw.rectangle(tuple(rescaled), outline=outline)
-        return img
-
-    def _highest_score_tiles(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
+    def _highest_score_tiles(
+        self, slide: Slide, scaled: bool = False
+    ) -> List[Tuple[float, CoordinatePair]]:
         """Calculate the tiles with the highest scores and their extraction coordinates.
 
         Parameters
         ----------
         slide : Slide
             The slide to extract the tiles from.
+        scaled: bool
+            Whether to return the scores scaled between 0 and 1.
 
         Returns
         -------
         List[Tuple[float, CoordinatePair]]
-            List of tuples containing the score and the extraction coordinates for the
-            tiles with the highest score. Each tuple represents a tile.
-        List[Tuple[float, CoordinatePair]]
-            List of tuples containing the scaled score between 0 and 1 and the
-            extraction coordinates for the tiles with the highest score. Each tuple
-            represents a tile.
+            List of tuples containing the (scaled) scores and the extraction coordinates for the
+            tiles with the highest scores. Each tuple represents a tile.
 
         Raises
         ------
         ValueError
             If ``n_tiles`` is negative.
         """
-        all_scores = self._scores(slide)
-        scaled_scores = self._scale_scores(all_scores)
-
-        sorted_tiles_by_score = sorted(all_scores, key=lambda x: x[0], reverse=True)
-        sorted_tiles_by_scaled_score = sorted(
-            scaled_scores, key=lambda x: x[0], reverse=True
+        scores = (
+            self._scale_scores(self._scores(slide)) if scaled else self._scores(slide)
         )
+
+        sorted_tiles_by_score = sorted(scores, key=lambda x: x[0], reverse=True)
+
         if self.n_tiles < 0:
             raise ValueError(f"'n_tiles' cannot be negative ({self.n_tiles})")
 
-        if self.n_tiles > 0:
-            highest_score_tiles = sorted_tiles_by_score[: self.n_tiles]
-            highest_scaled_score_tiles = sorted_tiles_by_scaled_score[: self.n_tiles]
-        else:
-            highest_score_tiles = sorted_tiles_by_score
-            highest_scaled_score_tiles = sorted_tiles_by_scaled_score
+        highest_score_tiles = (
+            sorted_tiles_by_score[: self.n_tiles]
+            if self.n_tiles > 0
+            else sorted_tiles_by_score
+        )
 
-        return highest_score_tiles, highest_scaled_score_tiles
+        return highest_score_tiles
 
     @staticmethod
     def _save_report(
@@ -785,12 +778,14 @@ class ScoreTiler(GridTiler):
 
         Parameters
         ----------
+        slide : Slide
+            The slide to extract the tiles from.
         report_path : str
             Path to the report
         highest_score_tiles : List[Tuple[float, CoordinatePair]]
             List of tuples containing the score and the extraction coordinates for the
             tiles with the highest score. Each tuple represents a tile.
-        List[Tuple[float, CoordinatePair]]
+        highest_scaled_score_tiles : List[Tuple[float, CoordinatePair]]
             List of tuples containing the scaled score between 0 and 1 and the
             extraction coordinates for the tiles with the highest score. Each tuple
             represents a tile.

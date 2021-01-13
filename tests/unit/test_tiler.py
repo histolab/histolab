@@ -873,22 +873,12 @@ class Describe_ScoreTiler:
                         (0.5, CP(0, 10, 0, 10)),
                         (0.2, CP(0, 10, 0, 10)),
                         (0.1, CP(0, 10, 0, 10)),
-                    ],
-                    [
-                        (1.0, CP(0, 10, 0, 10)),
-                        (0.857142857142857, CP(0, 10, 0, 10)),
-                        (0.5714285714285714, CP(0, 10, 0, 10)),
-                        (0.14285714285714285, CP(0, 10, 0, 10)),
-                        (0.0, CP(0, 10, 0, 10)),
-                    ],
+                    ]
                 ),
             ),
             (
                 2,
-                (
-                    [(0.8, CP(0, 10, 0, 10)), (0.7, CP(0, 10, 0, 10))],
-                    [(1.0, CP(0, 10, 0, 10)), (0.857142857142857, CP(0, 10, 0, 10))],
-                ),
+                ([(0.8, CP(0, 10, 0, 10)), (0.7, CP(0, 10, 0, 10))]),
             ),
             (
                 3,
@@ -897,12 +887,7 @@ class Describe_ScoreTiler:
                         (0.8, CP(0, 10, 0, 10)),
                         (0.7, CP(0, 10, 0, 10)),
                         (0.5, CP(0, 10, 0, 10)),
-                    ],
-                    [
-                        (1.0, CP(0, 10, 0, 10)),
-                        (0.857142857142857, CP(0, 10, 0, 10)),
-                        (0.5714285714285714, CP(0, 10, 0, 10)),
-                    ],
+                    ]
                 ),
             ),
         ),
@@ -957,14 +942,15 @@ class Describe_ScoreTiler:
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
-        _highest_score_tiles = method_mock(request, ScoreTiler, "_highest_score_tiles")
         coords = CP(0, 10, 0, 10)
+        _highest_score_tiles = method_mock(
+            request,
+            ScoreTiler,
+            "_highest_score_tiles",
+            return_value=iter([(0.8, coords), (0.7, coords)]),
+        )
         tile = Tile(image, coords)
         _extract_tile.return_value = tile
-        _highest_score_tiles.return_value = (
-            [(0.8, coords), (0.7, coords)],
-            [(0.8, coords), (0.7, coords)],
-        )
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
@@ -981,7 +967,7 @@ class Describe_ScoreTiler:
             call(slide, coords, 0),
             call(slide, coords, 0),
         ]
-        _highest_score_tiles.assert_called_once_with(score_tiler, slide)
+        _highest_score_tiles.assert_called_with(score_tiler, slide, True)
         assert _tile_filename.call_args_list == [
             call(score_tiler, coords, 0),
             call(score_tiler, coords, 1),
@@ -1057,14 +1043,16 @@ class Describe_ScoreTiler:
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
-        _highest_score_tiles = method_mock(request, ScoreTiler, "_highest_score_tiles")
         coords = CP(0, 10, 0, 10)
+        _highest_score_tiles = method_mock(
+            request,
+            ScoreTiler,
+            "_highest_score_tiles",
+            scale=False,
+            return_value=[(0.8, coords), (0.7, coords)],
+        )
         tile = Tile(image, coords)
         _extract_tile.return_value = tile
-        _highest_score_tiles.return_value = (
-            [(0.8, coords), (0.7, coords)],
-            [(0.8, coords), (0.7, coords)],
-        )
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
@@ -1079,7 +1067,7 @@ class Describe_ScoreTiler:
             call(slide, coords, 0),
             call(slide, coords, 0),
         ]
-        _highest_score_tiles.assert_called_once_with(score_tiler, slide)
+        _highest_score_tiles.assert_called_with(score_tiler, slide, True)
         assert _tile_filename.call_args_list == [
             call(score_tiler, coords, 0),
             call(score_tiler, coords, 1),
