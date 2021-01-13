@@ -911,6 +911,60 @@ class Describe_ScoreTiler:
         _scores.assert_called_once_with(score_tiler, slide)
         assert highest_score_tiles == expected_value
 
+    @pytest.mark.parametrize(
+        "n_tiles, expected_value",
+        (
+            (
+                0,
+                (
+                    [
+                        (1, CP(0, 10, 0, 10)),
+                        ((0.6 / 0.7), CP(0, 10, 0, 10)),
+                        ((0.4 / 0.7), CP(0, 10, 0, 10)),
+                        ((0.1 / 0.7), CP(0, 10, 0, 10)),
+                        (0.0, CP(0, 10, 0, 10)),
+                    ]
+                ),
+            ),
+            (
+                2,
+                ([(1.0, CP(0, 10, 0, 10)), ((0.6 / 0.7), CP(0, 10, 0, 10))]),
+            ),
+            (
+                3,
+                (
+                    [
+                        (1, CP(0, 10, 0, 10)),
+                        ((0.6 / 0.7), CP(0, 10, 0, 10)),
+                        ((0.4 / 0.7), CP(0, 10, 0, 10)),
+                    ]
+                ),
+            ),
+        ),
+    )
+    def it_can_calculate_highest_scaled_score_tiles(
+        self, request, n_tiles, expected_value
+    ):
+        slide = instance_mock(request, Slide)
+        _scores = method_mock(request, ScoreTiler, "_scores")
+        coords = CP(0, 10, 0, 10)
+        _scores.return_value = [
+            (0.7, coords),
+            (0.5, coords),
+            (0.2, coords),
+            (0.8, coords),
+            (0.1, coords),
+        ]
+        _scorer = instance_mock(request, RandomScorer)
+        score_tiler = ScoreTiler(_scorer, (10, 10), n_tiles, 0)
+
+        highest_scaled_score_tiles = score_tiler._highest_score_tiles(slide, True)
+
+        _scores.assert_called_once_with(score_tiler, slide)
+        np.testing.assert_array_almost_equal(
+            [t[0] for t in highest_scaled_score_tiles], [t[0] for t in expected_value]
+        )
+
     def but_it_raises_error_with_negative_n_tiles_value(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240

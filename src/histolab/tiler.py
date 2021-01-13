@@ -158,6 +158,9 @@ class Tiler(Protocol):
 
         return tile_filename
 
+    def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
+        raise NotImplementedError
+
     @lazyproperty
     def _tiles_locator(self):
         return (
@@ -165,9 +168,6 @@ class Tiler(Protocol):
             if isinstance(self, ScoreTiler)
             else self._tiles_generator
         )
-
-    def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
-        raise NotImplementedError
 
 
 class GridTiler(Tiler):
