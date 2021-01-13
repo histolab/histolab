@@ -707,7 +707,7 @@ class ScoreTiler(GridTiler):
     def _highest_score_tiles(
         self, slide: Slide, scaled: bool = False
     ) -> List[Tuple[float, CoordinatePair]]:
-        r"""Calculate the tiles with the highest scores and their extraction coordinates.
+        r"""Calculate the tiles with the highest scores and their extraction coordinates
 
         Parameters
         ----------
@@ -735,7 +735,7 @@ class ScoreTiler(GridTiler):
         ------
         ValueError
             If ``n_tiles`` is negative.
-        """
+        """  # noqa
         scores = (
             self._scale_scores(self._scores(slide)) if scaled else self._scores(slide)
         )
