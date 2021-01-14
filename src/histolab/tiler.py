@@ -103,7 +103,7 @@ class Tiler(Protocol):
         img.putalpha(alpha)
         draw = PIL.ImageDraw.Draw(img)
 
-        tiles = list(self._tiles_locator(slide))
+        tiles = self._tiles_locator(slide)
         tiles_coords = (tile[1] for tile in tiles)
         for coords in tiles_coords:
             rescaled = scale_coordinates(coords, slide.dimensions, img.size)
@@ -683,8 +683,6 @@ class ScoreTiler(GridTiler):
             )
 
         highest_score_tiles = self._highest_score_tiles(slide)
-        highest_scaled_score_tiles = self._highest_score_tiles(slide, scaled=True)
-
         tiles_counter = 0
         filenames = []
 
@@ -696,6 +694,7 @@ class ScoreTiler(GridTiler):
             print(f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}")
 
         if report_path:
+            highest_scaled_score_tiles = self._highest_score_tiles(slide, scaled=True)
             self._save_report(
                 report_path, highest_score_tiles, highest_scaled_score_tiles, filenames
             )

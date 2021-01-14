@@ -1021,7 +1021,7 @@ class Describe_ScoreTiler:
             call(slide, coords, 0),
             call(slide, coords, 0),
         ]
-        _highest_score_tiles.assert_called_with(score_tiler, slide, True)
+        _highest_score_tiles.assert_called_with(score_tiler, slide)
         assert _tile_filename.call_args_list == [
             call(score_tiler, coords, 0),
             call(score_tiler, coords, 1),
