@@ -195,7 +195,7 @@ extractor as follows:
 Notice that we also specify the random seed to ensure the reproducibility of
 the extraction process.
 
-We may want to check which tiles have been selected by the tiler, before starting the extraction procedure and save them;
+We may want to check which tiles have been selected by the tiler, before starting the extraction procedure and saving them;
 the ``locate_tiles`` method of ``RandomTiler`` returns a scaled version of the slide with the corresponding tiles outlined. It is also possible to specify 
 the transparency of the background slide, and the color used for the border of the tiles:
 

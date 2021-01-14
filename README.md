@@ -277,17 +277,17 @@ random_tiles_extractor = RandomTiler(
 Notice that we also specify the random seed to ensure the
 reproducibility of the extraction process.
 
-We may want to check which tiles have been selected by the tiler, before starting the extraction procedure and save them;
+We may want to check which tiles have been selected by the tiler, before starting the extraction procedure and saving them;
 the ``locate_tiles`` method of ``RandomTiler`` returns a scaled version of the slide with the corresponding tiles outlined. It is also possible to specify 
 the transparency of the background slide, and the color used for the border of each tile:
 
 ```python
- random_tiles_extractor.locate_tiles(
-        slide=prostate_slide,
-        scale_factor=24,  # default
-        alpha=128,  # default
-        outline="red",  # default
-    )
+random_tiles_extractor.locate_tiles(
+    slide=prostate_slide,
+    scale_factor=24,  # default
+    alpha=128,  # default
+    outline="red",  # default
+)
 ```
 
 ![](https://user-images.githubusercontent.com/31658006/104055082-6bf1b100-51ee-11eb-8353-1f5958d521d8.png)
@@ -334,11 +334,11 @@ Again, we can exploit the ``locate_tiles`` method to visualize the selected tile
 
 ```python
 grid_tiles_extractor.locate_tiles(
-        slide=ovarian_slide,
-        scale_factor=64,
-        alpha=64,
-        outline="#046C4C",
-    )
+    slide=ovarian_slide,
+    scale_factor=64,
+    alpha=64,
+    outline="#046C4C",
+)
 ```
 
 ![](https://user-images.githubusercontent.com/31658006/104107093-37e3c200-52ba-11eb-8750-67a62bf62ca5.png)
