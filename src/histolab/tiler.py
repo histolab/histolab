@@ -727,22 +727,6 @@ class ScoreTiler(GridTiler):
         ValueError
             If ``n_tiles`` is negative.
         """  # noqa
-        # scores = (
-        #     self._scale_scores(self._scores(slide)) if scaled else self._scores(slide)
-        # )
-        #
-        # sorted_tiles_by_score = sorted(scores, key=lambda x: x[0], reverse=True)
-        #
-        # if self.n_tiles < 0:
-        #     raise ValueError(f"'n_tiles' cannot be negative ({self.n_tiles})")
-        #
-        # highest_score_tiles = (
-        #     sorted_tiles_by_score[: self.n_tiles]
-        #     if self.n_tiles > 0
-        #     else sorted_tiles_by_score
-        # )
-        #
-        # return highest_score_tiles
         all_scores = self._scores(slide)
         scaled_scores = self._scale_scores(all_scores)
 
