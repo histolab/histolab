@@ -164,8 +164,27 @@ class Tiler(Protocol):
     def _tiles_generator(self, slide: Slide) -> None:
         raise NotImplementedError
 
-    def _validate_levels(self, slide: Slide) -> None:
+    def _validate_level(self, slide: Slide) -> None:
         """Validate the Tiler's level according to the Slide.
+
+        Parameters
+        ----------
+        slide : Slide
+            Slide from which to extract the tiles
+
+        Raises
+        ------
+        LevelError
+            If the level is not available for the slide
+        """
+        if len(slide.levels) - abs(self.level) < 0:
+            raise LevelError(
+                f"Level {self.level} not available. Number of available levels: "
+                f"{len(slide.levels)}"
+            )
+
+    def _validate_tile_size(self, slide: Slide) -> None:
+        """Validate the tile size according to the Slide.
 
         Parameters
         ----------
@@ -176,15 +195,7 @@ class Tiler(Protocol):
         ------
         TileSizeError
             If the tile size is larger than the slide size
-        LevelError
-            If the level is not available for the slide
         """
-        if len(slide.levels) - abs(self.level) < 0:
-            raise LevelError(
-                f"Level {self.level} not available. Number of available levels: "
-                f"{len(slide.levels)}"
-            )
-
         if not self._has_valid_tile_size(slide):
             raise TileSizeError(
                 f"Tile size {self.tile_size} is larger than slide size "
@@ -252,7 +263,8 @@ class GridTiler(Tiler):
         LevelError
             If the level is not available for the slide
         """
-        self._validate_levels(slide)
+        self._validate_level(slide)
+        self._validate_tile_size(slide)
 
         grid_tiles = self._tiles_generator(slide)
 
@@ -477,7 +489,8 @@ class RandomTiler(Tiler):
         LevelError
             If the level is not available for the slide
         """
-        self._validate_levels(slide)
+        self._validate_level(slide)
+        self._validate_tile_size(slide)
 
         random_tiles = self._tiles_generator(slide)
 
@@ -673,7 +686,8 @@ class ScoreTiler(GridTiler):
         LevelError
             If the level is not available for the slide
         """
-        self._validate_levels(slide)
+        self._validate_level(slide)
+        self._validate_tile_size(slide)
 
         highest_score_tiles, highest_scaled_score_tiles = self._tiles_generator(slide)
 
