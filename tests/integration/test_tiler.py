@@ -197,7 +197,15 @@ class DescribeScoreTiler:
             expectation,
             type_="png",
         )
-        tiles_location_img = scored_tiles_extractor.locate_tiles(slide, scale_factor=10)
+        expected_warning_regex = (
+            r"Input image must be RGB. NOTE: the image will be converted to RGB before"
+            r" HED conversion."
+        )
+
+        with pytest.warns(UserWarning, match=expected_warning_regex):
+            tiles_location_img = scored_tiles_extractor.locate_tiles(
+                slide, scale_factor=10
+            )
         # --- Expanding test report with actual and expected images ---
         expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
 

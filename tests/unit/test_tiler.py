@@ -799,7 +799,7 @@ class Describe_ScoreTiler:
         coords = CP(0, 10, 0, 10)
         image = PILIMG.RGB_RANDOM_COLOR_500X500
         tile = Tile(image, coords)
-        _tiles_generator = method_mock(request, ScoreTiler, "_tiles_generator")
+        _tiles_generator = method_mock(request, GridTiler, "_tiles_generator")
         # it needs to be a generator
         _tiles_generator.return_value = ((tile, coords) for i in range(3))
         _scorer = instance_mock(request, RandomScorer)
@@ -821,7 +821,7 @@ class Describe_ScoreTiler:
 
     def but_it_raises_runtimeerror_if_no_tiles_are_extracted(self, request):
         slide = instance_mock(request, Slide)
-        _tiles_generator = method_mock(request, ScoreTiler, "_tiles_generator")
+        _tiles_generator = method_mock(request, GridTiler, "_tiles_generator")
         # it needs to be an empty generator
         _tiles_generator.return_value = (n for n in [])
         score_tiler = ScoreTiler(None, (10, 10), 2, 0)
@@ -873,12 +873,22 @@ class Describe_ScoreTiler:
                         (0.5, CP(0, 10, 0, 10)),
                         (0.2, CP(0, 10, 0, 10)),
                         (0.1, CP(0, 10, 0, 10)),
-                    ]
+                    ],
+                    [
+                        (1.0, CP(0, 10, 0, 10)),
+                        (0.857142857142857, CP(0, 10, 0, 10)),
+                        (0.5714285714285714, CP(0, 10, 0, 10)),
+                        (0.14285714285714285, CP(0, 10, 0, 10)),
+                        (0.0, CP(0, 10, 0, 10)),
+                    ],
                 ),
             ),
             (
                 2,
-                ([(0.8, CP(0, 10, 0, 10)), (0.7, CP(0, 10, 0, 10))]),
+                (
+                    [(0.8, CP(0, 10, 0, 10)), (0.7, CP(0, 10, 0, 10))],
+                    [(1.0, CP(0, 10, 0, 10)), (0.857142857142857, CP(0, 10, 0, 10))],
+                ),
             ),
             (
                 3,
@@ -887,7 +897,12 @@ class Describe_ScoreTiler:
                         (0.8, CP(0, 10, 0, 10)),
                         (0.7, CP(0, 10, 0, 10)),
                         (0.5, CP(0, 10, 0, 10)),
-                    ]
+                    ],
+                    [
+                        (1.0, CP(0, 10, 0, 10)),
+                        (0.857142857142857, CP(0, 10, 0, 10)),
+                        (0.5714285714285714, CP(0, 10, 0, 10)),
+                    ],
                 ),
             ),
         ),
@@ -906,64 +921,10 @@ class Describe_ScoreTiler:
         _scorer = instance_mock(request, RandomScorer)
         score_tiler = ScoreTiler(_scorer, (10, 10), n_tiles, 0)
 
-        highest_score_tiles = score_tiler._highest_score_tiles(slide)
+        highest_score_tiles = score_tiler._tiles_generator(slide)
 
         _scores.assert_called_once_with(score_tiler, slide)
         assert highest_score_tiles == expected_value
-
-    @pytest.mark.parametrize(
-        "n_tiles, expected_value",
-        (
-            (
-                0,
-                (
-                    [
-                        (1, CP(0, 10, 0, 10)),
-                        ((0.6 / 0.7), CP(0, 10, 0, 10)),
-                        ((0.4 / 0.7), CP(0, 10, 0, 10)),
-                        ((0.1 / 0.7), CP(0, 10, 0, 10)),
-                        (0.0, CP(0, 10, 0, 10)),
-                    ]
-                ),
-            ),
-            (
-                2,
-                ([(1.0, CP(0, 10, 0, 10)), ((0.6 / 0.7), CP(0, 10, 0, 10))]),
-            ),
-            (
-                3,
-                (
-                    [
-                        (1, CP(0, 10, 0, 10)),
-                        ((0.6 / 0.7), CP(0, 10, 0, 10)),
-                        ((0.4 / 0.7), CP(0, 10, 0, 10)),
-                    ]
-                ),
-            ),
-        ),
-    )
-    def it_can_calculate_highest_scaled_score_tiles(
-        self, request, n_tiles, expected_value
-    ):
-        slide = instance_mock(request, Slide)
-        _scores = method_mock(request, ScoreTiler, "_scores")
-        coords = CP(0, 10, 0, 10)
-        _scores.return_value = [
-            (0.7, coords),
-            (0.5, coords),
-            (0.2, coords),
-            (0.8, coords),
-            (0.1, coords),
-        ]
-        _scorer = instance_mock(request, RandomScorer)
-        score_tiler = ScoreTiler(_scorer, (10, 10), n_tiles, 0)
-
-        highest_scaled_score_tiles = score_tiler._highest_score_tiles(slide, True)
-
-        _scores.assert_called_once_with(score_tiler, slide)
-        np.testing.assert_array_almost_equal(
-            [t[0] for t in highest_scaled_score_tiles], [t[0] for t in expected_value]
-        )
 
     def but_it_raises_error_with_negative_n_tiles_value(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
@@ -997,14 +958,17 @@ class Describe_ScoreTiler:
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
         coords = CP(0, 10, 0, 10)
-        _highest_score_tiles = method_mock(
+        _tiles_generator = method_mock(
             request,
             ScoreTiler,
-            "_highest_score_tiles",
-            return_value=iter([(0.8, coords), (0.7, coords)]),
+            "_tiles_generator",
         )
         tile = Tile(image, coords)
         _extract_tile.return_value = tile
+        _tiles_generator.return_value = (
+            [(0.8, coords), (0.7, coords)],
+            [(0.8, coords), (0.7, coords)],
+        )
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
@@ -1021,7 +985,7 @@ class Describe_ScoreTiler:
             call(slide, coords, 0),
             call(slide, coords, 0),
         ]
-        _highest_score_tiles.assert_called_with(score_tiler, slide)
+        _tiles_generator.assert_called_with(score_tiler, slide)
         assert _tile_filename.call_args_list == [
             call(score_tiler, coords, 0),
             call(score_tiler, coords, 1),
@@ -1098,15 +1062,17 @@ class Describe_ScoreTiler:
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
         coords = CP(0, 10, 0, 10)
-        _highest_score_tiles = method_mock(
+        _tiles_generator = method_mock(
             request,
             ScoreTiler,
-            "_highest_score_tiles",
-            scale=False,
-            return_value=[(0.8, coords), (0.7, coords)],
+            "_tiles_generator",
         )
         tile = Tile(image, coords)
         _extract_tile.return_value = tile
+        _tiles_generator.return_value = (
+            [(0.8, coords), (0.7, coords)],
+            [(0.8, coords), (0.7, coords)],
+        )
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-10-0-10.png" for i in range(2)
@@ -1121,7 +1087,7 @@ class Describe_ScoreTiler:
             call(slide, coords, 0),
             call(slide, coords, 0),
         ]
-        _highest_score_tiles.assert_called_with(score_tiler, slide, True)
+        _tiles_generator.assert_called_with(score_tiler, slide)
         assert _tile_filename.call_args_list == [
             call(score_tiler, coords, 0),
             call(score_tiler, coords, 1),
