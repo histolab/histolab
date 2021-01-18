@@ -190,7 +190,6 @@ class Tiler(Protocol):
                 f"Tile size {self.tile_size} is larger than slide size "
                 f"{slide.level_dimensions(self.level)} at level {self.level}"
             )
-        pass
 
 
 class GridTiler(Tiler):
