@@ -1,20 +1,49 @@
 Changelog
 =========
 
+v0.2.2
+------
+**Bug Fix**
+
+- Fix of `np_to_pil` in case float input but in a correct range (`#199 <https://github.com/histolab/histolab/pull/199>`_)
+- Fix tiles extractor checking if the tile size is larger than the slide size (`#202 <https://github.com/histolab/histolab/pull/202>`_)
+- Fix RandomTiler border wackiness extraction (`#203 <https://github.com/histolab/histolab/pull/203>`_)
+
+**New Features**
+
+- New parameter `tissue_percent` for all the tilers' to be used during the `has_enough_tissue` check (`#204 <https://github.com/histolab/histolab/pull/204>`_)
+- Expose wsi properties. The `Slide.properties` returns the whole OpenSlide WSI properties (`#209 <https://github.com/histolab/histolab/pull/209>`_)
+- Allow negative indexing for `slide.level` (`#210 <https://github.com/histolab/histolab/pull/210>`_)
+- New Filter Protocol available (`#213 <https://github.com/histolab/histolab/pull/213>`_)
+
+**Breaking Changes**
+
+- Remove pen marks filter (`#201 <https://github.com/histolab/histolab/pull/201>`_)
+
 v0.2.1
 ------
+**Maintenance**
+
 - Pin dependencies in requirements.txt to avoid discrepancy with scikit-image v0.18.0
 
 v0.2.0
 ------
+
+**Bug Fix**
+
+- Bug: Fix grid tile coordinates calculation (`#186 <https://github.com/histolab/histolab/pull/186>`_)
+- Bug: Fix quickstart tutorial slides' paths (`#154 <https://github.com/histolab/histolab/pull/154>`_ and `#165 <https://github.com/histolab/histolab/pull/165>`_)
+
+**New Features**
+
 - Add diagnostic method to locate tiles on a slide with every Tiler (`#179 <https://github.com/histolab/histolab/pull/179>`_)
 - Add diagnostic method to locate the biggest tissue bounding box on a slide (`#188 <https://github.com/histolab/histolab/pull/188>`_)
 - `SlideSet` is iterable and its `slides` property has been dropped (`#177 <https://github.com/histolab/histolab/pull/177>`_)
-- Bug: Fix grid tile coordinates calculation (`#186 <https://github.com/histolab/histolab/pull/186>`_,)
-- Bug: Fix quickstart tutorial slides' paths (`#154 <https://github.com/histolab/histolab/pull/154>`_ and `#165 <https://github.com/histolab/histolab/pull/165>`_)
 
 v0.1.1
 ------
+
+**New Features**
 
 - Add RgbToLab image filter (`#147 <https://github.com/histolab/histolab/pull/147>`_)
 - Add Watershed segmentation filter (`#153 <https://github.com/histolab/histolab/pull/153>`_)
@@ -22,24 +51,33 @@ v0.1.1
 
 v0.0.1
 ------
+**Bug Fix**
+
+- Fix save path for tiles (`#126 <https://github.com/histolab/histolab/pull/126>`_)
+- Fix critical memory issue when extracting biggest tissue box (`#128 <https://github.com/histolab/histolab/pull/128>`_)
+
+**New Features**
 
 - Add Lambda filter (`#124 <https://github.com/histolab/histolab/pull/124>`_)
 - Add ScoreTiler and RandomScorer (`#129 <https://github.com/histolab/histolab/pull/129>`_)
 - Add NucleiScorer (`#132 <https://github.com/histolab/histolab/pull/132>`_)
 - Add Ovarian Tissue sample in data module (`#136 <https://github.com/histolab/histolab/pull/136>`_)
-- Fix tiles's save path (`#126 <https://github.com/histolab/histolab/pull/126>`_)
-- Fix critical memory issue when extracting biggest tissue box (`#128 <https://github.com/histolab/histolab/pull/128>`_)
 
 v0.0.5b
 -------
+**Bug Fix**
 
-- Fix `issue #100 <https://github.com/histolab/histolab/issues/100>`_
-- Fix `issue #108 <https://github.com/histolab/histolab/issues/108>`_
-- `Grid Tiler <https://github.com/histolab/histolab/issues/99>`_ added
+- Fix issue (`#100 <https://github.com/histolab/histolab/issues/100>`_)
+- Fix issue (`#108 <https://github.com/histolab/histolab/issues/108>`_)
+
+**New Features**
+
+- Grid Tiler (`#99 <https://github.com/histolab/histolab/issues/99>`_)
 
 
 v0.0.4b
 -------
+**Bug Fix**
 
 - Fix kmeans segmentation image filter default parameters
 - Fix rag threshold image filter default parameters

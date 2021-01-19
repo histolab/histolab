@@ -95,6 +95,10 @@ Read the full documentation here https://histolab.readthedocs.io/en/latest/.
 
 Join our user group on <img src=https://user-images.githubusercontent.com/4196091/101638148-01522780-3a2e-11eb-8502-f718564ffd43.png> [Slack](https://communityinviter.com/apps/histolab/histolab) 
 
+### 5 minutes introduction
+
+<iframe width="800" height="600" src="https://www.youtube.com/embed/AdR4JK-Eq60" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 # Quickstart 
 Here we present a step-by-step tutorial on the use of `histolab` to
 extract a tile dataset from example WSIs. The corresponding Jupyter
