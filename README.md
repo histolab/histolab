@@ -97,7 +97,8 @@ Join our user group on <img src=https://user-images.githubusercontent.com/419609
 
 ### 5 minutes introduction
 
-<iframe width="800" height="600" src="https://www.youtube.com/embed/AdR4JK-Eq60" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<a href="https://youtu.be/AdR4JK-Eq60" target="_blank"><img src=https://user-images.githubusercontent.com/4196091/105097293-a68a0200-5aa8-11eb-8327-6039940fbdca.png></a>
+
 
 # Quickstart 
 Here we present a step-by-step tutorial on the use of `histolab` to
