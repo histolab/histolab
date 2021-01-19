@@ -255,7 +255,12 @@ Again, we can exploit the ``locate_tiles`` method to visualize the selected tile
 
 .. code-block:: ipython3
 
-    grid_tiles_extractor.locate_tiles(slide=ovarian_slide)
+    grid_tiles_extractor.locate_tiles(
+        slide=ovarian_slide,
+        scale_factor=64,
+        alpha=64,
+        outline="#046C4C",
+    )
 
 .. figure:: https://user-images.githubusercontent.com/31658006/104107093-37e3c200-52ba-11eb-8750-67a62bf62ca5.png
 
@@ -264,12 +269,7 @@ on our extractor:
 
 .. code-block:: ipython3
 
-    grid_tiles_extractor.locate_tiles(
-        slide=ovarian_slide,
-        scale_factor=64,
-        alpha=64,
-        outline="#046C4C",
-    )
+    grid_tiles_extractor.extract(ovarian_slide)
 
 .. figure:: https://user-images.githubusercontent.com/4196091/92751173-0993bb80-f388-11ea-9d30-a6cd17769d76.png
    :alt: ovarian tile extraction
