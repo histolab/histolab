@@ -90,11 +90,13 @@ class Describe_Slide:
             ),
             (
                 (245, 123, 145, 99),
-                Path("/foo/bar/b/0/9"),
-                Path("/foo/bar/myslide.svs"),
+                Path("foo/bar/b/0/9"),
+                Path("foo/bar/myslide.svs"),
                 "processed",
                 64,
-                os.path.join("/foo/bar/b/0/9", "myslide-64x-245x123-145x99.png"),
+                os.path.join(
+                    "foo", "bar", "b", "0", "9", "myslide-64x-245x123-145x99.png"
+                ),
             ),
             (
                 (245, 123, 145, 99),
