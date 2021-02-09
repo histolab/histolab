@@ -4,6 +4,7 @@ import errno
 import math
 import os
 from collections import namedtuple
+from pathlib import Path
 
 import numpy as np
 import openslide
@@ -35,14 +36,19 @@ from ..unitutil import (
 
 
 class Describe_Slide:
-    def it_constructs_from_args(self, request):
+    @pytest.mark.parametrize(
+        "slide_path, processed_path",
+        [
+            ("/foo/bar/myslide.svs", "/foo/bar/myslide/processed"),
+            (Path("/foo/bar/myslide.svs"), Path("/foo/bar/myslide/processed")),
+        ],
+    )
+    def it_constructs_from_args(self, request, slide_path, processed_path):
         _init_ = initializer_mock(request, Slide)
-        _slide_path = "/foo/bar/myslide.svs"
-        _processed_path = "/foo/bar/myslide/processed"
 
-        slide = Slide(_slide_path, _processed_path)
+        slide = Slide(slide_path, processed_path)
 
-        _init_.assert_called_once_with(ANY, _slide_path, _processed_path)
+        _init_.assert_called_once_with(ANY, slide_path, processed_path)
         assert isinstance(slide, Slide)
 
     def but_it_has_wrong_slide_path_type(self):
@@ -78,6 +84,14 @@ class Describe_Slide:
                 (245, 123, 145, 99),
                 "/foo/bar/b/0/9",
                 "/foo/bar/myslide.svs",
+                "processed",
+                64,
+                os.path.join("/foo/bar/b/0/9", "myslide-64x-245x123-145x99.png"),
+            ),
+            (
+                (245, 123, 145, 99),
+                Path("/foo/bar/b/0/9"),
+                Path("/foo/bar/myslide.svs"),
                 "processed",
                 64,
                 os.path.join("/foo/bar/b/0/9", "myslide-64x-245x123-145x99.png"),

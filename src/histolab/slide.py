@@ -52,13 +52,18 @@ class Slide:
 
     Arguments
     ---------
-    path : str
+    path : Union[str, pathlib.Path]
         Path where the WSI is saved.
-    processed_path : str
+    processed_path : Union[str, pathlib.Path]
         Path where thumbnails and scaled images will be saved to.
     """
 
-    def __init__(self, path: str, processed_path: str) -> None:
+    def __init__(
+        self, path: Union[str, pathlib.Path], processed_path: Union[str, pathlib.Path]
+    ) -> None:
+        if isinstance(path, pathlib.Path):
+            path = str(path)
+
         self._path = path
         self._processed_path = processed_path
 
