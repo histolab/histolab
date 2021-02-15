@@ -1,6 +1,5 @@
 import csv
 import os
-from pathlib import Path
 from unittest.mock import call
 
 import numpy as np
@@ -16,8 +15,8 @@ from histolab.types import CP
 from ..unitutil import (
     ANY,
     PILIMG,
-    base_test_slide,
     NpArrayMock,
+    base_test_slide,
     function_mock,
     initializer_mock,
     instance_mock,
@@ -341,27 +340,16 @@ class Describe_RandomTiler:
         assert generated_tiles[0][1] == CP(0, 10, 0, 10)
         assert isinstance(generated_tiles[0][0], Tile)
 
-    @pytest.mark.parametrize(
-        "path_type_transform",
-        [
-            (str),
-            (Path),
-        ],
-    )
     def it_can_extract_random_tiles(
         self,
         request,
         tmpdir,
-        path_type_transform,
     ):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(
-            path_type_transform(slide_path),
-            path_type_transform(os.path.join(tmp_path_, "processed")),
-        )
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
         _tiles_generator = method_mock(request, RandomTiler, "_tiles_generator")
         coords = CP(0, 10, 0, 10)
         tile = Tile(image, coords)

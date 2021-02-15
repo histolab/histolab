@@ -78,6 +78,24 @@ class Describe_Slide:
         )
 
     @pytest.mark.parametrize(
+        "path_type_transform",
+        [
+            (str),
+            (Path),
+        ],
+    )
+    def it_knows_its_wsi(self, tmpdir, path_type_transform):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = path_type_transform(os.path.join(tmp_path_, "mywsi.png"))
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+
+        wsi = slide._wsi
+
+        assert type(wsi) == openslide.ImageSlide
+
+    @pytest.mark.parametrize(
         "resampled_dims, dir_path, slide_path, proc_path, scale_factor, expected_path",
         (
             (
