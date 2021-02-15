@@ -61,10 +61,7 @@ class Slide:
     def __init__(
         self, path: Union[str, pathlib.Path], processed_path: Union[str, pathlib.Path]
     ) -> None:
-        if isinstance(path, pathlib.Path):
-            path = str(path)
-
-        self._path = path
+        self._path = str(path) if isinstance(path, pathlib.Path) else path
         self._processed_path = processed_path
 
     def __repr__(self):
