@@ -1,4 +1,5 @@
 import csv
+import logging
 import os
 from unittest.mock import call
 
@@ -340,11 +341,7 @@ class Describe_RandomTiler:
         assert generated_tiles[0][1] == CP(0, 10, 0, 10)
         assert isinstance(generated_tiles[0][0], Tile)
 
-    def it_can_extract_random_tiles(
-        self,
-        request,
-        tmpdir,
-    ):
+    def it_can_extract_random_tiles(self, request, tmpdir, caplog):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -362,8 +359,14 @@ class Describe_RandomTiler:
         _has_valid_tile_size.return_value = True
         random_tiler = RandomTiler((10, 10), n_tiles=2, level=0)
 
-        random_tiler.extract(slide)
+        with caplog.at_level(logging.INFO):
+            random_tiler.extract(slide)
 
+        assert caplog.text.splitlines() == [
+            "INFO     root:tiler.py:509 \t Tile 0 saved: tile_0_level2_0-10-0-10.png",
+            "INFO     root:tiler.py:509 \t Tile 1 saved: tile_1_level2_0-10-0-10.png",
+            "INFO     root:tiler.py:510 2 Random Tiles have been saved.",
+        ]
         assert _tile_filename.call_args_list == [
             call(random_tiler, coords, 0),
             call(random_tiler, coords, 1),
@@ -690,7 +693,7 @@ class Describe_GridTiler:
         assert len(generated_tiles) == 0
         _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
 
-    def it_can_extract_grid_tiles(self, request, tmpdir):
+    def it_can_extract_grid_tiles(self, request, tmpdir, caplog):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -711,8 +714,10 @@ class Describe_GridTiler:
         _has_valid_tile_size.return_value = True
         grid_tiler = GridTiler((10, 10), level=0)
 
-        grid_tiler.extract(slide)
+        with caplog.at_level(logging.ERROR):
+            grid_tiler.extract(slide)
 
+        assert caplog.text == ""
         assert _tile_filename.call_args_list == [
             call(grid_tiler, coords, 0),
             call(grid_tiler, coords, 1),
