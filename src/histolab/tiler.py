@@ -17,6 +17,7 @@
 # ------------------------------------------------------------------------
 
 import csv
+import logging
 import os
 from abc import abstractmethod
 from functools import lru_cache
@@ -40,6 +41,9 @@ try:
     from typing import Protocol, runtime_checkable
 except ImportError:
     from typing_extensions import Protocol, runtime_checkable
+
+
+logger = logging.getLogger("tiler")
 
 
 @runtime_checkable
@@ -68,7 +72,7 @@ class Tiler(Protocol):
         return slide.biggest_tissue_box_mask
 
     @abstractmethod
-    def extract(self, slide: Slide):
+    def extract(self, slide: Slide, log_level: str):
         raise NotImplementedError
 
     def locate_tiles(
@@ -246,7 +250,7 @@ class GridTiler(Tiler):
         self.prefix = prefix
         self.suffix = suffix
 
-    def extract(self, slide: Slide) -> None:
+    def extract(self, slide: Slide, log_level: str = "INFO") -> None:
         """Extract tiles arranged in a grid and save them to disk, following this
         filename pattern:
         `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
@@ -263,18 +267,19 @@ class GridTiler(Tiler):
         LevelError
             If the level is not available for the slide
         """
+        level = logging.getLevelName(log_level)
+        logger.setLevel(level)
         self._validate_level(slide)
         self._validate_tile_size(slide)
 
         grid_tiles = self._tiles_generator(slide)
-
         tiles_counter = 0
         for tiles_counter, (tile, tile_wsi_coords) in enumerate(grid_tiles):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             full_tile_path = os.path.join(slide.processed_path, "tiles", tile_filename)
             tile.save(full_tile_path)
-            print(f"\t Tile {tiles_counter} saved: {tile_filename}")
-        print(f"{tiles_counter} Grid Tiles have been saved.")
+            logging.info(f"\t Tile {tiles_counter} saved: {tile_filename}")
+        logging.info(f"{tiles_counter} Grid Tiles have been saved.")
 
     @property
     def tile_size(self) -> Tuple[int, int]:
@@ -473,7 +478,7 @@ class RandomTiler(Tiler):
         self.prefix = prefix
         self.suffix = suffix
 
-    def extract(self, slide: Slide) -> None:
+    def extract(self, slide: Slide, log_level: str = "INFO") -> None:
         """Extract random tiles and save them to disk, following this filename pattern:
         `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
 
@@ -489,6 +494,8 @@ class RandomTiler(Tiler):
         LevelError
             If the level is not available for the slide
         """
+        level = logging.getLevelName(log_level)
+        logger.setLevel(level)
         self._validate_level(slide)
         self._validate_tile_size(slide)
 
@@ -499,8 +506,8 @@ class RandomTiler(Tiler):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             full_tile_path = os.path.join(slide.processed_path, "tiles", tile_filename)
             tile.save(full_tile_path)
-            print(f"\t Tile {tiles_counter} saved: {tile_filename}")
-        print(f"{tiles_counter+1} Random Tiles have been saved.")
+            logging.info(f"\t Tile {tiles_counter} saved: {tile_filename}")
+        logging.info(f"{tiles_counter+1} Random Tiles have been saved.")
 
     @property
     def max_iter(self) -> int:
@@ -665,7 +672,9 @@ class ScoreTiler(GridTiler):
             suffix,
         )
 
-    def extract(self, slide: Slide, report_path: str = None) -> None:
+    def extract(
+        self, slide: Slide, report_path: str = None, log_level: str = "INFO"
+    ) -> None:
         """Extract grid tiles and save them to disk, according to a scoring function and
         following this filename pattern:
         `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
@@ -686,6 +695,8 @@ class ScoreTiler(GridTiler):
         LevelError
             If the level is not available for the slide
         """
+        level = logging.getLevelName(log_level)
+        logger.setLevel(level)
         self._validate_level(slide)
         self._validate_tile_size(slide)
 
@@ -699,14 +710,16 @@ class ScoreTiler(GridTiler):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             tile.save(os.path.join(slide.processed_path, "tiles", tile_filename))
             filenames.append(tile_filename)
-            print(f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}")
+            logging.info(
+                f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}"
+            )
 
         if report_path:
             self._save_report(
                 report_path, highest_score_tiles, highest_scaled_score_tiles, filenames
             )
 
-        print(f"{tiles_counter+1} Grid Tiles have been saved.")
+        logging.info(f"{tiles_counter+1} Grid Tiles have been saved.")
 
     # ------- implementation helpers -------
 
