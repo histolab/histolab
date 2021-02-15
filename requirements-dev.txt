@@ -10,3 +10,4 @@ ipdb
 isort
 sphinxcontrib-katex
 pytest-html
+black
