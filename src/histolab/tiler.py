@@ -259,8 +259,8 @@ class GridTiler(Tiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
-        log_level: str
-            Threshold level for the log messages (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        log_level: str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+            Threshold level for the log messages. Default "INFO"
 
         Raises
         ------
@@ -488,8 +488,8 @@ class RandomTiler(Tiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
-        log_level: str
-            Threshold level for the log messages (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        log_level: str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+            Threshold level for the log messages. Default "INFO"
 
         Raises
         ------
@@ -691,8 +691,8 @@ class ScoreTiler(GridTiler):
             Slide from which to extract the tiles
         report_path : str, optional
             Path to the CSV report. If None, no report will be saved
-        log_level: str
-            Threshold level for the log messages (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        log_level: str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+            Threshold level for the log messages. Default "INFO"
 
         Raises
         ------
