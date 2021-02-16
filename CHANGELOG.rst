@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v0.2.3
+------
+**New Features**
+
+- Allow pathlib.Path as Slide path parameter (`#226 <https://github.com/histolab/histolab/pull/226>`_)
+- Tilers `extract` method now has `log_level` param that set the threshold level for the log messages (`#229 <https://github.com/histolab/histolab/pull/229>`_)
+
 v0.2.2
 ------
 **Bug Fix**
