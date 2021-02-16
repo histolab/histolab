@@ -363,9 +363,9 @@ class Describe_RandomTiler:
             random_tiler.extract(slide)
 
         assert caplog.text.splitlines() == [
-            "INFO     root:tiler.py:509 \t Tile 0 saved: tile_0_level2_0-10-0-10.png",
-            "INFO     root:tiler.py:509 \t Tile 1 saved: tile_1_level2_0-10-0-10.png",
-            "INFO     root:tiler.py:510 2 Random Tiles have been saved.",
+            "INFO     root:tiler.py:513 \t Tile 0 saved: tile_0_level2_0-10-0-10.png",
+            "INFO     root:tiler.py:513 \t Tile 1 saved: tile_1_level2_0-10-0-10.png",
+            "INFO     root:tiler.py:514 2 Random Tiles have been saved.",
         ]
         assert _tile_filename.call_args_list == [
             call(random_tiler, coords, 0),
