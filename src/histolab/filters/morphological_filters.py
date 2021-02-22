@@ -80,7 +80,7 @@ class RemoveSmallObjects(MorphologicalFilter):
         >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
         >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
         >>> image_no_small_objects = remove_small_objects(binary_image) # Remove small objects from the image
-    """
+    """  # noqa
 
     def __init__(
         self,
@@ -125,7 +125,7 @@ class RemoveSmallHoles(MorphologicalFilter):
         >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
         >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
         >>> image_no_small_holes = remove_small_holes(binary_image) # Remove small holes from the image
-    """
+    """  # noqa
 
     def __init__(self, area_threshold: int = 3000):
         self.area_threshold = area_threshold
@@ -163,7 +163,7 @@ class BinaryErosion(MorphologicalFilter):
         >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
         >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
         >>> image_eroded = binary_erosion(binary_image) # Apply the binary erosion filter
-    """
+    """  # noqa
 
     def __init__(self, disk_size: int = 5, iterations: int = 1):
         self.disk_size = disk_size
@@ -207,7 +207,7 @@ class BinaryDilation(MorphologicalFilter):
         >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
         >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
         >>> image_dilated = binary_dilation(binary_image) # Apply the binary dilation filter
-    """
+    """  # noqa
 
     def __init__(self, disk_size: int = 5, iterations: int = 1):
         self.disk_size = disk_size
@@ -277,7 +277,7 @@ class BinaryOpening(MorphologicalFilter):
         >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
         >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
         >>> image_opened = binary_opening(binary_image) # Apply the binary opening filter
-    """
+    """  # noqa
 
     def __init__(self, disk_size: int = 3, iterations: int = 1):
         self.disk_size = disk_size
@@ -323,7 +323,7 @@ class BinaryClosing(MorphologicalFilter):
         >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
         >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
         >>> image_closed = binary_closing(binary_image) # Apply the binary closing filter
-    """
+    """  # noqa
 
     def __init__(self, disk_size: int = 3, iterations: int = 1):
         self.disk_size = disk_size
@@ -367,7 +367,7 @@ class WatershedSegmentation(MorphologicalFilter):
         >>> mask = np.load("path/to/mask.npy") # Read the mask
         >>> watershed_segmentation = WatershedSegmentation() # Instantiate the Watershed filter
         >>> mask_segmented = watershed_segmentation(mask) # Apply the Watershed filter to the mask
-    """
+    """  # noqa
 
     def __init__(self, region_shape: int = 6) -> None:
         self.region_shape = region_shape

@@ -291,7 +291,7 @@ class HematoxylinChannel(ImageFilter):
         >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
         >>> hematoxylin_channel = HematoxylinChannel() # Instantiate the hematoxylin filter
         >>> image_h = hematoxylin_channel(image_rgb) # Extract the hematoxylin channel
-    """
+    """  # noqa
 
     def __call__(self, img):
         hematoxylin = F.hematoxylin_channel(img)
@@ -397,7 +397,7 @@ class StretchContrast(ImageFilter):
         >>> stretch_contrast = StretchContrast() # Instantiate stretch contrast filter
         >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
         >>> image_stretched = stretch_contrast(image_gray) # Apply stretch contrast filter to grayscale image
-    """
+    """  # noqa
 
     def __init__(self, low: int = 40, high: int = 60) -> None:
         self.low = low
@@ -466,7 +466,7 @@ class HistogramEqualization(ImageFilter):
         modeling, ren-dering, and animation”. Morgan Kaufmann (2002)
     .. [3] Z Rong and et al. “Study of color heritage image enhancement algorithms based
         on histogram equalization”. Optik 126.24 (2015)
-    """
+    """  # noqa
 
     def __init__(self, n_bins: int = 256) -> None:
         self.n_bins = n_bins
@@ -517,7 +517,7 @@ class AdaptiveEqualization(ImageFilter):
     --------
     .. [1] S.M. Pizer andet al. "Adaptive histogram equalization and its variations”,
         Comput Vis Graph Image Process 39.3 (1987).
-    """
+    """  # noqa
 
     def __init__(self, n_bins: int = 256, clip_limit: float = 0.01) -> None:
         self.n_bins = n_bins
@@ -583,7 +583,7 @@ class KmeansSegmentation(ImageFilter):
         >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
         >>> kmeans_segmentation = KmeansSegmentation() # Instantiate the k-means segmentation filter
         >>> kmeans_segmented_array = kmeans_segmentation(image_rgb) # Apply the filter on the RGB image
-    """
+    """  # noqa
 
     def __init__(self, n_segments: int = 800, compactness: float = 10.0) -> None:
         self.n_segments = n_segments
@@ -627,7 +627,7 @@ class RagThreshold(ImageFilter):
         >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
         >>> rag_threshold = RagThreshold() # Instantiate the RAG threshold filter
         >>> rag_thresholded_array = rag_threshold(image_rgb) # Apply the filter on the RGB image
-    """
+    """  # noqa
 
     def __init__(
         self, n_segments: int = 800, compactness: float = 10.0, threshold: int = 9
@@ -674,7 +674,7 @@ class HysteresisThreshold(ImageFilter):
         >>> hyst_threshold = HysteresisThresholdMask(low=50, high=100) # Instantiate hysteresis filter
         >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
         >>> image_thresholded_array = hyst_threshold(image_gray) # Apply hysteresis filter to image
-    """
+    """  # noqa
 
     def __init__(self, low: int = 50, high: int = 100) -> None:
         self.low = low
@@ -783,7 +783,7 @@ class OtsuThreshold(ImageFilter):
     ---------
     .. [4] N Otsu. “A threshold selection method from gray-level histograms”. IEEE
         Trans SystMan Cybern Syst 9.1 (1979)
-    """
+    """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.otsu_threshold(img)
@@ -826,7 +826,7 @@ class FilterEntropy(ImageFilter):
         >>> entropy_filter = FilterEntropy() # Instantiate entropy filter
         >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
         >>> image_thresholded_array = entropy_filter(image_gray) # Apply entropy filter on graycale image
-    """
+    """  # noqa
 
     def __init__(self, neighborhood: int = 9, threshold: float = 5.0) -> None:
         self.neighborhood = neighborhood
@@ -885,7 +885,7 @@ class CannyEdges(ImageFilter):
     .. [8] M Mũnoz-Aguirre and et al. “PyHIST: A Histological Image Segmentation Tool”.
         PLOS Comput Biol 16.10 (2020)
 
-    """
+    """  # noqa
 
     def __init__(
         self,
@@ -966,7 +966,7 @@ class GreenChannelFilter(ImageFilter):
         >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
         >>> g_channel_filter = GreenChannelFilter(avoid_overmask=True, overmask_thresh=90) # Instantiate filter (default values)
         >>> image_thresholded_array = g_channel_filter(image_rgb) # Create binary mask
-    """
+    """  # noqa
 
     def __init__(
         self,
@@ -1101,7 +1101,7 @@ class GreenPenFilter(ImageFilter):
         >>> binary_image = otsu_threshold(image_gray) # Apply Otsu threshold to grayscale image
         >>> masked_image = apply_mask_image(binary_image) # Apply the resulting mask to the original image
         >>> image_no_green = green_pen_filter(masked_image) # Get the original image with green pen marks removed
-    """
+    """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.green_pen_filter(img)
@@ -1143,7 +1143,7 @@ class BlueFilter(ImageFilter):
             >>> binary_image = otsu_threshold(image_gray) # Apply Otsu threshold to grayscale image
             >>> masked_image = apply_mask_image(binary_image) # Apply the resulting mask to the original image
             >>> image_no_blue = blue_pen_filter(masked_image) # Get the original image with blue pen marks removed
-    """
+    """  # noqa
 
     def __init__(self, red_thresh: int, green_thresh: int, blue_thresh: int):
         self.red_thresh = red_thresh
@@ -1183,7 +1183,7 @@ class BluePenFilter(ImageFilter):
             >>> binary_image = otsu_threshold(image_gray) # Apply Otsu threshold to grayscale image
             >>> masked_image = apply_mask_image(binary_image) # Apply the resulting mask to the original image
             >>> image_no_red = red_pen_filter(masked_image) # Get the original image with red pen marks removed
-    """
+    """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.blue_pen_filter(img)
@@ -1236,7 +1236,7 @@ class YenThreshold(ImageFilter):
     ----------
     .. [6] J.C. Yen and et al.“A new criterion for automatic multilevel
         thresholding”. IEEE Trans Image Process 4.3 (1995)
-    """
+    """  # noqa
 
     def __init__(self, relate: Callable[..., Any] = operator.lt):
         self.relate = relate
