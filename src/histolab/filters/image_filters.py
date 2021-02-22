@@ -828,7 +828,7 @@ class FilterEntropy(ImageFilter):
     0 otherwise. This entropy filter can be used to detect highly hematoxylin-stained
     regions, which represent dense accumulation of nuclei (complex structures).
 
-    Note that input must be 2D.
+     Note that input must be 2D.
 
     Parameters
     ----------
