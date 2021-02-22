@@ -15,7 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------
-
+"""All filters implemented in the image filters submodule take as input a Pillow Image object.
+Additionally, some of the image filters in histolab leverage functions and utilities by scikit-image. Image filters are divided into sub-categories, depending on their behaviour and output type.
+ """
 import operator
 from abc import abstractmethod
 from typing import Any, Callable, List, Union
@@ -140,7 +142,14 @@ class ApplyMaskImage(Filter):
 
 
 class Invert(ImageFilter):
-    """Invert an image, i.e. take the complement of the correspondent array.
+    r"""Invert an image, i.e. take the complement of the correspondent array.
+
+    For binary images, the inversion flips True and False values. For RGB images, each
+    pixel value p is replaced with :math:`\hat{p}-p` where :math:`\hat{p}` is the
+    maximum value of pixels of the data type (i.e. 255).
+    Usually, the tissue in a WSI is surrounded by a white light background (values close
+    to 255). Therefore, inverting its values could ease the removal of non-tissue
+    regions (values close or equal to 0).
 
     Parameters
     ----------
@@ -151,6 +160,17 @@ class Invert(ImageFilter):
     -------
     PIL.Image.Image
         Inverted image
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import Invert, RgbToGrayscale
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
+        >>> invert = Invert() # Instantiate invert filter
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert RGB to grayscale
+        >>> image_inv_rgb = invert(image_rgb) # Apply inversion to RGB image
+        >>> image_inv_gray = invert(image_gray) # Apply inversion to grayscale image
     """
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -169,6 +189,15 @@ class RgbToGrayscale(ImageFilter):
     -------
     PIL.Image.Image
         Grayscale image
+
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RgbToGrayscale
+        >>> image_rgb = Image.open("/path/to/image.png") # Read an RGB image
+        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate filter
+        >>> image_gray = rgb_to_grascale(image_rgb) # Apply filter to image
     """
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -189,6 +218,15 @@ class RgbToHed(ImageFilter):
     -------
     PIL.Image.Image
         Image in HED space
+
+
+    Example:
+
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RgbToHed
+        >>> image_rgb = Image.open("/path/to/image.png") # Read an RGB image
+        >>> rgb_to_hed = RgbToHed() # Instantiate and apply filter to image
+        >>> image_hed = rgb_to_hed(image_rgb)
     """
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -245,6 +283,14 @@ class HematoxylinChannel(ImageFilter):
     -------
     Image.Image
         Grayscale image corresponding to input image with Hematoxylin channel enhanced.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters importEosinChannel
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> hematoxylin_channel = HematoxylinChannel() # Instantiate the hematoxylin filter
+        >>> image_h = hematoxylin_channel(image_rgb) # Extract the hematoxylin channel
     """
 
     def __call__(self, img):
@@ -267,6 +313,14 @@ class EosinChannel(ImageFilter):
     -------
     Image.Image
         Grayscale image corresponding to input image with Eosin channel enhanced.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters importEosinChannel
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> eosin_channel = EosinChannel() # Instantiate the eosin filter
+        >>> image_h = hematoxylin_channel(image_rgb) # Extract the hematoxylin channel
     """
 
     def __call__(self, img):
@@ -288,6 +342,14 @@ class RgbToHsv(ImageFilter):
     -------
     PIL.Image.Image
         Image in HED space
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RgbToHsv
+        >>> image_rgb = Image.open("/path/to/image.png") # Read an RGB image
+        >>> rgb_to_hsv = RgbToHsv() # Instantiate and apply filter to image
+        >>> image_hsv = rgb_to_hsv(image_rgb)
     """
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -296,9 +358,21 @@ class RgbToHsv(ImageFilter):
 
 
 class StretchContrast(ImageFilter):
-    """Increase image contrast.
+    r"""Increase image contrast.
 
-    Th contrast in image is increased based on intensities in a specified range
+    A simple way to enhance the contrast in an image is to linearly rescale the
+    intensity values within a desired range :math:`[v_{o,l}, v_{o,h}]`. In particular,
+    if the lowest and highest pixel values of the input image are, respectively,
+    :math:`v_{i,l}` and :math:`v_{i,h}`, an input pixel :math:`p_i` is remapped to
+    the output pixel value:
+
+    .. math::
+
+        p_o = (p_i - v_{i,l})\left(\frac{v_{o,h}- v_{o,l}}{v_{i,h}- v_{i,l}}\right)+v_{o,l}
+
+    The Stretch Contrast filter stretches the intensity values in an image, with
+    :math:`v_{o,l}=40` and :math:`v_{o,l}=60` as default values.
+    This filter is useful to highlight details in the input image.
 
     Parameters
     ----------
@@ -313,6 +387,16 @@ class StretchContrast(ImageFilter):
     -------
     PIL.Image.Image
         Image with contrast enhanced.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RgbToGrayscale, StretchContrast
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
+        >>> stretch_contrast = StretchContrast() # Instantiate stretch contrast filter
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
+        >>> image_stretched = stretch_contrast(image_gray) # Apply stretch contrast filter to grayscale image
     """
 
     def __init__(self, low: int = 40, high: int = 60) -> None:
@@ -325,10 +409,33 @@ class StretchContrast(ImageFilter):
 
 
 class HistogramEqualization(ImageFilter):
-    """Increase image contrast using histogram equalization.
+    r"""Increase image contrast using histogram equalization.
 
     The input image (gray or RGB) is filterd using histogram equalization to increase
-    contrast.
+    contrast. In particular, this filter expands the range of intensity values in low
+    contrast images. It first computes the normalized histogram H of an image: H(k)
+    counts pixels with intensity values k, divided by the total number of pixels in
+    the image. Then, it computes the cumulative sum of the histogram values as
+
+    .. math::
+
+        C[i] = \sum_{k=0}^{i} H[k]
+
+    for i =0...255. Finally, for each pixel P, the algorithm computes  a new value
+
+    .. math::
+
+        p\prime = 255 \cdot C[p].
+
+    The resulting image will have a uniform intensity distribution.
+    The algorithm described is also called non-adaptive uniform histogram
+    equalization, as it works uniformly on the whole image and the transformation of one
+    pixel is independent from the transformation used on the neighboring pixels [2]_.
+
+    Notice that the histogram equalization method can be used for RGB images
+    by applying the same algorithm on the R, G, and B channels separately [3]_;
+    nonetheless, the high correlation of the three channels may distort the image and
+    the color balance can change drastically.
 
     Parameters
     ----------
@@ -341,6 +448,24 @@ class HistogramEqualization(ImageFilter):
     -------
     PIL.Image.Image
         Image with contrast enhanced by histogram equalization.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import HistogramEqualization, RgbToGrayscale
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
+        >>> histogram_equalization = HistogramEqualization() # Instanciate histogram equalization filter
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert RGB to grayscale
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert RGB to grayscale
+        >>> image_he = histogram_equalization(image_gray) # apply histogram equalization
+
+    References
+    --------
+    .. [2] T Strothotte and S Schlechtweg. “Non-photorealistic computer graphics:
+        modeling, ren-dering, and animation”. Morgan Kaufmann (2002)
+    .. [3] Z Rong and et al. “Study of color heritage image enhancement algorithms based
+        on histogram equalization”. Optik 126.24 (2015)
     """
 
     def __init__(self, n_bins: int = 256) -> None:
@@ -354,8 +479,15 @@ class HistogramEqualization(ImageFilter):
 class AdaptiveEqualization(ImageFilter):
     """Increase image contrast using adaptive equalization.
 
-    Contrast in local region of input image (gray or RGB) is increased using
-    adaptive equalization
+    Rather than considering the global contrast in the image, the adaptive histogram
+    equalization method applies the histogram equalization to smaller regions, or tiles,
+    of the image; the tiles are then combined together using bilinear interpolation.
+    This local approach is preferred when the image presents significantly darker or
+    lighter regions that may be poorly enhanced by the global histogram equalization
+    transformation.
+
+    The Adaptive Equalization filter is based on the scikit-image implementation of
+    the contrast limited adaptive histogram equalization (CLAHE) [1]_.
 
     Parameters
     ----------
@@ -370,6 +502,21 @@ class AdaptiveEqualization(ImageFilter):
     -------
     PIL.Image.Image
         Image with contrast enhanced by adaptive equalization.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import AdaptiveEqualization, RgbToGrayscale
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> rgb_to_grayscale = RgbToGrayscale()  # Instantiate grayscale filter
+        >>> adaptive_equalization = AdaptiveEqualization() # Instantiate adaptive equalization filter
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert RGB to grayscale
+        >>> image_clahe = adaptive_equalization(image_gray) # Apply adaptive equalization filter
+
+    References
+    --------
+    .. [1] S.M. Pizer andet al. "Adaptive histogram equalization and its variations”,
+        Comput Vis Graph Image Process 39.3 (1987).
     """
 
     def __init__(self, n_bins: int = 256, clip_limit: float = 0.01) -> None:
@@ -428,6 +575,14 @@ class KmeansSegmentation(ImageFilter):
     PIL.Image.Image
         Image where each segment has been colored based on the average
         color for that segment.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import KmeansSegmentation, RagThreshold
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> kmeans_segmentation = KmeansSegmentation() # Instantiate the k-means segmentation filter
+        >>> kmeans_segmented_array = kmeans_segmentation(image_rgb) # Apply the filter on the RGB image
     """
 
     def __init__(self, n_segments: int = 800, compactness: float = 10.0) -> None:
@@ -464,6 +619,14 @@ class RagThreshold(ImageFilter):
     PIL.Image.Image
         Each segment has been colored based on the average
         color for that segment (and similar segments have been combined).
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RagThreshold
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> rag_threshold = RagThreshold() # Instantiate the RAG threshold filter
+        >>> rag_thresholded_array = rag_threshold(image_rgb) # Apply the filter on the RGB image
     """
 
     def __init__(
@@ -478,7 +641,15 @@ class RagThreshold(ImageFilter):
 
 
 class HysteresisThreshold(ImageFilter):
-    """Apply two-level (hysteresis) threshold to an image.
+    r"""Apply two-level (hysteresis) threshold to an image.
+    The hysteresis thresholding is a two-threshold method used to detect objects on an
+    image, based on the assumption that points connected to an object are most likely
+    objects themselves. In particular, pixels above a specified high threshold
+    :math:`t_h`are considered as strong objects, pixels below a specified low threshold
+    :math:`t_l` are labelled as non-objects, and pixels :math:`o\in[t_l, t_h]` are
+    defined as weak objects; all the non-objects are removed, while the weak objects are
+    kept only if connected to a strong one. The hysteresis thresholding can be applied
+    to detect edges in an image.
 
     Parameters
     ----------
@@ -493,6 +664,16 @@ class HysteresisThreshold(ImageFilter):
     -------
     PIL.Image.Image
         Image with the hysteresis threshold applied
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import HysteresisThresholdMask, RgbToGrayscale
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
+        >>> hyst_threshold = HysteresisThresholdMask(low=50, high=100) # Instantiate hysteresis filter
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
+        >>> image_thresholded_array = hyst_threshold(image_gray) # Apply hysteresis filter to image
     """
 
     def __init__(self, low: int = 50, high: int = 100) -> None:
@@ -570,9 +751,12 @@ class OtsuThreshold(ImageFilter):
     """Mask image based on pixel above Otsu threshold.
 
     Compute Otsu threshold on image as a NumPy array and return boolean mask
-    based on pixels above this threshold.
+    based on pixels above this threshold. The Otsu algorithm is a standard method to
+    automatically compute the optimal threshold value to separate image background from
+    the foreground [4]_. In this filter, the pixels below the
+    Otsu threshold are considered as foreground.
 
-    Note that Otsu threshold is expected to work correctly only for grayscale images
+    Note that Otsu threshold is expected to work correctly only for grayscale images.
 
     Parameters
     ----------
@@ -583,6 +767,22 @@ class OtsuThreshold(ImageFilter):
     -------
     np.ndarray
         Boolean NumPy array where True represents a pixel above Otsu threshold.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import OtsuThreshold, RgbToGrayscale
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
+        >>> otsu_threshold = OtsuThreshold() # Instantiate Otsu filter
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Conver RGG to grayscale
+        >>> image_thresholded_array = otsu_threshold(image_gray) # Apply Otsu filter to grayscale image
+
+
+    Reference
+    ---------
+    .. [4] N Otsu. “A threshold selection method from gray-level histograms”. IEEE
+        Trans SystMan Cybern Syst 9.1 (1979)
     """
 
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
@@ -592,10 +792,16 @@ class OtsuThreshold(ImageFilter):
 class FilterEntropy(ImageFilter):
     """Filter image based on entropy (complexity).
 
-    The area of the image included in the local neighborhood is defined by a square
-    neighborhood x neighborhood
+    Entropy measures complexity in an image: the greater the entropy the more
+    heterogeneous structures are found is the image, while slide backgrounds are
+    usually less complex [9]_. This method filters out pixels of grayscale images based
+    on the local entropy. In details: (i) the entropy is computed on a neighborhood
+    defined by a squared all-ones matrix of size n (by default n=9); (ii) pixels with
+    entropy greater than a specified threshold t (by default t=5) are replaced with 1,
+    0 otherwise. This entropy filter can be used to detect highly hematoxylin-stained
+    regions, which represent dense accumulation of nuclei (complex structures).
 
-    Note that input must be 2D.
+     Note that input must be 2D.
 
     Parameters
     ----------
@@ -610,6 +816,16 @@ class FilterEntropy(ImageFilter):
     -------
     np.ndarray
         NumPy boolean array where True represent a measure of complexity.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import FilterEntropy, RgbToGrayscale
+        >>> image_rgb = Image.open("path/to/image.png") # Open an RGB image
+        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
+        >>> entropy_filter = FilterEntropy() # Instantiate entropy filter
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
+        >>> image_thresholded_array = entropy_filter(image_gray) # Apply entropy filter on graycale image
     """
 
     def __init__(self, neighborhood: int = 9, threshold: float = 5.0) -> None:
@@ -621,9 +837,19 @@ class FilterEntropy(ImageFilter):
 
 
 class CannyEdges(ImageFilter):
-    """Filter image based on Canny edge algorithm.
+    r"""Filter image based on Canny edge algorithm.
 
-    Note that input image must be 2D
+    The Canny edge detector has been used to generate a version of the image that
+    highlights edges within tissue fragments by detecting changes in pixel intensity
+    [7]_ [8]_.
+    The algorithm includes five steps: (i) smoothing the image (i.e. remove the noise);
+    (ii) computing the gradient's magnitude :math:`M_\nabla` and direction
+    :math:`\theta_\nabla`; (iii) keeping the direction :math:`\theta_\nabla` with
+    greatest intensity :math:`M_\nabla` for each pixel; (iv) thinning the edges by
+    suppressing non-maximal pixels; (v) applying the hysteresis thresholding algorithm
+    for the final edge detection.
+
+    Note that input image must be 2D.
 
     Parameters
     ----------
@@ -640,6 +866,25 @@ class CannyEdges(ImageFilter):
     -------
     np.ndarray
         Boolean NumPy array representing Canny edge map.
+
+
+    Example
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import CannyEdges, RgbToGrayscale
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
+        >>> canny_edges_detection = CannyEdges() # Instantiate canny edges filter
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
+        >>> image_thresholded_array = canny_edges_detection(image_gray) # Apply canny edge filter to grayscale image
+
+    References
+    ----------
+    .. [7] A Kumar and M Prateek. “Localization of Nuclei in Breast Cancer Using Whole
+        SlideImaging System Supported by Morphological Features and Shape Formulas”.
+        CancerManag Res 12 (2020)
+    .. [8] M Mũnoz-Aguirre and et al. “PyHIST: A Histological Image Segmentation Tool”.
+        PLOS Comput Biol 16.10 (2020)
+
     """
 
     def __init__(
@@ -686,9 +931,14 @@ class Grays(ImageFilter):
 class GreenChannelFilter(ImageFilter):
     """Mask pixels in an RGB image with G-channel greater than a specified threshold.
 
-    Create a mask to filter out pixels with a green channel value greater than
-    a particular threshold, since hematoxylin and eosin are purplish and pinkish,
-    which do not have much green to them.
+    Create a binary mask where pixels with the green channel value above a specified
+    threshold (by default 200) are set to 0. This filtering method can be used to
+    detect tissue in H&E-stained images, considering that the green dye is poorly used
+    in the tissue-related stains, i.e. eosin (pink) and hematoxylin (purple). To avoid
+    over-masking the image, the overmask_thresh parameter defines the maximum percentage
+    of tissue that can be masked by the green channel filter (by default 90%).
+
+    This method alone may be sufficient to segment tissue on H&E-stained images.
 
     Parameters
     ----------
@@ -708,6 +958,14 @@ class GreenChannelFilter(ImageFilter):
     np.ndarray
         Boolean mask where pixels above a particular green channel
         threshold have been masked out.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import GreenChannelFilter
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> g_channel_filter = GreenChannelFilter(avoid_overmask=True, overmask_thresh=90) # Instantiate filter (default values)
+        >>> image_thresholded_array = g_channel_filter(image_rgb) # Create binary mask
     """
 
     def __init__(
@@ -828,6 +1086,21 @@ class GreenPenFilter(ImageFilter):
     -------
     PIL.Image.Image
         Image the green pen marks filtered out.
+
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters_functional import ApplyMaskImage, GreenPenFilter, RgbToGrayscale, OtsuThreshold
+        >>> image_rgb = Image.open("path/to/image.png") # Open an RGB image (with green pen annotations)
+        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
+        >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
+        >>> apply_mask_image = ApplyMaskImage(image_rgb) # Instantiate the apply mask filter
+        >>> green_pen_filter = GreenPenFilter() # Instantiate the green pen filter
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
+        >>> binary_image = otsu_threshold(image_gray) # Apply Otsu threshold to grayscale image
+        >>> masked_image = apply_mask_image(binary_image) # Apply the resulting mask to the original image
+        >>> image_no_green = green_pen_filter(masked_image) # Get the original image with green pen marks removed
     """
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -856,6 +1129,20 @@ class BlueFilter(ImageFilter):
     -------
     np.ndarray
         Boolean NumPy array representing the mask.
+
+
+    Example:
+            >>> from PIL import Image
+            >>> from histolab.filters.image_filters_functional import ApplyMaskImage, BluePenFilter, RgbToGrayscale, OtsuThreshold
+            >>> image_rgb = Image.open("path/to/image.png") # Open an RGB image (with blue pen annotations)
+            >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
+            >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
+            >>> apply_mask_image = ApplyMaskImage(image_rgb) # Apply the resulting mask to the original image
+            >>> blue_pen_filter = BluePenFilter() # Instantiate the blue pen filter
+            >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
+            >>> binary_image = otsu_threshold(image_gray) # Apply Otsu threshold to grayscale image
+            >>> masked_image = apply_mask_image(binary_image) # Apply the resulting mask to the original image
+            >>> image_no_blue = blue_pen_filter(masked_image) # Get the original image with blue pen marks removed
     """
 
     def __init__(self, red_thresh: int, green_thresh: int, blue_thresh: int):
@@ -882,6 +1169,20 @@ class BluePenFilter(ImageFilter):
     -------
     np.ndarray
         NumPy array representing the mask with the blue pen marks filtered out.
+
+
+    Example:
+            >>> from PIL import Image
+            >>> from histolab.filters.image_filters_functional import ApplyMaskImage, RedPenFilter, RgbToGrayscale, OtsuThreshold
+            >>> image_rgb = Image.open("path/to/image.png") # Open an RGB image (with red pen annotations)
+            >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
+            >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
+            >>> apply_mask_image = ApplyMaskImage(image_rgb) # Apply the resulting mask to the original image
+            >>> red_pen_filter = RedPenFilter() # Instantiate the red pen filter
+            >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
+            >>> binary_image = otsu_threshold(image_gray) # Apply Otsu threshold to grayscale image
+            >>> masked_image = apply_mask_image(binary_image) # Apply the resulting mask to the original image
+            >>> image_no_red = red_pen_filter(masked_image) # Get the original image with red pen marks removed
     """
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -889,10 +1190,24 @@ class BluePenFilter(ImageFilter):
 
 
 class YenThreshold(ImageFilter):
-    """Mask image based on pixel above Yen threshold.
+    r"""Mask image based on pixel above Yen threshold.
 
-    Compute Yen threshold on image and return boolean mask based on pixels below this
-    threshold.
+    Compute Yen threshold on image and return boolean mask based on pixels below
+    this threshold. The Yen method [6]_ is a multi-level image thresholding approach
+    to separate objects from the background. It automatically computes the
+    threshold that maximize the entropic correlation EC for a given gray level s
+    defined as:
+
+    .. math::
+
+        EC(s) = -\ln{(G(s)\cdot G'(s))} + 2\ln(P(s)\cdot (1-P(s))
+
+    where :math:`\displaystyle{G(s)=\sum_{i=0}^{s-1}p_i^2}`,
+    :math:`\displaystyle{G'(s)=\sum_{i=s}^{m-1}p_i^2}`, m is the number of gray
+    levels in the image, :math:`p_i` is the probability of the gray level i and
+    :math:`\displaystyle{P(s)=\sum_{i=0}^{s-1}p_i}` is the total probability up to
+    gray level (s-1). In this filter, pixels below the computed threshold are
+    considered as foreground.
 
     Parameters
     ----------
@@ -906,6 +1221,21 @@ class YenThreshold(ImageFilter):
     -------
     np.ndarray
         Boolean NumPy array where True represents a pixel below Yen's threshold.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RgbToGrayscale, YenThreshold
+        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
+        >>> yen_threshold = YenThreshold() # Instantiate the Yen filter
+        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
+        >>> image_thresholded_array = yen_threshold(image_gray) # Apply Yen threshold to image
+
+    References
+    ----------
+    .. [6] J.C. Yen and et al.“A new criterion for automatic multilevel
+        thresholding”. IEEE Trans Image Process 4.3 (1995)
     """
 
     def __init__(self, relate: Callable[..., Any] = operator.lt):
