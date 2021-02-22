@@ -18,6 +18,7 @@
 """All filters implemented in the image filters submodule take as input a Pillow Image object.
 Additionally, some of the image filters in histolab leverage functions and utilities by scikit-image. Image filters are divided into sub-categories, depending on their behaviour and output type.
  """
+
 import operator
 from abc import abstractmethod
 from typing import Any, Callable, List, Union
