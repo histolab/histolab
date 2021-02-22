@@ -90,7 +90,7 @@ class Lambda(ImageFilter):
     -------
     PIL.Image.Image
         The image with the function applied.
-    """
+    """  # noqa
 
     def __init__(self, lambd: Callable[[PIL.Image.Image], PIL.Image.Image]) -> None:
         assert callable(lambd), repr(type(lambd).__name__) + " object is not callable"
