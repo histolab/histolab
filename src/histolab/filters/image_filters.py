@@ -305,28 +305,32 @@ class HematoxylinChannel(ImageFilter):
 class EosinChannel(ImageFilter):
     """Obtain Eosin channel from RGB image.
 
-    Input image is first converted into HED space and the Eosin channel is
-    rescaled for increased contrast.
+        Input image is first converted into HED space and the Eosin channel is
+        rescaled for increased contrast.
 
-    Parameters
-    ----------
-    img : Image.Image
-        Input RGB image
+        Parameters
+        ----------
+        img : Image.Image
+            Input RGB image
 
-    Returns
-    -------
-    Image.Image
-        Grayscale image corresponding to input image with Eosin channel enhanced.
+        Returns
+        -------
+        Image.Image
+            Grayscale image corresponding to input image with Eosin channel enhanced.
 
 
-    Example:
-        >>> from PIL import Image
-        >>> from histolab.filters.image_filters import EosinChannel
-        >>> from histolab.filters import image_filters_functional as imf
-        >>> from urllib.request import urlopen
-        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
-        >>> eosin_channel = EosinChannel() # Instantiate the eosin filter
-        >>> image_h = imf.hematoxylin_channel(image_rgb) # Extract the hematoxylin channel
+        Example:
+            >>> from PIL import Image
+            >>> from histolab.filters.image_filters import EosinChannel
+    <<<<<<< Updated upstream
+            >>> from histolab.filters import image_filters_functional as imf
+            >>> from urllib.request import urlopen
+            >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
+    =======
+            >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+    >>>>>>> Stashed changes
+            >>> eosin_channel = EosinChannel() # Instantiate the eosin filter
+            >>> image_h = imf.hematoxylin_channel(image_rgb) # Extract the hematoxylin channel
     """  # noqa
 
     def __call__(self, img):
