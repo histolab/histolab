@@ -73,7 +73,8 @@ class RemoveSmallObjects(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import RemoveSmallObjects
-        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> from urllib.request import urlopen
+        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> remove_small_objects = RemoveSmallObjects() # Instantiate the remove small objects filter
@@ -118,7 +119,8 @@ class RemoveSmallHoles(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import RemoveSmallHoles
-        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> from urllib.request import urlopen
+        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> remove_small_holes = RemoveSmallHoles() # Instantiate the remove small holes filter
@@ -156,7 +158,8 @@ class BinaryErosion(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryErosion
-        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> from urllib.request import urlopen
+        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> binary_erosion = BinaryErosion(disk_size=6) # Instantiate the binary erosion filter
@@ -200,7 +203,8 @@ class BinaryDilation(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryDilation
-        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> from urllib.request import urlopen
+        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> binary_dilation = BinaryDilation() # Instantiate the binary dilation filter
@@ -270,7 +274,8 @@ class BinaryOpening(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryOpening
-        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> from urllib.request import urlopen
+        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> binary_opening = BinaryOpening() # Instantiate the binary opening filter
@@ -316,7 +321,8 @@ class BinaryClosing(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryClosing
-        >>> image_rgb = Image.open("path/to/image.png") # Read an RGB image
+        >>> from urllib.request import urlopen
+        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> binary_closing = BinaryClosing() # Instantiate the binary closing filter
@@ -364,7 +370,7 @@ class WatershedSegmentation(MorphologicalFilter):
     Example:
         >>> import numpy as np
         >>> from histolab.filters.morphological_filters import WatershedSegmentation
-        >>> mask = np.load("path/to/mask.npy") # Read the mask
+        >>> mask = np.array([[0,1],[1,0]]) # or np.load("/path/my_array_mask.npy")
         >>> watershed_segmentation = WatershedSegmentation() # Instantiate the Watershed filter
         >>> mask_segmented = watershed_segmentation(mask) # Apply the Watershed filter to the mask
     """  # noqa
