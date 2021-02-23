@@ -13,7 +13,7 @@ All ``histolab`` extractors define the ``extract`` method, used to start the ext
 Each extractor will automatically (i) find the largest tissue box in the WSI; (ii) generate the tiles within the tissue region; (iii) save all generated tiles or only the informative ones if the attribute ``check_tissue`` is set to True.
 
 RandomTiler
-----------
+-----------
 The ``RandomTiler`` extractor allows for the extraction of tiles picked at random within the largest tissue box. Since there is no intrinsic upper bound of the number of the tiles that could be extracted (no overlap check is performed), the number of wanted tiles must be specified.
 
 In addition to 1-6, the ``RandomTiler`` constructor requires as two additional parameters the number of tiles requested (``n_tiles``), and the random seed (``seed``), to ensure reproducibility between different runs on the same WSI. Note that less than ``n_tiles`` could be extracted from a slide with not enough tissue pixels and a lot of background, which is checked when the parameter ``check_tissue`` is set to True.

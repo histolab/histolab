@@ -15,12 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------
-
-"""Provides the Slide class.
-
-Slide is the main API class for manipulating slide objects.
-"""
-
 import math
 import ntpath
 import os
