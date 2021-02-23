@@ -309,18 +309,18 @@ class HematoxylinChannel(ImageFilter):
 class EosinChannel(ImageFilter):
     """Obtain Eosin channel from RGB image.
 
-    Input image is first converted into HED space and the Eosin channel is
-    rescaled for increased contrast.
+        Input image is first converted into HED space and the Eosin channel is
+        rescaled for increased contrast.
 
-    Parameters
-    ----------
-    img : Image.Image
-        Input RGB image
+        Parameters
+        ----------
+        img : Image.Image
+            Input RGB image
 
-    Returns
-    -------
-    Image.Image
-        Grayscale image corresponding to input image with Eosin channel enhanced.
+        Returns
+        -------
+        Image.Image
+            Grayscale image corresponding to input image with Eosin channel enhanced.
 
 
     Example:
