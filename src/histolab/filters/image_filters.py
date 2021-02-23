@@ -795,7 +795,7 @@ class FilterEntropy(ImageFilter):
 
     Entropy measures complexity in an image: the greater the entropy the more
     heterogeneous structures are found is the image, while slide backgrounds are
-    usually less complex [9]_. This method filters out pixels of grayscale images based
+    usually less complex. This method filters out pixels of grayscale images based
     on the local entropy. In details: (i) the entropy is computed on a neighborhood
     defined by a squared all-ones matrix of size n (by default n=9); (ii) pixels with
     entropy greater than a specified threshold t (by default t=5) are replaced with 1,
