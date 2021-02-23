@@ -802,7 +802,7 @@ class FilterEntropy(ImageFilter):
     0 otherwise. This entropy filter can be used to detect highly hematoxylin-stained
     regions, which represent dense accumulation of nuclei (complex structures).
 
-     Note that input must be 2D.
+    Note that input must be 2D.
 
     Parameters
     ----------
@@ -885,7 +885,6 @@ class CannyEdges(ImageFilter):
         CancerManag Res 12 (2020)
     .. [8] M Mũnoz-Aguirre and et al. “PyHIST: A Histological Image Segmentation Tool”.
         PLOS Comput Biol 16.10 (2020)
-
     """  # noqa
 
     def __init__(
