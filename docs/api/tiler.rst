@@ -3,7 +3,7 @@ Tiler
 Different logics are implemented for tile extraction in the ``tiler`` module. The constructor of the three extractors ``RandomTiler``, ``GridTiler``, and ``ScoreTiler`` share a similar interface and common parameters that define the extraction design:
 
 #. ``tile_size``: the tile size;
-#. ``level``: the extraction level, from 0 to the number of available levels; negative indexing is also possible, counting backwards from the number of available levels to 0 (e.g.``level``=-1} means selecting the last available level);
+#. ``level``: the extraction level, from 0 to the number of available levels; negative indexing is also possible, counting backwards from the number of available levels to 0 (e.g. ``level`` =-1} means selecting the last available level);
 #. ``check_tissue``: True if a minimum percentage of tissue over the total area of the tile is required to save the tiles, False otherwise;
 #. ``tissue_percent``: number between 0.0 and 100.0 representing the minimum required ratio of tissue over the total area of the image, considered only if ``check_tissue`` equals to True (default is 80.0);
 #. ``prefix``: a prefix to be added at the beginning of the tiles' filename (optional, default is the empty string);

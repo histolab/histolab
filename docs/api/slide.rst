@@ -1,6 +1,6 @@
 Slide
 ====================================
-The ``slide`` module provides a simple high-level interface to handle a WSI; it contains the ``slide`` class, which wraps functions, methods and properties of a virtual slide in a single object. The ``slide`` class encapsulates ``OpenSlide``, and relies on the`openslide-python`` library for the low-level operations on digital slides. A WSI is usually stored in pyramidal format, where each level corresponds to a specific magnification factor. Therefore, two relevant properties of a WSI are: (i) its dimensions at native magnification; (ii) the number of levels and the dimensions at a specified level.
+The ``slide`` module provides a simple high-level interface to handle a WSI; it contains the ``slide`` class, which wraps functions, methods and properties of a virtual slide in a single object. The ``slide`` class encapsulates ``OpenSlide``, and relies on the ``openslide-python`` library for the low-level operations on digital slides. A WSI is usually stored in pyramidal format, where each level corresponds to a specific magnification factor. Therefore, two relevant properties of a WSI are: (i) its dimensions at native magnification; (ii) the number of levels and the dimensions at a specified level.
 
 
 .. note::
