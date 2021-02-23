@@ -173,7 +173,7 @@ class Invert(ImageFilter):
         >>> image_gray = rgb_to_grayscale(image_rgb) # Convert RGB to grayscale
         >>> image_inv_rgb = invert(image_rgb) # Apply inversion to RGB image
         >>> image_inv_gray = invert(image_gray) # Apply inversion to grayscale image
-    """
+    """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return F.invert(img)
@@ -200,7 +200,7 @@ class RgbToGrayscale(ImageFilter):
         >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate filter
         >>> image_gray = rgb_to_grayscale(image_rgb) # Apply filter to image
-    """
+    """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         return PIL.ImageOps.grayscale(img)
@@ -230,7 +230,7 @@ class RgbToHed(ImageFilter):
         >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/108867260-50533600-75f5-11eb-8b8a-f7b56f5e6477.png")) # Read an RGB image
         >>> rgb_to_hed = RgbToHed() # Instantiate and apply filter to image
         >>> image_hed = rgb_to_hed(image_rgb)
-    """
+    """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         hed = F.rgb_to_hed(img)
@@ -327,7 +327,7 @@ class EosinChannel(ImageFilter):
         >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
         >>> eosin_channel = EosinChannel() # Instantiate the eosin filter
         >>> image_h = imf.hematoxylin_channel(image_rgb) # Extract the hematoxylin channel
-    """
+    """  # noqa
 
     def __call__(self, img):
         eosin = F.eosin_channel(img)
@@ -357,7 +357,7 @@ class RgbToHsv(ImageFilter):
         >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/108867260-50533600-75f5-11eb-8b8a-f7b56f5e6477.png")) # Read an RGB image
         >>> rgb_to_hsv = RgbToHsv() # Instantiate and apply filter to image
         >>> image_hsv = rgb_to_hsv(image_rgb)
-    """
+    """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         hsv = F.rgb_to_hsv(img)
