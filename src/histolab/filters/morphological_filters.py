@@ -67,7 +67,6 @@ class RemoveSmallObjects(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import RemoveSmallObjects
-        >>> import os
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> otsu_threshold = OtsuThreshold()
