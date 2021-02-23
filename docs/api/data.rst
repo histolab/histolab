@@ -3,7 +3,11 @@ Data
 
 The ``data`` module gives access to a set of WSIs in The Cancer Genome Atlas (`TCGA <https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga>`_ ): as detailed in the methods docstring, for each WSI, we access the URL pointing to the corresponding location within the portal, e.g. https://portal.gdc.cancer.gov/files/9c960533-2e58-4e54-97b2-8454dfb4b8c8, to retrieve the WSI. Additional test data are also gathered from OpenSlide, a repository of freely-distributed test `slides <http://openslide.cs.cmu.edu/download/openslide-testdata>`_ from different scanner vendors.
 
-``histolab`` gives access to a pool of selected slides from the two organizations through the ``data`` module. The module leverages the Python package `Pooch <https://pypi.org/project/pooch/>`_, explicitly designed to be integrated in a Python package to include sample datasets. Pooch manages a registry containing the file names, the SHA-256 cryptographic hashes, and download URLs of the accessible data files. Moreover, Pooch verifies the integrity of the downloaded files via the SHA-256 hashes.
+``histolab`` gives access to a pool of selected slides from the two organizations through the ``data`` module. We use `Pooch <https://pypi.org/project/pooch/>`_ under the hood, which is an optional requirement for ``histolab`` and needs to be installed separately with:
+
+.. code-block:: bash
+
+    pip install pooch
 
 .. list-table:: Set of downloadable WSIs.
    :widths: 25 25 25 25

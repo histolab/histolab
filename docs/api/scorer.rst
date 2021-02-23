@@ -1,6 +1,6 @@
 Scorer
 ====================================
-The goal of the ``scorer`` module is to provide the grading functions for the ``scoretiler`` extractor. The ``scorer`` objects input a ``Tile`` object and return their computed score.
+The goal of the ``scorer`` module is to provide the grading functions for the ``ScoreTiler`` extractor. The ``scorer`` objects input a ``Tile`` object and return their computed score.
 In particular, the ``NucleiScorer`` estimates the presence of nuclei in an H&E-stained tile and assigns a higher score to tiles with more nuclei.
 
 The ``NucleiScorer`` class implements an hybrid algorithm that combines thresholding and morphological operations to segment nuclei on H&E-stained histological images. The proposed method is build upon native ``histolab`` filters, namely the ``HematoxylinChannel`` filter, the ``YenThreshold`` filter, and the ``WhiteTopHat`` filter.
