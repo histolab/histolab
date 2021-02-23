@@ -51,8 +51,6 @@ class Slide:
         Path where the WSI is saved.
     processed_path : Union[str, pathlib.Path]
         Path where thumbnails and scaled images will be saved to.
-
-
     """
 
     def __init__(
