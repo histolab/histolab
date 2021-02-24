@@ -221,7 +221,6 @@ class RgbToHed(ImageFilter):
 
 
     Example:
-
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToHed
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
