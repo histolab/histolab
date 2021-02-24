@@ -73,8 +73,9 @@ class RemoveSmallObjects(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import RemoveSmallObjects
-        >>> from urllib.request import urlopen
-        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
+        >>> import os
+        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> remove_small_objects = RemoveSmallObjects() # Instantiate the remove small objects filter
@@ -119,8 +120,9 @@ class RemoveSmallHoles(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import RemoveSmallHoles
-        >>> from urllib.request import urlopen
-        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
+        >>> import os
+        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> remove_small_holes = RemoveSmallHoles() # Instantiate the remove small holes filter
@@ -158,8 +160,9 @@ class BinaryErosion(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryErosion
-        >>> from urllib.request import urlopen
-        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
+        >>> import os
+        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> binary_erosion = BinaryErosion(disk_size=6) # Instantiate the binary erosion filter
@@ -203,8 +206,9 @@ class BinaryDilation(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryDilation
-        >>> from urllib.request import urlopen
-        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
+        >>> import os
+        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> binary_dilation = BinaryDilation() # Instantiate the binary dilation filter
@@ -274,8 +278,9 @@ class BinaryOpening(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryOpening
-        >>> from urllib.request import urlopen
-        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
+        >>> import os
+        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> binary_opening = BinaryOpening() # Instantiate the binary opening filter
@@ -321,8 +326,9 @@ class BinaryClosing(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryClosing
-        >>> from urllib.request import urlopen
-        >>> image_rgb = Image.open(urlopen("https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png")) # Read an RGB image
+        >>> import os
+        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
         >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
         >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
         >>> binary_closing = BinaryClosing() # Instantiate the binary closing filter
