@@ -3,13 +3,13 @@ Tiler
 Different logics are implemented for tile extraction in the ``tiler`` module. The constructor of the three extractors ``RandomTiler``, ``GridTiler``, and ``ScoreTiler`` share a similar interface and common parameters that define the extraction design:
 
 #. ``tile_size``: the tile size;
-#. ``level``: the extraction level, from 0 to the number of available levels; negative indexing is also possible, counting backwards from the number of available levels to 0 (e.g. ``level`` =-1} means selecting the last available level);
+#. ``level``: the extraction level, from 0 to the number of available levels; negative indexing is also possible, counting backward from the number of available levels to 0 (e.g. ``level`` =-1) means selecting the last available level);
 #. ``check_tissue``: True if a minimum percentage of tissue over the total area of the tile is required to save the tiles, False otherwise;
 #. ``tissue_percent``: number between 0.0 and 100.0 representing the minimum required ratio of tissue over the total area of the image, considered only if ``check_tissue`` equals to True (default is 80.0);
 #. ``prefix``: a prefix to be added at the beginning of the tiles' filename (optional, default is the empty string);
 #. ``suffix``: a suffix to be added to the end of the tiles' filename (optional, default is ``.png``).
 
-All ``histolab`` extractors define the ``extract`` method, used to start the extraction process on the ``slide`` passed as parameter.
+All ``histolab`` extractors define the ``extract`` method, used to start the extraction process on the ``Slide`` passed as parameter.
 Each extractor will automatically (i) find the largest tissue box in the WSI; (ii) generate the tiles within the tissue region; (iii) save all generated tiles or only the informative ones if the attribute ``check_tissue`` is set to True.
 
 RandomTiler
@@ -30,11 +30,11 @@ A second basic approach consists in extracting all the tiles in the largest tiss
      s=(w - \mathrm{pixel\_overlap}) \cdot (h - \mathrm{pixel\_overlap})
 
 where w and h are customizable parameters defining the width and the height of the resulting tiles.
-Calling the ``extract`` method on the ``GridTiler`` instance will automatically (i) find the largest tissue area in the WSI; (ii) generate all the tiles according to the grid structure; (iii) save only the tiles with ``enough tissue`` if the attribute ``check_tissue`` was set to True, save all the generated tiles otherwise.
+Calling the ``extract`` method on the ``GridTiler`` instance will automatically (i) find the largest tissue area in the WSI; (ii) generate all the tiles according to the grid structure; (iii) save only the tiles with "enough tissue" if the attribute ``check_tissue`` was set to True, save all the generated tiles otherwise.
 
 ScoreTiler
 ----------
-Tiles extracted from the same WSI may not be equally informative; for example, if the goal is the detection of mitotic activity on H&E slides, tiles with no nuclei are of little interest. The ``ScoreTiler`` extractor ranks the tiles with respect to a scoring function, described in the ``scorer`` module. In particular, the ``ScoreTiler`` class extends the ``gridtiler`` extractor by sorting the extracted tiles in a decreasing order, based on the computed score. Notably, the ``ScoreTiler`` is agnostic to the scoring function adopted, thus a custom function can be implemented provided that it inputs a ``Tile`` object and outputs a number. The additional parameter ``n_tiles`` controls the number of highest-ranked tiles to save; if ``n_tiles``=0 all the tiles are kept.
+Tiles extracted from the same WSI may not be equally informative; for example, if the goal is the detection of mitotic activity on H&E slides, tiles with no nuclei are of little interest. The ``ScoreTiler`` extractor ranks the tiles with respect to a scoring function, described in the ``scorer`` module. In particular, the ``ScoreTiler`` class extends the ``Gridtiler`` extractor by sorting the extracted tiles in a decreasing order, based on the computed score. Notably, the ``ScoreTiler`` is agnostic to the scoring function adopted, thus a custom function can be implemented provided that it inputs a ``Tile`` object and outputs a number. The additional parameter ``n_tiles`` controls the number of highest-ranked tiles to save; if ``n_tiles``=0 all the tiles are kept.
 Similarly to the ``GridTiler`` extraction process, calling the ``extract`` method on the ``ScoreTiler`` instance will automatically (i) find the largest tissue area in the WSI; (ii) generate all the tiles according to the grid structure; (iii) retain all the tiles with enough tissue if the attribute ``check_tissue`` was set to True, all the generated tiles otherwise; (iv) sort the tiles in a decreasing order according to the scoring function defined in the ``scorer`` parameter; (v) save only the highest-ranked ``n_tiles`` tiles, if ``n_tiles``>0; (vi) write a summary of the saved tiles and their scores in a CSV file, if the ``report_path`` is specified in the ``extract`` method. The summary reports for each tile t: (i) the tile filename; (ii) its raw score :math:`s_t`; (iii) the normalized score, scaled in the interval [0,1], computed as:
 
 .. math::

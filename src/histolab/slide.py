@@ -526,7 +526,10 @@ class SlideSet:
 
     @lazyproperty
     def slides_stats(self) -> dict:
-        """Retrieve statistic/graphs of slides files contained in the dataset.
+        """Compute statistics for the WSI collection, namely the number of available
+        slides; the slide with the maximum/minimum width; the slide with the
+        maximum/minimum height; the slide with the maximum/minimum size; the average
+        width/height/size of the slides.
 
         Returns
         ----------
