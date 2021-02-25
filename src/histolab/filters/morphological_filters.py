@@ -15,11 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------
-"""
-Notice that both the input and the output of morphological filters are binary masks.
-"""
-
-
 from abc import abstractmethod
 
 import numpy as np
@@ -75,12 +70,12 @@ class RemoveSmallObjects(MorphologicalFilter):
         >>> from histolab.filters.morphological_filters import RemoveSmallObjects
         >>> import os
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png"))
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
-        >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
-        >>> remove_small_objects = RemoveSmallObjects() # Instantiate the remove small objects filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
-        >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
-        >>> image_no_small_objects = remove_small_objects(binary_image) # Remove small objects from the image
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> otsu_threshold = OtsuThreshold()
+        >>> remove_small_objects = RemoveSmallObjects()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> binary_image = otsu_threshold(image_gray)
+        >>> image_no_small_objects = remove_small_objects(binary_image)
     """  # noqa
 
     def __init__(
@@ -121,13 +116,13 @@ class RemoveSmallHoles(MorphologicalFilter):
         >>> from histolab.filters.morphological_filters import RemoveSmallHoles
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
-        >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
-        >>> remove_small_holes = RemoveSmallHoles() # Instantiate the remove small holes filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
-        >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
-        >>> image_no_small_holes = remove_small_holes(binary_image) # Remove small holes from the image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> otsu_threshold = OtsuThreshold()
+        >>> remove_small_holes = RemoveSmallHoles()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> binary_image = otsu_threshold(image_gray)
+        >>> image_no_small_holes = remove_small_holes(binary_image)
     """  # noqa
 
     def __init__(self, area_threshold: int = 3000):
@@ -161,13 +156,13 @@ class BinaryErosion(MorphologicalFilter):
         >>> from histolab.filters.morphological_filters import BinaryErosion
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
-        >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
-        >>> binary_erosion = BinaryErosion(disk_size=6) # Instantiate the binary erosion filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
-        >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
-        >>> image_eroded = binary_erosion(binary_image) # Apply the binary erosion filter
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> otsu_threshold = OtsuThreshold()
+        >>> binary_erosion = BinaryErosion(disk_size=6)
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> binary_image = otsu_threshold(image_gray)
+        >>> image_eroded = binary_erosion(binary_image)
     """  # noqa
 
     def __init__(self, disk_size: int = 5, iterations: int = 1):
@@ -207,13 +202,13 @@ class BinaryDilation(MorphologicalFilter):
         >>> from histolab.filters.morphological_filters import BinaryDilation
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
-        >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
-        >>> binary_dilation = BinaryDilation() # Instantiate the binary dilation filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
-        >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
-        >>> image_dilated = binary_dilation(binary_image) # Apply the binary dilation filter
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> otsu_threshold = OtsuThreshold()
+        >>> binary_dilation = BinaryDilation()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> binary_image = otsu_threshold(image_gray)
+        >>> image_dilated = binary_dilation(binary_image)
     """  # noqa
 
     def __init__(self, disk_size: int = 5, iterations: int = 1):
@@ -279,13 +274,13 @@ class BinaryOpening(MorphologicalFilter):
         >>> from histolab.filters.morphological_filters import BinaryOpening
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
-        >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
-        >>> binary_opening = BinaryOpening() # Instantiate the binary opening filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
-        >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
-        >>> image_opened = binary_opening(binary_image) # Apply the binary opening filter
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> otsu_threshold = OtsuThreshold()
+        >>> binary_opening = BinaryOpening()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> binary_image = otsu_threshold(image_gray)
+        >>> image_opened = binary_opening(binary_image)
     """  # noqa
 
     def __init__(self, disk_size: int = 3, iterations: int = 1):
@@ -327,13 +322,13 @@ class BinaryClosing(MorphologicalFilter):
         >>> from histolab.filters.morphological_filters import BinaryClosing
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
-        >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
-        >>> binary_closing = BinaryClosing() # Instantiate the binary closing filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Apply the grayscale filter
-        >>> binary_image = otsu_threshold(image_gray) # Apply the Otsu filter to the grayscale image
-        >>> image_closed = binary_closing(binary_image) # Apply the binary closing filter
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> otsu_threshold = OtsuThreshold()
+        >>> binary_closing = BinaryClosing()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> binary_image = otsu_threshold(image_gray)
+        >>> image_closed = binary_closing(binary_image)
     """  # noqa
 
     def __init__(self, disk_size: int = 3, iterations: int = 1):
@@ -376,8 +371,8 @@ class WatershedSegmentation(MorphologicalFilter):
         >>> import numpy as np
         >>> from histolab.filters.morphological_filters import WatershedSegmentation
         >>> mask = np.array([[0,1],[1,0]]) # or np.load("/path/my_array_mask.npy")
-        >>> watershed_segmentation = WatershedSegmentation() # Instantiate the Watershed filter
-        >>> mask_segmented = watershed_segmentation(mask) # Apply the Watershed filter to the mask
+        >>> watershed_segmentation = WatershedSegmentation()
+        >>> mask_segmented = watershed_segmentation(mask)
     """  # noqa
 
     def __init__(self, region_shape: int = 6) -> None:

@@ -168,12 +168,12 @@ class Invert(ImageFilter):
         >>> from histolab.filters.image_filters import Invert, RgbToGrayscale
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
-        >>> invert = Invert() # Instantiate invert filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert RGB to grayscale
-        >>> image_inv_rgb = invert(image_rgb) # Apply inversion to RGB image
-        >>> image_inv_gray = invert(image_gray) # Apply inversion to grayscale image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> invert = Invert()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_inv_rgb = invert(image_rgb)
+        >>> image_inv_gray = invert(image_gray)
     """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -199,9 +199,9 @@ class RgbToGrayscale(ImageFilter):
         >>> from histolab.filters.image_filters import RgbToGrayscale
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Apply filter to image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
     """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -230,8 +230,8 @@ class RgbToHed(ImageFilter):
         >>> from histolab.filters.image_filters import RgbToHed
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_hed = RgbToHed() # Instantiate and apply filter to image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_hed = RgbToHed()
         >>> image_hed = rgb_to_hed(image_rgb)
     """  # noqa
 
@@ -296,9 +296,9 @@ class HematoxylinChannel(ImageFilter):
         >>> from histolab.filters.image_filters import EosinChannel
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> hematoxylin_channel = HematoxylinChannel() # Instantiate the hematoxylin filter
-        >>> image_h = hematoxylin_channel(image_rgb) # Extract the hematoxylin channel
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> hematoxylin_channel = HematoxylinChannel()
+        >>> image_h = hematoxylin_channel(image_rgb)
     """  # noqa
 
     def __call__(self, img):
@@ -329,9 +329,9 @@ class EosinChannel(ImageFilter):
         >>> from histolab.filters import image_filters_functional as imf
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> eosin_channel = EosinChannel() # Instantiate the eosin filter
-        >>> image_h = imf.hematoxylin_channel(image_rgb) # Extract the hematoxylin channel
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> eosin_channel = EosinChannel()
+        >>> image_h = imf.hematoxylin_channel(image_rgb)
     """  # noqa
 
     def __call__(self, img):
@@ -360,8 +360,8 @@ class RgbToHsv(ImageFilter):
         >>> from histolab.filters.image_filters import RgbToHsv
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_hsv = RgbToHsv() # Instantiate and apply filter to image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_hsv = RgbToHsv()
         >>> image_hsv = rgb_to_hsv(image_rgb)
     """  # noqa
 
@@ -407,11 +407,11 @@ class StretchContrast(ImageFilter):
         >>> from histolab.filters.image_filters import RgbToGrayscale, StretchContrast
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
-        >>> stretch_contrast = StretchContrast() # Instantiate stretch contrast filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
-        >>> image_stretched = stretch_contrast(image_gray) # Apply stretch contrast filter to grayscale image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> stretch_contrast = StretchContrast()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_stretched = stretch_contrast(image_gray)
     """  # noqa
 
     def __init__(self, low: int = 40, high: int = 60) -> None:
@@ -470,11 +470,11 @@ class HistogramEqualization(ImageFilter):
         >>> from histolab.filters.image_filters import HistogramEqualization, RgbToGrayscale
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
-        >>> histogram_equalization = HistogramEqualization() # Instanciate histogram equalization filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert RGB to grayscale
-        >>> image_he = histogram_equalization(image_gray) # apply histogram equalization
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> histogram_equalization = HistogramEqualization()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_he = histogram_equalization(image_gray)
 
     References
     --------
@@ -525,11 +525,11 @@ class AdaptiveEqualization(ImageFilter):
         >>> from histolab.filters.image_filters import AdaptiveEqualization, RgbToGrayscale
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale()  # Instantiate grayscale filter
-        >>> adaptive_equalization = AdaptiveEqualization() # Instantiate adaptive equalization filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert RGB to grayscale
-        >>> image_clahe = adaptive_equalization(image_gray) # Apply adaptive equalization filter
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> adaptive_equalization = AdaptiveEqualization()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_clahe = adaptive_equalization(image_gray)
 
     References
     --------
@@ -600,9 +600,9 @@ class KmeansSegmentation(ImageFilter):
         >>> from histolab.filters.image_filters import KmeansSegmentation, RagThreshold
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> kmeans_segmentation = KmeansSegmentation() # Instantiate the k-means segmentation filter
-        >>> kmeans_segmented_array = kmeans_segmentation(image_rgb) # Apply the filter on the RGB image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> kmeans_segmentation = KmeansSegmentation()
+        >>> kmeans_segmented_array = kmeans_segmentation(image_rgb)
     """  # noqa
 
     def __init__(self, n_segments: int = 800, compactness: float = 10.0) -> None:
@@ -646,9 +646,9 @@ class RagThreshold(ImageFilter):
         >>> from histolab.filters.image_filters import RagThreshold
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rag_threshold = RagThreshold() # Instantiate the RAG threshold filter
-        >>> rag_thresholded_array = rag_threshold(image_rgb) # Apply the filter on the RGB image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rag_threshold = RagThreshold()
+        >>> rag_thresholded_array = rag_threshold(image_rgb)
     """  # noqa
 
     def __init__(
@@ -693,11 +693,11 @@ class HysteresisThreshold(ImageFilter):
         >>> from histolab.filters.image_filters import HysteresisThresholdMask, RgbToGrayscale
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
-        >>> hyst_threshold = HysteresisThresholdMask(low=50, high=100) # Instantiate hysteresis filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
-        >>> image_thresholded_array = hyst_threshold(image_gray) # Apply hysteresis filter to image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> hyst_threshold = HysteresisThresholdMask(low=50, high=100)
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_thresholded_array = hyst_threshold(image_gray)
     """  # noqa
 
     def __init__(self, low: int = 50, high: int = 100) -> None:
@@ -798,11 +798,11 @@ class OtsuThreshold(ImageFilter):
         >>> from histolab.filters.image_filters import OtsuThreshold, RgbToGrayscale
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
-        >>> otsu_threshold = OtsuThreshold() # Instantiate Otsu filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Conver RGG to grayscale
-        >>> image_thresholded_array = otsu_threshold(image_gray) # Apply Otsu filter to grayscale image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> otsu_threshold = OtsuThreshold()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_thresholded_array = otsu_threshold(image_gray)
 
 
     Reference
@@ -849,11 +849,11 @@ class FilterEntropy(ImageFilter):
         >>> from histolab.filters.image_filters import FilterEntropy, RgbToGrayscale
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
-        >>> entropy_filter = FilterEntropy() # Instantiate entropy filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
-        >>> image_thresholded_array = entropy_filter(image_gray) # Apply entropy filter on graycale image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> entropy_filter = FilterEntropy()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_thresholded_array = entropy_filter(image_gray)
     """  # noqa
 
     def __init__(self, neighborhood: int = 9, threshold: float = 5.0) -> None:
@@ -901,11 +901,11 @@ class CannyEdges(ImageFilter):
         >>> from histolab.filters.image_filters import CannyEdges, RgbToGrayscale
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate grayscale filter
-        >>> canny_edges_detection = CannyEdges() # Instantiate canny edges filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
-        >>> image_thresholded_array = canny_edges_detection(image_gray) # Apply canny edge filter to grayscale image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> canny_edges_detection = CannyEdges()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_thresholded_array = canny_edges_detection(image_gray)
 
     References
     ----------
@@ -994,9 +994,9 @@ class GreenChannelFilter(ImageFilter):
         >>> from histolab.filters.image_filters import GreenChannelFilter
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> g_channel_filter = GreenChannelFilter(avoid_overmask=True, overmask_thresh=90) # Instantiate filter (default values)
-        >>> image_thresholded_array = g_channel_filter(image_rgb) # Create binary mask
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> g_channel_filter = GreenChannelFilter(avoid_overmask=True, overmask_thresh=90)
+        >>> image_thresholded_array = g_channel_filter(image_rgb)
     """  # noqa
 
     def __init__(
@@ -1124,15 +1124,15 @@ class GreenPenFilter(ImageFilter):
         >>> from histolab.filters.image_filters import ApplyMaskImage, GreenPenFilter, RgbToGrayscale, OtsuThreshold
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Open an RGB image (with green pen annotations)
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
-        >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
-        >>> apply_mask_image = ApplyMaskImage(image_rgb) # Instantiate the apply mask filter
-        >>> green_pen_filter = GreenPenFilter() # Instantiate the green pen filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
-        >>> binary_image = otsu_threshold(image_gray) # Apply Otsu threshold to grayscale image
-        >>> masked_image = apply_mask_image(binary_image) # Apply the resulting mask to the original image
-        >>> image_no_green = green_pen_filter(masked_image) # Get the original image with green pen marks removed
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> otsu_threshold = OtsuThreshold()
+        >>> apply_mask_image = ApplyMaskImage(image_rgb)
+        >>> green_pen_filter = GreenPenFilter()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> binary_image = otsu_threshold(image_gray)
+        >>> masked_image = apply_mask_image(binary_image)
+        >>> image_no_green = green_pen_filter(masked_image)
     """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -1168,15 +1168,15 @@ class BlueFilter(ImageFilter):
             >>> from histolab.filters.image_filters import ApplyMaskImage, BluePenFilter, RgbToGrayscale, OtsuThreshold
             >>> import os
             >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-            >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Open an RGB image (with blue pen annotations)
-            >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
-            >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
-            >>> apply_mask_image = ApplyMaskImage(image_rgb) # Apply the resulting mask to the original image
-            >>> blue_pen_filter = BluePenFilter() # Instantiate the blue pen filter
-            >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
-            >>> binary_image = otsu_threshold(image_gray) # Apply Otsu threshold to grayscale image
-            >>> masked_image = apply_mask_image(binary_image) # Apply the resulting mask to the original image
-            >>> image_no_blue = blue_pen_filter(masked_image) # Get the original image with blue pen marks removed
+            >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+            >>> rgb_to_grayscale = RgbToGrayscale()
+            >>> otsu_threshold = OtsuThreshold()
+            >>> apply_mask_image = ApplyMaskImage(image_rgb)
+            >>> blue_pen_filter = BluePenFilter()
+            >>> image_gray = rgb_to_grayscale(image_rgb)
+            >>> binary_image = otsu_threshold(image_gray)
+            >>> masked_image = apply_mask_image(binary_image)
+            >>> image_no_blue = blue_pen_filter(masked_image)
     """  # noqa
 
     def __init__(self, red_thresh: int, green_thresh: int, blue_thresh: int):
@@ -1210,15 +1210,15 @@ class BluePenFilter(ImageFilter):
             >>> from histolab.filters.image_filters import ApplyMaskImage, RedPenFilter, RgbToGrayscale, OtsuThreshold
             >>> import os
             >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-            >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image # Open an RGB image (with red pen annotations)
-            >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
-            >>> otsu_threshold = OtsuThreshold() # Instantiate the Otsu filter
-            >>> apply_mask_image = ApplyMaskImage(image_rgb) # Apply the resulting mask to the original image
-            >>> red_pen_filter = RedPenFilter() # Instantiate the red pen filter
-            >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
-            >>> binary_image = otsu_threshold(image_gray) # Apply Otsu threshold to grayscale image
-            >>> masked_image = apply_mask_image(binary_image) # Apply the resulting mask to the original image
-            >>> image_no_red = red_pen_filter(masked_image) # Get the original image with red pen marks removed
+            >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+            >>> rgb_to_grayscale = RgbToGrayscale()
+            >>> otsu_threshold = OtsuThreshold()
+            >>> apply_mask_image = ApplyMaskImage(image_rgb)
+            >>> red_pen_filter = RedPenFilter()
+            >>> image_gray = rgb_to_grayscale(image_rgb)
+            >>> binary_image = otsu_threshold(image_gray)
+            >>> masked_image = apply_mask_image(binary_image)
+            >>> image_no_red = red_pen_filter(masked_image)
     """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -1264,11 +1264,11 @@ class YenThreshold(ImageFilter):
         >>> from histolab.filters.image_filters import RgbToGrayscale, YenThreshold
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png")) # Read an RGB image
-        >>> rgb_to_grayscale = RgbToGrayscale() # Instantiate the grayscale filter
-        >>> yen_threshold = YenThreshold() # Instantiate the Yen filter
-        >>> image_gray = rgb_to_grayscale(image_rgb) # Convert image to grayscale
-        >>> image_thresholded_array = yen_threshold(image_gray) # Apply Yen threshold to image
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> yen_threshold = YenThreshold()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_thresholded_array = yen_threshold(image_gray)
 
     References
     ----------

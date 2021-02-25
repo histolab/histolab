@@ -6,9 +6,9 @@ The ``slide`` module provides a simple high-level interface to handle a WSI; it 
     ``OpenSlide`` identifies each magnification level of the WSI with a positive integer number, starting from 0.
 
 A ``Slide`` is initialized by providing the path where the WSI is stored and the path where processed images (such as the WSI thumbnail or the extracted tiles) will be saved.
-Further, the ``slide`` module implements the ``SlideSet`` class, which handles a collection of ``Slide`` objects stored in the same directory, possibly filtered by the ``valid_extensions`` parameter.
+Further, the ``slide`` module implements the `SlideSet <slide.html#src.histolab.slide.SlideSet>`_ class, which handles a collection of ``Slide`` objects stored in the same directory, possibly filtered by the ``valid_extensions`` parameter.
 
-The ``slides_stats`` property of a ``SlideSet`` computes statistics for the WSI collection, namely the number of available slides; the slide with the maximum/minimum width; the slide with the maximum/minimum height; the slide with the maximum/minimum size; the average width/height/size of the slides.
+The ``slides_stats`` property of a `SlideSet <slide.html#src.histolab.slide.SlideSet>`_ computes statistics for the WSI collection, namely the number of available slides; the slide with the maximum/minimum width; the slide with the maximum/minimum height; the slide with the maximum/minimum size; the average width/height/size of the slides.
 
 
 .. toctree::
