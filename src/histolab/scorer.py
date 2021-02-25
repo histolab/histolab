@@ -67,7 +67,8 @@ class RandomScorer(Scorer):
 
 
 class NucleiScorer(Scorer):
-    r"""Implement a Scorer that estimates the presence of nuclei in an H&E-stained tile.
+    r"""This class implements an hybrid algorithm that combines thresholding and
+    morphological operations to segment nuclei on H&E-stained histological images.
 
     This class implements an hybrid algorithm that combines thresholding and
     morphological operations to segment nuclei on H&E-stained histological images.
