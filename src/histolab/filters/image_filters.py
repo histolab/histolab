@@ -479,7 +479,7 @@ class HistogramEqualization(ImageFilter):
     References
     --------
     .. [2] T Strothotte and S Schlechtweg. “Non-photorealistic computer graphics:
-        modeling, ren-dering, and animation”. Morgan Kaufmann (2002)
+        modeling, rendering, and animation”. Morgan Kaufmann (2002)
     .. [3] Z Rong and et al. “Study of color heritage image enhancement algorithms based
         on histogram equalization”. Optik 126.24 (2015)
     """  # noqa
@@ -1117,7 +1117,6 @@ class GreenPenFilter(ImageFilter):
     -------
     PIL.Image.Image
         Image the green pen marks filtered out.
-
 
 
     Example:
