@@ -71,14 +71,14 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
         The image represented as PIL Image
     """
 
-    def _transform_bool(image_array):
-        return image_array.astype(np.uint8) * 255
+    def _transform_bool(img_array: np.ndarray) -> np.ndarray:
+        return img_array.astype(np.uint8) * 255
 
-    def _transform_float(image_array):
+    def _transform_float(img_array: np.ndarray) -> np.ndarray:
         return (
-            image_array.astype(np.uint8)
-            if np.max(image_array) > 1
-            else (image_array * 255).astype(np.uint8)
+            img_array.astype(np.uint8)
+            if np.max(img_array) > 1
+            else (img_array * 255).astype(np.uint8)
         )
 
     types_factory = {
@@ -105,7 +105,6 @@ def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
     np.ndarray
         NumPy array corresponding to the image with the polygon
     """
-
     poly_vertices = [
         (vertices.x_ul, vertices.y_ul),
         (vertices.x_ul, vertices.y_br),
@@ -131,7 +130,6 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     List[Region]
         Properties for all the regions present in the binary mask
     """
-
     thumb_labeled_regions = label(binary_mask)
     regions = [
         Region(index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid)
@@ -188,7 +186,7 @@ def scale_coordinates(
 
 
 def threshold_to_mask(
-    img: PIL.Image.Image, threshold: float, relate: Callable[..., bool]
+    img: PIL.Image.Image, threshold: float, relate: Callable[..., Any]
 ) -> np.ndarray:
     """Mask image with pixel according to the threshold value.
 
@@ -205,6 +203,7 @@ def threshold_to_mask(
     -------
     np.ndarray
         Boolean NumPy array representing a mask where a pixel has a value True
+        if the corresponding input array pixel exceeds the threshold value.
         if the corresponding input array pixel exceeds the threshold value.
     """
     img_arr = np.array(img)

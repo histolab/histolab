@@ -19,7 +19,7 @@
 import math
 import operator
 from functools import reduce
-from typing import Callable
+from typing import Callable, Any
 
 import numpy as np
 import PIL
@@ -621,7 +621,7 @@ def filter_entropy(
     img: PIL.Image.Image,
     neighborhood: int = 9,
     threshold: float = 5.0,
-    relate: Callable[..., bool] = operator.gt,
+    relate: Callable[..., Any] = operator.gt,
 ) -> np.ndarray:
     """Filter image based on entropy (complexity).
 
@@ -800,7 +800,7 @@ def hysteresis_threshold_mask(
 
 
 def otsu_threshold(
-    img: PIL.Image.Image, relate: Callable[..., bool] = operator.lt
+    img: PIL.Image.Image, relate: Callable[..., Any] = operator.lt
 ) -> np.ndarray:
     """Mask image based on pixel above Otsu threshold.
 
@@ -876,7 +876,7 @@ def red_filter(
 
 
 def yen_threshold(
-    img: PIL.Image.Image, relate: Callable[..., bool] = operator.lt
+    img: PIL.Image.Image, relate: Callable[..., Any] = operator.lt
 ) -> np.ndarray:
     """Mask image based on pixel below Yen's threshold.
 
