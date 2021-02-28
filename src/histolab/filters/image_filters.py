@@ -18,7 +18,7 @@
 
 import operator
 from abc import abstractmethod
-from typing import Callable, List, Union
+from typing import Callable, List, Union, Any
 
 import numpy as np
 import PIL
@@ -909,7 +909,7 @@ class YenThreshold(ImageFilter):
         Boolean NumPy array where True represents a pixel below Yen's threshold.
     """
 
-    def __init__(self, relate: Callable[..., bool] = operator.lt):
+    def __init__(self, relate: Callable[..., Any] = operator.lt):
         self.relate = relate
 
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
