@@ -77,13 +77,7 @@ class Describe_Slide:
             str(err.value) == "expected str, bytes or os.PathLike object, not NoneType"
         )
 
-    @pytest.mark.parametrize(
-        "path_type_transform",
-        [
-            (str),
-            (Path),
-        ],
-    )
+    @pytest.mark.parametrize("path_type_transform", [str, Path])
     def it_knows_its_wsi(self, tmpdir, path_type_transform):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
@@ -91,7 +85,7 @@ class Describe_Slide:
         slide_path = path_type_transform(os.path.join(tmp_path_, "mywsi.png"))
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
 
-        wsi = slide._wsi
+        wsi = slide.wsi
 
         assert type(wsi) == openslide.ImageSlide
 
@@ -282,21 +276,21 @@ class Describe_Slide:
     def it_knows_its_thumbnail_size(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
-        thumb_size = slide._thumbnail_size
+        thumb_size = slide.thumbnail_size
 
         assert thumb_size == (500, 500)
 
     def it_creates_a_correct_slide_object(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_50X50_155_0_0)
 
-        _wsi = slide._wsi
+        _wsi = slide.wsi
 
         assert type(_wsi) in (openslide.OpenSlide, openslide.ImageSlide)
 
     def but_it_raises_an_exception_if_file_not_found(self):
         with pytest.raises(FileNotFoundError) as err:
             slide = Slide("wrong/path/fake.wsi", "processed")
-            slide._wsi
+            slide.wsi
 
         assert isinstance(err.value, FileNotFoundError)
         assert str(err.value) == "The wsi path resource doesn't exist"
@@ -306,7 +300,7 @@ class Describe_Slide:
         slide_path.write("content")
         with pytest.raises(PIL.UnidentifiedImageError) as err:
             slide = Slide(os.path.join(slide_path), "processed")
-            slide._wsi
+            slide.wsi
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert (

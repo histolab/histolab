@@ -22,15 +22,16 @@ Slide is the main API class for manipulating slide objects.
 """
 
 import math
+import ntpath
 import os
 import pathlib
 from functools import lru_cache
 from typing import Iterator, List, Tuple, Union
 
-import ntpath
 import numpy as np
 import openslide
 import PIL
+from deprecated.sphinx import deprecated
 
 from .exceptions import LevelError
 from .filters.compositions import FiltersComposition
@@ -74,6 +75,9 @@ class Slide:
 
     @lazyproperty
     @lru_cache(maxsize=100)
+    @deprecated(
+        version="0.2.4", reason="Use histolab.masks.BiggestTissueBoxMask(slide)."
+    )
     def biggest_tissue_box_mask(self) -> np.ndarray:
         """Return the thumbnail binary mask of the box containing the max tissue area.
 
@@ -84,7 +88,7 @@ class Slide:
             those of the thumbnail.
 
         """
-        thumb = self._wsi.get_thumbnail(self._thumbnail_size)
+        thumb = self.wsi.get_thumbnail(self.thumbnail_size)
         filters = FiltersComposition(Slide).tissue_mask_filters
 
         thumb_mask = filters(thumb)
@@ -92,7 +96,7 @@ class Slide:
         biggest_region = self._biggest_regions(regions, n=1)[0]
         biggest_region_coordinates = region_coordinates(biggest_region)
         thumb_bbox_mask = polygon_to_mask_array(
-            self._thumbnail_size, biggest_region_coordinates
+            self.thumbnail_size, biggest_region_coordinates
         )
         return thumb_bbox_mask
 
@@ -104,7 +108,7 @@ class Slide:
         -------
         dimensions : tuple(width, height)
         """
-        return self._wsi.dimensions
+        return self.wsi.dimensions
 
     def extract_tile(self, coords: CoordinatePair, level: int) -> Tile:
         """Extract a tile of the image at the selected level.
@@ -140,7 +144,7 @@ class Slide:
         h_l = coords_level.y_br - coords_level.y_ul
         w_l = coords_level.x_br - coords_level.x_ul
 
-        image = self._wsi.read_region(
+        image = self.wsi.read_region(
             location=(coords.x_ul, coords.y_ul), level=level, size=(w_l, h_l)
         )
         tile = Tile(image, coords, level)
@@ -160,11 +164,11 @@ class Slide:
         """
         level = level if level >= 0 else self._remap_level(level)
         try:
-            return self._wsi.level_dimensions[level]
+            return self.wsi.level_dimensions[level]
         except IndexError:
             raise LevelError(
                 f"Level {level} not available. Number of available levels: "
-                f"{len(self._wsi.level_dimensions)}"
+                f"{len(self.wsi.level_dimensions)}"
             )
 
     @lazyproperty
@@ -176,7 +180,7 @@ class Slide:
         List[int]
             The levels available
         """
-        return list(range(len(self._wsi.level_dimensions)))
+        return list(range(len(self.wsi.level_dimensions)))
 
     def locate_biggest_tissue_box(
         self,
@@ -257,7 +261,7 @@ class Slide:
         dict
             WSI complete properties.
         """
-        return dict(self._wsi.properties)
+        return dict(self.wsi.properties)
 
     def resampled_array(self, scale_factor: int = 32) -> np.array:
         """Retrieve the resampled array from the original slide
@@ -289,7 +293,7 @@ class Slide:
         """Save a thumbnail in the correct path"""
         os.makedirs(self._processed_path, exist_ok=True)
 
-        img = self._wsi.get_thumbnail(self._thumbnail_size)
+        img = self.wsi.get_thumbnail(self.thumbnail_size)
 
         folder = os.path.dirname(self.thumbnail_path)
         pathlib.Path(folder).mkdir(exist_ok=True)
@@ -333,6 +337,60 @@ class Slide:
             self._processed_path, "thumbnails", f"{self.name}.{IMG_EXT}"
         )
         return thumb_path
+
+    @lazyproperty
+    def thumbnail_size(self) -> Tuple:
+        r"""Compute the thumbnail size proportionally to the slide dimensions.
+
+        If the size of the slide is (v, m) where v has magnitude w and m has magnitude
+        n, that is,
+
+        .. math::
+
+            \left\lceil{\\log_{10}(v)}\right\rceil = w
+
+        and
+
+        .. math::
+
+            \left\lceil{\log_{10}(m)}\right\rceil = n
+
+        then the thumbnail size is computed as:
+
+        .. math::
+
+            \big(\frac{v}{10^{w-2}},\frac{v}{10^{n-2}}\big)
+
+        Returns
+        -------
+        Tuple
+            Thumbnail size
+        """
+        return tuple(
+            [
+                int(s / np.power(10, math.ceil(math.log10(s)) - 3))
+                for s in self.dimensions
+            ]
+        )
+
+    @lazyproperty
+    def wsi(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
+        """Open the slide and returns an openslide object
+
+        Returns
+        -------
+        slide : OpenSlide object
+            An OpenSlide object representing a whole-slide image.
+        """
+        try:
+            slide = openslide.open_slide(self._path)
+        except PIL.UnidentifiedImageError:
+            raise PIL.UnidentifiedImageError(
+                "Your wsi has something broken inside, a doctor is needed"
+            )
+        except FileNotFoundError:
+            raise FileNotFoundError("The wsi path resource doesn't exist")
+        return slide
 
     # ------- implementation helpers -------
 
@@ -431,7 +489,7 @@ class Slide:
         if len(self.levels) - abs(level) < 0:
             raise LevelError(
                 f"Level {level} not available. Number of available levels: "
-                f"{len(self._wsi.level_dimensions)}"
+                f"{len(self.wsi.level_dimensions)}"
             )
         return len(self.levels) - abs(level)
 
@@ -454,9 +512,9 @@ class Slide:
         """
 
         _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
-        level = self._wsi.get_best_level_for_downsample(scale_factor)
-        whole_slide_image = self._wsi.read_region(
-            (0, 0), level, self._wsi.level_dimensions[level]
+        level = self.wsi.get_best_level_for_downsample(scale_factor)
+        whole_slide_image = self.wsi.read_region(
+            (0, 0), level, self.wsi.level_dimensions[level]
         )
         # ---converts openslide read_region to an actual RGBA image---
         whole_slide_image = whole_slide_image.convert("RGB")
@@ -483,60 +541,6 @@ class Slide:
         new_w = math.floor(large_w / scale_factor)
         new_h = math.floor(large_h / scale_factor)
         return large_w, large_h, new_w, new_h
-
-    @lazyproperty
-    def _thumbnail_size(self) -> Tuple:
-        r"""Compute the thumbnail size proportionally to the slide dimensions.
-
-        If the size of the slide is (v, m) where v has magnitude w and m has magnitude
-        n, that is,
-
-        .. math::
-
-            \left\lceil{\\log_{10}(v)}\right\rceil = w
-
-        and
-
-        .. math::
-
-            \left\lceil{\log_{10}(m)}\right\rceil = n
-
-        then the thumbnail size is computed as:
-
-        .. math::
-
-            \big(\frac{v}{10^{w-2}},\frac{v}{10^{n-2}}\big)
-
-        Returns
-        -------
-        Tuple
-            Thumbnail size
-        """
-        return tuple(
-            [
-                int(s / np.power(10, math.ceil(math.log10(s)) - 3))
-                for s in self.dimensions
-            ]
-        )
-
-    @lazyproperty
-    def _wsi(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
-        """Open the slide and returns an openslide object
-
-        Returns
-        -------
-        slide : OpenSlide object
-            An OpenSlide object representing a whole-slide image.
-        """
-        try:
-            slide = openslide.open_slide(self._path)
-        except PIL.UnidentifiedImageError:
-            raise PIL.UnidentifiedImageError(
-                "Your wsi has something broken inside, a doctor is needed"
-            )
-        except FileNotFoundError:
-            raise FileNotFoundError("The wsi path resource doesn't exist")
-        return slide
 
 
 class SlideSet:

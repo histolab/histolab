@@ -1,6 +1,6 @@
+import numpy as np
 import pytest
 
-import numpy as np
 from histolab.exceptions import FilterCompositionError
 from histolab.filters.compositions import (
     FiltersComposition,

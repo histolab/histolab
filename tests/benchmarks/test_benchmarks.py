@@ -1,10 +1,10 @@
 # encoding: utf-8
 
+import numpy as np
 import pytest
 
-import numpy as np
 from histolab.filters.util import mask_difference, mask_percent
-from histolab.util import np_to_pil, apply_mask_image
+from histolab.util import apply_mask_image, np_to_pil
 
 from ..fixtures import NPY
 from ..unitutil import PILIMG, NpArrayMock

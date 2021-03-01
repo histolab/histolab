@@ -1,5 +1,6 @@
 import numpy as np
 import PIL
+
 from histolab import scorer
 from histolab.tile import Tile
 

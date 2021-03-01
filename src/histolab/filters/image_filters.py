@@ -18,7 +18,7 @@
 
 import operator
 from abc import abstractmethod
-from typing import Callable, List, Union, Any
+from typing import Any, Callable, List, Union
 
 import numpy as np
 import PIL

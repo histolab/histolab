@@ -19,7 +19,7 @@
 import math
 import operator
 from functools import reduce
-from typing import Callable, Any
+from typing import Any, Callable
 
 import numpy as np
 import PIL
@@ -677,7 +677,7 @@ def grays(img: PIL.Image.Image, tolerance: int = 15) -> np.ndarray:
     if np.array(img).ndim != 3:
         raise ValueError("Input must be 3D.")
     # TODO: class image mode exception: raise exception if not RGB(A)
-    img_arr = np.array(img).astype(np.int)
+    img_arr = np.array(img).astype(np.int64)
     rg_diff = abs(img_arr[:, :, 0] - img_arr[:, :, 1]) > tolerance
     rb_diff = abs(img_arr[:, :, 0] - img_arr[:, :, 2]) > tolerance
     gb_diff = abs(img_arr[:, :, 1] - img_arr[:, :, 2]) > tolerance

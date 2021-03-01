@@ -1,9 +1,9 @@
 import argparse
 import os
 import time
-from typing import List, Tuple
 from pathlib import Path
 from random import randint
+from typing import List, Tuple
 
 import pandas as pd
 import requests
