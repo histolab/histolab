@@ -2,8 +2,8 @@
 
 """Utilities for pytest reports."""
 
-import pytest
 import PIL
+import pytest
 
 from .util import pil_to_base64
 

@@ -1,12 +1,14 @@
 import csv
 import logging
 import os
+import re
 from unittest.mock import call
 
 import numpy as np
 import pytest
 
 from histolab.exceptions import LevelError, TileSizeError
+from histolab.masks import BiggestTissueBoxMask
 from histolab.scorer import RandomScorer
 from histolab.slide import Slide
 from histolab.tile import Tile
@@ -163,9 +165,7 @@ class Describe_RandomTiler:
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
-        _biggest_tissue_box_mask = property_mock(
-            request, Slide, "biggest_tissue_box_mask"
-        )
+        _biggest_tissue_box_mask = property_mock(request, BiggestTissueBoxMask, "_mask")
         _biggest_tissue_box_mask.return_value = expected_box
         random_tiler = RandomTiler((128, 128), 10, 0, check_tissue=check_tissue)
 
@@ -362,10 +362,10 @@ class Describe_RandomTiler:
         with caplog.at_level(logging.INFO):
             random_tiler.extract(slide)
 
-        assert caplog.text.splitlines() == [
-            "INFO     root:tiler.py:513 \t Tile 0 saved: tile_0_level2_0-10-0-10.png",
-            "INFO     root:tiler.py:513 \t Tile 1 saved: tile_1_level2_0-10-0-10.png",
-            "INFO     root:tiler.py:514 2 Random Tiles have been saved.",
+        assert re.sub(r":+\d{3}", "", caplog.text).splitlines() == [
+            "INFO     root:tiler.py \t Tile 0 saved: tile_0_level2_0-10-0-10.png",
+            "INFO     root:tiler.py \t Tile 1 saved: tile_1_level2_0-10-0-10.png",
+            "INFO     root:tiler.py 2 Random Tiles have been saved.",
         ]
         assert _tile_filename.call_args_list == [
             call(random_tiler, coords, 0),
@@ -505,9 +505,7 @@ class Describe_GridTiler:
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
-        _biggest_tissue_box_mask = property_mock(
-            request, Slide, "biggest_tissue_box_mask"
-        )
+        _biggest_tissue_box_mask = property_mock(request, BiggestTissueBoxMask, "_mask")
         _biggest_tissue_box_mask.return_value = expected_box
         grid_tiler = GridTiler((128, 128), 0, check_tissue=check_tissue)
 

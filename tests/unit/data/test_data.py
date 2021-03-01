@@ -6,10 +6,10 @@ import sys
 from importlib import reload
 from unittest.mock import patch
 
+import numpy as np
 import openslide
 import PIL
 import pytest
-import numpy as np
 from requests.exceptions import HTTPError
 
 from histolab import __version__ as v

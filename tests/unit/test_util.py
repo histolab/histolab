@@ -4,9 +4,9 @@
 
 import operator
 
+import numpy as np
 import pytest
 
-import numpy as np
 from histolab.types import CP, Region
 from histolab.util import (
     apply_mask_image,

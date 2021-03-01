@@ -1,14 +1,14 @@
 import argparse
 import os
-from typing import Tuple
 from pathlib import Path
-
-from tqdm import tqdm
+from typing import Tuple
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from tqdm import tqdm
+
 from histolab.slide import SlideSet
 from histolab.tiler import RandomTiler
-from sklearn.model_selection import train_test_split
 
 PATIENT_COL_NAME = "case_submitter_id"
 

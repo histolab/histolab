@@ -27,15 +27,12 @@ import numpy as np
 import PIL
 
 from .exceptions import LevelError, TileSizeError
+from .masks import BiggestTissueBoxMask
 from .scorer import Scorer
 from .slide import Slide
 from .tile import Tile
 from .types import CoordinatePair
-from .util import (
-    region_coordinates,
-    regions_from_binary_mask,
-    scale_coordinates,
-)
+from .util import region_coordinates, regions_from_binary_mask, scale_coordinates
 
 try:
     from typing import Protocol, runtime_checkable
@@ -69,7 +66,8 @@ class Tiler(Protocol):
         np.ndarray
             Extraction mask at thumbnail level
         """
-        return slide.biggest_tissue_box_mask
+        biggest_tissue_box_mask = BiggestTissueBoxMask(slide)
+        return biggest_tissue_box_mask()
 
     @abstractmethod
     def extract(self, slide: Slide, log_level: str):

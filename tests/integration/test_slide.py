@@ -1,8 +1,8 @@
 # encoding: utf-8
 
+import ntpath
 import os
 
-import ntpath
 import numpy as np
 import PIL
 import pytest
@@ -51,7 +51,7 @@ class Describe_Slide:
         slide = Slide(SVS.BROKEN, os.path.join(SVS.BROKEN, "processed"))
 
         with pytest.raises(PIL.UnidentifiedImageError) as err:
-            slide._wsi
+            slide.wsi
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert (

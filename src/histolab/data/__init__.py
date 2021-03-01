@@ -8,10 +8,9 @@ import os
 import shutil
 from typing import Tuple
 
-from requests.exceptions import HTTPError
-
-import PIL
 import openslide
+import PIL
+from requests.exceptions import HTTPError
 
 from .. import __version__
 from ._registry import legacy_registry, registry, registry_urls
@@ -205,7 +204,6 @@ def _fetch(data_filename: str) -> str:
 
 def _init_pooch() -> None:
     os.makedirs(data_dir, exist_ok=True)
-    # data_base_dir = os.path.join(data_dir, "..")
     # Fetch all legacy data so that it is available by default
     for filename in legacy_registry:
         _fetch(filename)

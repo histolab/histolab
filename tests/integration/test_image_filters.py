@@ -1670,7 +1670,8 @@ def test_rgb_to_lab_filter_with_rgb_image(pil_image, expected_image):
 
 
 @pytest.mark.parametrize(
-    "pil_image", (RGBA.DIAGNOSTIC_SLIDE_THUMB, GS.DIAGNOSTIC_SLIDE_THUMB_GS),
+    "pil_image",
+    (RGBA.DIAGNOSTIC_SLIDE_THUMB, GS.DIAGNOSTIC_SLIDE_THUMB_GS),
 )
 def test_rgb_to_lab_raises_exception_on_gs_and_rgba_image(pil_image):
     with pytest.raises(Exception) as err:
