@@ -35,11 +35,11 @@ from deprecated.sphinx import deprecated
 
 from .exceptions import LevelError
 from .filters.compositions import FiltersComposition
+from .masks import BiggestTissueBoxMask
 from .tile import Tile
 from .types import CoordinatePair, Region
 from .util import (
     lazyproperty,
-    polygon_to_mask_array,
     region_coordinates,
     regions_from_binary_mask,
     scale_coordinates,
@@ -87,17 +87,8 @@ class Slide:
             Binary mask of the box containing the max area of tissue. The dimensions are
             those of the thumbnail.
         """
-        thumb = self.wsi.get_thumbnail(self.thumbnail_size)
-        filters = FiltersComposition(Slide).tissue_mask_filters
-
-        thumb_mask = filters(thumb)
-        regions = regions_from_binary_mask(thumb_mask)
-        biggest_region = self._biggest_regions(regions, n=1)[0]
-        biggest_region_coordinates = region_coordinates(biggest_region)
-        thumb_bbox_mask = polygon_to_mask_array(
-            self.thumbnail_size, biggest_region_coordinates
-        )
-        return thumb_bbox_mask
+        biggest_tissue_box_mask = BiggestTissueBoxMask()
+        return biggest_tissue_box_mask(self)
 
     @lazyproperty
     def dimensions(self) -> Tuple[int, int]:

@@ -15,6 +15,7 @@ from PIL import ImageShow
 from histolab.exceptions import LevelError
 from histolab.filters.compositions import _SlideFiltersComposition
 from histolab.filters.image_filters import Compose
+from histolab.masks import BiggestTissueBoxMask
 from histolab.slide import Slide, SlideSet
 from histolab.types import CP, Region
 from histolab.util import regions_from_binary_mask
@@ -418,6 +419,7 @@ class Describe_Slide:
 
         assert str(err.value) == f"n should be between 1 and {len(regions)}, got {n}"
 
+    @pytest.mark.deprecated("This feature will be dropped in 0.2.4")
     def it_knows_its_biggest_tissue_box_mask(
         self,
         request,
@@ -443,15 +445,15 @@ class Describe_Slide:
             ]
         )
         regions_from_binary_mask = function_mock(
-            request, "histolab.slide.regions_from_binary_mask"
+            request, "histolab.masks.regions_from_binary_mask"
         )
         regions_from_binary_mask.return_value = regions
         biggest_regions_ = method_mock(
-            request, Slide, "_biggest_regions", autospec=False
+            request, BiggestTissueBoxMask, "_regions", autospec=False
         )
         biggest_regions_.return_value = regions
         region_coordinates_ = function_mock(
-            request, "histolab.slide.region_coordinates"
+            request, "histolab.masks.region_coordinates"
         )
         region_coordinates_.return_values = CP(0, 0, 2, 2)
         polygon_to_mask_array_ = function_mock(
