@@ -21,8 +21,9 @@ from typing import List
 
 import numpy as np
 
+import histolab
+
 from .filters.compositions import FiltersComposition
-from .slide import Slide
 from .types import Region
 from .util import (
     lazyproperty,
@@ -40,13 +41,13 @@ class BinaryMask(ABC):
 
     @staticmethod
     @abstractmethod
-    def _regions(regions: List[Region], n: int = 1) -> List[Region]:
+    def _regions(regions: List[Region], n: int = 1) -> List[Region]:  # pragma: no cover
         # This method property will be supplied by the inheriting classes individually
         pass
 
     @lazyproperty
     @abstractmethod
-    def _mask(self, slide):
+    def _mask(self, slide):  # pragma: no cover
         # This property will be supplied by the inheriting classes individually
         pass
 
@@ -65,7 +66,7 @@ class BiggestTissueBoxMask(BinaryMask):
             those of the thumbnail.
         """
         thumb = slide.wsi.get_thumbnail(slide.thumbnail_size)
-        filters = FiltersComposition(Slide).tissue_mask_filters
+        filters = FiltersComposition(histolab.slide.Slide).tissue_mask_filters
         thumb_mask = filters(thumb)
         regions = regions_from_binary_mask(thumb_mask)
         biggest_region = self._regions(regions, n=1)[0]
