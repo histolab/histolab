@@ -28,6 +28,14 @@ class DescribeBiggestTissueBoxMask:
         biggest_regions = binary_mask._regions(regions, 2)
         assert biggest_regions == [regions[0], regions[3]]
 
+    def but_it_raises_exception_when_number_of_regions_to_return_is_wrong(self):
+        binary_mask = BiggestTissueBoxMask
+
+        with pytest.raises(ValueError) as e:
+            binary_mask._regions([], 0)
+
+        assert str(e.value) == "n should be between 1 and 0, got 0"
+
     def it_knows_its_biggest_tissue_box_mask(
         self,
         request,
