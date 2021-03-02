@@ -3,6 +3,7 @@
 import os
 
 import numpy as np
+import pytest
 
 from histolab.masks import BiggestTissueBoxMask
 from histolab.slide import Slide
@@ -12,12 +13,22 @@ from ..util import load_expectation
 
 
 class DescribeBiggestTissueBoxMask:
-    def it_can_construct_big_tissue_box_mask(self):
-        wsi = SVS.CMU_1_SMALL_REGION
+    @pytest.mark.parametrize(
+        "wsi, expected_array",
+        (
+            (
+                SVS.CMU_1_SMALL_REGION,
+                "mask-arrays/biggest-tissue-box-cmu-1-small-region",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                "mask-arrays/biggest-tissue-box-tcga-cr-7395",
+            ),
+        ),
+    )
+    def it_can_construct_big_tissue_box_mask(self, wsi, expected_array):
         slide = Slide(wsi, os.path.join(wsi, "processed"))
-        expected_array = load_expectation(
-            "mask-arrays/biggest-tissue-box-cmu-1-small-region", type_="npy"
-        )
+        expected_array = load_expectation(expected_array, type_="npy")
 
         biggest_tissue_box = BiggestTissueBoxMask()
 
