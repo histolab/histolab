@@ -11,7 +11,7 @@ from ..fixtures import SVS
 from ..util import load_expectation
 
 
-class DescribeMasks:
+class DescribeBiggestTissueBoxMask:
     def it_can_construct_big_tissue_box_mask(self):
         wsi = SVS.CMU_1_SMALL_REGION
         slide = Slide(wsi, os.path.join(wsi, "processed"))
@@ -19,6 +19,6 @@ class DescribeMasks:
             "mask-arrays/biggest-tissue-box-cmu-1-small-region", type_="npy"
         )
 
-        biggest_tissue_box = BiggestTissueBoxMask(slide)
+        biggest_tissue_box = BiggestTissueBoxMask()
 
-        np.testing.assert_array_almost_equal(biggest_tissue_box(), expected_array)
+        np.testing.assert_array_almost_equal(biggest_tissue_box(slide), expected_array)
