@@ -15,15 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------
+from abc import ABC, abstractmethod
 from functools import lru_cache
 from typing import List
 
 import numpy as np
 
-from histolab.filters.compositions import FiltersComposition
-from histolab.slide import Slide
-from histolab.types import Region
-from histolab.util import (
+from .filters.compositions import FiltersComposition
+from .slide import Slide
+from .types import Region
+from .util import (
     lazyproperty,
     polygon_to_mask_array,
     region_coordinates,
@@ -31,14 +32,48 @@ from histolab.util import (
 )
 
 
-class BinaryMask:
+class BinaryMask(ABC):
     """Generic object for binary masks."""
 
-    def __init__(self, slide):
-        self._slide = slide
+    def __call__(self, slide):
+        return self._mask(slide)
 
-    def __call__(self):
-        return self._mask
+    @staticmethod
+    @abstractmethod
+    def _regions(regions: List[Region], n: int = 1) -> List[Region]:
+        # This method property will be supplied by the inheriting classes individually
+        pass
+
+    @lazyproperty
+    @abstractmethod
+    def _mask(self, slide):
+        # This property will be supplied by the inheriting classes individually
+        pass
+
+
+class BiggestTissueBoxMask(BinaryMask):
+    """Object that represent the box containing the max tissue area."""
+
+    @lru_cache(maxsize=100)
+    def _mask(self, slide) -> np.ndarray:
+        """Return the thumbnail binary mask of the box containing the max tissue area.
+
+        Returns
+        -------
+        mask: np.ndarray
+            Binary mask of the box containing the max area of tissue. The dimensions are
+            those of the thumbnail.
+        """
+        thumb = slide.wsi.get_thumbnail(slide.thumbnail_size)
+        filters = FiltersComposition(Slide).tissue_mask_filters
+        thumb_mask = filters(thumb)
+        regions = regions_from_binary_mask(thumb_mask)
+        biggest_region = self._regions(regions, n=1)[0]
+        biggest_region_coordinates = region_coordinates(biggest_region)
+        thumb_bbox_mask = polygon_to_mask_array(
+            slide.thumbnail_size, biggest_region_coordinates
+        )
+        return thumb_bbox_mask
 
     @staticmethod
     def _regions(regions: List[Region], n: int = 1) -> List[Region]:
@@ -61,44 +96,8 @@ class BinaryMask:
         ValueError
             If ``n`` is not between 1 and the number of elements of ``regions``
         """
-
         if not 1 <= n <= len(regions):
             raise ValueError(f"n should be between 1 and {len(regions)}, got {n}")
 
         sorted_regions = sorted(regions, key=lambda r: r.area, reverse=True)
         return sorted_regions[:n]
-
-    @lazyproperty
-    def _mask(self):
-        raise NotImplementedError(  # pragma: nocover
-            "_mask must be implemented by each subclass"
-        )
-
-
-class BiggestTissueBoxMask(BinaryMask):
-    """Object that represent the box containing the max tissue area."""
-
-    @lazyproperty
-    @lru_cache(maxsize=100)
-    def _mask(self) -> np.ndarray:
-        """Return the thumbnail binary mask of the box containing the max tissue area.
-
-        Returns
-        -------
-        mask: np.ndarray
-            Binary mask of the box containing the max area of tissue. The dimensions are
-            those of the thumbnail.
-
-        """
-        slide = self._slide
-        thumb = slide.wsi.get_thumbnail(slide.thumbnail_size)
-        filters = FiltersComposition(Slide).tissue_mask_filters
-
-        thumb_mask = filters(thumb)
-        regions = regions_from_binary_mask(thumb_mask)
-        biggest_region = self._regions(regions, n=1)[0]
-        biggest_region_coordinates = region_coordinates(biggest_region)
-        thumb_bbox_mask = polygon_to_mask_array(
-            slide.thumbnail_size, biggest_region_coordinates
-        )
-        return thumb_bbox_mask

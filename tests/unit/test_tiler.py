@@ -165,13 +165,13 @@ class Describe_RandomTiler:
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
-        _biggest_tissue_box_mask = property_mock(request, BiggestTissueBoxMask, "_mask")
+        _biggest_tissue_box_mask = method_mock(request, BiggestTissueBoxMask, "_mask")
         _biggest_tissue_box_mask.return_value = expected_box
         random_tiler = RandomTiler((128, 128), 10, 0, check_tissue=check_tissue)
 
         box_mask = random_tiler.box_mask(slide)
 
-        _biggest_tissue_box_mask.assert_called_once_with()
+        _biggest_tissue_box_mask.assert_called_once_with(slide)
         assert type(box_mask) == np.ndarray
         np.testing.assert_array_almost_equal(box_mask, expected_box)
 
@@ -505,13 +505,13 @@ class Describe_GridTiler:
     )
     def it_knows_its_box_mask(self, request, tmpdir, check_tissue, expected_box):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
-        _biggest_tissue_box_mask = property_mock(request, BiggestTissueBoxMask, "_mask")
+        _biggest_tissue_box_mask = method_mock(request, BiggestTissueBoxMask, "_mask")
         _biggest_tissue_box_mask.return_value = expected_box
         grid_tiler = GridTiler((128, 128), 0, check_tissue=check_tissue)
 
         box_mask = grid_tiler.box_mask(slide)
 
-        _biggest_tissue_box_mask.assert_called_once_with()
+        _biggest_tissue_box_mask.assert_called_once_with(slide)
         assert type(box_mask) == np.ndarray
         np.testing.assert_array_almost_equal(box_mask, expected_box)
 

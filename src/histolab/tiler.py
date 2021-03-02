@@ -66,8 +66,8 @@ class Tiler(Protocol):
         np.ndarray
             Extraction mask at thumbnail level
         """
-        biggest_tissue_box_mask = BiggestTissueBoxMask(slide)
-        return biggest_tissue_box_mask()
+        biggest_tissue_box_mask = BiggestTissueBoxMask()
+        return biggest_tissue_box_mask(slide)
 
     @abstractmethod
     def extract(self, slide: Slide, log_level: str):

@@ -86,7 +86,6 @@ class Slide:
         mask: np.ndarray
             Binary mask of the box containing the max area of tissue. The dimensions are
             those of the thumbnail.
-
         """
         thumb = self.wsi.get_thumbnail(self.thumbnail_size)
         filters = FiltersComposition(Slide).tissue_mask_filters
