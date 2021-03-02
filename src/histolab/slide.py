@@ -395,6 +395,10 @@ class Slide:
     # ------- implementation helpers -------
 
     @staticmethod
+    @deprecated(
+        version="0.2.4",
+        reason="This property will be moved in histolab.masks.BinaryMask",
+    )
     def _biggest_regions(regions: List[Region], n: int = 1) -> List[Region]:
         """Return the biggest ``n`` regions.
 
