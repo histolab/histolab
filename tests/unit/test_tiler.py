@@ -4,6 +4,7 @@ import os
 import re
 from unittest.mock import call
 
+import numpy as np
 import pytest
 
 from histolab.exceptions import LevelError, TileSizeError
