@@ -77,6 +77,12 @@ class Tile:
     ) -> bool:
         """Check if the tile has enough tissue.
 
+        This method checks if the proportion of the detected tissue over the total area
+        of the tile is above a specified threshold (by default 80%). Internally, the
+        method  quantifies  the  amount  of  tissue  by  applying  a  chain  of filters,
+        including conversion to grayscale, Otsu thresholding, binary dilation and small
+        holes filling.
+
         Parameters
         ----------
         tissue_percent : float, optional

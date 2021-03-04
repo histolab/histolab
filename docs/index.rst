@@ -88,7 +88,7 @@ References
    api/tiler
    api/scorer
    api/data
-   api/utils
+   api/util
 
 
 Indices and tables

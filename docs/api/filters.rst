@@ -28,10 +28,10 @@ Filters in ``histolab`` are designed to be applied singularly or combined in a c
 
     * **Diagnostic annotations filters**: In clinical practice, pathologists often annotate slides with pen marks to simplify the diagnostic process, for example by delineating cancerous areas or by segmenting regions of interest. These manual annotations, while useful for human analysis, are confounds for an automatic pipeline due to the lack in the standardization of annotation procedures (handwritten labels may be subjective and error-prone [5]_, and because they could alter the feature extraction process. Therefore, it is essential to either eliminate or correct these artifacts [6]_. A Deep Learning pipeline has been introduced to erase ink marks from digital slides by Ali et al. [8]_. Although the method is efficient on reconstructing regions hidden by the annotations, it requires large (manually annotated) datasets and a relevant computational cost. ``histolab`` includes methods to clean ink signs in a combination of image filters [7]_. In particular, green, red and blue marks are deleted by progressively removing pixels within fixed ranges of intensity. While the green and the blue pen filters are extremely effective on annotated H&E slides, the red pen filter should be used carefully: due to similarity with the eosin staining, it could erode reddish regions, such as aggregation of erythrocytes (blood cells).
 
-.. note:: ``histolab`` stores masks as NumPy arrays. The utility class ``ToPILImage`` in the image filters module retrieves the Pillow Image from the corresponding array.
+.. note:: ``histolab`` stores masks as NumPy arrays. The utility class `ToPILImage <filters/image_filters.html#src.histolab.filters.image_filters.ToPILImage>`_ in the image filters module retrieves the Pillow Image from the corresponding array.
 
 * Morphological filters:
-    * **Image preprocessing**: Morphology is a comprehensive set of image processing operations that transform images by using geometrical structures. Morphological operations act by adjusting image pixels based on the value of the pixels in the neighborhood. The choice of the neighborhood's size and shape will affect the behaviour of the morphological operation so that it will be sensitive to specific shapes in the input image [9]_. The *structuring element* is the component of the morphological operations that defines the considered neighborhood: it is a shape (typically a circle or a square) that determines the area used to process each pixel in the image. Usually, the shape and size of the structuring element are chosen to reflect the geometry of the objects in the image that the structuring element will transform: for example, linear structuring element would be used to detect lines in an image. Morphological operations can be applied to binary masks to shrink or enlarge regions of the image. Classic morphological operations include dilation, erosion, opening and closing; ``histolab`` implements these operations in the filters submodule ``morphological_filters``. The default structuring element is a disk, with radius 5 for both dilation and erosion, and radius 3 for both opening and closing. However, it is possible to override the default value by passing ``disk_size=N`` as parameter to the filter constructor. The ``morphological_filters`` module implements three additional morphological operations useful for manipulating binary masks: `WhiteTopHat <filters/morphological_filters.html#src.histolab.filters.morphological_filters.WhiteTopHat>`_, `RemoveSmallObjects <filters/morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallObjects>`_, and `RemoveSmallHoles <filters/morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallHoles>`_. The *white top-hat* transformation is defined as the difference between the image and its morphological opening with respect to a structuring element. This operation results in an image including only structures smaller than the structuring element and brighter than their neighborhood, and it is thus used to extract light details on a dark background. The white top-hat filter uses a cross-shaped structuring element with connectivity 1 by default. The ``RemoveSmallObjects`` filter removes objects with an area smaller than a specified value while the ``RemoveSmallHoles`` filter "fills" holes with an area smaller than the specified threshold. The minimal area value is set to 3000 for both filters.
+    * **Image preprocessing**: Morphology is a comprehensive set of image processing operations that transform images by using geometrical structures. Morphological operations act by adjusting image pixels based on the value of the pixels in the neighborhood. The choice of the neighborhood's size and shape will affect the behaviour of the morphological operation so that it will be sensitive to specific shapes in the input image [9]_. The *structuring element* is the component of the morphological operations that defines the considered neighborhood: it is a shape (typically a circle or a square) that determines the area used to process each pixel in the image. Usually, the shape and size of the structuring element are chosen to reflect the geometry of the objects in the image that the structuring element will transform: for example, linear structuring element would be used to detect lines in an image. Morphological operations can be applied to binary masks to shrink or enlarge regions of the image. Classic morphological operations include dilation, erosion, opening and closing; ``histolab`` implements these operations in the filters submodule `morphological_filters <filters/morphological_filters.html#morphological-filters>`_. The default structuring element is a disk, with radius 5 for both dilation and erosion, and radius 3 for both opening and closing. However, it is possible to override the default value by passing ``disk_size=N`` as parameter to the filter constructor. The `morphological_filters <filters/morphological_filters.html#morphological-filters>`_ module implements three additional morphological operations useful for manipulating binary masks: `WhiteTopHat <filters/morphological_filters.html#src.histolab.filters.morphological_filters.WhiteTopHat>`_, `RemoveSmallObjects <filters/morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallObjects>`_, and `RemoveSmallHoles <filters/morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallHoles>`_. The *white top-hat* transformation is defined as the difference between the image and its morphological opening with respect to a structuring element. This operation results in an image including only structures smaller than the structuring element and brighter than their neighborhood, and it is thus used to extract light details on a dark background. The white top-hat filter uses a cross-shaped structuring element with connectivity 1 by default. The `RemoveSmallObjects <filters/morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallObjects>`_ filter removes objects with an area smaller than a specified value while the `RemoveSmallHoles <filters/morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallHoles>`_ filter "fills" holes with an area smaller than the specified threshold. The minimal area value is set to 3000 for both filters.
     * **Segmentation**: ``histolab`` implements the Watershed algorithm, a popular segmentation method for binary masks based on image morphology, useful to separate overlapping objects [10]_. This algorithm works by treating the mask as a topographic map, with the value of each pixel representing the elevation, and by flooding basins from user-defined markers until basins attributed to different markers meet on watershed lines. The `WatershedSegmentation <filters/morphological_filters.html#src.histolab.filters.morphological_filters.WatershedSegmentation>`_ filter first computes an image that represents for each pixel the Euclidean distance D of that pixel to the closest pixel on the background. Then, the points corresponding to the maxima of the distance D are chosen as markers for the algorithm.
 
 .. note:: Notice that both the input and the output of morphological filters are binary masks.
@@ -48,6 +48,7 @@ To clarify how the `Compose <filters/image_filters.html#src.histolab.filters.ima
         RgbToGrayscale,
     )
     from histolab.filters.morphological_filters import BinaryDilation
+
     def not_composed_filters(image_rgb):
         rgb_to_grayscale = RgbToGrayscale()
         otsu_threshold = OtsuThreshold()
@@ -59,6 +60,7 @@ To clarify how the `Compose <filters/image_filters.html#src.histolab.filters.ima
         image_thresholded = otsu_threshold(image_gray)
         image_dilated = binary_dilation(image_thresholded)
         return apply_mask_image(image_dilated)
+
     image_rgb = Image.open("path/to/image.png")
     resulting_image = not_composed_filters(image_rgb)
 
@@ -74,6 +76,7 @@ Despite being formally correct, the above implementation in neither intuitive or
         RgbToGrayscale,
     )
     from histolab.filters.morphological_filters import BinaryDilation
+
     def composed_filters(image_rgb):
         filters = Compose(
             [
@@ -90,23 +93,6 @@ Despite being formally correct, the above implementation in neither intuitive or
 
 .. note::
     Although ``not_composed_filters`` and ``composed_filters`` functions return the same result, the use of `Compose <filters/image_filters.html#src.histolab.filters.image_filters.Compose>`_ avoids storing intermediate results and wasting memory in case of very large input image. For example, the peak RAM usage for an image of size 19,394px x 6,136px (84.9 MB) is ~2600 MB when using ``composed_filters`` in contrast to the ~3200 MB allocated for the ``not_composed_filters`` function.
-
-Largest Tissue Box extraction
------------------------------
-
-As an application of `Compose <filters/image_filters.html#src.histolab.filters.image_filters.Compose>`_, ``histolab`` provides the automatic segmentation of tissue in a WSI by using a pre-defined composition of filters. The default chain of filters for tissue segmentation is empirically determined and it includes: conversion to grayscale, Otsu thresholding, binary dilation, small holes and small objects filtering, similarly to the pipelines in [8]_:
-
-.. code-block:: python3
-
-    from histolab.filters.image_filters import Compose, OtsuThreshold, RgbToGrayscale
-    from histolab.filters.morphological_filters import BinaryDilation, RemoveSmallHoles, RemoveSmallObjects
-    filters = Compose([
-                RgbToGrayscale(),
-                OtsuThreshold(),
-                BinaryDilation(),
-                RemoveSmallHoles(),
-                RemoveSmallObjects()
-        ])
 
 
 References

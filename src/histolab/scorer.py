@@ -67,7 +67,9 @@ class RandomScorer(Scorer):
 
 
 class NucleiScorer(Scorer):
-    r"""This class implements an hybrid algorithm that combines thresholding and
+    r"""Implement a Scorer that estimates the presence of nuclei in an H&E-stained tile.
+
+    This class implements an hybrid algorithm that combines thresholding and
     morphological operations to segment nuclei on H&E-stained histological images.
 
     The NucleiScorer class defines the score of a given tile t as:
@@ -81,6 +83,8 @@ class NucleiScorer(Scorer):
 
     Notice that we introduced the hyperbolic tangent to bound the weight of the tissue
     ratio over the nuclei ratio.
+
+    .. automethod:: __call__
     """
 
     def __call__(self, tile: Tile) -> float:
