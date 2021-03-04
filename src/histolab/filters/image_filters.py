@@ -263,7 +263,18 @@ class RgbToLab(ImageFilter):
     ------
     Exception
         If the image mode is not RGB
-    """
+
+
+    Example:
+
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RgbToLab
+        >>> import os
+        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
+        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> rgb_to_lab = RgbToLab()
+        >>> image_hed = rgb_to_lab(image_rgb)
+    """  # noqa
 
     def __init__(self, illuminant: str = "D65", observer: int = "2") -> None:
         self.illuminant = illuminant
