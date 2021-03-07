@@ -25,9 +25,10 @@ from typing import List, Tuple
 
 import numpy as np
 import PIL
+from deprecated.sphinx import deprecated
 
 from .exceptions import LevelError, TileSizeError
-from .masks import BiggestTissueBoxMask
+from .masks import BiggestTissueBoxMask, BinaryMask
 from .scorer import Scorer
 from .slide import Slide
 from .tile import Tile
@@ -48,9 +49,13 @@ class Tiler(Protocol):
     """General tiler object"""
 
     level: int
-    tile_size: int
+    tile_size: Tuple[int, int]
 
     @lru_cache(maxsize=100)
+    @deprecated(
+        version="0.2.4",
+        reason=r"Use ``histolab.masks`` objects to define your own extraction mask.",
+    )
     def box_mask(self, slide: Slide) -> np.ndarray:
         """Return binary mask, at thumbnail level, of the box for tiles extraction.
 
@@ -70,12 +75,13 @@ class Tiler(Protocol):
         return biggest_tissue_box_mask(slide)
 
     @abstractmethod
-    def extract(self, slide: Slide, log_level: str):
+    def extract(self, slide: Slide, extraction_mask: BinaryMask, log_level: str):
         raise NotImplementedError
 
     def locate_tiles(
         self,
         slide: Slide,
+        extraction_mask: BinaryMask,
         scale_factor: int = 32,
         alpha: int = 128,
         outline: str = "red",
@@ -86,6 +92,8 @@ class Tiler(Protocol):
         ----------
         slide : Slide
             Slide reference where placing the tiles
+        extraction_mask : BinaryMask
+            BinaryMask object defining how to compute a binary mask from a Slide.
         scale_factor: int
             Scaling factor for the returned image. Default is 32.
         alpha: int
@@ -105,9 +113,9 @@ class Tiler(Protocol):
         draw = PIL.ImageDraw.Draw(img)
 
         tiles = (
-            self._tiles_generator(slide)[0]
+            self._tiles_generator(slide, extraction_mask)[0]
             if isinstance(self, ScoreTiler)
-            else self._tiles_generator(slide)
+            else self._tiles_generator(slide, extraction_mask)
         )
         tiles_coords = (tile[1] for tile in tiles)
         for coords in tiles_coords:
@@ -163,7 +171,9 @@ class Tiler(Protocol):
 
         return tile_filename
 
-    def _tiles_generator(self, slide: Slide) -> None:
+    def _tiles_generator(
+        self, slide: Slide, extraction_mask: BinaryMask
+    ) -> Tuple[Tile, CoordinatePair]:
         raise NotImplementedError
 
     def _validate_level(self, slide: Slide) -> None:
@@ -248,7 +258,9 @@ class GridTiler(Tiler):
         self.prefix = prefix
         self.suffix = suffix
 
-    def extract(self, slide: Slide, log_level: str = "INFO") -> None:
+    def extract(
+        self, slide: Slide, extraction_mask: BinaryMask, log_level: str = "INFO"
+    ) -> None:
         """Extract tiles arranged in a grid and save them to disk, following this
         filename pattern:
         `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
@@ -257,7 +269,9 @@ class GridTiler(Tiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
-        log_level: str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+        extraction_mask : BinaryMask
+            BinaryMask object defining how to compute a binary mask from a Slide.
+        log_level : str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
             Threshold level for the log messages. Default "INFO"
 
         Raises
@@ -272,7 +286,7 @@ class GridTiler(Tiler):
         self._validate_level(slide)
         self._validate_tile_size(slide)
 
-        grid_tiles = self._tiles_generator(slide)
+        grid_tiles = self._tiles_generator(slide, extraction_mask)
         tiles_counter = 0
         for tiles_counter, (tile, tile_wsi_coords) in enumerate(grid_tiles):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
@@ -283,6 +297,7 @@ class GridTiler(Tiler):
 
     @property
     def tile_size(self) -> Tuple[int, int]:
+        """Valid (width, height) of the extracted tiles."""
         return self._valid_tile_size
 
     @tile_size.setter
@@ -335,7 +350,9 @@ class GridTiler(Tiler):
                 )
                 yield tile_wsi_coords
 
-    def _grid_coordinates_generator(self, slide: Slide) -> CoordinatePair:
+    def _grid_coordinates_generator(
+        self, slide: Slide, extraction_mask: BinaryMask
+    ) -> CoordinatePair:
         """Generate Coordinates at level 0 of grid tiles within the tissue.
 
         Parameters
@@ -343,34 +360,40 @@ class GridTiler(Tiler):
         slide : Slide
             Slide from which to calculate the coordinates. Needed to calculate the
             tissue area.
+        extraction_mask : BinaryMask
+            BinaryMask object defining how to compute a binary mask from a Slide.
 
         Yields
         -------
         Iterator[CoordinatePair]
             Iterator of tiles' CoordinatePair
         """
-        box_mask = self.box_mask(slide)
+        binary_mask = extraction_mask(slide)
 
-        regions = regions_from_binary_mask(box_mask)
+        regions = regions_from_binary_mask(binary_mask)
         # ----at the moment there is only one region----
         for region in regions:
             bbox_coordinates_thumb = region_coordinates(region)
             bbox_coordinates = scale_coordinates(
                 bbox_coordinates_thumb,
-                box_mask.shape[::-1],
+                binary_mask.shape[::-1],
                 slide.level_dimensions(self.level),
             )
             yield from self._grid_coordinates_from_bbox_coordinates(
                 bbox_coordinates, slide
             )
 
-    def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
+    def _tiles_generator(
+        self, slide: Slide, extraction_mask: BinaryMask
+    ) -> Tuple[Tile, CoordinatePair]:
         """Generator of tiles arranged in a grid.
 
         Parameters
         ----------
         slide : Slide
             Slide from which to extract the tiles
+        extraction_mask : BinaryMask
+            BinaryMask object defining how to compute a binary mask from a Slide.
 
         Yields
         -------
@@ -379,7 +402,9 @@ class GridTiler(Tiler):
         CoordinatePair
             Coordinates of the slide at level 0 from which the tile has been extracted
         """
-        grid_coordinates_generator = self._grid_coordinates_generator(slide)
+        grid_coordinates_generator = self._grid_coordinates_generator(
+            slide, extraction_mask
+        )
         for coords in grid_coordinates_generator:
             try:
                 tile = slide.extract_tile(coords, self.level)
@@ -478,7 +503,9 @@ class RandomTiler(Tiler):
         self.prefix = prefix
         self.suffix = suffix
 
-    def extract(self, slide: Slide, log_level: str = "INFO") -> None:
+    def extract(
+        self, slide: Slide, extraction_mask: BinaryMask, log_level: str = "INFO"
+    ) -> None:
         """Extract random tiles and save them to disk, following this filename pattern:
         `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
 
@@ -486,6 +513,8 @@ class RandomTiler(Tiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
+        extraction_mask : BinaryMask
+            BinaryMask object defining how to compute a binary mask from a Slide.
         log_level: str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
             Threshold level for the log messages. Default "INFO"
 
@@ -501,7 +530,7 @@ class RandomTiler(Tiler):
         self._validate_level(slide)
         self._validate_tile_size(slide)
 
-        random_tiles = self._tiles_generator(slide)
+        random_tiles = self._tiles_generator(slide, extraction_mask)
 
         tiles_counter = 0
         for tiles_counter, (tile, tile_wsi_coords) in enumerate(random_tiles):
@@ -536,31 +565,35 @@ class RandomTiler(Tiler):
 
     # ------- implementation helpers -------
 
-    def _random_tile_coordinates(self, slide: Slide) -> CoordinatePair:
+    def _random_tile_coordinates(
+        self, slide: Slide, extraction_mask: BinaryMask
+    ) -> CoordinatePair:
         """Return 0-level Coordinates of a tile picked at random within the box.
 
         Parameters
         ----------
         slide : Slide
             Slide from which calculate the coordinates. Needed to calculate the box.
+        extraction_mask : BinaryMask
+            BinaryMask object defining how to compute a binary mask from a Slide.
 
         Returns
         -------
         CoordinatePair
             Random tile Coordinates at level 0
         """
-        box_mask = self.box_mask(slide)
+        binary_mask = extraction_mask(slide)
         tile_w_lvl, tile_h_lvl = self.tile_size
 
-        x_ul_lvl = np.random.choice(np.where(box_mask)[1])
-        y_ul_lvl = np.random.choice(np.where(box_mask)[0])
+        x_ul_lvl = np.random.choice(np.where(binary_mask)[1])
+        y_ul_lvl = np.random.choice(np.where(binary_mask)[0])
 
         # Scale tile dimensions to thumbnail dimensions
         tile_w_thumb = (
-            tile_w_lvl * box_mask.shape[1] / slide.level_dimensions(self.level)[0]
+            tile_w_lvl * binary_mask.shape[1] / slide.level_dimensions(self.level)[0]
         )
         tile_h_thumb = (
-            tile_h_lvl * box_mask.shape[0] / slide.level_dimensions(self.level)[1]
+            tile_h_lvl * binary_mask.shape[0] / slide.level_dimensions(self.level)[1]
         )
 
         x_br_lvl = x_ul_lvl + tile_w_thumb
@@ -568,13 +601,15 @@ class RandomTiler(Tiler):
 
         tile_wsi_coords = scale_coordinates(
             reference_coords=CoordinatePair(x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl),
-            reference_size=box_mask.shape[::-1],
+            reference_size=binary_mask.shape[::-1],
             target_size=slide.dimensions,
         )
 
         return tile_wsi_coords
 
-    def _tiles_generator(self, slide: Slide) -> Tuple[Tile, CoordinatePair]:
+    def _tiles_generator(
+        self, slide: Slide, extraction_mask: BinaryMask
+    ) -> Tuple[Tile, CoordinatePair]:
         """Generate Random Tiles within a slide box.
 
         Stops if:
@@ -585,6 +620,8 @@ class RandomTiler(Tiler):
         ----------
         slide : Slide
             The Whole Slide Image from which to extract the tiles.
+        extraction_mask : BinaryMask
+            BinaryMask object defining how to compute a binary mask from a Slide.
 
         Yields
         ------
@@ -597,7 +634,7 @@ class RandomTiler(Tiler):
         iteration = valid_tile_counter = 0
 
         while True:
-            tile_wsi_coords = self._random_tile_coordinates(slide)
+            tile_wsi_coords = self._random_tile_coordinates(slide, extraction_mask)
             try:
                 tile = slide.extract_tile(tile_wsi_coords, self.level)
             except ValueError:
@@ -675,7 +712,11 @@ class ScoreTiler(GridTiler):
         )
 
     def extract(
-        self, slide: Slide, report_path: str = None, log_level: str = "INFO"
+        self,
+        slide: Slide,
+        extraction_mask: BinaryMask,
+        report_path: str = None,
+        log_level: str = "INFO",
     ) -> None:
         """Extract grid tiles and save them to disk, according to a scoring function and
         following this filename pattern:
@@ -687,6 +728,8 @@ class ScoreTiler(GridTiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
+        extraction_mask : BinaryMask
+            BinaryMask object defining how to compute a binary mask from a Slide.
         report_path : str, optional
             Path to the CSV report. If None, no report will be saved
         log_level: str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
@@ -704,7 +747,9 @@ class ScoreTiler(GridTiler):
         self._validate_level(slide)
         self._validate_tile_size(slide)
 
-        highest_score_tiles, highest_scaled_score_tiles = self._tiles_generator(slide)
+        highest_score_tiles, highest_scaled_score_tiles = self._tiles_generator(
+            slide, extraction_mask
+        )
 
         tiles_counter = 0
         filenames = []
@@ -728,7 +773,7 @@ class ScoreTiler(GridTiler):
     # ------- implementation helpers -------
 
     def _tiles_generator(
-        self, slide: Slide
+        self, slide: Slide, extraction_mask: BinaryMask
     ) -> Tuple[List[Tuple[float, CoordinatePair]], List[Tuple[float, CoordinatePair]]]:
         r"""Calculate the tiles with the highest scores and their extraction coordinates
 
@@ -736,6 +781,8 @@ class ScoreTiler(GridTiler):
         ----------
         slide : Slide
             The slide to extract the tiles from.
+        extraction_mask : BinaryMask
+            BinaryMask object defining how to compute a binary mask from a Slide.
 
         Returns
         -------
@@ -757,7 +804,7 @@ class ScoreTiler(GridTiler):
         ValueError
             If ``n_tiles`` is negative.
         """  # noqa
-        all_scores = self._scores(slide)
+        all_scores = self._scores(slide, extraction_mask)
         scaled_scores = self._scale_scores(all_scores)
 
         sorted_tiles_by_score = sorted(all_scores, key=lambda x: x[0], reverse=True)
@@ -844,13 +891,17 @@ class ScoreTiler(GridTiler):
 
         return list(zip(scores_scaled, coords))
 
-    def _scores(self, slide: Slide) -> List[Tuple[float, CoordinatePair]]:
+    def _scores(
+        self, slide: Slide, extraction_mask: BinaryMask
+    ) -> List[Tuple[float, CoordinatePair]]:
         """Calculate the scores for all the tiles extracted from the ``slide``.
 
         Parameters
         ----------
         slide : Slide
             The slide to extract the tiles from.
+        extraction_mask : BinaryMask
+            BinaryMask object defining how to compute a binary mask from a Slide.
 
         Returns
         -------
@@ -858,12 +909,12 @@ class ScoreTiler(GridTiler):
             List of tuples containing the score and the extraction coordinates for each
             tile. Each tuple represents a tile.
         """
-        if next(super()._tiles_generator(slide), None) is None:
+        if next(super()._tiles_generator(slide, extraction_mask), None) is None:
             raise RuntimeError(
                 "No tiles have been generated. This could happen if `check_tissue=True`"
             )
 
-        grid_tiles = super()._tiles_generator(slide)
+        grid_tiles = super()._tiles_generator(slide, extraction_mask)
         scores = []
 
         for tile, tile_wsi_coords in grid_tiles:
