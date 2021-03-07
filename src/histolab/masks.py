@@ -39,12 +39,6 @@ class BinaryMask(ABC):
     def __call__(self, slide):
         return self._mask(slide)
 
-    @staticmethod
-    @abstractmethod
-    def _regions(regions: List[Region], n: int = 1) -> List[Region]:  # pragma: no cover
-        # This method property will be supplied by the inheriting classes individually
-        pass
-
     @lazyproperty
     @abstractmethod
     def _mask(self, slide):  # pragma: no cover
@@ -58,6 +52,11 @@ class BiggestTissueBoxMask(BinaryMask):
     @lru_cache(maxsize=100)
     def _mask(self, slide) -> np.ndarray:
         """Return the thumbnail binary mask of the box containing the max tissue area.
+
+        Parameters
+        ----------
+        slide : Slide
+            The Slide from which to compute the extraction mask
 
         Returns
         -------
@@ -97,8 +96,36 @@ class BiggestTissueBoxMask(BinaryMask):
         ValueError
             If ``n`` is not between 1 and the number of elements of ``regions``
         """
-        if not 1 <= n <= len(regions):
-            raise ValueError(f"n should be between 1 and {len(regions)}, got {n}")
+        if n < 1:
+            raise ValueError(f"Number of regions must be greater than 0, got {n}.")
+        if n > len(regions):
+            raise ValueError(
+                f"n should be smaller than the number of regions [{len(regions)}], "
+                f"got {n}"
+            )
 
         sorted_regions = sorted(regions, key=lambda r: r.area, reverse=True)
         return sorted_regions[:n]
+
+
+class TissueMask(BinaryMask):
+    """Object that represent the tissue area mask."""
+
+    @lru_cache(maxsize=100)
+    def _mask(self, slide) -> np.ndarray:
+        """Return the thumbnail binary mask of the tissue area.
+
+        Parameters
+        ----------
+        slide : Slide
+            The Slide from which to compute the extraction mask
+
+        Returns
+        -------
+        mask: np.ndarray
+            Binary mask of the tissue area. The dimensions are those of the thumbnail.
+        """
+        thumb = slide.wsi.get_thumbnail(slide.thumbnail_size)
+        filters = FiltersComposition(histolab.slide.Slide).tissue_mask_filters
+        thumb_mask = filters(thumb)
+        return thumb_mask

@@ -76,7 +76,7 @@ class Tiler(Protocol):
 
     @abstractmethod
     def extract(self, slide: Slide, extraction_mask: BinaryMask, log_level: str):
-        raise NotImplementedError
+        pass
 
     def locate_tiles(
         self,
@@ -174,7 +174,7 @@ class Tiler(Protocol):
     def _tiles_generator(
         self, slide: Slide, extraction_mask: BinaryMask
     ) -> Tuple[Tile, CoordinatePair]:
-        raise NotImplementedError
+        pass
 
     def _validate_level(self, slide: Slide) -> None:
         """Validate the Tiler's level according to the Slide.
