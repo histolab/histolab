@@ -5,6 +5,7 @@ import os
 import numpy as np
 import pytest
 
+from histolab.masks import BiggestTissueBoxMask
 from histolab.scorer import NucleiScorer
 from histolab.slide import Slide
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler
@@ -65,7 +66,11 @@ class DescribeRandomTiler:
             expectation,
             type_="png",
         )
-        tiles_location_img = random_tiles_extractor.locate_tiles(slide, scale_factor=10)
+        binary_mask = BiggestTissueBoxMask()
+
+        tiles_location_img = random_tiles_extractor.locate_tiles(
+            slide, binary_mask, scale_factor=10
+        )
         # --- Expanding test report with actual and expected images ---
         expand_tests_report(request, actual=tiles_location_img, expected=expected_img)
 
@@ -118,7 +123,11 @@ class DescribeGridTiler:
             check_tissue=check_tissue,
         )
         expected_img = load_expectation(expectation, type_="png")
-        tiles_location_img = grid_tiles_extractor.locate_tiles(slide, scale_factor=10)
+        mask = BiggestTissueBoxMask()
+
+        tiles_location_img = grid_tiles_extractor.locate_tiles(
+            slide, mask, scale_factor=10
+        )
         # --- Expanding test report with actual and expected images ---
         expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
 
@@ -201,10 +210,11 @@ class DescribeScoreTiler:
             r"Input image must be RGB. NOTE: the image will be converted to RGB before"
             r" HED conversion."
         )
+        binary_mask = BiggestTissueBoxMask()
 
         with pytest.warns(UserWarning, match=expected_warning_regex):
             tiles_location_img = scored_tiles_extractor.locate_tiles(
-                slide, scale_factor=10
+                slide, binary_mask, scale_factor=10
             )
         # --- Expanding test report with actual and expected images ---
         expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
