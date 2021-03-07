@@ -51,9 +51,10 @@ class Describe_RandomTiler:
     def or_it_has_not_available_level_value(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
         random_tiler = RandomTiler((128, 128), 10, 3)
+        binary_mask = BiggestTissueBoxMask()
 
         with pytest.raises(LevelError) as err:
-            random_tiler.extract(slide)
+            random_tiler.extract(slide, binary_mask)
 
         assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
@@ -72,9 +73,10 @@ class Describe_RandomTiler:
     def or_it_has_wrong_seed(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
         random_tiler = RandomTiler((128, 128), 10, 0, seed=-1)
+        binary_mask = BiggestTissueBoxMask()
 
         with pytest.raises(ValueError) as err:
-            random_tiler.extract(slide)
+            random_tiler.extract(slide, binary_mask)
 
         assert isinstance(err.value, ValueError)
         assert str(err.value) == "Seed must be between 0 and 2**32 - 1"
@@ -135,7 +137,7 @@ class Describe_RandomTiler:
 
     def it_can_generate_random_coordinates(self, request, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
-        _box_mask_thumb = method_mock(request, RandomTiler, "box_mask")
+        _box_mask_thumb = method_mock(request, BiggestTissueBoxMask, "__call__")
         _box_mask_thumb.return_value = NpArrayMock.ONES_500X500_BOOL
         _tile_size = property_mock(request, RandomTiler, "tile_size")
         _tile_size.return_value = (128, 128)
@@ -145,10 +147,11 @@ class Describe_RandomTiler:
         _np_random_choice2.return_value = 0
         _scale_coordinates = function_mock(request, "histolab.tiler.scale_coordinates")
         random_tiler = RandomTiler((128, 128), 10, 0)
+        binary_mask = BiggestTissueBoxMask()
 
-        random_tiler._random_tile_coordinates(slide)
+        random_tiler._random_tile_coordinates(slide, binary_mask)
 
-        _box_mask_thumb.assert_called_once_with(slide)
+        _box_mask_thumb.assert_called_once_with(binary_mask, slide)
         _tile_size.assert_has_calls([call((128, 128))])
         _scale_coordinates.assert_called_once_with(
             reference_coords=CP(x_ul=0, y_ul=0, x_br=128, y_br=128),
@@ -216,6 +219,7 @@ class Describe_RandomTiler:
         _extract_tile = method_mock(request, Slide, "extract_tile")
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.side_effect = has_enough_tissue * (max_iter // 2)
+        binary_mask = BiggestTissueBoxMask()
         tiles = [tile1, tile2]
         _extract_tile.side_effect = tiles * (max_iter // 2)
         random_tiler = RandomTiler(
@@ -227,9 +231,9 @@ class Describe_RandomTiler:
             tissue_percent=60,
         )
 
-        generated_tiles = list(random_tiler._tiles_generator(slide))
+        generated_tiles = list(random_tiler._tiles_generator(slide, binary_mask))
 
-        _random_tile_coordinates.assert_called_with(random_tiler, slide)
+        _random_tile_coordinates.assert_called_with(random_tiler, slide, binary_mask)
         assert _has_enough_tissue.call_args_list == [call(tile1, 60), call(tile2, 60)]
         assert _random_tile_coordinates.call_count <= random_tiler.max_iter
         assert len(generated_tiles) == expected_value
@@ -246,6 +250,7 @@ class Describe_RandomTiler:
         _extract_tile = method_mock(request, Slide, "extract_tile")
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.side_effect = [False, False] * 5
+        binary_mask = BiggestTissueBoxMask()
         tiles = [
             Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
             Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, CP(0, 10, 0, 10)),
@@ -260,9 +265,9 @@ class Describe_RandomTiler:
             tissue_percent=60,
         )
 
-        generated_tiles = list(random_tiler._tiles_generator(slide))
+        generated_tiles = list(random_tiler._tiles_generator(slide, binary_mask))
 
-        _random_tile_coordinates.assert_called_with(random_tiler, slide)
+        _random_tile_coordinates.assert_called_with(random_tiler, slide, binary_mask)
         assert (
             _has_enough_tissue.call_args_list
             == [
@@ -311,6 +316,7 @@ class Describe_RandomTiler:
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.side_effect = has_enough_tissue * (max_iter // 2)
         tiles = [tile1, tile2]
+        binary_mask = BiggestTissueBoxMask()
         _extract_tile.side_effect = tiles * (max_iter // 2)
         random_tiler = RandomTiler(
             (10, 10),
@@ -320,9 +326,9 @@ class Describe_RandomTiler:
             check_tissue=False,
         )
 
-        generated_tiles = list(random_tiler._tiles_generator(slide))
+        generated_tiles = list(random_tiler._tiles_generator(slide, binary_mask))
 
-        _random_tile_coordinates.assert_called_with(random_tiler, slide)
+        _random_tile_coordinates.assert_called_with(random_tiler, slide, binary_mask)
         _has_enough_tissue.assert_not_called()
         assert _random_tile_coordinates.call_count <= random_tiler.max_iter
         assert len(generated_tiles) == expected_value
@@ -335,8 +341,9 @@ class Describe_RandomTiler:
         random_tiler = RandomTiler((10, 10), 1, level=0, max_iter=1, check_tissue=False)
         _random_tile_coordinates.side_effect = [CP(-1, -1, -1, -1), CP(0, 10, 0, 10)]
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        binary_mask = BiggestTissueBoxMask()
 
-        generated_tiles = list(random_tiler._tiles_generator(slide))
+        generated_tiles = list(random_tiler._tiles_generator(slide, binary_mask))
 
         assert generated_tiles[0][1] == CP(0, 10, 0, 10)
         assert isinstance(generated_tiles[0][0], Tile)
@@ -358,9 +365,10 @@ class Describe_RandomTiler:
         _has_valid_tile_size = method_mock(request, RandomTiler, "_has_valid_tile_size")
         _has_valid_tile_size.return_value = True
         random_tiler = RandomTiler((10, 10), n_tiles=2, level=0)
+        binary_mask = BiggestTissueBoxMask()
 
         with caplog.at_level(logging.INFO):
-            random_tiler.extract(slide)
+            random_tiler.extract(slide, binary_mask)
 
         assert re.sub(r":+\d{3}", "", caplog.text).splitlines() == [
             "INFO     root:tiler.py \t Tile 0 saved: tile_0_level2_0-10-0-10.png",
@@ -396,9 +404,10 @@ class Describe_RandomTiler:
         _has_valid_tile_size = method_mock(request, RandomTiler, "_has_valid_tile_size")
         _has_valid_tile_size.return_value = False
         random_tiler = RandomTiler((50, 52), n_tiles=10, level=0)
+        binary_mask = BiggestTissueBoxMask()
 
         with pytest.raises(TileSizeError) as err:
-            random_tiler.extract(slide)
+            random_tiler.extract(slide, binary_mask)
 
         assert isinstance(err.value, TileSizeError)
         assert (
@@ -419,9 +428,9 @@ class Describe_GridTiler:
     def it_constructs_from_args(self, level, request):
         _init = initializer_mock(request, GridTiler)
 
-        grid_tiler = GridTiler((512, 512), level, True, 0, "", ".png")
+        grid_tiler = GridTiler((512, 512), level, True, 80, 0, "", ".png")
 
-        _init.assert_called_once_with(ANY, (512, 512), level, True, 0, "", ".png")
+        _init.assert_called_once_with(ANY, (512, 512), level, True, 80, 0, "", ".png")
         assert isinstance(grid_tiler, GridTiler)
         assert isinstance(grid_tiler, Tiler)
 
@@ -434,11 +443,11 @@ class Describe_GridTiler:
 
     def or_it_has_not_available_level_value(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
-
+        binary_mask = BiggestTissueBoxMask()
         grid_tiler = GridTiler((128, 128), 3)
 
         with pytest.raises(LevelError) as err:
-            grid_tiler.extract(slide)
+            grid_tiler.extract(slide, binary_mask)
 
         assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
@@ -596,10 +605,13 @@ class Describe_GridTiler:
         _extract_tile.side_effect = [tile1, tile2]
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=True, tissue_percent=60)
         tiles = [tile1, tile2]
+        binary_mask = BiggestTissueBoxMask()
 
-        generated_tiles = list(grid_tiler._tiles_generator(slide))
+        generated_tiles = list(grid_tiler._tiles_generator(slide, binary_mask))
 
-        _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
+        _grid_coordinates_generator.assert_called_once_with(
+            grid_tiler, slide, binary_mask
+        )
         assert _extract_tile.call_args_list == (
             [call(slide, CP(0, 10, 0, 10), 0), call(slide, CP(0, 10, 0, 10), 0)]
         )
@@ -645,10 +657,13 @@ class Describe_GridTiler:
         _extract_tile.side_effect = [tile1, tile2]
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=False)
         tiles = [tile1, tile2]
+        binary_mask = BiggestTissueBoxMask()
 
-        generated_tiles = list(grid_tiler._tiles_generator(slide))
+        generated_tiles = list(grid_tiler._tiles_generator(slide, binary_mask))
 
-        _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
+        _grid_coordinates_generator.assert_called_once_with(
+            grid_tiler, slide, binary_mask
+        )
         assert _extract_tile.call_args_list == (
             [call(slide, CP(0, 10, 0, 10), 0), call(slide, CP(0, 10, 0, 10), 0)]
         )
@@ -668,10 +683,13 @@ class Describe_GridTiler:
         coords2 = CP(0, 10, 0, 10)
         _grid_coordinates_generator.return_value = [coords1, coords2]
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=False)
+        binary_mask = BiggestTissueBoxMask()
 
-        generated_tiles = list(grid_tiler._tiles_generator(slide))
+        generated_tiles = list(grid_tiler._tiles_generator(slide, binary_mask))
 
-        _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
+        _grid_coordinates_generator.assert_called_once_with(
+            grid_tiler, slide, binary_mask
+        )
         assert len(generated_tiles) == 1
         # generated_tiles[0][0] is a Tile object but we don't know what object it is
         # because Slide.extract_tile is not mocked (for the exception to happen inside)
@@ -686,10 +704,13 @@ class Describe_GridTiler:
         )
         _grid_coordinates_generator.return_value = [coords]
         grid_tiler = GridTiler((10, 10))
-        generated_tiles = list(grid_tiler._tiles_generator(slide))
+        binary_mask = BiggestTissueBoxMask()
+        generated_tiles = list(grid_tiler._tiles_generator(slide, binary_mask))
 
         assert len(generated_tiles) == 0
-        _grid_coordinates_generator.assert_called_once_with(grid_tiler, slide)
+        _grid_coordinates_generator.assert_called_once_with(
+            grid_tiler, slide, binary_mask
+        )
 
     def it_can_extract_grid_tiles(self, request, tmpdir, caplog):
         tmp_path_ = tmpdir.mkdir("myslide")
@@ -711,9 +732,10 @@ class Describe_GridTiler:
         _has_valid_tile_size = method_mock(request, GridTiler, "_has_valid_tile_size")
         _has_valid_tile_size.return_value = True
         grid_tiler = GridTiler((10, 10), level=0)
+        binary_mask = BiggestTissueBoxMask()
 
         with caplog.at_level(logging.ERROR):
-            grid_tiler.extract(slide)
+            grid_tiler.extract(slide, binary_mask)
 
         assert caplog.text == ""
         assert _tile_filename.call_args_list == [
@@ -727,6 +749,11 @@ class Describe_GridTiler:
             os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
         )
         _has_valid_tile_size.assert_called_once_with(grid_tiler, slide)
+        _tiles_generator.assert_called_once_with(grid_tiler, slide, binary_mask)
+        assert _tile_filename.call_args_list == [
+            call(grid_tiler, coords, 0),
+            call(grid_tiler, coords, 1),
+        ]
 
     @pytest.mark.parametrize(
         "image, size",
@@ -745,9 +772,10 @@ class Describe_GridTiler:
         _has_valid_tile_size = method_mock(request, GridTiler, "_has_valid_tile_size")
         _has_valid_tile_size.return_value = False
         grid_tiler = GridTiler((50, 52), level=0)
+        binary_mask = BiggestTissueBoxMask()
 
         with pytest.raises(TileSizeError) as err:
-            grid_tiler.extract(slide)
+            grid_tiler.extract(slide, binary_mask)
 
         assert isinstance(err.value, TileSizeError)
         assert (
@@ -812,12 +840,13 @@ class Describe_ScoreTiler:
         _scorer = instance_mock(request, RandomScorer)
         _scorer.side_effect = [0.5, 0.7]
         score_tiler = ScoreTiler(_scorer, (10, 10), 2, 0)
+        binary_mask = BiggestTissueBoxMask()
 
-        scores = score_tiler._scores(slide)
+        scores = score_tiler._scores(slide, binary_mask)
 
         assert _tiles_generator.call_args_list == [
-            call(score_tiler, slide),
-            call(score_tiler, slide),
+            call(score_tiler, slide, binary_mask),
+            call(score_tiler, slide, binary_mask),
         ]
         assert _scorer.call_args_list == [call(tile), call(tile)]
         assert type(scores) == list
@@ -832,11 +861,12 @@ class Describe_ScoreTiler:
         # it needs to be an empty generator
         _tiles_generator.return_value = (n for n in [])
         score_tiler = ScoreTiler(None, (10, 10), 2, 0)
+        binary_mask = BiggestTissueBoxMask()
 
         with pytest.raises(RuntimeError) as err:
-            score_tiler._scores(slide)
+            score_tiler._scores(slide, binary_mask)
 
-        _tiles_generator.assert_called_once_with(score_tiler, slide)
+        _tiles_generator.assert_called_once_with(score_tiler, slide, binary_mask)
         assert isinstance(err.value, RuntimeError)
         assert (
             str(err.value)
@@ -846,9 +876,10 @@ class Describe_ScoreTiler:
     def or_it_raises_levelerror_if_has_not_available_level_value(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
         score_tiler = ScoreTiler(None, (10, 10), 2, 3)
+        binary_mask = BiggestTissueBoxMask()
 
         with pytest.raises(LevelError) as err:
-            score_tiler.extract(slide)
+            score_tiler.extract(slide, binary_mask)
 
         assert isinstance(err.value, LevelError)
         assert str(err.value) == "Level 3 not available. Number of available levels: 1"
@@ -927,10 +958,11 @@ class Describe_ScoreTiler:
         ]
         _scorer = instance_mock(request, RandomScorer)
         score_tiler = ScoreTiler(_scorer, (10, 10), n_tiles, 0)
+        binary_mask = BiggestTissueBoxMask()
 
-        highest_score_tiles = score_tiler._tiles_generator(slide)
+        highest_score_tiles = score_tiler._tiles_generator(slide, binary_mask)
 
-        _scores.assert_called_once_with(score_tiler, slide)
+        _scores.assert_called_once_with(score_tiler, slide, binary_mask)
         assert highest_score_tiles == expected_value
 
     def but_it_raises_error_with_negative_n_tiles_value(self, request, tmpdir):
@@ -950,12 +982,14 @@ class Describe_ScoreTiler:
         ]
         _scorer = instance_mock(request, RandomScorer)
         score_tiler = ScoreTiler(_scorer, (10, 10), -1, 0)
+        binary_mask = BiggestTissueBoxMask()
 
         with pytest.raises(ValueError) as err:
-            score_tiler.extract(slide)
+            score_tiler.extract(slide, binary_mask)
 
         assert isinstance(err.value, ValueError)
         assert str(err.value) == "'n_tiles' cannot be negative (-1)"
+        _scores.assert_called_once_with(score_tiler, slide, binary_mask)
 
     def it_can_extract_score_tiles(self, request, tmpdir):
         _extract_tile = method_mock(request, Slide, "extract_tile")
@@ -985,14 +1019,15 @@ class Describe_ScoreTiler:
         _has_valid_tile_size = method_mock(request, ScoreTiler, "_has_valid_tile_size")
         _has_valid_tile_size.return_value = True
         score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 0)
+        binary_mask = BiggestTissueBoxMask()
 
-        score_tiler.extract(slide)
+        score_tiler.extract(slide, binary_mask)
 
         assert _extract_tile.call_args_list == [
             call(slide, coords, 0),
             call(slide, coords, 0),
         ]
-        _tiles_generator.assert_called_with(score_tiler, slide)
+        _tiles_generator.assert_called_with(score_tiler, slide, binary_mask)
         assert _tile_filename.call_args_list == [
             call(score_tiler, coords, 0),
             call(score_tiler, coords, 1),
@@ -1023,9 +1058,10 @@ class Describe_ScoreTiler:
         _has_valid_tile_size = method_mock(request, ScoreTiler, "_has_valid_tile_size")
         _has_valid_tile_size.return_value = False
         score_tiler = ScoreTiler(None, (50, 52), 2, 0)
+        binary_mask = BiggestTissueBoxMask()
 
         with pytest.raises(TileSizeError) as err:
-            score_tiler.extract(slide)
+            score_tiler.extract(slide, binary_mask)
 
         assert isinstance(err.value, TileSizeError)
         assert (
@@ -1087,14 +1123,15 @@ class Describe_ScoreTiler:
         _save_report = method_mock(request, ScoreTiler, "_save_report", autospec=False)
         random_scorer = RandomScorer()
         score_tiler = ScoreTiler(random_scorer, (10, 10), 2, 0)
+        binary_mask = BiggestTissueBoxMask()
 
-        score_tiler.extract(slide, "report.csv")
+        score_tiler.extract(slide, binary_mask, "report.csv")
 
         assert _extract_tile.call_args_list == [
             call(slide, coords, 0),
             call(slide, coords, 0),
         ]
-        _tiles_generator.assert_called_with(score_tiler, slide)
+        _tiles_generator.assert_called_with(score_tiler, slide, binary_mask)
         assert _tile_filename.call_args_list == [
             call(score_tiler, coords, 0),
             call(score_tiler, coords, 1),
