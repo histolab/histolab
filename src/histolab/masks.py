@@ -56,7 +56,7 @@ class BinaryMask(ABC):
     @abstractmethod
     def _mask(self, slide):  # pragma: no cover
         # This property will be supplied by the inheriting classes individually
-        pass
+        pass  # pragma: no cover
 
 
 class BiggestTissueBoxMask(BinaryMask):

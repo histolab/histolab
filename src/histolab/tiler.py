@@ -75,13 +75,18 @@ class Tiler(Protocol):
         return biggest_tissue_box_mask(slide)
 
     @abstractmethod
-    def extract(self, slide: Slide, extraction_mask: BinaryMask, log_level: str):
-        pass
+    def extract(
+        self,
+        slide: Slide,
+        log_level: str,
+        extraction_mask: BinaryMask = BiggestTissueBoxMask(),
+    ):
+        pass  # pragma: no cover
 
     def locate_tiles(
         self,
         slide: Slide,
-        extraction_mask: BinaryMask,
+        extraction_mask: BinaryMask = BiggestTissueBoxMask(),
         scale_factor: int = 32,
         alpha: int = 128,
         outline: str = "red",
@@ -94,6 +99,7 @@ class Tiler(Protocol):
             Slide reference where placing the tiles
         extraction_mask : BinaryMask
             BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`
         scale_factor: int
             Scaling factor for the returned image. Default is 32.
         alpha: int
@@ -172,9 +178,9 @@ class Tiler(Protocol):
         return tile_filename
 
     def _tiles_generator(
-        self, slide: Slide, extraction_mask: BinaryMask
+        self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
     ) -> Tuple[Tile, CoordinatePair]:
-        pass
+        pass  # pragma: no cover
 
     def _validate_level(self, slide: Slide) -> None:
         """Validate the Tiler's level according to the Slide.
@@ -259,7 +265,10 @@ class GridTiler(Tiler):
         self.suffix = suffix
 
     def extract(
-        self, slide: Slide, extraction_mask: BinaryMask, log_level: str = "INFO"
+        self,
+        slide: Slide,
+        extraction_mask: BinaryMask = BiggestTissueBoxMask(),
+        log_level: str = "INFO",
     ) -> None:
         """Extract tiles arranged in a grid and save them to disk, following this
         filename pattern:
@@ -271,6 +280,7 @@ class GridTiler(Tiler):
             Slide from which to extract the tiles
         extraction_mask : BinaryMask
             BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
         log_level : str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
             Threshold level for the log messages. Default "INFO"
 
@@ -351,7 +361,7 @@ class GridTiler(Tiler):
                 yield tile_wsi_coords
 
     def _grid_coordinates_generator(
-        self, slide: Slide, extraction_mask: BinaryMask
+        self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
     ) -> CoordinatePair:
         """Generate Coordinates at level 0 of grid tiles within the tissue.
 
@@ -362,6 +372,7 @@ class GridTiler(Tiler):
             tissue area.
         extraction_mask : BinaryMask
             BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
 
         Yields
         -------
@@ -384,7 +395,7 @@ class GridTiler(Tiler):
             )
 
     def _tiles_generator(
-        self, slide: Slide, extraction_mask: BinaryMask
+        self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
     ) -> Tuple[Tile, CoordinatePair]:
         """Generator of tiles arranged in a grid.
 
@@ -394,6 +405,7 @@ class GridTiler(Tiler):
             Slide from which to extract the tiles
         extraction_mask : BinaryMask
             BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
 
         Yields
         -------
@@ -504,7 +516,10 @@ class RandomTiler(Tiler):
         self.suffix = suffix
 
     def extract(
-        self, slide: Slide, extraction_mask: BinaryMask, log_level: str = "INFO"
+        self,
+        slide: Slide,
+        extraction_mask: BinaryMask = BiggestTissueBoxMask(),
+        log_level: str = "INFO",
     ) -> None:
         """Extract random tiles and save them to disk, following this filename pattern:
         `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
@@ -515,6 +530,7 @@ class RandomTiler(Tiler):
             Slide from which to extract the tiles
         extraction_mask : BinaryMask
             BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
         log_level: str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
             Threshold level for the log messages. Default "INFO"
 
@@ -566,7 +582,7 @@ class RandomTiler(Tiler):
     # ------- implementation helpers -------
 
     def _random_tile_coordinates(
-        self, slide: Slide, extraction_mask: BinaryMask
+        self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
     ) -> CoordinatePair:
         """Return 0-level Coordinates of a tile picked at random within the box.
 
@@ -576,6 +592,7 @@ class RandomTiler(Tiler):
             Slide from which calculate the coordinates. Needed to calculate the box.
         extraction_mask : BinaryMask
             BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
 
         Returns
         -------
@@ -608,7 +625,7 @@ class RandomTiler(Tiler):
         return tile_wsi_coords
 
     def _tiles_generator(
-        self, slide: Slide, extraction_mask: BinaryMask
+        self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
     ) -> Tuple[Tile, CoordinatePair]:
         """Generate Random Tiles within a slide box.
 
@@ -622,6 +639,7 @@ class RandomTiler(Tiler):
             The Whole Slide Image from which to extract the tiles.
         extraction_mask : BinaryMask
             BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
 
         Yields
         ------
@@ -714,7 +732,7 @@ class ScoreTiler(GridTiler):
     def extract(
         self,
         slide: Slide,
-        extraction_mask: BinaryMask,
+        extraction_mask: BinaryMask = BiggestTissueBoxMask(),
         report_path: str = None,
         log_level: str = "INFO",
     ) -> None:
@@ -730,6 +748,7 @@ class ScoreTiler(GridTiler):
             Slide from which to extract the tiles
         extraction_mask : BinaryMask
             BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
         report_path : str, optional
             Path to the CSV report. If None, no report will be saved
         log_level: str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
@@ -773,7 +792,7 @@ class ScoreTiler(GridTiler):
     # ------- implementation helpers -------
 
     def _tiles_generator(
-        self, slide: Slide, extraction_mask: BinaryMask
+        self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
     ) -> Tuple[List[Tuple[float, CoordinatePair]], List[Tuple[float, CoordinatePair]]]:
         r"""Calculate the tiles with the highest scores and their extraction coordinates
 
@@ -783,6 +802,7 @@ class ScoreTiler(GridTiler):
             The slide to extract the tiles from.
         extraction_mask : BinaryMask
             BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
 
         Returns
         -------
@@ -892,7 +912,7 @@ class ScoreTiler(GridTiler):
         return list(zip(scores_scaled, coords))
 
     def _scores(
-        self, slide: Slide, extraction_mask: BinaryMask
+        self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
     ) -> List[Tuple[float, CoordinatePair]]:
         """Calculate the scores for all the tiles extracted from the ``slide``.
 
@@ -902,6 +922,7 @@ class ScoreTiler(GridTiler):
             The slide to extract the tiles from.
         extraction_mask : BinaryMask
             BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
 
         Returns
         -------
