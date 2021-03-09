@@ -25,7 +25,6 @@ import math
 import ntpath
 import os
 import pathlib
-from functools import lru_cache
 from typing import Iterator, List, Tuple, Union
 
 import numpy as np
@@ -35,7 +34,6 @@ from deprecated.sphinx import deprecated
 
 from .exceptions import LevelError
 from .filters.compositions import FiltersComposition
-from .masks import BiggestTissueBoxMask
 from .tile import Tile
 from .types import CoordinatePair, Region
 from .util import (
@@ -75,23 +73,6 @@ class Slide:
         )
 
     # ---public interface methods and properties---
-
-    @lazyproperty
-    @lru_cache(maxsize=100)
-    @deprecated(
-        version="0.2.4", reason="Use histolab.masks.BiggestTissueBoxMask(slide)."
-    )
-    def biggest_tissue_box_mask(self) -> np.ndarray:
-        """Return the thumbnail binary mask of the box containing the max tissue area.
-
-        Returns
-        -------
-        mask : np.ndarray
-            Binary mask of the box containing the max area of tissue. The dimensions are
-            those of the thumbnail.
-        """
-        biggest_tissue_box_mask = BiggestTissueBoxMask()
-        return biggest_tissue_box_mask(self)
 
     @lazyproperty
     def dimensions(self) -> Tuple[int, int]:

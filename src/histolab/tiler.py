@@ -20,12 +20,10 @@ import csv
 import logging
 import os
 from abc import abstractmethod
-from functools import lru_cache
 from typing import List, Tuple
 
 import numpy as np
 import PIL
-from deprecated.sphinx import deprecated
 
 from .exceptions import LevelError, TileSizeError
 from .masks import BiggestTissueBoxMask, BinaryMask
@@ -50,29 +48,6 @@ class Tiler(Protocol):
 
     level: int
     tile_size: Tuple[int, int]
-
-    @lru_cache(maxsize=100)
-    @deprecated(
-        version="0.2.4",
-        reason=r"Use ``histolab.masks`` objects to define your own extraction mask.",
-    )
-    def box_mask(self, slide: Slide) -> np.ndarray:
-        """Return binary mask, at thumbnail level, of the box for tiles extraction.
-
-        The mask pixels set to True correspond to the tissue box.
-
-        Parameters
-        ----------
-        slide : Slide
-            The Slide from which to extract the extraction mask
-
-        Returns
-        -------
-        np.ndarray
-            Extraction mask at thumbnail level
-        """
-        biggest_tissue_box_mask = BiggestTissueBoxMask()
-        return biggest_tissue_box_mask(slide)
 
     @abstractmethod
     def extract(
