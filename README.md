@@ -154,7 +154,7 @@ from histolab.slide import Slide
 ```
 
 To initialize a Slide it is necessary to specify the WSI path, and the
-`processed_path` where the thumbnail and the tiles will be saved. In our
+`processed_path` where the tiles will be saved. In our
 example, we want the `processed_path` of each slide to be a subfolder of
 the current working directory:
 
@@ -210,19 +210,17 @@ Dimensions at level 1: (7500, 8496)
 Dimensions at level 2: (1875, 2124)
 ```
 
-Moreover, we can save and show the slide thumbnail in a separate window.
-In particular, the thumbnail image will be automatically saved in a
-subdirectory of the `processed_path`:
+Moreover, we can retrieve or show the slide thumbnail in a separate window:
 
 ```python
-prostate_slide.save_thumbnail()
+prostate_slide.thumbnail
 prostate_slide.show()
 ```
 
 ![](https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png)
 
 ```python
-ovarian_slide.save_thumbnail()
+ovarian_slide.thumbnail
 ovarian_slide.show()
 ```
 

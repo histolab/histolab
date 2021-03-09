@@ -10,7 +10,6 @@ import numpy as np
 import openslide
 import PIL
 import pytest
-from PIL import ImageShow
 
 from histolab.exceptions import LevelError
 from histolab.masks import BiggestTissueBoxMask
@@ -22,6 +21,7 @@ from ..unitutil import (
     ANY,
     PILIMG,
     base_test_slide,
+    call,
     class_mock,
     dict_list_eq,
     function_mock,
@@ -68,13 +68,10 @@ class Describe_Slide:
         _resampled_dimensions = method_mock(request, Slide, "_resampled_dimensions")
         _resampled_dimensions.return_value = (1, 2, 3, 4)
         with pytest.raises(TypeError) as err:
-            slide = Slide("path", None)
-            slide.scaled_image_path(32)
+            Slide("path", None)
 
         assert isinstance(err.value, TypeError)
-        assert (
-            str(err.value) == "expected str, bytes or os.PathLike object, not NoneType"
-        )
+        assert str(err.value) == "processed_path cannot be None."
 
     @pytest.mark.parametrize("path_type_transform", [str, Path])
     def it_knows_its_wsi(self, tmpdir, path_type_transform):
@@ -89,87 +86,6 @@ class Describe_Slide:
         assert type(wsi) == openslide.ImageSlide
 
     @pytest.mark.parametrize(
-        "resampled_dims, dir_path, slide_path, proc_path, scale_factor, expected_path",
-        (
-            (
-                (245, 123, 145, 99),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                64,
-                os.path.join("/foo/bar/b/0/9", "myslide-64x-245x123-145x99.png"),
-            ),
-            (
-                (245, 123, 145, 99),
-                Path("foo/bar/b/0/9"),
-                Path("foo/bar/myslide.svs"),
-                "processed",
-                64,
-                os.path.join(
-                    "foo", "bar", "b", "0", "9", "myslide-64x-245x123-145x99.png"
-                ),
-            ),
-            (
-                (245, 123, 145, 99),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                32,
-                os.path.join("/foo/bar/b/0/9", "myslide-32x-245x123-145x99.png"),
-            ),
-            (
-                (None, None, None, None),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                64,
-                os.path.join("/foo/bar/b/0/9", "myslide*.png"),
-            ),
-            (
-                (None, 234, 192, None),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                64,
-                os.path.join("/foo/bar/b/0/9", "myslide-64x-Nonex234-192xNone.png"),
-            ),
-            (
-                (123, 234, 192, None),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                64,
-                os.path.join("/foo/bar/b/0/9", "myslide-64x-123x234-192xNone.png"),
-            ),
-            (
-                (None, None, 192, None),
-                "/foo/bar/b/0/9",
-                "/foo/bar/myslide.svs",
-                "processed",
-                64,
-                os.path.join("/foo/bar/b/0/9", "myslide-64x-NonexNone-192xNone.png"),
-            ),
-        ),
-    )
-    def it_generates_the_correct_breadcrumb(
-        self,
-        request,
-        resampled_dims,
-        dir_path,
-        slide_path,
-        proc_path,
-        scale_factor,
-        expected_path,
-    ):
-        _resampled_dimensions = method_mock(request, Slide, "_resampled_dimensions")
-        _resampled_dimensions.return_value = resampled_dims
-        slide = Slide(slide_path, proc_path)
-
-        _breadcrumb = slide._breadcrumb(dir_path, scale_factor)
-
-        assert _breadcrumb == expected_path
-
-    @pytest.mark.parametrize(
         "slide_path, expected_value",
         (("/foo/bar/myslide.svs", "myslide"), ("/foo/myslide.svs", "myslide")),
     )
@@ -179,54 +95,6 @@ class Describe_Slide:
         name = slide.name
 
         assert name == expected_value
-
-    @pytest.mark.parametrize(
-        "slide_path, proc_path, slide_dims, expected_value",
-        (
-            (
-                "1.svs",
-                "1/p",
-                (345, 111, 333, 444),
-                os.path.join("1/p", "1-22x-345x111-333x444.png"),
-            ),
-            (
-                "2.svs",
-                "2/p",
-                (345, 111, None, None),
-                os.path.join("2/p", "2-22x-345x111-NonexNone.png"),
-            ),
-            (
-                "2.svs",
-                "2/p",
-                (345, 111, 123, 123),
-                os.path.join("2/p", "2-22x-345x111-123x123.png"),
-            ),
-            ("2.svs", "2/p", (None, None, None, None), os.path.join("2/p", "2*.png")),
-        ),
-    )
-    def it_knows_its_scaled_image_path(
-        self, resampled_dims_, slide_path, proc_path, slide_dims, expected_value
-    ):
-        resampled_dims_.return_value = slide_dims
-        slide = Slide(slide_path, proc_path)
-
-        scaled_img_path = slide.scaled_image_path(scale_factor=22)
-
-        assert scaled_img_path == expected_value
-
-    def it_knows_its_thumbnails_path(self, resampled_dims_):
-        slide_path, proc_path, slide_dims, expected_value = (
-            "/foo/bar/myslide.svs",
-            "/foo/bar/myslide/processed",
-            (345, 111, 333, 444),
-            os.path.join("/foo/bar/myslide/processed", "thumbnails", "myslide.png"),
-        )
-        resampled_dims_.return_value = slide_dims
-        slide = Slide(slide_path, proc_path)
-
-        thumbnail_path = slide.thumbnail_path
-
-        assert thumbnail_path == expected_value
 
     def it_knows_its_dimensions(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
@@ -292,7 +160,9 @@ class Describe_Slide:
             slide.wsi
 
         assert isinstance(err.value, FileNotFoundError)
-        assert str(err.value) == "The wsi path resource doesn't exist"
+        assert (
+            str(err.value) == "The wsi path resource doesn't exist: wrong/path/fake.wsi"
+        )
 
     def or_it_raises_an_PIL_exception(self, tmpdir):
         slide_path = tmpdir.mkdir("sub").join("hello.txt")
@@ -339,7 +209,7 @@ class Describe_Slide:
 
         assert _resample[1].shape == (math.floor(500 / 32), math.floor(500 / 32), 3)
 
-    def it_can_save_scaled_image(self, tmpdir, resampled_dims_):
+    def it_knows_its_scaled_image(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -347,14 +217,11 @@ class Describe_Slide:
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
         resampled_dims_.return_value = (100, 200, 300, 400)
 
-        slide.save_scaled_image(32)
+        scaled_image = slide.scaled_image(32)
 
-        assert slide.scaled_image_path(32) == os.path.join(
-            tmp_path_, "processed", "mywsi-32x-100x200-300x400.png"
-        )
-        assert os.path.exists(os.path.join(tmp_path_, slide.scaled_image_path(32)))
+        assert type(scaled_image) == PIL.Image.Image
 
-    def it_can_save_thumbnail(self, tmpdir, resampled_dims_):
+    def it_knows_its_thumbnail(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -362,12 +229,9 @@ class Describe_Slide:
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
         resampled_dims_.return_value = (100, 200, 300, 400)
 
-        slide.save_thumbnail()
+        thumb = slide.thumbnail
 
-        assert slide.thumbnail_path == os.path.join(
-            tmp_path_, "processed", "thumbnails", "mywsi.png"
-        )
-        assert os.path.exists(os.path.join(tmp_path_, slide.thumbnail_path))
+        assert type(thumb) == PIL.Image.Image
 
     def it_knows_regions_from_binary_mask(self, request):
         binary_mask = np.array([[True, False], [True, True]])
@@ -436,9 +300,7 @@ class Describe_Slide:
     def it_can_show_its_thumbnail(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
-        slide.save_thumbnail()
-
-        assert ImageShow.show(PIL.Image.open(slide.thumbnail_path))
+        assert slide.show()
 
     def but_it_raises_error_when_it_doesnt_exist(self):
         slide = Slide("a/b", "processed")
@@ -448,8 +310,8 @@ class Describe_Slide:
 
         assert (
             str(err.value)
-            == "Cannot display the slide thumbnail:[Errno 2] No such file or "
-            f"directory: {repr(os.path.join('processed', 'thumbnails', 'b.png'))}"
+            == "Cannot display the slide thumbnail: The wsi path resource doesn't "
+            "exist: a/b"
         )
 
     @pytest.mark.parametrize(
@@ -775,7 +637,7 @@ class Describe_Slideset:
 
         assert _min_size_slide == {"slide": "mywsi2", "size": 2500}
 
-    def it_can_save_scaled_slides(self, request, tmpdir):
+    def it_knows_its_scaled_slides(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         slide1 = instance_mock(request, Slide)
         slide2 = instance_mock(request, Slide)
@@ -783,23 +645,24 @@ class Describe_Slideset:
         slideset = SlideSet(tmp_path_, os.path.join(tmp_path_, "processed"), [])
         slides = method_mock(request, SlideSet, "__iter__")
         slides.return_value = [slide1, slide2]
-        slideset.save_scaled_slides(32, 2)
+        slideset.scaled_slides(32, 2)
 
-        slide1.save_scaled_image.assert_called_once_with(32)
-        slide2.save_scaled_image.assert_called_once_with(32)
+        slide1.scaled_image.assert_called_once_with(32)
+        slide2.scaled_image.assert_called_once_with(32)
 
-    def it_can_save_thumbnails(self, request, tmpdir):
+    def it_knows_its_thumbnails(self, request, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
-        slide1 = instance_mock(request, Slide)
-        slide2 = instance_mock(request, Slide)
+        thumbnail_ = property_mock(request, Slide, "thumbnail")
+        slide1 = Slide("foo/bar", "proc")
+        slide2 = Slide("foo/bar", "proc")
 
         slideset = SlideSet(tmp_path_, os.path.join(tmp_path_, "processed"), [])
         slides = method_mock(request, SlideSet, "__iter__")
         slides.return_value = [slide1, slide2]
-        slideset.save_thumbnails(2)
 
-        slide1.save_thumbnail.assert_called_once_with()
-        slide2.save_thumbnail.assert_called_once_with()
+        slideset.thumbnails()
+
+        assert thumbnail_.call_args_list == [call(), call()]
 
     def it_generates_slides_stats(self, total_slides_prop, tmpdir):
         total_slides_prop.return_value = 2

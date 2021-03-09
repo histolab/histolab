@@ -112,9 +112,7 @@ class Tiler(Protocol):
         PIL.Image.Image
             PIL Image of the rescaled slide with the extracted tiles outlined
         """
-        if not os.path.exists(slide.scaled_image_path(scale_factor)):
-            slide.save_scaled_image(scale_factor)
-        img = PIL.Image.open(slide.scaled_image_path(scale_factor))
+        img = slide.scaled_image(scale_factor)
         img.putalpha(alpha)
         draw = PIL.ImageDraw.Draw(img)
 
@@ -300,7 +298,7 @@ class GridTiler(Tiler):
         tiles_counter = 0
         for tiles_counter, (tile, tile_wsi_coords) in enumerate(grid_tiles):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
-            full_tile_path = os.path.join(slide.processed_path, "tiles", tile_filename)
+            full_tile_path = os.path.join(slide.processed_path, tile_filename)
             tile.save(full_tile_path)
             logging.info(f"\t Tile {tiles_counter} saved: {tile_filename}")
         logging.info(f"{tiles_counter} Grid Tiles have been saved.")
@@ -551,7 +549,7 @@ class RandomTiler(Tiler):
         tiles_counter = 0
         for tiles_counter, (tile, tile_wsi_coords) in enumerate(random_tiles):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
-            full_tile_path = os.path.join(slide.processed_path, "tiles", tile_filename)
+            full_tile_path = os.path.join(slide.processed_path, tile_filename)
             tile.save(full_tile_path)
             logging.info(f"\t Tile {tiles_counter} saved: {tile_filename}")
         logging.info(f"{tiles_counter+1} Random Tiles have been saved.")
@@ -776,7 +774,7 @@ class ScoreTiler(GridTiler):
         for tiles_counter, (score, tile_wsi_coords) in enumerate(highest_score_tiles):
             tile = slide.extract_tile(tile_wsi_coords, self.level)
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
-            tile.save(os.path.join(slide.processed_path, "tiles", tile_filename))
+            tile.save(os.path.join(slide.processed_path, tile_filename))
             filenames.append(tile_filename)
             logging.info(
                 f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}"
