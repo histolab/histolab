@@ -432,7 +432,8 @@ class Slide:
         Returns
         -------
         Tuple[int, int, int, int]
-            Original slide dimensions and scaled dimensions
+            Original slide dimensions and scaled dimensions (original w, original h,
+            resampled w, resampled h).
         """
         large_w, large_h = self.dimensions
         new_w = math.floor(large_w / scale_factor)
@@ -537,10 +538,10 @@ class SlideSet:
 
     # ---public interface methods and properties---
 
-    def scaled_slides(
+    def scaled_images(
         self, scale_factor: int = 32, n: int = 0
     ) -> List[PIL.Image.Image]:
-        """Return rescaled slides.
+        """Return rescaled images of the slides.
 
         Parameters
         ----------
@@ -553,7 +554,7 @@ class SlideSet:
         Returns
         -------
         List[PIL.Image.Image]
-            List of rescaled slides
+            List of rescaled images of the slides.
         """
         n = self.total_slides if (n > self.total_slides or n == 0) else n
         rescaled_imgs = []
