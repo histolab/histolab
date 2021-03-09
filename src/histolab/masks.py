@@ -34,7 +34,20 @@ from .util import (
 
 
 class BinaryMask(ABC):
-    """Generic object for binary masks."""
+    """Generic object for binary masks.
+
+    This object can be used to create a custom binary mask object.
+
+    Example:
+        >>> from histolab.slide import Slide
+        >>> class MyCustomMask(BinaryMask):
+        ...     def _mask(self, slide):
+        ...         my_mask = np.array([0,1])
+        ...         return my_mask
+        >>> binary_mask = MyCustomMask()
+        >>> slide = Slide("path/to/slide") # doctest: +SKIP
+        >>> binary_mask(slide) # doctest: +SKIP
+    """
 
     def __call__(self, slide):
         return self._mask(slide)
@@ -47,11 +60,11 @@ class BinaryMask(ABC):
 
 
 class BiggestTissueBoxMask(BinaryMask):
-    """Object that represent the box containing the max tissue area."""
+    """Object that represents the box containing the largest contiguous tissue area."""
 
     @lru_cache(maxsize=100)
     def _mask(self, slide) -> np.ndarray:
-        """Return the thumbnail binary mask of the box containing the max tissue area.
+        """Return the thumbnail box mask containing the largest contiguous tissue area.
 
         Parameters
         ----------
@@ -61,8 +74,8 @@ class BiggestTissueBoxMask(BinaryMask):
         Returns
         -------
         mask: np.ndarray
-            Binary mask of the box containing the max area of tissue. The dimensions are
-            those of the thumbnail.
+            Binary mask of the box containing the largest contiguous tissue area.
+            The dimensions are those of the thumbnail.
         """
         thumb = slide.wsi.get_thumbnail(slide.thumbnail_size)
         filters = FiltersComposition(histolab.slide.Slide).tissue_mask_filters

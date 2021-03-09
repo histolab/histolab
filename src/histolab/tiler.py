@@ -297,7 +297,7 @@ class GridTiler(Tiler):
 
     @property
     def tile_size(self) -> Tuple[int, int]:
-        """Valid (width, height) of the extracted tiles."""
+        """(width, height) of the extracted tiles."""
         return self._valid_tile_size
 
     @tile_size.setter
