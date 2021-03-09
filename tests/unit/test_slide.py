@@ -10,6 +10,7 @@ import numpy as np
 import openslide
 import PIL
 import pytest
+from PIL import ImageShow
 
 from histolab.exceptions import LevelError
 from histolab.masks import BiggestTissueBoxMask
@@ -300,7 +301,7 @@ class Describe_Slide:
     def it_can_show_its_thumbnail(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
-        assert slide.show()
+        assert ImageShow.show(slide.thumbnail)
 
     def but_it_raises_error_when_it_doesnt_exist(self):
         slide = Slide("a/b", "processed")
