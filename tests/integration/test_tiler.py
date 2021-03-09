@@ -210,11 +210,12 @@ class DescribeScoreTiler:
             r"Input image must be RGB. NOTE: the image will be converted to RGB before"
             r" HED conversion."
         )
-        binary_mask = BiggestTissueBoxMask()
 
         with pytest.warns(UserWarning, match=expected_warning_regex):
+            # no binary mask object passed to locate_tiles
+            # default value = BiggestTissueBoxMask
             tiles_location_img = scored_tiles_extractor.locate_tiles(
-                slide, binary_mask, scale_factor=10
+                slide, scale_factor=10
             )
         # --- Expanding test report with actual and expected images ---
         expand_tests_report(request, expected=expected_img, actual=tiles_location_img)

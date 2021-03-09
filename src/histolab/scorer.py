@@ -41,7 +41,7 @@ class Scorer(Protocol):
 
     @abstractmethod
     def __call__(self, tile: Tile) -> float:
-        pass
+        pass  # pragma: no cover
 
 
 class RandomScorer(Scorer):

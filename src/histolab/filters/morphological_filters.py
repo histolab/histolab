@@ -37,7 +37,7 @@ class MorphologicalFilter(Filter, Protocol):
 
     @abstractmethod
     def __call__(self, np_mask: np.ndarray) -> np.ndarray:
-        pass
+        pass  # pragma: no cover
 
 
 class RemoveSmallObjects(MorphologicalFilter):

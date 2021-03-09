@@ -40,7 +40,7 @@ class Filter(Protocol):
     def __call__(
         self, img: Union[PIL.Image.Image, np.ndarray]
     ) -> Union[PIL.Image.Image, np.ndarray]:
-        pass
+        pass  # pragma: no cover
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "()"
@@ -52,7 +52,7 @@ class ImageFilter(Filter, Protocol):
 
     @abstractmethod
     def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
-        pass
+        pass  # pragma: no cover
 
 
 class Compose(ImageFilter):
