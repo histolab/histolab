@@ -632,7 +632,7 @@ class Describe_Slideset:
         slideset = SlideSet(tmp_path_, os.path.join(tmp_path_, "processed"), [])
         slides = method_mock(request, SlideSet, "__iter__")
         slides.return_value = [slide1, slide2]
-        slideset.scaled_slides(32, 2)
+        slideset.scaled_images(32, 2)
 
         slide1.scaled_image.assert_called_once_with(32)
         slide2.scaled_image.assert_called_once_with(32)
