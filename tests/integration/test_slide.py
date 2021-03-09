@@ -51,7 +51,7 @@ class Describe_Slide:
         slide = Slide(SVS.BROKEN, os.path.join(SVS.BROKEN, "processed"))
 
         with pytest.raises(PIL.UnidentifiedImageError) as err:
-            slide.wsi
+            slide._wsi
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert (
