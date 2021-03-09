@@ -63,6 +63,9 @@ class Slide:
         self, path: Union[str, pathlib.Path], processed_path: Union[str, pathlib.Path]
     ) -> None:
         self._path = str(path) if isinstance(path, pathlib.Path) else path
+
+        if processed_path is None:
+            raise TypeError("processed_path cannot be None.")
         self._processed_path = processed_path
 
     def __repr__(self):
@@ -83,7 +86,7 @@ class Slide:
 
         Returns
         -------
-        mask: np.ndarray
+        mask : np.ndarray
             Binary mask of the box containing the max area of tissue. The dimensions are
             those of the thumbnail.
         """
@@ -96,7 +99,8 @@ class Slide:
 
         Returns
         -------
-        dimensions : tuple(width, height)
+        dimensions : Tuple[int, int]
+            Slide dimensions (width, height)
         """
         return self.wsi.dimensions
 
@@ -150,7 +154,8 @@ class Slide:
 
         Returns
         -------
-        dimensions : tuple (width, height)
+        dimensions : Tuple[int, int]
+            Slide dimensions at the specified level (width, height)
         """
         level = level if level >= 0 else self._remap_level(level)
         try:
@@ -199,9 +204,7 @@ class Slide:
             PIL Image of the rescaled slide with the biggest tissue bounding box
             outlined.
         """
-        if not os.path.exists(self.scaled_image_path(scale_factor)):
-            self.save_scaled_image(scale_factor)
-        img = PIL.Image.open(self.scaled_image_path(scale_factor))
+        img = self.scaled_image(scale_factor)
 
         filters = FiltersComposition(Slide).tissue_mask_filters
 
@@ -260,6 +263,7 @@ class Slide:
         ----------
         scale_factor : int, optional
             Image scaling factor. Default is 32.
+
         Returns
         ----------
         resampled_array: np.ndarray
@@ -267,30 +271,8 @@ class Slide:
         """
         return self._resample(scale_factor)[1]
 
-    def save_scaled_image(self, scale_factor: int = 32) -> None:
-        """Save a scaled image in the correct path
-
-        Parameters
-        ----------
-        scale_factor : int, optional
-            Image scaling factor. Default is 32.
-        """
-        os.makedirs(self._processed_path, exist_ok=True)
-        img = self._resample(scale_factor)[0]
-        img.save(self.scaled_image_path(scale_factor))
-
-    def save_thumbnail(self) -> None:
-        """Save a thumbnail in the correct path"""
-        os.makedirs(self._processed_path, exist_ok=True)
-
-        img = self.wsi.get_thumbnail(self.thumbnail_size)
-
-        folder = os.path.dirname(self.thumbnail_path)
-        pathlib.Path(folder).mkdir(exist_ok=True)
-        img.save(self.thumbnail_path)
-
-    def scaled_image_path(self, scale_factor: int = 32) -> str:
-        """Return slide image path.
+    def scaled_image(self, scale_factor: int = 32) -> PIL.Image.Image:
+        """Return a scaled image of the slide.
 
         Parameters
         ----------
@@ -299,10 +281,10 @@ class Slide:
 
         Returns
         -------
-        img_path : str
+        PIL.Image.Image
+            A scaled image of the slide.
         """
-        img_path = self._breadcrumb(self._processed_path, scale_factor)
-        return img_path
+        return self._resample(scale_factor)[0]
 
     def show(self) -> None:
         """Display the slide thumbnail.
@@ -310,77 +292,21 @@ class Slide:
         NOTE: A new window of your OS image viewer will be opened.
         """
         try:
-            thumbnail = PIL.Image.open(self.thumbnail_path)
+            thumbnail = self.thumbnail
             thumbnail.show()  # pragma: no cover
         except FileNotFoundError as error:
-            raise FileNotFoundError(f"Cannot display the slide thumbnail:{error}")
+            raise FileNotFoundError(f"Cannot display the slide thumbnail: {error}")
 
     @lazyproperty
-    def thumbnail_path(self) -> str:
-        """Return thumbnail image path.
+    def thumbnail(self) -> PIL.Image.Image:
+        """Return the slide thumbnail.
 
         Returns
         -------
-        thumb_path : str
+        PIL.Image.Image
+            The slide thumbnail.
         """
-        thumb_path = os.path.join(
-            self._processed_path, "thumbnails", f"{self.name}.{IMG_EXT}"
-        )
-        return thumb_path
-
-    @lazyproperty
-    def thumbnail_size(self) -> Tuple:
-        r"""Compute the thumbnail size proportionally to the slide dimensions.
-
-        If the size of the slide is (v, m) where v has magnitude w and m has magnitude
-        n, that is,
-
-        .. math::
-
-            \left\lceil{\\log_{10}(v)}\right\rceil = w
-
-        and
-
-        .. math::
-
-            \left\lceil{\log_{10}(m)}\right\rceil = n
-
-        then the thumbnail size is computed as:
-
-        .. math::
-
-            \big(\frac{v}{10^{w-2}},\frac{v}{10^{n-2}}\big)
-
-        Returns
-        -------
-        Tuple
-            Thumbnail size
-        """
-        return tuple(
-            [
-                int(s / np.power(10, math.ceil(math.log10(s)) - 3))
-                for s in self.dimensions
-            ]
-        )
-
-    @lazyproperty
-    def wsi(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
-        """Open the slide and returns an openslide object
-
-        Returns
-        -------
-        slide : OpenSlide object
-            An OpenSlide object representing a whole-slide image.
-        """
-        try:
-            slide = openslide.open_slide(self._path)
-        except PIL.UnidentifiedImageError:
-            raise PIL.UnidentifiedImageError(
-                "Your wsi has something broken inside, a doctor is needed"
-            )
-        except FileNotFoundError:
-            raise FileNotFoundError("The wsi path resource doesn't exist")
-        return slide
+        return self._wsi.get_thumbnail(self._thumbnail_size)
 
     # ------- implementation helpers -------
 
@@ -416,32 +342,6 @@ class Slide:
         sorted_regions = sorted(regions, key=lambda r: r.area, reverse=True)
         return sorted_regions[:n]
 
-    def _breadcrumb(self, directory_path: str, scale_factor: int = 32) -> str:
-        """Returns a complete path according to the give directory path
-
-        Parameters
-        ----------
-        directory_path: str
-        scale_factor : int, 32 by default
-            Image scaling factor
-
-        Returns
-        -------
-        final_path: str, a real and complete path starting from the dir path
-                    e.g. /processed_path/my-image-name-x32/
-                         /thumb_path/my-image-name-x32/thumbs
-        """
-        large_w, large_h, new_w, new_h = self._resampled_dimensions(scale_factor)
-        if {large_w, large_h, new_w, new_h} == {None}:
-            final_path = os.path.join(directory_path, f"{self.name}*.{IMG_EXT}")
-        else:
-            final_path = os.path.join(
-                directory_path,
-                f"{self.name}-{scale_factor}x-{large_w}x{large_h}-{new_w}x"
-                f"{new_h}.{IMG_EXT}",
-            )
-        return final_path
-
     def _has_valid_coords(self, coords: CoordinatePair) -> bool:
         """Check if ``coords`` are valid 0-level coordinates.
 
@@ -468,17 +368,17 @@ class Slide:
         Parameters
         ----------
         level : int
-            the level index to remap
+            The level index to remap
+
+        Returns
+        -------
+        level : int
+           Positive level index
 
         Raises
         ------
         LevelError
             when the abs(level) is greater than the number of the levels.
-
-        Returns
-        -------
-        level : int
-           positive level index
         """
         if len(self.levels) - abs(level) < 0:
             raise LevelError(
@@ -488,7 +388,7 @@ class Slide:
         return len(self.levels) - abs(level)
 
     def _resample(self, scale_factor: int = 32) -> Tuple[PIL.Image.Image, np.array]:
-        """Converts a slide to a scaled-down PIL image.
+        """Convert a slide to a scaled-down PIL image.
 
         The PIL image is also converted to array.
         image is the scaled-down PIL image, original width and original height
@@ -502,7 +402,10 @@ class Slide:
 
         Returns
         -------
-        img, arr_img
+        PIL.Image.Image
+            The resampled image
+        np.ndarray
+            The resampled image converted to array
         """
 
         _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
@@ -528,13 +431,69 @@ class Slide:
 
         Returns
         -------
-        tuple
+        Tuple[int, int, int, int]
             Original slide dimensions and scaled dimensions
         """
         large_w, large_h = self.dimensions
         new_w = math.floor(large_w / scale_factor)
         new_h = math.floor(large_h / scale_factor)
         return large_w, large_h, new_w, new_h
+
+    @lazyproperty
+    def _thumbnail_size(self) -> Tuple[int, int]:
+        r"""Compute the thumbnail size proportionally to the slide dimensions.
+
+        If the size of the slide is (v, m) where v has magnitude w and m has magnitude
+        n, that is,
+
+        .. math::
+
+            \left\lceil{\\log_{10}(v)}\right\rceil = w
+
+        and
+
+        .. math::
+
+            \left\lceil{\log_{10}(m)}\right\rceil = n
+
+        then the thumbnail size is computed as:
+
+        .. math::
+
+            \big(\frac{v}{10^{w-2}},\frac{v}{10^{n-2}}\big)
+
+        Returns
+        -------
+        Tuple[int, int]
+            Thumbnail size
+        """
+        return tuple(
+            [
+                int(s / np.power(10, math.ceil(math.log10(s)) - 3))
+                for s in self.dimensions
+            ]
+        )
+
+    @lazyproperty
+    def _wsi(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
+        """Open the slide and returns an openslide object
+
+        Returns
+        -------
+        slide : OpenSlide object
+            An OpenSlide object representing a whole-slide image.
+        """
+        try:
+            slide = openslide.open_slide(self._path)
+        except PIL.UnidentifiedImageError:
+            raise PIL.UnidentifiedImageError(
+                "Your wsi has something broken inside, a doctor is needed"
+            )
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"The wsi path resource doesn't exist: {self._path}"
+            )
+        return slide
 
 
 class SlideSet:
@@ -578,35 +537,49 @@ class SlideSet:
 
     # ---public interface methods and properties---
 
-    def save_scaled_slides(self, scale_factor: int = 32, n: int = 0) -> None:
-        """Save rescaled images
+    def scaled_slides(
+        self, scale_factor: int = 32, n: int = 0
+    ) -> List[PIL.Image.Image]:
+        """Return rescaled slides.
 
         Parameters
         ----------
-        scale_factor: int, optional
+        scale_factor : int, optional
             Image scaling factor. Default is 32.
-        n: int, optional
-            First n slides in dataset folder to rescale and save. Default is 0, meaning
-            that all the slides will be saved.
-        """
-        os.makedirs(self._processed_path, exist_ok=True)
-        n = self.total_slides if (n > self.total_slides or n == 0) else n
-        for slide in list(self.__iter__())[:n]:
-            slide.save_scaled_image(scale_factor)
+        n : int, optional
+            First n slides in dataset folder to rescale. Default is 0, meaning that all
+            the slides will be returned.
 
-    def save_thumbnails(self, n: int = 0) -> None:
-        """Save thumbnails
+        Returns
+        -------
+        List[PIL.Image.Image]
+            List of rescaled slides
+        """
+        n = self.total_slides if (n > self.total_slides or n == 0) else n
+        rescaled_imgs = []
+        for slide in list(self.__iter__())[:n]:
+            rescaled_imgs.append(slide.scaled_image(scale_factor))
+        return rescaled_imgs
+
+    def thumbnails(self, n: int = 0) -> List[PIL.Image.Image]:
+        """Return slides thumbnails
 
         Parameters
         ----------
-        n: int. optional
+        n : int, optional
             First n slides in dataset folder. Default is 0, meaning that the thumbnails
-            of all the slides will be saved.
+            of all the slides will be returned.
+
+        Returns
+        -------
+        List[PIL.Image.Image]
+            List of slides thumbnails
         """
-        os.makedirs(self._processed_path, exist_ok=True)
         n = self.total_slides if (n > self.total_slides or n == 0) else n
+        thumbnails = []
         for slide in list(self.__iter__())[:n]:
-            slide.save_thumbnail()
+            thumbnails.append(slide.thumbnail)
+        return thumbnails
 
     @lazyproperty
     def slides_stats(self) -> dict:

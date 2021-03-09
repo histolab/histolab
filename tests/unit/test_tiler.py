@@ -380,10 +380,10 @@ class Describe_RandomTiler:
             call(random_tiler, coords, 1),
         ]
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tiles", "tile_0_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
         )
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
         )
         _has_valid_tile_size.assert_called_once_with(random_tiler, slide)
 
@@ -724,9 +724,7 @@ class Describe_GridTiler:
         _tiles_generator.return_value = [(tile, coords), (tile, coords)]
         _tile_filename = method_mock(request, GridTiler, "_tile_filename")
         _tile_filename.side_effect = [
-            os.path.join(
-                tmp_path_, "processed", "tiles", f"tile_{i}_level2_0-10-0-10.png"
-            )
+            os.path.join(tmp_path_, "processed", f"tile_{i}_level2_0-10-0-10.png")
             for i in range(2)
         ]
         _has_valid_tile_size = method_mock(request, GridTiler, "_has_valid_tile_size")
@@ -743,10 +741,10 @@ class Describe_GridTiler:
             call(grid_tiler, coords, 1),
         ]
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tiles", "tile_0_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
         )
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
         )
         _has_valid_tile_size.assert_called_once_with(grid_tiler, slide)
         _tiles_generator.assert_called_once_with(grid_tiler, slide, binary_mask)
@@ -1033,10 +1031,10 @@ class Describe_ScoreTiler:
             call(score_tiler, coords, 1),
         ]
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tiles", "tile_0_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
         )
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
         )
         _save_report.assert_not_called()
         _has_valid_tile_size.assert_called_once_with(score_tiler, slide)
@@ -1137,10 +1135,10 @@ class Describe_ScoreTiler:
             call(score_tiler, coords, 1),
         ]
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tiles", "tile_0_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tile_0_level2_0-10-0-10.png")
         )
         assert os.path.exists(
-            os.path.join(tmp_path_, "processed", "tiles", "tile_1_level2_0-10-0-10.png")
+            os.path.join(tmp_path_, "processed", "tile_1_level2_0-10-0-10.png")
         )
         _save_report.assert_called_once_with(
             "report.csv",
