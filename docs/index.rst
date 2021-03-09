@@ -83,6 +83,7 @@ References
 
    api/slide
    api/filters
+   api/masks
    api/tile
    api/tiler
    api/scorer
