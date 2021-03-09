@@ -40,7 +40,6 @@ test_requires = [
     "pytest-xdist",
     "coverage",
     "pytest-cov",
-    "pytest-deprecate",
     "coveralls",
     "pytest-benchmark",
 ]
