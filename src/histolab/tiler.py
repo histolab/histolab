@@ -97,7 +97,7 @@ class Tiler(Protocol):
         ----------
         slide : Slide
             Slide reference where placing the tiles
-        extraction_mask : BinaryMask
+        extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`
         scale_factor: int
@@ -278,7 +278,7 @@ class GridTiler(Tiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
-        extraction_mask : BinaryMask
+        extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`.
         log_level : str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
@@ -370,7 +370,7 @@ class GridTiler(Tiler):
         slide : Slide
             Slide from which to calculate the coordinates. Needed to calculate the
             tissue area.
-        extraction_mask : BinaryMask
+        extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`.
 
@@ -403,7 +403,7 @@ class GridTiler(Tiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
-        extraction_mask : BinaryMask
+        extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`.
 
@@ -528,7 +528,7 @@ class RandomTiler(Tiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
-        extraction_mask : BinaryMask
+        extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`.
         log_level: str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
@@ -590,7 +590,7 @@ class RandomTiler(Tiler):
         ----------
         slide : Slide
             Slide from which calculate the coordinates. Needed to calculate the box.
-        extraction_mask : BinaryMask
+        extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`.
 
@@ -637,7 +637,7 @@ class RandomTiler(Tiler):
         ----------
         slide : Slide
             The Whole Slide Image from which to extract the tiles.
-        extraction_mask : BinaryMask
+        extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`.
 
@@ -746,7 +746,7 @@ class ScoreTiler(GridTiler):
         ----------
         slide : Slide
             Slide from which to extract the tiles
-        extraction_mask : BinaryMask
+        extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`.
         report_path : str, optional
@@ -800,7 +800,7 @@ class ScoreTiler(GridTiler):
         ----------
         slide : Slide
             The slide to extract the tiles from.
-        extraction_mask : BinaryMask
+        extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`.
 
@@ -920,7 +920,7 @@ class ScoreTiler(GridTiler):
         ----------
         slide : Slide
             The slide to extract the tiles from.
-        extraction_mask : BinaryMask
+        extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`.
 
