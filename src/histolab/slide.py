@@ -102,7 +102,7 @@ class Slide:
         dimensions : Tuple[int, int]
             Slide dimensions (width, height)
         """
-        return self.wsi.dimensions
+        return self._wsi.dimensions
 
     def extract_tile(self, coords: CoordinatePair, level: int) -> Tile:
         """Extract a tile of the image at the selected level.
@@ -138,7 +138,7 @@ class Slide:
         h_l = coords_level.y_br - coords_level.y_ul
         w_l = coords_level.x_br - coords_level.x_ul
 
-        image = self.wsi.read_region(
+        image = self._wsi.read_region(
             location=(coords.x_ul, coords.y_ul), level=level, size=(w_l, h_l)
         )
         tile = Tile(image, coords, level)
@@ -159,11 +159,11 @@ class Slide:
         """
         level = level if level >= 0 else self._remap_level(level)
         try:
-            return self.wsi.level_dimensions[level]
+            return self._wsi.level_dimensions[level]
         except IndexError:
             raise LevelError(
                 f"Level {level} not available. Number of available levels: "
-                f"{len(self.wsi.level_dimensions)}"
+                f"{len(self._wsi.level_dimensions)}"
             )
 
     @lazyproperty
@@ -175,7 +175,7 @@ class Slide:
         List[int]
             The levels available
         """
-        return list(range(len(self.wsi.level_dimensions)))
+        return list(range(len(self._wsi.level_dimensions)))
 
     def locate_biggest_tissue_box(
         self,
@@ -254,7 +254,7 @@ class Slide:
         dict
             WSI complete properties.
         """
-        return dict(self.wsi.properties)
+        return dict(self._wsi.properties)
 
     def resampled_array(self, scale_factor: int = 32) -> np.array:
         """Retrieve the resampled array from the original slide
@@ -383,7 +383,7 @@ class Slide:
         if len(self.levels) - abs(level) < 0:
             raise LevelError(
                 f"Level {level} not available. Number of available levels: "
-                f"{len(self.wsi.level_dimensions)}"
+                f"{len(self._wsi.level_dimensions)}"
             )
         return len(self.levels) - abs(level)
 
@@ -409,9 +409,9 @@ class Slide:
         """
 
         _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
-        level = self.wsi.get_best_level_for_downsample(scale_factor)
-        whole_slide_image = self.wsi.read_region(
-            (0, 0), level, self.wsi.level_dimensions[level]
+        level = self._wsi.get_best_level_for_downsample(scale_factor)
+        whole_slide_image = self._wsi.read_region(
+            (0, 0), level, self._wsi.level_dimensions[level]
         )
         # ---converts openslide read_region to an actual RGBA image---
         whole_slide_image = whole_slide_image.convert("RGB")

@@ -77,15 +77,13 @@ class BiggestTissueBoxMask(BinaryMask):
             Binary mask of the box containing the largest contiguous tissue area.
             The dimensions are those of the thumbnail.
         """
-        thumb = slide.wsi.get_thumbnail(slide.thumbnail_size)
+        thumb = slide.thumbnail
         filters = FiltersComposition(histolab.slide.Slide).tissue_mask_filters
         thumb_mask = filters(thumb)
         regions = regions_from_binary_mask(thumb_mask)
         biggest_region = self._regions(regions, n=1)[0]
         biggest_region_coordinates = region_coordinates(biggest_region)
-        thumb_bbox_mask = polygon_to_mask_array(
-            slide.thumbnail_size, biggest_region_coordinates
-        )
+        thumb_bbox_mask = polygon_to_mask_array(thumb.size, biggest_region_coordinates)
         return thumb_bbox_mask
 
     @staticmethod
@@ -138,7 +136,7 @@ class TissueMask(BinaryMask):
         mask: np.ndarray
             Binary mask of the tissue area. The dimensions are those of the thumbnail.
         """
-        thumb = slide.wsi.get_thumbnail(slide.thumbnail_size)
+        thumb = slide.thumbnail
         filters = FiltersComposition(histolab.slide.Slide).tissue_mask_filters
         thumb_mask = filters(thumb)
         return thumb_mask
