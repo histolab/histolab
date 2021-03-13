@@ -65,6 +65,7 @@ class Tiler(Protocol):
         scale_factor: int = 32,
         alpha: int = 128,
         outline: str = "red",
+        linewidth: int = 0,
         tiles: Iterable = None,
     ) -> PIL.Image.Image:
         """Draw tile box references on a rescaled version of the slide
@@ -82,6 +83,8 @@ class Tiler(Protocol):
             The alpha level to be applied to the rescaled slide, default to 128.
         outline: str
             The outline color for the tile annotations, default to 'red'.
+        linewidth: int
+            Thickness of line used to draw tiles
         tiles: Iterable
             Tiles to visualize. Optional, will be extracted if None.
 
@@ -91,7 +94,8 @@ class Tiler(Protocol):
             PIL Image of the rescaled slide with the extracted tiles outlined
         """
         img = slide.scaled_image(scale_factor)
-        img.putalpha(alpha)
+        if alpha is not None:
+            img.putalpha(alpha)
         draw = PIL.ImageDraw.Draw(img)
 
         if tiles is None:
@@ -103,7 +107,7 @@ class Tiler(Protocol):
         tiles_coords = (tile[1] for tile in tiles)
         for coords in tiles_coords:
             rescaled = scale_coordinates(coords, slide.dimensions, img.size)
-            draw.rectangle(tuple(rescaled), outline=outline)
+            draw.rectangle(tuple(rescaled), outline=outline, width=linewidth)
         return img
 
     # ------- implementation helpers -------
