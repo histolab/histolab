@@ -75,6 +75,17 @@ class Slide:
     # ---public interface methods and properties---
 
     @lazyproperty
+    def base_mpp(self) -> float:
+        """Get microns-per-pixel resolution at scan magnification."""
+        assert self.properties['tiff.ResolutionUnit'] == 'centimeter'
+        return 1 / (float(self.properties['tiff.XResolution']) * 1e-4)
+
+    def get_mpp_at_level(self, level: int):
+        """Get microns-per-pixel resolution at a specific level."""
+        return self.base_mpp * float(
+            self.properties['openslide.level[%d].downsample' % level])
+
+    @lazyproperty
     def dimensions(self) -> Tuple[int, int]:
         """Return the slide dimensions (w,h) at level 0.
 
