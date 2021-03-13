@@ -275,8 +275,8 @@ class GridTiler(Tiler):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             full_tile_path = os.path.join(slide.processed_path, tile_filename)
             tile.save(full_tile_path)
-            logging.info(f"\t Tile {tiles_counter} saved: {tile_filename}")
-        logging.info(f"{tiles_counter} Grid Tiles have been saved.")
+            logger.info(f"\t Tile {tiles_counter} saved: {tile_filename}")
+        logger.info(f"{tiles_counter} Grid Tiles have been saved.")
 
     @property
     def tile_size(self) -> Tuple[int, int]:
@@ -526,8 +526,8 @@ class RandomTiler(Tiler):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             full_tile_path = os.path.join(slide.processed_path, tile_filename)
             tile.save(full_tile_path)
-            logging.info(f"\t Tile {tiles_counter} saved: {tile_filename}")
-        logging.info(f"{tiles_counter+1} Random Tiles have been saved.")
+            logger.info(f"\t Tile {tiles_counter} saved: {tile_filename}")
+        logger.info(f"{tiles_counter+1} Random Tiles have been saved.")
 
     @property
     def max_iter(self) -> int:
@@ -751,7 +751,7 @@ class ScoreTiler(GridTiler):
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             tile.save(os.path.join(slide.processed_path, tile_filename))
             filenames.append(tile_filename)
-            logging.info(
+            logger.info(
                 f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}"
             )
 
@@ -760,7 +760,7 @@ class ScoreTiler(GridTiler):
                 report_path, highest_score_tiles, highest_scaled_score_tiles, filenames
             )
 
-        logging.info(f"{tiles_counter+1} Grid Tiles have been saved.")
+        logger.info(f"{tiles_counter+1} Grid Tiles have been saved.")
 
     # ------- implementation helpers -------
 
