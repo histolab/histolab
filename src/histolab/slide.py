@@ -77,8 +77,16 @@ class Slide:
     @lazyproperty
     def base_mpp(self) -> float:
         """Get microns-per-pixel resolution at scan magnification."""
-        assert self.properties['tiff.ResolutionUnit'] == 'centimeter'
-        return 1 / (float(self.properties['tiff.XResolution']) * 1e-4)
+        if 'aperio.MPP' in self.properties:
+            return float(self.properties['aperio.MPP'])
+        elif 'tiff.XResolution' in self.properties:
+            resunit = self.properties['tiff.ResolutionUnit']
+            if resunit == 'centimeter':
+                return 1 / (float(self.properties['tiff.XResolution']) * 1e-4)
+            else:
+                raise NotImplementedError(f'Unimplemented tiff.ResolutionUnit {resunit}')
+        else:
+            raise NotImplementedError('Not sure what the magnification is!')
 
     def get_mpp_at_level(self, level: int):
         """Get microns-per-pixel resolution at a specific level."""
