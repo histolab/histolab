@@ -74,9 +74,14 @@ jobs:
       - name: Test with pytest
         id: tests
         run: |
-          python -m pytest --ignore=tests/benchmarks --cov=histolab
-      - name: Sumbit coverage
-        run: coveralls
+          python -m pytest --ignore=tests/benchmarks --cov=histolab --cov-report=xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          name: codecov-umbrella
+          fail_ci_if_error: true
+          verbose: true
       - name: Slack Notification
         uses: act10ns/slack@v1
         with:
