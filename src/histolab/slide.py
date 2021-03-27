@@ -107,7 +107,9 @@ class Slide:
         """
         return self._wsi.dimensions
 
-    def extract_tile(self, coords: CoordinatePair, level: int, mpp: float = None) -> Tile:
+    def extract_tile(
+            self, coords: CoordinatePair, level: int,
+            mpp: float = None, resize_to_exactly: Tuple = None) -> Tile:
         """Extract a tile of the image at the selected level.
 
         Parameters
@@ -116,6 +118,13 @@ class Slide:
             Coordinates at level 0 from which to extract the tile.
         level : int
             Level from which to extract the tile.
+        mpp : float
+            Micron per pixel resolution. Takes precedence over level.
+        resize_to_exactly : Tuple
+            (Width, Height) to resize tile to. Helpful when mpp is used. IT
+            goes without saying that this would result in the returned tile
+            at a different mpp than asked. Helpful in a very limited
+            circumstance.
 
         Returns
         -------
@@ -132,31 +141,45 @@ class Slide:
                 f"{self.dimensions}"
             )
 
-        coords_level = scale_coordinates(
-            reference_coords=coords,
-            reference_size=self.level_dimensions(level=0),
-            target_size=self.level_dimensions(level=level),
-        )
+        if mpp is None:
 
-        h_l = coords_level.y_br - coords_level.y_ul
-        w_l = coords_level.x_br - coords_level.x_ul
-
-        image = self._wsi.read_region(
-            location=(coords.x_ul, coords.y_ul), level=level, size=(w_l, h_l)
-        )
-
-        # Maybe scale image to exact desired mpp. If the image is downscaled,
-        # we use the LANCZOS method because it is more precise .. see:
-        #   https://stackoverflow.com/questions/23113163/antialias-vs-bicubic-in-pilpython-image-library
-        # and also ..
-        #   https://github.com/girder/large_image/blob/master/large_image/tilesource/base.py#L1868
-        #
-        if mpp is not None:
-            sf = self.base_mpp / mpp
-            image = image.resize(
-                (int(w_l * sf), int(h_l * sf)),
-                BICUBIC if sf >= 1.0 else LANCZOS
+            coords_level = scale_coordinates(
+                reference_coords=coords,
+                reference_size=self.level_dimensions(level=0),
+                target_size=self.level_dimensions(level=level),
             )
+
+            h_l = coords_level.y_br - coords_level.y_ul
+            w_l = coords_level.x_br - coords_level.x_ul
+
+            image = self._wsi.read_region(
+                location=(coords.x_ul, coords.y_ul), level=level, size=(w_l, h_l)
+            )
+
+        else:
+            # use large image, which has much better support for
+            # getting exact mpp resolutions
+            mm = mpp / 1000
+            image, _ = self._tilesource.getRegion(
+                region=dict(
+                    left=coords.x_ul, top=coords.y_ul,
+                    right=coords.x_br, bottom=coords.y_br,
+                    units='base_pixels'),
+                scale=dict(mm_x=mm, mm_y=mm),
+                format=large_image.tilesource.TILE_FORMAT_PIL,
+            )
+            image = image.convert("RGB")
+
+        # Sometimes when mpp kwarg is used, the image size is going to be
+        # off from what the user expects at that level by a couple of pixels.
+        # Here we allow the use the flexibility to resize
+        if resize_to_exactly is not None:
+            asis = resize_to_exactly[0] == image.size[0]
+            if not asis:
+                image = image.resize(
+                    resize_to_exactly,
+                    BICUBIC if resize_to_exactly[0] >= image.size[0] else LANCZOS
+                )
 
         tile = Tile(image, coords, level)
         return tile
