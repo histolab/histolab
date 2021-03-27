@@ -81,7 +81,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           name: codecov-umbrella
           fail_ci_if_error: true
-          verbose: true
+          verbose: false
       - name: Slack Notification
         uses: act10ns/slack@v1
         with:
