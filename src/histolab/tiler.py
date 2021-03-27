@@ -236,9 +236,11 @@ class GridTiler(Tiler):
         pixel_overlap: int = 0,
         prefix: str = "",
         suffix: str = ".png",
+        mpp: float = None,
     ):
         self.tile_size = tile_size
         self.level = level
+        self.mpp = mpp
         self.check_tissue = check_tissue
         self.tissue_percent = tissue_percent
         self.pixel_overlap = pixel_overlap
@@ -400,7 +402,7 @@ class GridTiler(Tiler):
         )
         for coords in grid_coordinates_generator:
             try:
-                tile = slide.extract_tile(coords, self.level)
+                tile = slide.extract_tile(coords, level=self.level, mpp=self.mpp)
             except ValueError:
                 continue
 
@@ -482,6 +484,7 @@ class RandomTiler(Tiler):
         prefix: str = "",
         suffix: str = ".png",
         max_iter: int = int(1e4),
+        mpp: float = None,
     ):
 
         super().__init__()
@@ -490,6 +493,7 @@ class RandomTiler(Tiler):
         self.n_tiles = n_tiles
         self.max_iter = max_iter
         self.level = level
+        self.mpp = mpp
         self.seed = seed
         self.check_tissue = check_tissue
         self.tissue_percent = tissue_percent
@@ -635,7 +639,7 @@ class RandomTiler(Tiler):
         while True:
             tile_wsi_coords = self._random_tile_coordinates(slide, extraction_mask)
             try:
-                tile = slide.extract_tile(tile_wsi_coords, self.level)
+                tile = slide.extract_tile(tile_wsi_coords, level=self.level, mpp=self.mpp)
             except ValueError:
                 iteration -= 1
                 continue
@@ -696,6 +700,7 @@ class ScoreTiler(GridTiler):
         pixel_overlap: int = 0,
         prefix: str = "",
         suffix: str = ".png",
+        mpp: float = None,
     ):
         self.scorer = scorer
         self.n_tiles = n_tiles
@@ -708,6 +713,7 @@ class ScoreTiler(GridTiler):
             pixel_overlap,
             prefix,
             suffix,
+            mpp=mpp,
         )
 
     def extract(
@@ -763,7 +769,7 @@ class ScoreTiler(GridTiler):
         filenames = []
 
         for tiles_counter, (score, tile_wsi_coords) in enumerate(highest_score_tiles):
-            tile = slide.extract_tile(tile_wsi_coords, self.level)
+            tile = slide.extract_tile(tile_wsi_coords, level=self.level, mpp=self.mpp)
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             if save_tiles:
                 tile.save(os.path.join(slide.processed_path, tile_filename))

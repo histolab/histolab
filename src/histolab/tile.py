@@ -42,10 +42,11 @@ class Tile:
         Level of tile extraction, by default 0
     """
 
-    def __init__(self, image: PIL.Image.Image, coords: CoordinatePair, level: int = 0):
+    def __init__(self, image: PIL.Image.Image, coords: CoordinatePair, level: int = 0, mpp: float =None):
         self._image = image
         self._coords = coords
         self._level = level
+        self._mpp = mpp
 
     def apply_filters(
         self,

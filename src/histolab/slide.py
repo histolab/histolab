@@ -29,7 +29,10 @@ from typing import Iterator, List, Tuple, Union
 
 import numpy as np
 import openslide
+import large_image  # for .scn slides where openslide fails!
 import PIL
+from PIL.Image import BICUBIC, LANCZOS
+from io import BytesIO
 from deprecated.sphinx import deprecated
 
 from .exceptions import LevelError
@@ -104,7 +107,7 @@ class Slide:
         """
         return self._wsi.dimensions
 
-    def extract_tile(self, coords: CoordinatePair, level: int) -> Tile:
+    def extract_tile(self, coords: CoordinatePair, level: int, mpp: float = None) -> Tile:
         """Extract a tile of the image at the selected level.
 
         Parameters
@@ -141,6 +144,20 @@ class Slide:
         image = self._wsi.read_region(
             location=(coords.x_ul, coords.y_ul), level=level, size=(w_l, h_l)
         )
+
+        # Maybe scale image to exact desired mpp. If the image is downscaled,
+        # we use the LANCZOS method because it is more precise .. see:
+        #   https://stackoverflow.com/questions/23113163/antialias-vs-bicubic-in-pilpython-image-library
+        # and also ..
+        #   https://github.com/girder/large_image/blob/master/large_image/tilesource/base.py#L1868
+        #
+        if mpp is not None:
+            sf = self.base_mpp / mpp
+            image = image.resize(
+                (int(w_l * sf), int(h_l * sf)),
+                BICUBIC if sf >= 1.0 else LANCZOS
+            )
+
         tile = Tile(image, coords, level)
         return tile
 
@@ -306,9 +323,21 @@ class Slide:
         PIL.Image.Image
             The slide thumbnail.
         """
-        return self._wsi.get_thumbnail(self._thumbnail_size)
+        if self._wsi.level_count > 1:
+            return self._wsi.get_thumbnail(self._thumbnail_size)
+        else:
+            # use large image if tiff file only has one level
+            thumb_bytes, _ = self._tilesource.getThumbnail(encoding='PNG')
+            thumbnail = self._bytes2pil(thumb_bytes).convert('RGB')
+            return thumbnail
 
     # ------- implementation helpers -------
+
+    @staticmethod
+    def _bytes2pil(bytesim):
+        image_content = BytesIO(bytesim)
+        image_content.seek(0)
+        return PIL.Image.open(image_content)
 
     @staticmethod
     @deprecated(
@@ -409,13 +438,22 @@ class Slide:
         """
 
         _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
-        level = self._wsi.get_best_level_for_downsample(scale_factor)
-        whole_slide_image = self._wsi.read_region(
-            (0, 0), level, self._wsi.level_dimensions[level]
-        )
-        # ---converts openslide read_region to an actual RGBA image---
-        whole_slide_image = whole_slide_image.convert("RGB")
-        img = whole_slide_image.resize((new_w, new_h), PIL.Image.BILINEAR)
+        if self._wsi.level_count > 1:
+            level = self._wsi.get_best_level_for_downsample(scale_factor)
+            whole_slide_image = self._wsi.read_region(
+                (0, 0), level, self._wsi.level_dimensions[level]
+            )
+            # ---converts openslide read_region to an actual RGBA image---
+            whole_slide_image = whole_slide_image.convert("RGB")
+            img = whole_slide_image.resize((new_w, new_h), PIL.Image.BILINEAR)
+        else:
+            # use large image if tiff file only has one level
+            meta = self._tilesource.getMetadata()
+            img, _ = self._tilesource.getRegion(
+                scale = dict(magnification=meta['magnification'] / scale_factor),
+                format = large_image.tilesource.TILE_FORMAT_PIL,
+            )
+            img = img.convert("RGB")
         arr_img = np.asarray(img)
         return img, arr_img
 
@@ -495,6 +533,19 @@ class Slide:
                 f"The wsi path resource doesn't exist: {self._path}"
             )
         return slide
+
+
+    @lazyproperty
+    def _tilesource(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
+        """Open the slide and returns a large_image tile source object
+
+        Returns
+        -------
+        source : large_image TileSource object
+            An TileSource object representing a whole-slide image.
+        """
+        source = large_image.getTileSource(self._path)
+        return source
 
 
 class SlideSet:
