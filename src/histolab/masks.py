@@ -24,6 +24,7 @@ import numpy as np
 import histolab
 
 from .filters.compositions import FiltersComposition
+from .filters.image_filters_functional import maskout_markers
 from .types import Region
 from .util import (
     lazyproperty,
@@ -80,6 +81,9 @@ class BiggestTissueBoxMask(BinaryMask):
         thumb = slide.thumbnail
         filters = FiltersComposition(histolab.slide.Slide).tissue_mask_filters
         thumb_mask = filters(thumb)
+        # Mohamed: filter out markers
+        thumb_mask, _ = maskout_markers(
+            thumb, thumb_mask, blue=True, green=True, red=False)
         regions = regions_from_binary_mask(thumb_mask)
         biggest_region = self._regions(regions, n=1)[0]
         biggest_region_coordinates = region_coordinates(biggest_region)

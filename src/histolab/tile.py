@@ -25,6 +25,7 @@ import PIL
 
 from .filters import image_filters as imf
 from .filters.compositions import FiltersComposition
+from .filters.image_filters_functional import maskout_markers
 from .types import CoordinatePair
 from .util import lazyproperty
 
@@ -136,6 +137,22 @@ class Tile:
         self._image.save(path)
 
     @lazyproperty
+    def _tissue_mask(self) -> float:
+        """Return the tissue mask for this tile.
+
+        Returns
+        -------
+        np.array
+            Boolean array of where tissue is.
+        """
+        filters = FiltersComposition(Tile).tissue_mask_filters
+        tissue_mask = filters(self._image)
+        # Mohamed: filter out markers
+        tissue_mask, _ = maskout_markers(
+            self._image, tissue_mask, blue=True, green=True, red=False)
+        return tissue_mask
+
+    @lazyproperty
     def tissue_ratio(self) -> float:
         """Return the ratio of the tissue area over the total area of the tile.
 
@@ -144,8 +161,7 @@ class Tile:
         float
             The ratio of the tissue area over the total area of the tile
         """
-        filters = FiltersComposition(Tile).tissue_mask_filters
-        tissue_mask = filters(self._image)
+        tissue_mask = self._tissue_mask
         tissue_ratio = np.count_nonzero(tissue_mask) / tissue_mask.size
         return tissue_ratio
 

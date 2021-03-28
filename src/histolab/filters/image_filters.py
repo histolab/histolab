@@ -775,9 +775,11 @@ class RedPenFilter(ImageFilter):
     -------
         Boolean NumPy array representing the mask with the pen marks filtered out.
     """
+    def __init__(self, applyfilter=True):
+        self.applyfilter = applyfilter
 
     def __call__(self, img: PIL.Image.Image):
-        return F.red_pen_filter(img)
+        return F.red_pen_filter(img, applyfilter=self.applyfilter)
 
 
 class GreenFilter(ImageFilter):
@@ -830,9 +832,11 @@ class GreenPenFilter(ImageFilter):
     PIL.Image.Image
         Image the green pen marks filtered out.
     """
+    def __init__(self, applyfilter=True):
+        self.applyfilter = applyfilter
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
-        return F.green_pen_filter(img)
+        return F.green_pen_filter(img, applyfilter=self.applyfilter)
 
 
 class BlueFilter(ImageFilter):
@@ -884,9 +888,11 @@ class BluePenFilter(ImageFilter):
     np.ndarray
         NumPy array representing the mask with the blue pen marks filtered out.
     """
+    def __init__(self, applyfilter=True):
+        self.applyfilter = applyfilter
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
-        return F.blue_pen_filter(img)
+        return F.blue_pen_filter(img, applyfilter=self.applyfilter)
 
 
 class YenThreshold(ImageFilter):

@@ -66,7 +66,7 @@ def adaptive_equalization(
     return adapt_equ
 
 
-def blue_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
+def blue_pen_filter(img: PIL.Image.Image, applyfilter=True) -> PIL.Image.Image:
     """Filter out blue pen marks from a diagnostic slide.
 
     The resulting mask is a composition of green filters with different thresholds
@@ -76,6 +76,9 @@ def blue_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
     ---------
     img : PIL.Image.Image
         Input RGB image
+    applyfilter : bool
+        If true (default), returns PIL image of slide after applying filter.
+        Otherwise returns the boolean mask itself
 
     Returns
     -------
@@ -100,6 +103,8 @@ def blue_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
     blue_pen_filter_img = reduce(
         (lambda x, y: x & y), [blue_filter(img, **param) for param in parameters]
     )
+    if not applyfilter:
+        return blue_pen_filter_img
     return apply_mask_image(img, blue_pen_filter_img)
 
 
@@ -126,7 +131,7 @@ def eosin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
     return np_to_pil(eosin)
 
 
-def green_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
+def green_pen_filter(img: PIL.Image.Image, applyfilter=True) -> PIL.Image.Image:
     """Filter out green pen marks from a diagnostic slide.
 
     The resulting mask is a composition of green filters with different thresholds
@@ -136,6 +141,9 @@ def green_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
     ---------
     img : PIL.Image.Image
         Input RGB image
+    applyfilter : bool
+        If true (default), returns PIL image of slide after applying filter.
+        Otherwise returns the boolean mask itself
 
     Returns
     -------
@@ -163,6 +171,8 @@ def green_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
     green_pen_filter_img = reduce(
         (lambda x, y: x & y), [green_filter(img, **param) for param in parameters]
     )
+    if not applyfilter:
+        return green_pen_filter_img
     return apply_mask_image(img, green_pen_filter_img)
 
 
@@ -391,7 +401,7 @@ def rag_threshold(
     return np_to_pil(rag)
 
 
-def red_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
+def red_pen_filter(img: PIL.Image.Image, applyfilter=True) -> PIL.Image.Image:
     """Filter out red pen marks on diagnostic slides.
 
     The resulting mask is a composition of red filters with different thresholds
@@ -401,6 +411,9 @@ def red_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
     ----------
     img : PIL.Image.Image
         Input RGB image.
+    applyfilter : bool
+        If true (default), returns PIL image of slide after applying filter.
+        Otherwise returns the boolean mask itself
 
     Returns
     -------
@@ -420,7 +433,31 @@ def red_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
     red_pen_filter_img = reduce(
         (lambda x, y: x & y), [red_filter(img, **param) for param in parameters]
     )
+    if not applyfilter:
+        return red_pen_filter_img
     return apply_mask_image(img, red_pen_filter_img)
+
+
+def maskout_markers(rgb, mask=None, blue=True, green=True, red=False):
+    """
+    Filter out marker pens from PIL RGB.
+    """
+    assert any([blue, green, red]), "must specify 1+ marker color to filter!"
+    marker_filters = []
+    if blue:
+        marker_filters.append(blue_pen_filter)
+    if green:
+        marker_filters.append(green_pen_filter)
+    if red:
+        marker_filters.append(red_pen_filter)
+    masked_rgb = rgb.copy()
+    if mask is None:
+        mask = np.zeros(rgb.size[:2], dtype=bool)
+    for filt in marker_filters:
+        addon_mask = filt(masked_rgb, applyfilter=False)
+        masked_rgb = apply_mask_image(masked_rgb, mask)
+        mask[~addon_mask] = False
+    return mask, masked_rgb
 
 
 def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
