@@ -573,8 +573,12 @@ class Describe_GridTiler:
         _grid_coordinates_generator.assert_called_once_with(
             grid_tiler, slide, binary_mask
         )
+
         assert _extract_tile.call_args_list == (
-            [call(slide, CP(0, 10, 0, 10), 0), call(slide, CP(0, 10, 0, 10), 0)]
+            [
+                call(slide, CP(0, 10, 0, 10), 0, (10, 10)),
+                call(slide, CP(0, 10, 0, 10), 0, (10, 10)),
+            ]
         )
         assert _has_enough_tissue.call_args_list == [call(tile1, 60), call(tile2, 60)]
         assert len(generated_tiles) == expected_n_tiles
@@ -625,8 +629,12 @@ class Describe_GridTiler:
         _grid_coordinates_generator.assert_called_once_with(
             grid_tiler, slide, binary_mask
         )
+
         assert _extract_tile.call_args_list == (
-            [call(slide, CP(0, 10, 0, 10), 0), call(slide, CP(0, 10, 0, 10), 0)]
+            [
+                call(slide, CP(0, 10, 0, 10), 0, (10, 10)),
+                call(slide, CP(0, 10, 0, 10), 0, (10, 10)),
+            ]
         )
         _has_enough_tissue.assert_not_called()
         assert len(generated_tiles) == expected_n_tiles
@@ -983,8 +991,8 @@ class Describe_ScoreTiler:
         score_tiler.extract(slide, binary_mask)
 
         assert _extract_tile.call_args_list == [
-            call(slide, coords, 0),
-            call(slide, coords, 0),
+            call(slide, coords, 0, (10, 10)),
+            call(slide, coords, 0, (10, 10)),
         ]
         _tiles_generator.assert_called_with(score_tiler, slide, binary_mask)
         assert _tile_filename.call_args_list == [
@@ -1087,8 +1095,8 @@ class Describe_ScoreTiler:
         score_tiler.extract(slide, binary_mask, "report.csv")
 
         assert _extract_tile.call_args_list == [
-            call(slide, coords, 0),
-            call(slide, coords, 0),
+            call(slide, coords, 0, (10, 10)),
+            call(slide, coords, 0, (10, 10)),
         ]
         _tiles_generator.assert_called_with(score_tiler, slide, binary_mask)
         assert _tile_filename.call_args_list == [
