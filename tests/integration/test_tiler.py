@@ -4,6 +4,7 @@ import os
 
 import numpy as np
 import pytest
+from PIL import Image
 
 from histolab.masks import BiggestTissueBoxMask
 from histolab.scorer import NucleiScorer
@@ -74,6 +75,44 @@ class DescribeRandomTiler:
         expand_tests_report(request, actual=tiles_location_img, expected=expected_img)
 
         np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
+
+    @pytest.mark.parametrize(
+        "tile_size, level, seed, n_tiles",
+        (
+            # Squared tile size
+            ((128, 128), 1, 42, 20),
+            ((128, 128), 0, 42, 10),
+            ((128, 128), 1, 2, 20),
+            ((128, 128), 0, 2, 10),
+            ((128, 128), 1, 20, 20),
+            ((128, 128), 0, 20, 10),
+            # Not squared tile size
+            ((135, 128), 1, 42, 20),
+            ((135, 128), 0, 42, 10),
+            ((135, 128), 1, 2, 20),
+            ((135, 128), 0, 2, 10),
+            ((135, 128), 1, 20, 20),
+            ((135, 128), 0, 20, 10),
+        ),
+    )
+    def test_extract_tiles_respecting_the_given_tile_size(
+        self, tmpdir, tile_size, level, seed, n_tiles
+    ):
+        processed_path = os.path.join(tmpdir, "processed")
+        slide = Slide(SVS.TCGA_CR_7395_01A_01_TS1, processed_path)
+        random_tiles_extractor = RandomTiler(
+            tile_size=tile_size,
+            n_tiles=n_tiles,
+            level=level,
+            seed=seed,
+            check_tissue=True,
+        )
+        binary_mask = BiggestTissueBoxMask()
+
+        random_tiles_extractor.extract(slide, binary_mask)
+
+        for tile in os.listdir(processed_path):
+            assert Image.open(os.path.join(processed_path, tile)).size == tile_size
 
 
 class DescribeGridTiler:

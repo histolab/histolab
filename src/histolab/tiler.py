@@ -392,7 +392,7 @@ class GridTiler(Tiler):
         )
         for coords in grid_coordinates_generator:
             try:
-                tile = slide.extract_tile(coords, self.level)
+                tile = slide.extract_tile(coords, self.level, self.tile_size)
             except ValueError:
                 continue
 
@@ -627,7 +627,7 @@ class RandomTiler(Tiler):
         while True:
             tile_wsi_coords = self._random_tile_coordinates(slide, extraction_mask)
             try:
-                tile = slide.extract_tile(tile_wsi_coords, self.level)
+                tile = slide.extract_tile(tile_wsi_coords, self.level, self.tile_size)
             except ValueError:
                 iteration -= 1
                 continue
@@ -747,7 +747,7 @@ class ScoreTiler(GridTiler):
         filenames = []
 
         for tiles_counter, (score, tile_wsi_coords) in enumerate(highest_score_tiles):
-            tile = slide.extract_tile(tile_wsi_coords, self.level)
+            tile = slide.extract_tile(tile_wsi_coords, self.level, self.tile_size)
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             tile.save(os.path.join(slide.processed_path, tile_filename))
             filenames.append(tile_filename)

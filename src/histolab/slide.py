@@ -36,12 +36,7 @@ from .exceptions import LevelError
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair, Region
-from .util import (
-    lazyproperty,
-    region_coordinates,
-    regions_from_binary_mask,
-    scale_coordinates,
-)
+from .util import lazyproperty, region_coordinates, regions_from_binary_mask
 
 IMG_EXT = "png"
 
@@ -85,7 +80,9 @@ class Slide:
         """
         return self._wsi.dimensions
 
-    def extract_tile(self, coords: CoordinatePair, level: int) -> Tile:
+    def extract_tile(
+        self, coords: CoordinatePair, level: int, tile_size: Tuple
+    ) -> Tile:
         """Extract a tile of the image at the selected level.
 
         Parameters
@@ -94,6 +91,8 @@ class Slide:
             Coordinates at level 0 from which to extract the tile.
         level : int
             Level from which to extract the tile.
+        tile_size: tuple
+            Final size of the tile (x,y).
 
         Returns
         -------
@@ -110,17 +109,8 @@ class Slide:
                 f"{self.dimensions}"
             )
 
-        coords_level = scale_coordinates(
-            reference_coords=coords,
-            reference_size=self.level_dimensions(level=0),
-            target_size=self.level_dimensions(level=level),
-        )
-
-        h_l = coords_level.y_br - coords_level.y_ul
-        w_l = coords_level.x_br - coords_level.x_ul
-
         image = self._wsi.read_region(
-            location=(coords.x_ul, coords.y_ul), level=level, size=(w_l, h_l)
+            location=(coords.x_ul, coords.y_ul), level=level, size=tile_size
         )
         tile = Tile(image, coords, level)
         return tile
