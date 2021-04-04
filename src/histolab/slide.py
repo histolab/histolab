@@ -167,6 +167,7 @@ class Slide:
                     units='base_pixels'),
                 scale=dict(mm_x=mm, mm_y=mm),
                 format=large_image.tilesource.TILE_FORMAT_PIL,
+                jpegQuality=100,
             )
             image = image.convert("RGB")
 
