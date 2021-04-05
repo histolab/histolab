@@ -304,7 +304,7 @@ class HematoxylinChannel(ImageFilter):
 
     Example:
         >>> from PIL import Image
-        >>> from histolab.filters.image_filters import EosinChannel
+        >>> from histolab.filters.image_filters import HematoxylinChannel
         >>> import os
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
         >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
@@ -613,7 +613,7 @@ class KmeansSegmentation(ImageFilter):
         >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
         >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
         >>> kmeans_segmentation = KmeansSegmentation()
-        >>> kmeans_segmented_array = kmeans_segmentation(image_rgb)
+        >>> kmeans_segmented_image = kmeans_segmentation(image_rgb)
     """  # noqa
 
     def __init__(self, n_segments: int = 800, compactness: float = 10.0) -> None:

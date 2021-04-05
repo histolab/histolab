@@ -396,6 +396,19 @@ def heart_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     return _load_svs("aperio/JP2K-33003-2.svs")
 
 
+def ihc_breast() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
+    """ihc_breast() -> Tuple[openslide.OpenSlide, str]
+
+    Returns
+    -------
+    ihc_breast : openslide.OpenSlide
+        Aorta tissue Whole-Slide-Image
+    path : str
+        Path where the slide is saved
+    """
+    return _load_svs("9798433/?format=tif")
+
+
 def ovarian_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """ovarian_tissue() -> Tuple[openslide.OpenSlide, str]
 
