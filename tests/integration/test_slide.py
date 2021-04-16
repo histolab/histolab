@@ -7,6 +7,7 @@ import numpy as np
 import PIL
 import pytest
 
+from histolab.masks import BiggestTissueBoxMask, TissueMask
 from histolab.slide import Slide
 
 from ..fixtures import SVS
@@ -59,45 +60,73 @@ class Describe_Slide:
         )
 
     @pytest.mark.parametrize(
-        "slide_fixture, tissue_mask, expectation",
+        "slide_fixture, tissue_mask, binary_mask, expectation",
         [
             (
                 SVS.CMU_1_SMALL_REGION,
                 True,
+                BiggestTissueBoxMask(),
                 "cmu-1-small-region-bbox-location-tissue-mask-true",
             ),
             (
                 SVS.CMU_1_SMALL_REGION,
                 False,
+                BiggestTissueBoxMask(),
                 "cmu-1-small-region-bbox-location-tissue-mask-false",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
                 True,
+                BiggestTissueBoxMask(),
                 "tcga-cr-7395-01a-01-ts1-bbox-location-tissue-mask-true",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
                 False,
+                BiggestTissueBoxMask(),
                 "tcga-cr-7395-01a-01-ts1-bbox-location-tissue-mask-false",
+            ),
+            (
+                SVS.CMU_1_SMALL_REGION,
+                True,
+                TissueMask(),
+                "cmu-1-small-region-tissue-location-tissue-mask-true",
+            ),
+            (
+                SVS.CMU_1_SMALL_REGION,
+                False,
+                TissueMask(),
+                "cmu-1-small-region-tissue-location-tissue-mask-false",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                True,
+                TissueMask(),
+                "tcga-cr-7395-01a-01-ts1-tissue-location-tissue-mask-true",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                False,
+                TissueMask(),
+                "tcga-cr-7395-01a-01-ts1-tissue-location-tissue-mask-false",
             ),
         ],
     )
-    def it_locates_the_biggest_bbox(
-        self, tmpdir, slide_fixture, tissue_mask, expectation
+    def it_locates_the_mask(
+        self, request, tmpdir, slide_fixture, tissue_mask, binary_mask, expectation
     ):
         slide = Slide(slide_fixture, os.path.join(tmpdir, "processed"))
-
         expected_img = load_expectation(
-            os.path.join("bbox-location-images", expectation),
+            os.path.join("mask-location-images", expectation),
             type_="png",
         )
-        bbox_location_img = slide.locate_biggest_tissue_box(
-            tissue_mask=tissue_mask, scale_factor=3
+
+        mask_location_img = slide.locate_mask(
+            binary_mask, tissue_mask=tissue_mask, scale_factor=3
         )
 
         np.testing.assert_array_almost_equal(
-            np.asarray(bbox_location_img), expected_img
+            np.asarray(mask_location_img), expected_img
         )
 
     def it_knows_its_properties(self):

@@ -30,13 +30,14 @@ from typing import Iterator, List, Tuple, Union
 import numpy as np
 import openslide
 import PIL
-from deprecated.sphinx import deprecated
+from skimage.measure import find_contours
 
 from .exceptions import LevelError
 from .filters.compositions import FiltersComposition
+from .masks import BinaryMask
 from .tile import Tile
-from .types import CoordinatePair, Region
-from .util import lazyproperty, region_coordinates, regions_from_binary_mask
+from .types import CoordinatePair
+from .util import lazyproperty
 
 IMG_EXT = "png"
 
@@ -148,21 +149,24 @@ class Slide:
         """
         return list(range(len(self._wsi.level_dimensions)))
 
-    def locate_biggest_tissue_box(
+    def locate_mask(
         self,
+        binary_mask: BinaryMask,
         scale_factor: int = 32,
         tissue_mask: bool = False,
         alpha: int = 128,
         outline: str = "red",
     ) -> PIL.Image.Image:
-        """Draw biggest tissue box reference on a rescaled version of the slide
+        """Draw binary mask contours on a rescaled version of the slide
 
         Parameters
         ----------
+        binary_mask : BinaryMask
+            Binary Mask object
         scale_factor : int
             Scaling factor for the returned image. Default is 32.
         tissue_mask : bool, optional
-            Whether to draw the biggest tissue box on the binary tissue mask instead of
+            Whether to draw the contours on the binary tissue mask instead of
             the rescaled version of the slide. Default is False.
         alpha : int
             The alpha level to be applied to the rescaled slide, default to 128.
@@ -172,26 +176,31 @@ class Slide:
         Returns
         -------
         PIL.Image.Image
-            PIL Image of the rescaled slide with the biggest tissue bounding box
-            outlined.
+            PIL Image of the rescaled slide with the binary mask contours outlined.
         """
         img = self.scaled_image(scale_factor)
-
-        filters = FiltersComposition(Slide).tissue_mask_filters
-
-        img_tissue_mask = filters(img)
-        regions = regions_from_binary_mask(img_tissue_mask)
-        biggest_region = self._biggest_regions(regions, n=1)[0]
-
-        biggest_region_coordinates = region_coordinates(biggest_region)
+        mask = binary_mask(self)
+        resized_mask = np.array(
+            PIL.Image.fromarray(mask).resize(img.size, PIL.Image.ANTIALIAS)
+        )
 
         if tissue_mask:
+            filters = FiltersComposition(Slide).tissue_mask_filters
+            img_tissue_mask = filters(img)
             img = PIL.Image.fromarray(img_tissue_mask).convert("RGB")
         else:
             img.putalpha(alpha)
 
-        draw = PIL.ImageDraw.Draw(img)
-        draw.rectangle(tuple(biggest_region_coordinates), outline=outline)
+        # pad the mask to have closed contours along the edges
+        padded_mask = np.pad(resized_mask, pad_width=1, mode="constant")
+        contours = [
+            cont - 1 for cont in find_contours(padded_mask, 0.5)
+        ]  # unpad countours
+
+        for contour in contours:
+            contour = np.ceil(contour)
+            contour = np.vstack([contour[:, 1], contour[:, 0]]).T
+            PIL.ImageDraw.Draw(img).polygon(contour.ravel().tolist(), outline=outline)
 
         return img
 
@@ -280,38 +289,6 @@ class Slide:
         return self._wsi.get_thumbnail(self._thumbnail_size)
 
     # ------- implementation helpers -------
-
-    @staticmethod
-    @deprecated(
-        version="0.2.4",
-        reason="This property will be moved in histolab.masks.BinaryMask",
-    )
-    def _biggest_regions(regions: List[Region], n: int = 1) -> List[Region]:
-        """Return the biggest ``n`` regions.
-
-        Parameters
-        ----------
-        regions : List[Region]
-            List of regions
-        n : int, optional
-            Number of regions to return, by default 1
-
-        Returns
-        -------
-        List[Region]
-            List of ``n`` biggest regions
-
-        Raises
-        ------
-        ValueError
-            If ``n`` is not between 1 and the number of elements of ``regions``
-        """
-
-        if not 1 <= n <= len(regions):
-            raise ValueError(f"n should be between 1 and {len(regions)}, got {n}")
-
-        sorted_regions = sorted(regions, key=lambda r: r.area, reverse=True)
-        return sorted_regions[:n]
 
     def _has_valid_coords(self, coords: CoordinatePair) -> bool:
         """Check if ``coords`` are valid 0-level coordinates.
