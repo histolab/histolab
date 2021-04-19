@@ -1,6 +1,22 @@
 Changelog
 =========
 
+v0.2.4
+------
+**Bug Fix**
+
+- `RandomTiler` now respects the given tile size (`#243 <https://github.com/histolab/histolab/pull/243>`_)
+- Use logger object instead of logging module when logging tiler updates (`#237 <https://github.com/histolab/histolab/pull/237>`_)
+
+**New Features**
+
+- New `masks` module to create binary masks from slides with different strategies: `BiggestTissueBoxMask` and `TissueMask` (`#234 <https://github.com/histolab/histolab/pull/234>`_)
+- Refactor locate_mask to draw mask contours on the slide from an arbitrary BinaryMask object (`#248 <https://github.com/histolab/histolab/pull/248>`_)
+
+**Breaking Changes**
+
+- Refactor `Slide`: return thumbnail and scaled image instead of saving them (`#236 <https://github.com/histolab/histolab/pull/236>`_)
+
 v0.2.3
 ------
 **New Features**
