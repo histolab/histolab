@@ -113,7 +113,7 @@ class Describe_Slide:
         ],
     )
     def it_locates_the_mask(
-        self, request, tmpdir, slide_fixture, tissue_mask, binary_mask, expectation
+        self, tmpdir, slide_fixture, tissue_mask, binary_mask, expectation
     ):
         slide = Slide(slide_fixture, os.path.join(tmpdir, "processed"))
         expected_img = load_expectation(

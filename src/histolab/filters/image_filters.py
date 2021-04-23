@@ -166,9 +166,7 @@ class Invert(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import Invert, RgbToGrayscale
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> invert = Invert()
         >>> image_gray = rgb_to_grayscale(image_rgb)
@@ -197,9 +195,7 @@ class RgbToGrayscale(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> image_gray = rgb_to_grayscale(image_rgb)
     """  # noqa
@@ -228,9 +224,7 @@ class RgbToHed(ImageFilter):
 
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToHed
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_hed = RgbToHed()
         >>> image_hed = rgb_to_hed(image_rgb)
     """  # noqa
@@ -269,9 +263,7 @@ class RgbToLab(ImageFilter):
 
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToLab
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_lab = RgbToLab()
         >>> image_hed = rgb_to_lab(image_rgb)
     """  # noqa
@@ -305,9 +297,7 @@ class HematoxylinChannel(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import HematoxylinChannel
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> hematoxylin_channel = HematoxylinChannel()
         >>> image_h = hematoxylin_channel(image_rgb)
     """  # noqa
@@ -338,11 +328,9 @@ class EosinChannel(ImageFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import EosinChannel
         >>> from histolab.filters import image_filters_functional as imf
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> eosin_channel = EosinChannel()
-        >>> image_h = imf.hematoxylin_channel(image_rgb)
+        >>> image_e = eosin_channel(image_rgb)
     """  # noqa
 
     def __call__(self, img):
@@ -369,9 +357,7 @@ class RgbToHsv(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToHsv
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_hsv = RgbToHsv()
         >>> image_hsv = rgb_to_hsv(image_rgb)
     """  # noqa
@@ -416,9 +402,7 @@ class StretchContrast(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, StretchContrast
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> stretch_contrast = StretchContrast()
         >>> image_gray = rgb_to_grayscale(image_rgb)
@@ -456,10 +440,10 @@ class HistogramEqualization(ImageFilter):
     The resulting image will have a uniform intensity distribution.
     The algorithm described is also called non-adaptive uniform histogram
     equalization, as it works uniformly on the whole image and the transformation of one
-    pixel is independent from the transformation used on the neighboring pixels [2]_.
+    pixel is independent from the transformation used on the neighboring pixels [4]_.
 
     Notice that the histogram equalization method can be used for RGB images
-    by applying the same algorithm on the R, G, and B channels separately [3]_;
+    by applying the same algorithm on the R, G, and B channels separately [5]_;
     nonetheless, the high correlation of the three channels may distort the image and
     the color balance can change drastically.
 
@@ -479,9 +463,7 @@ class HistogramEqualization(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import HistogramEqualization, RgbToGrayscale
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> histogram_equalization = HistogramEqualization()
         >>> image_gray = rgb_to_grayscale(image_rgb)
@@ -489,9 +471,9 @@ class HistogramEqualization(ImageFilter):
 
     References
     --------
-    .. [2] T Strothotte and S Schlechtweg. “Non-photorealistic computer graphics:
+    .. [4] T Strothotte and S Schlechtweg. “Non-photorealistic computer graphics:
         modeling, rendering, and animation”. Morgan Kaufmann (2002)
-    .. [3] Z Rong and et al. “Study of color heritage image enhancement algorithms based
+    .. [5] Z Rong and et al. “Study of color heritage image enhancement algorithms based
         on histogram equalization”. Optik 126.24 (2015)
     """  # noqa
 
@@ -534,9 +516,7 @@ class AdaptiveEqualization(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import AdaptiveEqualization, RgbToGrayscale
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> adaptive_equalization = AdaptiveEqualization()
         >>> image_gray = rgb_to_grayscale(image_rgb)
@@ -574,7 +554,14 @@ class LocalEqualization(ImageFilter):
     -------
     PIL.Image.Image
         Grayscale image with contrast enhanced using local equalization.
-    """
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import LocalEqualization
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
+        >>> local_equ = LocalEqualization()
+        >>> local_equ_image = local_equ(image_rgb)
+    """  # noqa
 
     def __init__(self, disk_size: int = 50) -> None:
         self.disk_size = disk_size
@@ -608,10 +595,8 @@ class KmeansSegmentation(ImageFilter):
 
     Example:
         >>> from PIL import Image
-        >>> from histolab.filters.image_filters import KmeansSegmentation, RagThreshold
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> from histolab.filters.image_filters import KmeansSegmentation
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> kmeans_segmentation = KmeansSegmentation()
         >>> kmeans_segmented_image = kmeans_segmentation(image_rgb)
     """  # noqa
@@ -655,9 +640,7 @@ class RagThreshold(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RagThreshold
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rag_threshold = RagThreshold()
         >>> rag_thresholded_array = rag_threshold(image_rgb)
     """  # noqa
@@ -702,9 +685,7 @@ class HysteresisThreshold(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import HysteresisThresholdMask, RgbToGrayscale
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> hyst_threshold = HysteresisThresholdMask(low=50, high=100)
         >>> image_gray = rgb_to_grayscale(image_rgb)
@@ -769,7 +750,16 @@ class HysteresisThresholdMask(ImageFilter):
     -------
     np.ndarray
         Boolean NumPy array where True represents a pixel above hysteresis threshold.
-    """
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import HysteresisThresholdMask, RgbToGrayscale
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> hyst_threshold = HysteresisThresholdMask()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_thresholded_array = hyst_threshold(image_gray)
+    """  # noqa
 
     def __init__(self, low: int = 50, high: int = 100) -> None:
         self.low = low
@@ -788,7 +778,7 @@ class OtsuThreshold(ImageFilter):
     Compute Otsu threshold on image as a NumPy array and return boolean mask
     based on pixels above this threshold. The Otsu algorithm is a standard method to
     automatically compute the optimal threshold value to separate image background from
-    the foreground [4]_. In this filter, the pixels below the
+    the foreground [7]_. In this filter, the pixels below the
     Otsu threshold are considered as foreground.
 
     Note that Otsu threshold is expected to work correctly only for grayscale images.
@@ -807,9 +797,7 @@ class OtsuThreshold(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import OtsuThreshold, RgbToGrayscale
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> otsu_threshold = OtsuThreshold()
         >>> image_gray = rgb_to_grayscale(image_rgb)
@@ -818,7 +806,7 @@ class OtsuThreshold(ImageFilter):
 
     Reference
     ---------
-    .. [4] N Otsu. “A threshold selection method from gray-level histograms”. IEEE
+    .. [7] N Otsu. “A threshold selection method from gray-level histograms”. IEEE
         Trans SystMan Cybern Syst 9.1 (1979)
     """  # noqa
 
@@ -858,9 +846,7 @@ class FilterEntropy(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import FilterEntropy, RgbToGrayscale
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> entropy_filter = FilterEntropy()
         >>> image_gray = rgb_to_grayscale(image_rgb)
@@ -880,7 +866,7 @@ class CannyEdges(ImageFilter):
 
     The Canny edge detector has been used to generate a version of the image that
     highlights edges within tissue fragments by detecting changes in pixel intensity
-    [7]_ [8]_.
+    [2]_ [3]_.
     The algorithm includes five steps: (i) smoothing the image (i.e. remove the noise);
     (ii) computing the gradient's magnitude :math:`M_\nabla` and direction
     :math:`\theta_\nabla`; (iii) keeping the direction :math:`\theta_\nabla` with
@@ -910,9 +896,7 @@ class CannyEdges(ImageFilter):
     Example
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import CannyEdges, RgbToGrayscale
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> canny_edges_detection = CannyEdges()
         >>> image_gray = rgb_to_grayscale(image_rgb)
@@ -920,10 +904,10 @@ class CannyEdges(ImageFilter):
 
     References
     ----------
-    .. [7] A Kumar and M Prateek. “Localization of Nuclei in Breast Cancer Using Whole
+    .. [2] A Kumar and M Prateek. “Localization of Nuclei in Breast Cancer Using Whole
         SlideImaging System Supported by Morphological Features and Shape Formulas”.
         CancerManag Res 12 (2020)
-    .. [8] M Mũnoz-Aguirre and et al. “PyHIST: A Histological Image Segmentation Tool”.
+    .. [3] M Mũnoz-Aguirre and et al. “PyHIST: A Histological Image Segmentation Tool”.
         PLOS Comput Biol 16.10 (2020)
     """  # noqa
 
@@ -959,7 +943,14 @@ class Grays(ImageFilter):
     -------
     PIL.Image.Image
         Mask image where the grays values are masked out
-    """
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import Grays
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
+        >>> grays_filter = Grays(tolerance=5)
+        >>> filtered_mask = grays_filter(image_rgb)
+    """  # noqa
 
     def __init__(self, tolerance: int = 15) -> None:
         self.tolerance = tolerance
@@ -1003,9 +994,7 @@ class GreenChannelFilter(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import GreenChannelFilter
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> g_channel_filter = GreenChannelFilter(avoid_overmask=True, overmask_thresh=90)
         >>> image_thresholded_array = g_channel_filter(image_rgb)
     """  # noqa
@@ -1048,6 +1037,13 @@ class RedFilter(ImageFilter):
     -------
     np.ndarray
         Boolean NumPy array representing the mask.
+
+    Example
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RedFilter
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-red-pen.png")
+        >>> red_filter = RedFilter(10, 30, 25)
+        >>> mask_filtered = red_filter(image_rgb)
     """
 
     def __init__(self, red_thresh: int, green_thresh: int, blue_thresh: int) -> None:
@@ -1072,7 +1068,15 @@ class RedPenFilter(ImageFilter):
 
     Returns
     -------
-        Boolean NumPy array representing the mask with the pen marks filtered out.
+    PIL.Image.Image
+        Image the green red marks filtered out.
+
+    Example
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RedPenFilter
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-red-pen.png")
+        >>> red_pen_filter = RedPenFilter()
+        >>> image_no_red = red_pen_filter(image_rgb)
     """
 
     def __call__(self, img: PIL.Image.Image):
@@ -1101,7 +1105,14 @@ class GreenFilter(ImageFilter):
     Returns
     -------
     np.ndarray
-        Boolean  NumPy array representing the mask.
+        Boolean NumPy array representing the mask.
+
+    Example
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import GreenFilter
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-red-pen.png")
+        >>> green_filter = GreenFilter(230, 10, 105)
+        >>> mask_filtered = green_filter(image_rgb)
     """
 
     def __init__(self, red_thresh, green_thresh, blue_thresh):
@@ -1132,18 +1143,10 @@ class GreenPenFilter(ImageFilter):
 
     Example:
         >>> from PIL import Image
-        >>> from histolab.filters.image_filters import ApplyMaskImage, GreenPenFilter, RgbToGrayscale, OtsuThreshold
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
-        >>> rgb_to_grayscale = RgbToGrayscale()
-        >>> otsu_threshold = OtsuThreshold()
-        >>> apply_mask_image = ApplyMaskImage(image_rgb)
+        >>> from histolab.filters.image_filters import GreenPenFilter
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-green-pen.png")
         >>> green_pen_filter = GreenPenFilter()
-        >>> image_gray = rgb_to_grayscale(image_rgb)
-        >>> binary_image = otsu_threshold(image_gray)
-        >>> masked_image = apply_mask_image(binary_image)
-        >>> image_no_green = green_pen_filter(masked_image)
+        >>> image_no_green = green_pen_filter(image_rgb)
     """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -1175,19 +1178,11 @@ class BlueFilter(ImageFilter):
 
 
     Example:
-            >>> from PIL import Image
-            >>> from histolab.filters.image_filters import ApplyMaskImage, BluePenFilter, RgbToGrayscale, OtsuThreshold
-            >>> import os
-            >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-            >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
-            >>> rgb_to_grayscale = RgbToGrayscale()
-            >>> otsu_threshold = OtsuThreshold()
-            >>> apply_mask_image = ApplyMaskImage(image_rgb)
-            >>> blue_pen_filter = BluePenFilter()
-            >>> image_gray = rgb_to_grayscale(image_rgb)
-            >>> binary_image = otsu_threshold(image_gray)
-            >>> masked_image = apply_mask_image(binary_image)
-            >>> image_no_blue = blue_pen_filter(masked_image)
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import BlueFilter
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/wsi-blue-pen.png")
+        >>> blue_filter = BlueFilter(30, 20, 105)
+        >>> mask_filtered = blue_filter(image_rgb)
     """  # noqa
 
     def __init__(self, red_thresh: int, green_thresh: int, blue_thresh: int):
@@ -1217,19 +1212,11 @@ class BluePenFilter(ImageFilter):
 
 
     Example:
-            >>> from PIL import Image
-            >>> from histolab.filters.image_filters import ApplyMaskImage, RedPenFilter, RgbToGrayscale, OtsuThreshold
-            >>> import os
-            >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-            >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
-            >>> rgb_to_grayscale = RgbToGrayscale()
-            >>> otsu_threshold = OtsuThreshold()
-            >>> apply_mask_image = ApplyMaskImage(image_rgb)
-            >>> red_pen_filter = RedPenFilter()
-            >>> image_gray = rgb_to_grayscale(image_rgb)
-            >>> binary_image = otsu_threshold(image_gray)
-            >>> masked_image = apply_mask_image(binary_image)
-            >>> image_no_red = red_pen_filter(masked_image)
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import BluePenFilter
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/wsi-blue-pen.png")
+        >>> blue_pen_filter = BluePenFilter()
+        >>> image_no_blue = blue_pen_filter(image_rgb)
     """  # noqa
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
@@ -1240,7 +1227,7 @@ class YenThreshold(ImageFilter):
     r"""Mask image based on pixel above Yen threshold.
 
     Compute Yen threshold on image and return boolean mask based on pixels below
-    this threshold. The Yen method [6]_ is a multi-level image thresholding approach
+    this threshold. The Yen method [8]_ is a multi-level image thresholding approach
     to separate objects from the background. It automatically computes the
     threshold that maximize the entropic correlation EC for a given gray level s
     defined as:
@@ -1273,9 +1260,7 @@ class YenThreshold(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, YenThreshold
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> yen_threshold = YenThreshold()
         >>> image_gray = rgb_to_grayscale(image_rgb)
@@ -1283,7 +1268,7 @@ class YenThreshold(ImageFilter):
 
     References
     ----------
-    .. [6] J.C. Yen and et al.“A new criterion for automatic multilevel
+    .. [8] J.C. Yen and et al.“A new criterion for automatic multilevel
         thresholding”. IEEE Trans Image Process 4.3 (1995)
     """  # noqa
 

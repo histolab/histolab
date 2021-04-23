@@ -63,7 +63,6 @@ class RemoveSmallObjects(MorphologicalFilter):
         Mask with small objects filtered out
 
 
-
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
@@ -114,9 +113,7 @@ class RemoveSmallHoles(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import RemoveSmallHoles
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> otsu_threshold = OtsuThreshold()
         >>> remove_small_holes = RemoveSmallHoles()
@@ -154,9 +151,7 @@ class BinaryErosion(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryErosion
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> otsu_threshold = OtsuThreshold()
         >>> binary_erosion = BinaryErosion(disk_size=6)
@@ -200,9 +195,7 @@ class BinaryDilation(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryDilation
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> otsu_threshold = OtsuThreshold()
         >>> binary_dilation = BinaryDilation()
@@ -272,9 +265,7 @@ class BinaryOpening(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryOpening
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> otsu_threshold = OtsuThreshold()
         >>> binary_opening = BinaryOpening()
@@ -320,9 +311,7 @@ class BinaryClosing(MorphologicalFilter):
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
         >>> from histolab.filters.morphological_filters import BinaryClosing
-        >>> import os
-        >>> img_dir = os.path.join(os.path.abspath(os.getcwd()), "tests/fixtures/pil-images-rgb")
-        >>> image_rgb = Image.open(os.path.join(img_dir,"tcga-lung-rgb.png"))
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
         >>> otsu_threshold = OtsuThreshold()
         >>> binary_closing = BinaryClosing()
