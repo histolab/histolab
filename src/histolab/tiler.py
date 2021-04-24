@@ -31,7 +31,12 @@ from .scorer import Scorer
 from .slide import Slide
 from .tile import Tile
 from .types import CoordinatePair
-from .util import region_coordinates, regions_from_binary_mask, scale_coordinates
+from .util import (
+    random_choice_true_mask2d,
+    region_coordinates,
+    regions_from_binary_mask,
+    scale_coordinates,
+)
 
 try:
     from typing import Protocol, runtime_checkable
@@ -575,10 +580,9 @@ class RandomTiler(Tiler):
         binary_mask = extraction_mask(slide)
         tile_w_lvl, tile_h_lvl = self.tile_size
 
-        x_ul_lvl = np.random.choice(np.where(binary_mask)[1])
-        y_ul_lvl = np.random.choice(np.where(binary_mask)[0])
+        x_ul_lvl, y_ul_lvl = random_choice_true_mask2d(binary_mask)
 
-        # Scale tile dimensions to thumbnail dimensions
+        # Scale tile dimensions to extraction mask dimensions
         tile_w_thumb = (
             tile_w_lvl * binary_mask.shape[1] / slide.level_dimensions(self.level)[0]
         )
