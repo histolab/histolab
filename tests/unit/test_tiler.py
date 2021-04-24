@@ -140,10 +140,10 @@ class Describe_RandomTiler:
         _box_mask_thumb.return_value = NpArrayMock.ONES_500X500_BOOL
         _tile_size = property_mock(request, RandomTiler, "tile_size")
         _tile_size.return_value = (128, 128)
-        _np_random_choice1 = function_mock(request, "numpy.random.choice")
-        _np_random_choice1.return_value = 0
-        _np_random_choice2 = function_mock(request, "numpy.random.choice")
-        _np_random_choice2.return_value = 0
+        _random_choice_true_mask2d = function_mock(
+            request, "histolab.tiler.random_choice_true_mask2d"
+        )
+        _random_choice_true_mask2d.return_value = (0, 0)
         _scale_coordinates = function_mock(request, "histolab.tiler.scale_coordinates")
         random_tiler = RandomTiler((128, 128), 10, 0)
         binary_mask = BiggestTissueBoxMask()
@@ -152,6 +152,9 @@ class Describe_RandomTiler:
 
         _box_mask_thumb.assert_called_once_with(binary_mask, slide)
         _tile_size.assert_has_calls([call((128, 128))])
+        _random_choice_true_mask2d.assert_called_once_with(
+            NpArrayMock.ONES_500X500_BOOL
+        )
         _scale_coordinates.assert_called_once_with(
             reference_coords=CP(x_ul=0, y_ul=0, x_br=128, y_br=128),
             reference_size=(500, 500),

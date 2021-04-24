@@ -6,18 +6,8 @@ import operator
 
 import numpy as np
 import pytest
-
-from histolab.types import CP, Region
-from histolab.util import (
-    apply_mask_image,
-    lazyproperty,
-    np_to_pil,
-    polygon_to_mask_array,
-    region_coordinates,
-    scale_coordinates,
-    threshold_to_mask,
-)
 from tests.base import (
+    COMPLEX_MASK,
     IMAGE1_GRAY,
     IMAGE1_RGB,
     IMAGE1_RGBA,
@@ -30,6 +20,18 @@ from tests.base import (
     IMAGE4_GRAY_WHITE,
     IMAGE4_RGB_WHITE,
     IMAGE4_RGBA_WHITE,
+)
+
+from histolab.types import CP, Region
+from histolab.util import (
+    apply_mask_image,
+    lazyproperty,
+    np_to_pil,
+    polygon_to_mask_array,
+    random_choice_true_mask2d,
+    region_coordinates,
+    scale_coordinates,
+    threshold_to_mask,
 )
 
 from ..fixtures import MASKNPY, NPY
@@ -158,6 +160,15 @@ def test_region_coordinates():
     region_coords_ = region_coordinates(region)
 
     assert region_coords_ == CP(x_ul=1, y_ul=0, x_br=2, y_br=1)
+
+
+@pytest.mark.parametrize("seed", [(i,) for i in range(10)])
+def test_random_choice_true_mask2d(seed):
+    np.random.seed(seed)
+
+    x, y = random_choice_true_mask2d(COMPLEX_MASK)
+
+    assert COMPLEX_MASK[x, y]
 
 
 class DescribeLazyPropertyDecorator:
