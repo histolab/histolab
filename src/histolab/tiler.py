@@ -32,6 +32,7 @@ from .slide import Slide
 from .tile import Tile
 from .types import CoordinatePair
 from .util import (
+    polygon_to_mask_array,
     random_choice_true_mask2d,
     region_coordinates,
     regions_from_binary_mask,
@@ -646,6 +647,27 @@ class RandomTiler(Tiler):
 
             if valid_tile_counter >= self.n_tiles:
                 break
+
+    def _remove_tile_from_mask(
+        self, binary_mask: np.ndarray, tile_lvl_coords: CoordinatePair
+    ) -> np.ndarray:
+        """Return ``binary_mask`` with elements within ``tile_lvl_coords`` set to False.
+
+        Parameters
+        ----------
+        binary_mask : np.ndarray
+            The binary mask from which to mask out elements
+        tile_lvl_coords : CoordinatePair
+            Coordinates of the tile to remove from the mask
+
+        Returns
+        -------
+        np.ndarray
+            Binary mask with elements within ``tile_lvl_coords`` set to False.
+        """
+        tile_mask = polygon_to_mask_array(binary_mask.shape, tile_lvl_coords)
+        binary_mask_without_tile = binary_mask & ~tile_mask
+        return binary_mask_without_tile
 
 
 class ScoreTiler(GridTiler):

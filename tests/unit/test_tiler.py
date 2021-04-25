@@ -4,6 +4,7 @@ import os
 import re
 from unittest.mock import call
 
+import numpy as np
 import pytest
 
 from histolab.exceptions import LevelError, TileSizeError
@@ -14,6 +15,7 @@ from histolab.tile import Tile
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, Tiler
 from histolab.types import CP
 
+from ..base import COMPLEX_MASK, COMPLEX_MASK2
 from ..unitutil import (
     ANY,
     PILIMG,
@@ -25,6 +27,7 @@ from ..unitutil import (
     method_mock,
     property_mock,
 )
+from ..util import load_expectation
 
 
 class Describe_RandomTiler:
@@ -398,6 +401,26 @@ class Describe_RandomTiler:
             == f"Tile size (50, 52) is larger than slide size {size} at level 0"
         )
         _has_valid_tile_size.assert_called_once_with(random_tiler, slide)
+
+    @pytest.mark.parametrize(
+        "binary_mask, expectation_name",
+        [
+            (COMPLEX_MASK, "mask-arrays/remove-tile-mask-complexmask"),
+            (COMPLEX_MASK2, "mask-arrays/remove-tile-mask-complexmask2"),
+        ],
+    )
+    def it_knows_how_to_remove_tile_from_mask(self, binary_mask, expectation_name):
+        random_tiler = RandomTiler((5, 5), n_tiles=1, level=0)
+        tile_lvl_coords = CP(0, 0, 5, 5)
+        expected_mask = load_expectation(expectation_name, type_="npy")
+
+        binary_mask_without_tile = random_tiler._remove_tile_from_mask(
+            binary_mask, tile_lvl_coords
+        )
+
+        assert type(binary_mask_without_tile) == np.ndarray
+        assert binary_mask_without_tile.shape == binary_mask.shape
+        np.testing.assert_array_equal(binary_mask_without_tile, expected_mask)
 
     # fixture components ---------------------------------------------
 
