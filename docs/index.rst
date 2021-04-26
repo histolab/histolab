@@ -73,6 +73,7 @@ References
 
   readme
   quickstart
+  tissue_masks
   contributing
   changelog
 
