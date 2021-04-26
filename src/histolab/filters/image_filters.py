@@ -718,7 +718,17 @@ class LocalOtsuThreshold(ImageFilter):
     -------
     PIL.Image.Image
         Image thresholded with the Otsu algorithm computed locally
-    """
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import LocalOtsuThreshold, RgbToGrayscale
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> local_otsu = LocalOtsuThreshold()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> image_thresholded_locally = local_otsu(image_gray)
+    """  # noqa
 
     def __init__(self, disk_size: float = 3.0) -> None:
         self.disk_size = disk_size
