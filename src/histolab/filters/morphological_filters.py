@@ -231,6 +231,19 @@ class BinaryFillHoles(MorphologicalFilter):
     -------
     np.ndarray
         Transformation of the initial image input where holes have been filled.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
+        >>> from histolab.filters.morphological_filters import BinaryFillHoles
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> otsu_threshold = OtsuThreshold()
+        >>> binary_fill_holes = BinaryFillHoles()
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> binary_image = otsu_threshold(image_gray)
+        >>> image_filled_holes = binary_fill_holes(binary_image)
     """
 
     def __init__(self, structure: np.ndarray = None):
@@ -386,6 +399,19 @@ class WhiteTopHat(MorphologicalFilter):
         The neighborhood expressed as an array of 1 and 0. If None, use cross-shaped
         structuring element (connectivity=1).
 
+
+    Example:
+        >>> from PIL import Image
+        >>> import numpy as np
+        >>> from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
+        >>> from histolab.filters.morphological_filters import WhiteTopHat
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
+        >>> rgb_to_grayscale = RgbToGrayscale()
+        >>> otsu_threshold = OtsuThreshold()
+        >>> white_that = WhiteTopHat(np.ones((5,5)))
+        >>> image_gray = rgb_to_grayscale(image_rgb)
+        >>> binary_image = otsu_threshold(image_gray)
+        >>> image_out = white_that(binary_image)
     """
 
     def __init__(self, structure: np.ndarray = None):

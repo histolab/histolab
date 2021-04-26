@@ -8,7 +8,7 @@ The ``data`` module gives access to a set of publicly available WSIs, stained wi
 * Image Data Resource (`IDR <https://idr.openmicroscopy.org>`_): the WSIs are selected from the data collection provided by Schaadt et al. [1]_ and available at IDR under the accession number `idr0073`.
 
 .. note::
-    ``histolab`` gives access to a pool of selected slides from the two organizations through the ``data`` module. We use `Pooch <https://pypi.org/project/pooch/>`_ under the hood, which is an optional requirement for ``histolab`` and needs to be installed separately with:
+    We use `Pooch <https://pypi.org/project/pooch/>`_ under the hood, which is an optional requirement for ``histolab`` and needs to be installed separately with:
 
     .. code-block:: bash
 
