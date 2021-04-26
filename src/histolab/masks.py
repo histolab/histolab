@@ -60,7 +60,10 @@ class BinaryMask(ABC):
 
 
 class BiggestTissueBoxMask(BinaryMask):
-    """Object that represents the box containing the largest contiguous tissue area."""
+    """Object that represents the box containing the largest contiguous tissue area.
+
+    Internally, this class automatically detects the tissue regions via a predefined
+    sequence of filters, and then retain the largest connected component."""
 
     @lru_cache(maxsize=100)
     def _mask(self, slide) -> np.ndarray:
@@ -120,7 +123,10 @@ class BiggestTissueBoxMask(BinaryMask):
 
 
 class TissueMask(BinaryMask):
-    """Object that represent the tissue area mask."""
+    """Object that represent the whole tissue area mask.
+
+    The tissue within the slide is automatically detected through a predefined
+    chain of filters."""
 
     @lru_cache(maxsize=100)
     def _mask(self, slide) -> np.ndarray:
