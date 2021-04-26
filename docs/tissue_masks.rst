@@ -109,7 +109,7 @@ We can finally pass our mask to the `extract <tiler.html#src.histolab.tiler.Rand
 
     rtiler.locate_tiles(
         slide=ihc_kidney_slide,
-        extraction_mask = all_tissue_mask,
+        extraction_mask=all_tissue_mask,
     )
 
 .. figure:: https://user-images.githubusercontent.com/31658006/116124001-00135580-a6c4-11eb-90bb-2bed9689e48b.png
