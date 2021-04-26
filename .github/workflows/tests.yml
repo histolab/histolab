@@ -75,6 +75,10 @@ jobs:
         id: tests
         run: |
           python -m pytest --ignore=tests/benchmarks --cov=histolab --cov-report=xml
+      - name: DoctTests
+        id: doctests
+        run: |
+          python -m pytest src/ --doctest-modules
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
