@@ -555,6 +555,7 @@ class LocalEqualization(ImageFilter):
     PIL.Image.Image
         Grayscale image with contrast enhanced using local equalization.
 
+
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import LocalEqualization
@@ -684,12 +685,12 @@ class HysteresisThreshold(ImageFilter):
 
     Example:
         >>> from PIL import Image
-        >>> from histolab.filters.image_filters import HysteresisThresholdMask, RgbToGrayscale
+        >>> from histolab.filters.image_filters import HysteresisThreshold, RgbToGrayscale
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
-        >>> hyst_threshold = HysteresisThresholdMask(low=50, high=100)
+        >>> hyst_threshold = HysteresisThreshold(low=200, high=250)
         >>> image_gray = rgb_to_grayscale(image_rgb)
-        >>> image_thresholded_array = hyst_threshold(image_gray)
+        >>> image_thresholded = hyst_threshold(image_gray)
     """  # noqa
 
     def __init__(self, low: int = 50, high: int = 100) -> None:
@@ -751,14 +752,15 @@ class HysteresisThresholdMask(ImageFilter):
     np.ndarray
         Boolean NumPy array where True represents a pixel above hysteresis threshold.
 
+
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import HysteresisThresholdMask, RgbToGrayscale
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_grayscale = RgbToGrayscale()
-        >>> hyst_threshold = HysteresisThresholdMask()
+        >>> hyst_threshold_mask = HysteresisThresholdMask()
         >>> image_gray = rgb_to_grayscale(image_rgb)
-        >>> image_thresholded_array = hyst_threshold(image_gray)
+        >>> image_thresholded_array = hyst_threshold_mask(image_gray)
     """  # noqa
 
     def __init__(self, low: int = 50, high: int = 100) -> None:
@@ -893,7 +895,7 @@ class CannyEdges(ImageFilter):
         Boolean NumPy array representing Canny edge map.
 
 
-    Example
+    Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import CannyEdges, RgbToGrayscale
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
@@ -943,6 +945,7 @@ class Grays(ImageFilter):
     -------
     PIL.Image.Image
         Mask image where the grays values are masked out
+
 
     Example:
         >>> from PIL import Image
@@ -1038,7 +1041,8 @@ class RedFilter(ImageFilter):
     np.ndarray
         Boolean NumPy array representing the mask.
 
-    Example
+
+    Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RedFilter
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-red-pen.png")
@@ -1071,7 +1075,8 @@ class RedPenFilter(ImageFilter):
     PIL.Image.Image
         Image the green red marks filtered out.
 
-    Example
+
+    Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import RedPenFilter
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-red-pen.png")
@@ -1107,7 +1112,8 @@ class GreenFilter(ImageFilter):
     np.ndarray
         Boolean NumPy array representing the mask.
 
-    Example
+
+    Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import GreenFilter
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-red-pen.png")
