@@ -98,14 +98,12 @@ We can finally pass our mask to the `extract <tiler.html#src.histolab.tiler.Rand
     from histolab.tiler import RandomTiler
 
     rtiler = RandomTiler(
-                    prefix="",
-                    tile_size=(128,128),
-                    level=0,
-                    n_tiles=50,
-                    check_tissue=True,
-                    tissue_percent=90,
-                    seed=0,
-                )
+        tile_size=(128, 128),
+        n_tiles=50,
+        level=0,
+        tissue_percent=90,
+        seed=0,
+    )
 
     rtiler.extract(ihc_kidney_slide, all_tissue_mask, log_level="WARNING")
 
