@@ -27,7 +27,7 @@ First, we need to load some modules and an example `Slide <slide.html#src.histol
    :alt: ihc_kidney
 
 
-On our `Slide <slide.html#src.histolab.slide.Slide>`_ object we can now retrieve a binary mask considering specific regions of the tissue. Notice that available masks are defined in the `masks <masks.html#src.histolab.masks>`_ module.
+From our `Slide <slide.html#src.histolab.slide.Slide>`_ object we can now retrieve a binary mask considering specific regions of the tissue. Notice that available masks are defined in the `masks <masks.html#src.histolab.masks>`_ module.
 
 As a diagnostic check to visualize the mask, we can call the `locate mask <slide.html#src.histolab.slide.Slide.locate_mask>`_ method on the Slide, which outlines the boundaries of the selected mask on the slide's thumbnail.
 
