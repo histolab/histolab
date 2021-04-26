@@ -559,7 +559,7 @@ class LocalEqualization(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import LocalEqualization
-        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-gs/diagnostic-slide-thumb-gs.png")
         >>> local_equ = LocalEqualization()
         >>> local_equ_image = local_equ(image_rgb)
     """  # noqa
