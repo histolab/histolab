@@ -503,6 +503,34 @@ class HysteresisThreshold(ImageFilter):
         return F.hysteresis_threshold(img, self.low, self.high)
 
 
+class LocalOtsuThreshold(ImageFilter):
+    """Mask image based on local Otsu threshold.
+
+    Compute Otsu threshold for each pixel and return the image thresholded locally.
+
+    Note that the input image must be 2D.
+
+    Parameters
+    ----------
+    img: PIL.Image.Image
+        Input 2-dimensional image
+    disk_size : float, optional
+        Radius of the disk structuring element used to compute the Otsu threshold for
+        each pixel. Default is 3.0
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image thresholded with the Otsu algorithm computed locally
+    """
+
+    def __init__(self, disk_size: float = 3.0) -> None:
+        self.disk_size = disk_size
+
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+        return F.local_otsu_threshold(img, self.disk_size)
+
+
 # ----------- Branching functions (grayscale/invert input)-------------------
 
 # invert --> grayscale ..> hysteresis
@@ -559,35 +587,6 @@ class OtsuThreshold(ImageFilter):
 
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         return F.otsu_threshold(img)
-
-
-class LocalOtsuThreshold(ImageFilter):
-    """Mask image based on local Otsu threshold.
-
-    Compute local Otsu threshold for each pixel and return boolean mask
-    based on pixels being less than the local Otsu threshold.
-
-    Note that the input image must be 2D.
-
-    Parameters
-    ----------
-    img: PIL.Image.Image
-        Input 2-dimensional image
-    disk_size : float, optional
-        Radius of the disk structuring element used to compute the Otsu threshold for
-        each pixel. Default is 3.0
-
-    Returns
-    -------
-    np.ndarray
-        NumPy boolean array representing the mask based on local Otsu threshold
-    """
-
-    def __init__(self, disk_size: float = 3.0) -> None:
-        self.disk_size = disk_size
-
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
-        return F.local_otsu_threshold(img, self.disk_size)
 
 
 class FilterEntropy(ImageFilter):
