@@ -15,8 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------
-"""All filters implemented in the image filters submodule take as input a Pillow Image object.
-Additionally, some of the image filters in histolab leverage functions and utilities by scikit-image. Image filters are divided into sub-categories, depending on their behaviour and output type.
+"""All filters implemented in the image filters submodule take as input a Pillow Image
+object. Additionally, some of the image filters in histolab leverage functions and
+utilities by scikit-image. Image filters are divided into sub-categories, depending on
+their behaviour and output type.
  """
 
 import operator
