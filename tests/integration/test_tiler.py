@@ -279,7 +279,7 @@ class DescribeScoreTiler:
             ),
         ],
     )
-    def it_locates_tiles_on_the_slide22(
+    def it_locates_tiles_on_the_slide(
         self,
         request,
         fixture_slide,
