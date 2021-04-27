@@ -594,7 +594,7 @@ class RandomTiler(Tiler):
         y_br_lvl = y_ul_lvl + tile_h_thumb
 
         tile_wsi_coords = scale_coordinates(
-            reference_coords=CoordinatePair(x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl),
+            reference_coords=CoordinatePair(y_ul_lvl, x_ul_lvl, y_br_lvl, x_br_lvl),
             reference_size=binary_mask.shape[::-1],
             target_size=slide.dimensions,
         )
