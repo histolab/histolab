@@ -65,7 +65,7 @@ The `BiggestTissueBoxMask <masks.html#src.histolab.masks.BiggestTissueBoxMask>`_
 Custom Mask
 ------------
 
-It is also possible to define a custom binary mask via the `BinaryMask <masks.html#src.histolab.masks.BinaryMask>`_ object.
+It is also possible to define a custom binary mask by subclassing the `BinaryMask <masks.html#src.histolab.masks.BinaryMask>`_ object.
 For example, we can limit a rectangular region with upper-left coordinates (400, 280) and bottom-right coordinates (300, 320):
 
 .. code-block:: ipython3
