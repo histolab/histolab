@@ -163,10 +163,10 @@ class DescribeGridTiler:
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
                 TissueMask(),
-                (512, 512),
+                (512, 550),
                 -2,
                 False,
-                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-grid-BTB-f-512x512",
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-grid-TM-f-512x550",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
@@ -179,10 +179,10 @@ class DescribeGridTiler:
             (
                 SVS.CMU_1_SMALL_REGION,
                 TissueMask(),
-                (128, 128),
+                (128, 120),
                 0,
                 True,
-                "tiles-location-images/cmu-1-small-region-tl-grid-TM-true-128x128",
+                "tiles-location-images/cmu-1-small-region-tl-grid-TM-true-128x120",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
@@ -195,10 +195,10 @@ class DescribeGridTiler:
             (
                 TIFF.KIDNEY_48_5,
                 TissueMask(),
-                (10, 10),
+                (15, 10),
                 0,
                 True,
-                "tiles-location-images/kidney-48-5-grid-TM-true-10x10",
+                "tiles-location-images/kidney-48-5-grid-TM-true-15x10",
             ),
             (
                 TIFF.KIDNEY_48_5,
@@ -258,17 +258,17 @@ class DescribeScoreTiler:
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
-                (512, 512),
+                (512, 530),
                 0,
                 False,
-                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-score-f-512x512",
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-score-f-512x530",
             ),
             (
                 SVS.CMU_1_SMALL_REGION,
-                (128, 128),
+                (120, 128),
                 0,
                 True,
-                "tiles-location-images/cmu-1-small-region-tl-score-true-128x128",
+                "tiles-location-images/cmu-1-small-region-tl-score-true-120x128",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
@@ -279,7 +279,7 @@ class DescribeScoreTiler:
             ),
         ],
     )
-    def it_locates_tiles_on_the_slide(
+    def it_locates_tiles_on_the_slide22(
         self,
         request,
         fixture_slide,
@@ -311,6 +311,7 @@ class DescribeScoreTiler:
             tiles_location_img = scored_tiles_extractor.locate_tiles(
                 slide, scale_factor=8
             )
+
         # --- Expanding test report with actual and expected images ---
         expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
 
