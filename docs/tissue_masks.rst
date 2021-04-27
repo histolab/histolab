@@ -29,9 +29,28 @@ First, we need to load some modules and an example `Slide <slide.html#src.histol
 
 On our `Slide <slide.html#src.histolab.slide.Slide>`_ object we can now retrieve a binary mask considering specific regions of the tissue. Notice that available masks are defined in the `masks <masks.html#src.histolab.masks>`_ module.
 
-In particular, the `TissueMask <masks.html#src.histolab.masks.TissueMask>`_ accounts for all the tissue detected on the slide, while the `BiggestTissueBoxMask <masks.html#src.histolab.masks.BiggestTissueBoxMask>`_ keeps only the largest connected component of the tissue.
+As a diagnostic check to visualize the mask, we can call the `locate mask <slide.html#src.histolab.slide.Slide.locate_mask>`_ method on the Slide, which outlines the boundaries of the selected mask on the slide's thumbnail.
 
-As a diagnostic check to visualize the boundaries of the selected mask, we can call the ``locate_mask`` method on the Slide:
+
+TissueMask
+----------
+
+If we want to account for all the tissue detected on the slide, the `TissueMask <masks.html#src.histolab.masks.TissueMask>`_ is what we need:
+
+.. code-block:: ipython3
+
+   from histolab.masks import TissueMask
+   all_tissue_mask = TissueMask()
+   ihc_kidney_slide.locate_mask(all_tissue_mask)
+
+.. figure:: https://user-images.githubusercontent.com/31658006/116119755-0f43d480-a6bf-11eb-86eb-3f5b933ede1c.png
+   :alt: all tissue
+
+
+BiggestTissueBoxMask
+--------------------
+
+The `BiggestTissueBoxMask <masks.html#src.histolab.masks.BiggestTissueBoxMask>`_ keeps only the largest connected component of the tissue, and returns the bounding box including that region:
 
 .. code-block:: ipython3
 
@@ -42,14 +61,9 @@ As a diagnostic check to visualize the boundaries of the selected mask, we can c
 .. figure:: https://user-images.githubusercontent.com/31658006/116119576-e02d6300-a6be-11eb-85b2-01df96c9c3eb.png
    :alt: largest bbox
 
-.. code-block:: ipython3
 
-   from histolab.masks import TissueMask
-   all_tissue_mask = TissueMask()
-   ihc_kidney_slide.locate_mask(all_tissue_mask)
-
-.. figure:: https://user-images.githubusercontent.com/31658006/116119755-0f43d480-a6bf-11eb-86eb-3f5b933ede1c.png
-   :alt: all tissue
+Custom Mask
+------------
 
 It is also possible to define a custom binary mask via the `BinaryMask <masks.html#src.histolab.masks.BinaryMask>`_ object.
 For example, we can limit a rectangular region with upper-left coordinates (400, 280) and bottom-right coordinates (300, 320):
@@ -74,7 +88,10 @@ For example, we can limit a rectangular region with upper-left coordinates (400,
    :alt: all tissue
 
 
-We can finally pass our mask to the ``extract`` method of our `Tiler <tiler.html#src.histolab.tiler>`_ object, and visualize the location of the extracted tiles:
+Tile extraction within the mask
+-------------------------------
+
+We can finally pass our mask to the `extract <tiler.html#src.histolab.tiler.RandomTiler.extract>`_ method of our `Tiler <tiler.html#src.histolab.tiler>`_ object, and visualize the location of the extracted tiles:
 
 .. code-block:: ipython3
 
