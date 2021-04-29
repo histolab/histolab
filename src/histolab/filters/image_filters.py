@@ -154,6 +154,8 @@ class Invert(ImageFilter):
     to 255). Therefore, inverting its values could ease the removal of non-tissue
     regions (values close or equal to 0).
 
+    .. figure:: https://user-images.githubusercontent.com/31658006/116548383-6aaad800-a8f4-11eb-8ebd-46c873046447.png
+
     Parameters
     ----------
     img : PIL.Image.Image
@@ -384,6 +386,8 @@ class StretchContrast(ImageFilter):
     :math:`v_{o,l}=40` and :math:`v_{o,l}=60` as default values.
     This filter is useful to highlight details in the input image.
 
+    .. figure:: https://user-images.githubusercontent.com/31658006/116539805-9f656200-a8e9-11eb-913b-864c0a9d8baf.png
+
     Parameters
     ----------
     img: PIL.Image.Image
@@ -442,6 +446,8 @@ class HistogramEqualization(ImageFilter):
     equalization, as it works uniformly on the whole image and the transformation of one
     pixel is independent from the transformation used on the neighboring pixels [4]_.
 
+    .. figure:: https://user-images.githubusercontent.com/31658006/116540462-76919c80-a8ea-11eb-86f0-0b0d318292e3.png
+
     Notice that the histogram equalization method can be used for RGB images
     by applying the same algorithm on the R, G, and B channels separately [5]_;
     nonetheless, the high correlation of the three channels may distort the image and
@@ -494,6 +500,8 @@ class AdaptiveEqualization(ImageFilter):
     This local approach is preferred when the image presents significantly darker or
     lighter regions that may be poorly enhanced by the global histogram equalization
     transformation.
+
+    .. figure:: https://user-images.githubusercontent.com/31658006/116540919-13ecd080-a8eb-11eb-99ef-c879f80fe542.png
 
     The Adaptive Equalization filter is based on the scikit-image implementation of
     the contrast limited adaptive histogram equalization (CLAHE) [1]_.
@@ -578,6 +586,8 @@ class KmeansSegmentation(ImageFilter):
     By using K-means segmentation (color/space proximity) each segment is colored based
     on the average color for that segment.
 
+    .. figure:: https://user-images.githubusercontent.com/31658006/116543486-37fde100-a8ee-11eb-8695-75fae5767de1.jpeg
+
     Parameters
     ---------
     img : PIL.Image.Image
@@ -619,6 +629,8 @@ class RagThreshold(ImageFilter):
     Segment an image with K-means, build region adjacency graph based on
     the segments, combine similar regions based on threshold value,
     and then output these resulting region segments.
+
+    .. figure:: https://user-images.githubusercontent.com/31658006/116543569-506dfb80-a8ee-11eb-9d59-413b33de8e73.jpeg
 
     Parameters
     ----------
@@ -667,6 +679,8 @@ class HysteresisThreshold(ImageFilter):
     defined as weak objects; all the non-objects are removed, while the weak objects are
     kept only if connected to a strong one. The hysteresis thresholding can be applied
     to detect edges in an image.
+
+    .. figure:: https://user-images.githubusercontent.com/31658006/116542328-d5f0ac00-a8ec-11eb-9f05-696ca0598fd4.png
 
     Parameters
     ----------
@@ -795,6 +809,8 @@ class OtsuThreshold(ImageFilter):
 
     Note that Otsu threshold is expected to work correctly only for grayscale images.
 
+    .. figure:: https://user-images.githubusercontent.com/31658006/116542034-76929c00-a8ec-11eb-98ca-9e0d283cdcbb.png
+
     Parameters
     ----------
     img : PIL.Image.Image
@@ -839,6 +855,8 @@ class FilterEntropy(ImageFilter):
     regions, which represent dense accumulation of nuclei (complex structures).
 
     Note that input must be 2D.
+
+    .. figure:: https://user-images.githubusercontent.com/31658006/116543013-a1312480-a8ed-11eb-8f75-b25164286994.png
 
     Parameters
     ----------
@@ -887,6 +905,8 @@ class CannyEdges(ImageFilter):
     for the final edge detection.
 
     Note that input image must be 2D.
+
+    .. figure:: https://user-images.githubusercontent.com/31658006/116542613-1d773800-a8ed-11eb-9005-4c0ad8d051b8.png
 
     Parameters
     ----------
@@ -983,6 +1003,8 @@ class GreenChannelFilter(ImageFilter):
     of tissue that can be masked by the green channel filter (by default 90%).
 
     This method alone may be sufficient to segment tissue on H&E-stained images.
+
+    .. figure:: https://user-images.githubusercontent.com/31658006/116541610-f53b0980-a8eb-11eb-939d-944ebc7c87ee.png
 
     Parameters
     ----------
@@ -1146,6 +1168,8 @@ class GreenPenFilter(ImageFilter):
     The resulting mask is a composition of green filters with different thresholds
     for the RGB channels.
 
+    .. figure:: https://user-images.githubusercontent.com/31658006/116548722-f290e200-a8f4-11eb-9780-0ce5844295dd.png
+
     Parameters
     ---------
     img : PIL.Image.Image
@@ -1258,6 +1282,8 @@ class YenThreshold(ImageFilter):
     :math:`\displaystyle{P(s)=\sum_{i=0}^{s-1}p_i}` is the total probability up to
     gray level (s-1). In this filter, pixels below the computed threshold are
     considered as foreground.
+
+    .. figure:: https://user-images.githubusercontent.com/31658006/116542194-ab065800-a8ec-11eb-9fea-24dd97de8226.pn
 
     Parameters
     ----------
