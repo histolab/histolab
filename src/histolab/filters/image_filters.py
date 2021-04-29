@@ -630,7 +630,7 @@ class RagThreshold(ImageFilter):
     the segments, combine similar regions based on threshold value,
     and then output these resulting region segments.
 
-    .. figure:: https://user-images.githubusercontent.com/31658006/116543569-506dfb80-a8ee-11eb-9d59-413b33de8e73.jpeg
+    .. figure:: https://user-images.githubusercontent.com/31658006/116553449-6a154000-a8fa-11eb-8e74-b9d711e79113.jpeg
 
     Parameters
     ----------
@@ -1283,7 +1283,7 @@ class YenThreshold(ImageFilter):
     gray level (s-1). In this filter, pixels below the computed threshold are
     considered as foreground.
 
-    .. figure:: https://user-images.githubusercontent.com/31658006/116542194-ab065800-a8ec-11eb-9fea-24dd97de8226.pn
+    .. figure:: https://user-images.githubusercontent.com/31658006/116542194-ab065800-a8ec-11eb-9fea-24dd97de8226.png
 
     Parameters
     ----------
