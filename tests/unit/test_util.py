@@ -150,6 +150,7 @@ def test_apply_mask_image(img, mask, expected_array):
 def test_util_polygon_to_mask_array(dims, vertices, expected_array):
     polygon_mask = polygon_to_mask_array(dims, vertices)
 
+    assert polygon_mask.shape == dims
     np.testing.assert_array_almost_equal(
         polygon_mask, load_expectation(expected_array, type_="npy")
     )
