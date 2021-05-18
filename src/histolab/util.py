@@ -89,7 +89,26 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
     return PIL.Image.fromarray(image_array)
 
 
-def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
+def random_choice_true_mask2d(binary_mask: np.ndarray) -> Tuple[int, int]:
+    """Return a random pair of indices where the ``binary_mask`` is True.
+
+    Parameters
+    ----------
+    binary_mask : np.ndarray
+        Binary array.
+
+    Returns
+    -------
+    Tuple[int, int]
+        Random pair of indices where the ``binary_mask`` is True.
+    """
+    x = np.random.choice(np.where(binary_mask)[0])
+    y = np.random.choice(np.where(binary_mask[x])[0])
+
+    return x, y
+
+
+def rectangle_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
     """
     Return a binary mask with True inside of rectangle ``vertices`` and False outside.
 
@@ -118,25 +137,6 @@ def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
     img = PIL.Image.new("L", dims[::-1], 0)
     PIL.ImageDraw.Draw(img).polygon(rectangle_vertices, outline=1, fill=1)
     return np.array(img).astype(bool)
-
-
-def random_choice_true_mask2d(binary_mask: np.ndarray) -> Tuple[int, int]:
-    """Return a random pair of indices where the ``binary_mask`` is True.
-
-    Parameters
-    ----------
-    binary_mask : np.ndarray
-        Binary array.
-
-    Returns
-    -------
-    Tuple[int, int]
-        Random pair of indices where the ``binary_mask`` is True.
-    """
-    x = np.random.choice(np.where(binary_mask)[0])
-    y = np.random.choice(np.where(binary_mask[x])[0])
-
-    return x, y
 
 
 def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
