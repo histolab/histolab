@@ -27,8 +27,8 @@ from histolab.util import (
     apply_mask_image,
     lazyproperty,
     np_to_pil,
-    polygon_to_mask_array,
     random_choice_true_mask2d,
+    rectangle_to_mask_array,
     region_coordinates,
     scale_coordinates,
     threshold_to_mask,
@@ -147,12 +147,12 @@ def test_apply_mask_image(img, mask, expected_array):
         ((5, 5), CP(2, 1, 4, 3), "mask-arrays/polygon-to-mask-array-2143"),
     ),
 )
-def test_util_polygon_to_mask_array(dims, vertices, expected_array):
-    polygon_mask = polygon_to_mask_array(dims, vertices)
+def test_util_rectangle_to_mask_array(dims, vertices, expected_array):
+    rectangle_mask = rectangle_to_mask_array(dims, vertices)
 
-    assert polygon_mask.shape == dims
+    assert rectangle_mask.shape == dims
     np.testing.assert_array_almost_equal(
-        polygon_mask, load_expectation(expected_array, type_="npy")
+        rectangle_mask, load_expectation(expected_array, type_="npy")
     )
 
 

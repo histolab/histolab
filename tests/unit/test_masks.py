@@ -1,11 +1,5 @@
 import numpy as np
 import pytest
-
-from histolab.filters.compositions import _SlideFiltersComposition
-from histolab.filters.image_filters import Compose
-from histolab.filters.morphological_filters import RemoveSmallObjects
-from histolab.masks import BiggestTissueBoxMask, TissueMask
-from histolab.types import CP, Region
 from tests.unitutil import (
     PILIMG,
     base_test_slide,
@@ -14,6 +8,12 @@ from tests.unitutil import (
     method_mock,
     property_mock,
 )
+
+from histolab.filters.compositions import _SlideFiltersComposition
+from histolab.filters.image_filters import Compose
+from histolab.filters.morphological_filters import RemoveSmallObjects
+from histolab.masks import BiggestTissueBoxMask, TissueMask
+from histolab.types import CP, Region
 
 
 class DescribeBiggestTissueBoxMask:
@@ -82,10 +82,10 @@ class DescribeBiggestTissueBoxMask:
             request, "histolab.masks.region_coordinates"
         )
         region_coordinates_.return_values = CP(0, 0, 2, 2)
-        polygon_to_mask_array_ = function_mock(
-            request, "histolab.util.polygon_to_mask_array"
+        rectangle_to_mask_array_ = function_mock(
+            request, "histolab.util.rectangle_to_mask_array"
         )
-        polygon_to_mask_array_((1000, 1000), CP(0, 0, 2, 2)).return_value = [
+        rectangle_to_mask_array_((1000, 1000), CP(0, 0, 2, 2)).return_value = [
             [True, True],
             [False, True],
         ]
@@ -96,7 +96,7 @@ class DescribeBiggestTissueBoxMask:
         np.testing.assert_almost_equal(binary_mask, np.zeros((500, 500)))
         region_coordinates_.assert_called_once_with(regions[0])
         biggest_regions_.assert_called_once_with(regions, n=1)
-        polygon_to_mask_array_.assert_called_once_with(
+        rectangle_to_mask_array_.assert_called_once_with(
             (1000, 1000), CP(x_ul=0, y_ul=0, x_br=2, y_br=2)
         )
 
