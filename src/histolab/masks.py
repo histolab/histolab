@@ -90,7 +90,9 @@ class BiggestTissueBoxMask(BinaryMask):
         regions = regions_from_binary_mask(thumb_mask)
         biggest_region = self._regions(regions, n=1)[0]
         biggest_region_coordinates = region_coordinates(biggest_region)
-        thumb_bbox_mask = polygon_to_mask_array(thumb.size, biggest_region_coordinates)
+        thumb_bbox_mask = polygon_to_mask_array(
+            thumb.size[::-1], biggest_region_coordinates
+        )
         return thumb_bbox_mask
 
     @staticmethod

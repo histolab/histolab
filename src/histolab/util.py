@@ -90,30 +90,33 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
 
 
 def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
-    """Draw a white polygon of vertices on a black image of specified dimensions.
+    """
+    Return a binary mask with True inside of rectangle ``vertices`` and False outside.
+
+    The returned mask has shape ``dims``.
 
     Parameters
     ----------
     dims : tuple
-        (w,h) of the black image
+        (w,h) of the binary mask
     vertices : CoordinatePair
         CoordinatePair representing the upper left and bottom right vertices of the
-        polygon
+        rectangle
 
     Returns
     -------
     np.ndarray
-        NumPy array corresponding to the image with the polygon
+        Binary mask with True inside of the rectangle, False outside.
     """
-    poly_vertices = [
+    rectangle_vertices = [
         (vertices.x_ul, vertices.y_ul),
         (vertices.x_ul, vertices.y_br),
         (vertices.x_br, vertices.y_br),
         (vertices.x_br, vertices.y_ul),
     ]
 
-    img = PIL.Image.new("L", dims, 0)
-    PIL.ImageDraw.Draw(img).polygon(poly_vertices, outline=1, fill=1)
+    img = PIL.Image.new("L", dims[::-1], 0)
+    PIL.ImageDraw.Draw(img).polygon(rectangle_vertices, outline=1, fill=1)
     return np.array(img).astype(bool)
 
 
