@@ -71,13 +71,13 @@ For example, we can limit a rectangular region with upper-left coordinates (400,
 .. code-block:: ipython3
 
    from histolab.masks import BinaryMask
-   from histolab.util import rectangle_to_mask_array
+   from histolab.util import rectangle_to_mask
    from histolab.types import CP
 
    class MyCustomMask(BinaryMask):
         def _mask(self, slide):
             thumb = slide.thumbnail
-            my_mask = rectangle_to_mask_array(thumb.size, CP(400, 280, 300, 320))
+            my_mask = rectangle_to_mask(thumb.size, CP(400, 280, 300, 320))
             return my_mask
 
    custom_mask = MyCustomMask()
