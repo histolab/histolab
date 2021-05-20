@@ -82,10 +82,8 @@ class DescribeBiggestTissueBoxMask:
             request, "histolab.masks.region_coordinates"
         )
         region_coordinates_.return_values = CP(0, 0, 2, 2)
-        rectangle_to_mask_array_ = function_mock(
-            request, "histolab.util.rectangle_to_mask_array"
-        )
-        rectangle_to_mask_array_((1000, 1000), CP(0, 0, 2, 2)).return_value = [
+        rectangle_to_mask_ = function_mock(request, "histolab.util.rectangle_to_mask")
+        rectangle_to_mask_((1000, 1000), CP(0, 0, 2, 2)).return_value = [
             [True, True],
             [False, True],
         ]
@@ -96,7 +94,7 @@ class DescribeBiggestTissueBoxMask:
         np.testing.assert_almost_equal(binary_mask, np.zeros((500, 500)))
         region_coordinates_.assert_called_once_with(regions[0])
         biggest_regions_.assert_called_once_with(regions, n=1)
-        rectangle_to_mask_array_.assert_called_once_with(
+        rectangle_to_mask_.assert_called_once_with(
             (1000, 1000), CP(x_ul=0, y_ul=0, x_br=2, y_br=2)
         )
 
