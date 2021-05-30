@@ -30,6 +30,7 @@ from histolab.util import (
     random_choice_true_mask2d,
     rectangle_to_mask,
     region_coordinates,
+    regions_to_binary_mask,
     scale_coordinates,
     threshold_to_mask,
 )
@@ -170,6 +171,34 @@ def test_random_choice_true_mask2d(seed):
     x, y = random_choice_true_mask2d(COMPLEX_MASK)
 
     assert COMPLEX_MASK[x, y]
+
+
+def test_regions_to_binary_mask():
+    regions = [
+        Region(
+            index=None,
+            area=None,
+            bbox=None,
+            center=None,
+            coords=np.array([[1, 3], [2, 3], [3, 2], [3, 3]]),
+        ),
+        Region(
+            index=None,
+            area=None,
+            bbox=None,
+            center=None,
+            coords=np.array([[3, 7], [4, 7], [4, 8]]),
+        ),
+    ]
+
+    binary_mask_regions = regions_to_binary_mask(regions, dims=(10, 10))
+
+    assert type(binary_mask_regions) == np.ndarray
+    assert binary_mask_regions.dtype == bool
+    np.testing.assert_array_almost_equal(
+        binary_mask_regions,
+        load_expectation("mask-arrays/regions-to-binary-mask", type_="npy"),
+    )
 
 
 class DescribeLazyPropertyDecorator:
