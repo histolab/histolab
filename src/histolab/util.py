@@ -154,7 +154,9 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     """
     thumb_labeled_regions = label(binary_mask)
     regions = [
-        Region(index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid)
+        Region(
+            index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid, coords=rp.coords
+        )
         for i, rp in enumerate(regionprops(thumb_labeled_regions))
     ]
     return regions

@@ -237,12 +237,17 @@ class Describe_Slide:
         binary_mask = np.array([[True, False], [True, True]])
         label = function_mock(request, "histolab.util.label")
         regionprops = function_mock(request, "histolab.util.regionprops")
-        RegionProps = namedtuple("RegionProps", ("area", "bbox", "centroid"))
+        RegionProps = namedtuple("RegionProps", ("area", "bbox", "centroid", "coords"))
         regions_props = [
-            RegionProps(3, (0, 0, 2, 2), (0.6666666666666666, 0.3333333333333333))
+            RegionProps(
+                3,
+                (0, 0, 2, 2),
+                (0.6666666666666666, 0.3333333333333333),
+                np.array([[0, 0], [1, 0], [1, 1]]),
+            )
         ]
         regionprops.return_value = regions_props
-        label(binary_mask).return_value = [[0, 1], [1, 1]]
+        label(binary_mask).return_value = [[1, 0], [1, 1]]
 
         regions_from_binary_mask_ = regions_from_binary_mask(binary_mask)
 
@@ -256,6 +261,7 @@ class Describe_Slide:
                 area=regions_props[0].area,
                 bbox=regions_props[0].bbox,
                 center=regions_props[0].centroid,
+                coords=regions_props[0].coords,
             )
         ]
 
