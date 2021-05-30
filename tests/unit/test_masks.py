@@ -19,10 +19,10 @@ from histolab.types import CP, Region
 class DescribeBiggestTissueBoxMask:
     def it_knows_its_biggest_regions(self):
         regions = [
-            Region(index=0, area=14, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
-            Region(index=1, area=2, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
-            Region(index=2, area=5, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
-            Region(index=3, area=10, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
+            Region(index=0, area=14, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None),
+            Region(index=1, area=2, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None),
+            Region(index=2, area=5, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None),
+            Region(index=3, area=10, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None),
         ]
         binary_mask = BiggestTissueBoxMask
 
@@ -57,7 +57,9 @@ class DescribeBiggestTissueBoxMask:
         RemoveSmallObjects_,
     ):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
-        regions = [Region(index=0, area=33, bbox=(0, 0, 2, 2), center=(0.5, 0.5))]
+        regions = [
+            Region(index=0, area=33, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None)
+        ]
         main_tissue_areas_mask_filters_ = property_mock(
             request, _SlideFiltersComposition, "tissue_mask_filters"
         )

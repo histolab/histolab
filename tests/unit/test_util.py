@@ -157,7 +157,7 @@ def test_util_rectangle_to_mask(dims, vertices, expected_array):
 
 
 def test_region_coordinates():
-    region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5))
+    region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5), coords=None)
     region_coords_ = region_coordinates(region)
 
     assert region_coords_ == CP(x_ul=1, y_ul=0, x_br=2, y_br=1)
