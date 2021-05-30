@@ -162,6 +162,37 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     return regions
 
 
+def regions_to_binary_mask(regions: List[Region], dims: Tuple[int, int]) -> np.ndarray:
+    """Create a binary mask given a list of ``regions``.
+
+    For each region ``r``, the areas within ``r.coords`` are filled with True, False
+    outside.
+
+    Parameters
+    ----------
+    regions : List[Region]
+        The regions to consider to create the binary mask.
+    dims : Tuple[int, int]
+        Dimensions of the resulting binary mask.
+
+    Returns
+    -------
+    np.ndarray
+        Binary mask from the ``regions`` coordinates.
+    """
+    img = PIL.Image.new("L", dims[::-1], 0)
+
+    for region in regions:
+        coords = region.coords
+        coords = np.vstack([coords[:, 1], coords[:, 0]]).T
+
+        PIL.ImageDraw.Draw(img).point(coords.ravel().tolist(), fill=1)
+
+    binary_mask_regions = np.array(img).astype(bool)
+
+    return binary_mask_regions
+
+
 def region_coordinates(region: Region) -> CoordinatePair:
     """Extract bbox coordinates from the region.
 
