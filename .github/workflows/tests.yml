@@ -116,6 +116,7 @@ jobs:
 
   delete-wsi-artifacts:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - uses: geekyeggo/delete-artifact@v1
         with:
