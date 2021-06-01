@@ -33,6 +33,7 @@ from .tile import Tile
 from .types import CoordinatePair
 from .util import (
     random_choice_true_mask2d,
+    rectangle_to_mask,
     region_coordinates,
     regions_from_binary_mask,
     scale_coordinates,
@@ -337,6 +338,42 @@ class GridTiler(Tiler):
                     target_size=slide.level_dimensions(level=0),
                 )
                 yield tile_wsi_coords
+
+    def _are_coordinates_within_extraction_mask(
+        self,
+        tile_thumb_coords: CoordinatePair,
+        binary_mask_region: np.ndarray,
+    ) -> bool:
+        """Chack whether the ``tile_thumb_coords`` are inside of ``binary_mask_region``.
+
+        Return True if the tile defined by ``tile_thumb_coords`` is inside of the True
+        areas of ``binary_mask_region`` for at least 80% of its area.
+
+        Parameters
+        ----------
+        tile_thumb_coords : CoordinatePair
+            Coordinates of the tile at thumbnail dimension.
+        binary_mask_region : np.ndarray
+            Binary mask with True inside of the tissue region considered.
+
+        Returns
+        -------
+        bool
+            Whether the tile is inside of the True areas of ``binary_mask_region`` for
+            at least 80% of its area.
+        """
+
+        tile_thumb_mask = rectangle_to_mask(
+            dims=binary_mask_region.shape, vertices=tile_thumb_coords
+        )
+
+        tile_in_binary_mask = binary_mask_region & tile_thumb_mask
+
+        tile_area = np.count_nonzero(tile_thumb_mask)
+        tile_in_binary_mask_area = np.count_nonzero(tile_in_binary_mask)
+        print(tile_in_binary_mask_area / tile_area)
+
+        return tile_in_binary_mask_area / tile_area > 0.8
 
     def _grid_coordinates_generator(
         self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()

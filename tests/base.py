@@ -266,3 +266,17 @@ COMPLEX_MASK3 = np.array(
         [False, False, False, False, False, False, False, False, False, False],
     ]
 )
+COMPLEX_MASK4 = np.array(
+    [
+        [False, False, False, False, False, False, False, False, False, False],
+        [False, False, False, False, False, False, False, False, False, False],
+        [False, False, False, False, False, True, False, False, False, False],
+        [False, False, False, True, True, True, True, False, False, False],
+        [False, False, False, True, True, True, True, False, False, False],
+        [False, False, True, True, True, True, True, False, False, False],
+        [False, False, False, True, True, True, True, False, False, False],
+        [False, False, False, False, False, True, False, False, False, False],
+        [False, False, False, False, False, True, False, False, False, False],
+        [False, False, False, False, False, False, False, False, False, False],
+    ]
+)
