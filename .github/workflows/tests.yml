@@ -92,10 +92,6 @@ jobs:
         with:
           name: wsi-artifact
           path: tests/fixtures/external_wsi
-#      - name: temp step
-#        run: |
-#          ls -lah tests/fixtures/external_wsi
-#          ls -lah tests/fixtures
       - name: Test with pytest
         id: tests
         run: |
@@ -117,3 +113,11 @@ jobs:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
         if: failure()
+
+  delete-wsi-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: wsi-artifact
+          failOnError: false
