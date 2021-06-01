@@ -14,6 +14,7 @@ from histolab.tile import Tile
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, Tiler
 from histolab.types import CP
 
+from ..base import COMPLEX_MASK4
 from ..unitutil import (
     ANY,
     PILIMG,
@@ -753,6 +754,28 @@ class Describe_GridTiler:
             == f"Tile size (50, 52) is larger than slide size {size} at level 0"
         )
         _has_valid_tile_size.assert_called_once_with(grid_tiler, slide)
+
+    @pytest.mark.parametrize(
+        "tile_coords, expected_result",
+        [
+            (CP(0, 0, 2, 2), False),  # completely outside of region
+            (CP(0, 0, 8, 8), False),  # only 205
+            (CP(2, 3, 6, 6), True),  # 85% in
+            (CP(3, 3, 5, 5), True),  # 100% in
+        ],
+    )
+    def it_knows_whether_coordinates_are_within_extraction_mask(
+        self, tile_coords, expected_result
+    ):
+        grid_tiler = GridTiler((2, 2), level=0)  # tile size doens't matter here
+        mask = COMPLEX_MASK4
+
+        coords_within_extraction_mask = (
+            grid_tiler._are_coordinates_within_extraction_mask(tile_coords, mask)
+        )
+
+        assert type(coords_within_extraction_mask) == bool
+        assert coords_within_extraction_mask == expected_result
 
 
 class Describe_ScoreTiler:
