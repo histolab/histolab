@@ -185,6 +185,14 @@ class DescribeGridTiler:
                 "tiles-location-images/cmu-1-small-region-tl-grid-TM-true-128x120",
             ),
             (
+                SVS.CMU_1_SMALL_REGION,
+                TissueMask(),
+                (128, 120),
+                0,
+                False,
+                "tiles-location-images/cmu-1-small-region-tl-grid-TM-false-128x120",
+            ),
+            (
                 SVS.TCGA_CR_7395_01A_01_TS1,
                 TissueMask(),
                 (128, 128),
