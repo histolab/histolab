@@ -16,13 +16,13 @@ jobs:
       - name: Download WSI artifacts
         id: load-wsis
         run: |
-          mkdir -p tests/fixtures/external_wsi
-          wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -P tests/fixtures/external_wsi
+          mkdir -p tests/fixtures/external-svs
+          wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -P tests/fixtures/external-svs
       - name: Temporarly save WSI artifacts
         uses: actions/upload-artifact@v2
         with:
           name: wsi-artifact
-          path: tests/fixtures/external_wsi
+          path: tests/fixtures/external-svs
           retention-days: 1
 
   build:
@@ -91,7 +91,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: wsi-artifact
-          path: tests/fixtures/external_wsi
+          path: tests/fixtures/external-svs
       - name: Test with pytest
         id: tests
         run: |
