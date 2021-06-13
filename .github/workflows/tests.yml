@@ -18,6 +18,7 @@ jobs:
         run: |
           mkdir -p tests/fixtures/external-svs
           wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -P tests/fixtures/external-svs
+          mv tests/fixtures/external-svs/CMU-3.svs tests/fixtures/external-svs/cmu-3.svs
       - name: Temporarly save WSI artifacts
         uses: actions/upload-artifact@v2
         with:
