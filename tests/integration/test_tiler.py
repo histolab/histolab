@@ -11,7 +11,8 @@ from histolab.scorer import NucleiScorer
 from histolab.slide import Slide
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler
 
-from ..fixtures import SVS, TIFF
+from ..fixtures import EXTERNAL_SVS, SVS, TIFF
+from ..unitutil import on_ci
 from ..util import expand_tests_report, load_expectation
 
 
@@ -215,6 +216,24 @@ class DescribeGridTiler:
                 0,
                 False,
                 "tiles-location-images/kidney-48-5-grid-TM-false-20x20",
+            ),
+            pytest.param(
+                EXTERNAL_SVS.CMU_3,
+                BiggestTissueBoxMask(),
+                (512, 512),
+                1,
+                False,
+                "tiles-location-images/external-cmu-3-grid-BTB-false-512x512",
+                marks=pytest.mark.skipif(not on_ci(), reason="To run only on CI"),
+            ),
+            pytest.param(
+                EXTERNAL_SVS.CMU_3,
+                TissueMask(),
+                (512, 512),
+                1,
+                False,
+                "tiles-location-images/external-cmu-3-grid-TM-false-512x512",
+                marks=pytest.mark.skipif(not on_ci(), reason="To run only on CI"),
             ),
         ],
     )

@@ -7,6 +7,8 @@ import os
 import numpy as np
 from PIL import Image
 
+from ..unitutil import on_ci
+
 
 class LazyResponder:
     """Loads and caches fixtures files by name from fixture directory.
@@ -53,6 +55,14 @@ class LazySVSResponseLoader(LazyResponder):
         self._cache[fixture_name] = self._load_slide(slide_path)
 
 
+class LazyExternalSVSResponseLoader(LazySVSResponseLoader):
+    def _load_to_cache(self, fixture_name):
+        slide_path = self._slide_path(fixture_name)
+        if not os.path.exists(slide_path) and on_ci():
+            raise ValueError(f"no {self.slide_format} fixture found at {slide_path}")
+        self._cache[fixture_name] = slide_path
+
+
 class LazyTIFFResponseLoader(LazySVSResponseLoader):
     """Specific class for TIFF fixtures loader"""
 
@@ -95,6 +105,7 @@ class LazyNPYResponseLoader(LazyResponder):
 
 
 SVS = LazySVSResponseLoader("./svs-images")
+EXTERNAL_SVS = LazyExternalSVSResponseLoader("./external-svs")
 TIFF = LazyTIFFResponseLoader("./tiff-images")
 RGBA = LazyPILResponseLoader("./pil-images-rgba")
 RGB = LazyPILResponseLoader("./pil-images-rgb")
