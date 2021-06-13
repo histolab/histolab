@@ -29,6 +29,7 @@ jobs:
   build:
     needs: wsi-artifacts
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     strategy:
       matrix:
         os: [windows-latest, macOS-latest, ubuntu-latest]
@@ -41,15 +42,29 @@ jobs:
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
+      - name: Install Pixman 0.40 on Ubuntu
+        id: pixman-ubuntu
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          wget https://www.cairographics.org/releases/pixman-0.40.0.tar.gz
+          tar -xvf pixman-0.40.0.tar.gz
+          cd pixman-0.40.0
+          ./configure
+          make
+          sudo make install
+          cd ..
+
       - name: Install openslide
-        id: system-dependencies
+        id: install-openslide
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt install openslide-tools
@@ -60,16 +75,31 @@ jobs:
             choco install 7zip-zstd
             wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
             7z e /c/downloads/openslide-win64-20171122.zip -aoa
-            export "PATH=C:/downloads/openslide-win64-20171122/bin:$PATH"
           else
             echo "$RUNNER_OS not supported"
             exit 1
           fi
         shell: bash
+
+      - uses: msys2/setup-msys2@v2
+        if: ${{ runner.os == 'Windows' }}
+        with:
+          update: true
+
+      - name: Install Pixman 0.40 on Windows
+        id: pixman-windows
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          pacman --noconfirm -S --needed mingw-w64-x86_64-pixman
+          pacman -Ql mingw-w64-x86_64-pixman
+          cp /mingw64/bin/libpixman-1-0.dll .
+        shell: msys2 {0}
+
       - name: Get pip cache dir
         id: pip-cache
         run: |
           echo "::set-output name=dir::$(pip cache dir)"
+
       - name: pip cache
         uses: actions/cache@v2
         with:
@@ -77,6 +107,7 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
+
       - name: Install dependencies
         id: python-dependencies
         run: |
@@ -84,23 +115,28 @@ jobs:
           python -m pip install -e .[testing]
           python -m pip install flake8
           python -m pip install pooch
+
       - name: Lint with flake8
         id: flake8
         run: |
           flake8 . --count --max-complexity=10 --max-line-length=88 --statistics
+
       - name: Retrieve saved WSIs
         uses: actions/download-artifact@v2
         with:
           name: wsi-artifact
           path: tests/fixtures/external-svs
+
       - name: Test with pytest
         id: tests
         run: |
           python -m pytest --ignore=tests/benchmarks --cov=histolab --cov-report=xml
+
       - name: DocTests
         id: doctests
         run: |
           python -m pytest src/ --doctest-modules
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -108,6 +144,7 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: true
           verbose: false
+
       - name: Slack Notification
         uses: act10ns/slack@v1
         with:

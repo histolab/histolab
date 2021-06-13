@@ -260,7 +260,7 @@ class DescribeGridTiler:
         )
 
         # --- Expanding test report with actual and expected images ---
-        expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
+        # expand_tests_report(request, expected=expected_img, actual=tiles_location_img)  # noqa: E800, E501
 
         np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
 
