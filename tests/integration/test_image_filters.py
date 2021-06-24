@@ -1679,3 +1679,42 @@ def test_rgb_to_lab_raises_exception_on_gs_and_rgba_image(pil_image):
 
     assert isinstance(err.value, Exception)
     assert str(err.value) == "Input image must be RGB"
+
+
+def test_dab_channel_filter_with_rgb_image():
+    img = RGB.TCGA_LUNG_RGB
+    expected_value = load_expectation(
+        "pil-images-rgb/tcga-lung-rgb-dab-channel", type_="png"
+    )
+
+    dab_img = imf.dab_channel(img)
+
+    np.testing.assert_array_almost_equal(np.array(dab_img), np.array(expected_value))
+    assert np.unique(np.array(ImageChops.difference(dab_img, expected_value)))[0] == 0
+
+
+def test_dab_channel_filter_with_rgba_image():
+    img = RGBA.TCGA_LUNG
+    expected_value = load_expectation(
+        "pil-images-rgba/tcga-lung-dab-channel", type_="png"
+    )
+    expected_warning_regex = (
+        r"Input image must be RGB. NOTE: the image will be converted to RGB before"
+        r" HED conversion."
+    )
+
+    with pytest.warns(UserWarning, match=expected_warning_regex):
+        dab_img = imf.dab_channel(img)
+
+    np.testing.assert_array_almost_equal(np.array(dab_img), np.array(expected_value))
+    assert np.unique(np.array(ImageChops.difference(dab_img, expected_value)))[0] == 0
+
+
+def test_dab_channel_raises_exception_on_gs_image():
+    gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
+
+    with pytest.raises(ValueError) as err:
+        imf.dab_channel(gs_img)
+
+    assert isinstance(err.value, Exception)
+    assert str(err.value) == "Input image must be RGB/RGBA."
