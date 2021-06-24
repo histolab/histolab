@@ -200,7 +200,7 @@ class Slide:
 
     @lazyproperty
     def name(self) -> str:
-        """Retrieve the slide name without extension.
+        """Return the slide name without extension.
 
         Returns
         -------
@@ -210,7 +210,7 @@ class Slide:
 
     @lazyproperty
     def processed_path(self) -> str:
-        """Retrieve the path to store the tiles generated from the slide.
+        """Return the path to store the tiles generated from the slide.
 
         Returns
         -------
