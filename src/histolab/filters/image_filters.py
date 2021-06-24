@@ -329,7 +329,6 @@ class EosinChannel(ImageFilter):
     Example:
         >>> from PIL import Image
         >>> from histolab.filters.image_filters import EosinChannel
-        >>> from histolab.filters import image_filters_functional as imf
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> eosin_channel = EosinChannel()
         >>> image_e = eosin_channel(image_rgb)
@@ -338,6 +337,36 @@ class EosinChannel(ImageFilter):
     def __call__(self, img):
         eosin = F.eosin_channel(img)
         return eosin
+
+
+class DABChannel(ImageFilter):
+    """Obtain DAB channel from RGB image.
+
+    Input image is first converted into HED space and the DAB channel is
+    rescaled for increased contrast.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Grayscale image corresponding to input image with DAB channel enhanced.
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import DABChannel
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
+        >>> dab_channel = DABChannel()
+        >>> image_d = dab_channel(image_rgb)
+    """  # noqa
+
+    def __call__(self, img):
+        dab = F.dab_channel(img)
+        return dab
 
 
 class RgbToHsv(ImageFilter):
