@@ -44,7 +44,7 @@ class Slide:
     path : Union[str, pathlib.Path]
         Path where the WSI is saved.
     processed_path : Union[str, pathlib.Path]
-        Path where thumbnails and scaled images will be saved to.
+        Path where the tiles will be saved to.
     """
 
     def __init__(
@@ -210,12 +210,12 @@ class Slide:
 
     @lazyproperty
     def processed_path(self) -> str:
-        """Retrieve the path to store processed files generated from the slide.
+        """Retrieve the path to store the tiles generated from the slide.
 
         Returns
         -------
         str
-            Path to store processed files generated from the slide
+            Path to store the tiles generated from the slide
         """
         return self._processed_path
 
@@ -231,7 +231,7 @@ class Slide:
         return dict(self._wsi.properties)
 
     def resampled_array(self, scale_factor: int = 32) -> np.array:
-        """Retrieve the resampled array from the original slide
+        """Return the resampled array from the original slide
 
         Parameters
         ----------
