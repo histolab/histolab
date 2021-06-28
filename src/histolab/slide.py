@@ -66,7 +66,7 @@ class Slide:
 
     @lazyproperty
     def dimensions(self) -> Tuple[int, int]:
-        """Return the slide dimensions (w,h) at level 0.
+        """Slide dimensions (w,h) at level 0.
 
         Returns
         -------
@@ -134,7 +134,7 @@ class Slide:
 
     @lazyproperty
     def levels(self) -> List[int]:
-        """Return the slide's available levels
+        """Slide's available levels
 
         Returns
         -------
@@ -200,7 +200,7 @@ class Slide:
 
     @lazyproperty
     def name(self) -> str:
-        """Return the slide name without extension.
+        """Slide name without extension.
 
         Returns
         -------
@@ -210,7 +210,7 @@ class Slide:
 
     @lazyproperty
     def processed_path(self) -> str:
-        """Return the path to store the tiles generated from the slide.
+        """Path to store the tiles generated from the slide.
 
         Returns
         -------
@@ -273,7 +273,7 @@ class Slide:
 
     @lazyproperty
     def thumbnail(self) -> PIL.Image.Image:
-        """Return the slide thumbnail.
+        """Slide thumbnail.
 
         Returns
         -------
@@ -526,7 +526,7 @@ class SlideSet:
 
     @lazyproperty
     def slides_stats(self) -> dict:
-        """Compute statistics for the WSI collection, namely the number of available
+        """Statistics for the WSI collection, namely the number of available
         slides; the slide with the maximum/minimum width; the slide with the
         maximum/minimum height; the slide with the maximum/minimum size; the average
         width/height/size of the slides.

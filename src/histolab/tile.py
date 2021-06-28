@@ -70,6 +70,13 @@ class Tile:
 
     @lazyproperty
     def coords(self) -> CoordinatePair:
+        """Level 0 Coordinates of the Slide from which the tile was extracted
+
+        Returns
+        -------
+        CoordinatePair
+            Level 0 Coordinates of the Slide from which the tile was extracted
+        """
         return self._coords
 
     def has_enough_tissue(
@@ -114,10 +121,24 @@ class Tile:
 
     @lazyproperty
     def image(self) -> PIL.Image.Image:
+        """Image describing the tile.
+
+        Returns
+        -------
+        PIL.Image.Image
+            Image describing the tile.
+        """
         return self._image
 
     @lazyproperty
     def level(self) -> int:
+        """Level of tile extraction.
+
+        Returns
+        -------
+        int
+            Level of tile extraction.
+        """
         return self._level
 
     def save(self, path: Union[str, bytes, os.PathLike]) -> None:
@@ -142,12 +163,12 @@ class Tile:
 
     @lazyproperty
     def tissue_ratio(self) -> float:
-        """Return the ratio of the tissue area over the total area of the tile.
+        """Ratio of the tissue area over the total area of the tile.
 
         Returns
         -------
         float
-            The ratio of the tissue area over the total area of the tile
+            Ratio of the tissue area over the total area of the tile
         """
         filters = FiltersComposition(Tile).tissue_mask_filters
         tissue_mask = filters(self._image)
