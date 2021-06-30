@@ -17,8 +17,7 @@ jobs:
         id: load-wsis
         run: |
           mkdir -p tests/fixtures/external-svs
-          wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -P tests/fixtures/external-svs
-          mv tests/fixtures/external-svs/CMU-3.svs tests/fixtures/external-svs/cmu-3.svs
+          wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -O tests/fixtures/external-svs/cmu-3.svs
       - name: Temporarly save WSI artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -29,7 +28,6 @@ jobs:
   build:
     needs: wsi-artifacts
     runs-on: ${{ matrix.os }}
-    continue-on-error: true
     strategy:
       matrix:
         os: [windows-latest, macOS-latest, ubuntu-latest]
