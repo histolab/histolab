@@ -20,7 +20,7 @@ import csv
 import logging
 import os
 from abc import abstractmethod
-from typing import List, Tuple, Iterable
+from typing import List, Tuple, Iterable, Union
 
 import numpy as np
 import PIL
@@ -64,7 +64,7 @@ class Tiler(Protocol):
         extraction_mask: BinaryMask = BiggestTissueBoxMask(),
         scale_factor: int = 32,
         alpha: int = 128,
-        outline: str = "red",
+        outline: Union[str, List] = "red",
         linewidth: int = 0,
         tiles: Iterable = None,
     ) -> PIL.Image.Image:
@@ -105,9 +105,17 @@ class Tiler(Protocol):
                 else self._tiles_generator(slide, extraction_mask)
             )
         tiles_coords = (tile[1] for tile in tiles)
-        for coords in tiles_coords:
+
+        # maybe user specified colors for each tile
+        if isinstance(outline, str):
+            outline = [outline] * len(tiles_coords)
+
+        for i, coords in enumerate(tiles_coords):
             rescaled = scale_coordinates(coords, slide.dimensions, img.size)
-            draw.rectangle(tuple(rescaled), outline=outline, width=linewidth)
+            clr = outline[i]
+            if not isinstance(clr, str):
+                clr = tuple([int(255 * j) for j in clr])
+            draw.rectangle(tuple(rescaled), outline=clr, width=linewidth)
         return img
 
     # ------- implementation helpers -------
