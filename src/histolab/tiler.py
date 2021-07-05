@@ -307,8 +307,8 @@ class GridTiler(Tiler):
     ) -> bool:
         """Chack whether the ``tile_thumb_coords`` are inside of ``binary_mask_region``.
 
-        Return True if the tile defined by ``tile_thumb_coords`` is inside of the True
-        areas of ``binary_mask_region`` for at least 80% of its area.
+        Return True if 80% of the tile area defined by tile_thumb_coords is inside the
+        area of the ``binary_mask_region.
 
         Parameters
         ----------
@@ -320,8 +320,8 @@ class GridTiler(Tiler):
         Returns
         -------
         bool
-            Whether the tile is inside of the True areas of ``binary_mask_region`` for
-            at least 80% of its area.
+            Whether the 80% of the tile area defined by tile_thumb_coords is inside the
+            area of the ``binary_mask_region.
         """
 
         tile_thumb_mask = rectangle_to_mask(
@@ -349,11 +349,17 @@ class GridTiler(Tiler):
         Parameters
         ----------
         bbox_coordinates_lvl : CoordinatePair
-            Coordinates of the tissue box from which to calculate the coordinates.
+            Coordinates of the tissue box from which to calculate the coordinates of the
+            tiles.
         slide : Slide
             Slide from which to calculate the coordinates.
         binary_mask_region : np.ndarray
-            Binary mask corresponding to the region considered
+            Binary mask corresponding to the connected component (region) considered.
+
+        Notes
+        -----
+        This method needs to be called for every connected component (region) within the
+        extraction mask.
 
         Yields
         -------
