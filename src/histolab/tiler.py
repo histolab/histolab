@@ -48,7 +48,7 @@ except ImportError:
 
 logger = logging.getLogger("tiler")
 
-COORDS_WITHIN_EXTRACTION_MASK_THRESH = 0.8
+COORDS_WITHIN_EXTRACTION_MASK_THRESHOLD = 0.8
 
 
 @runtime_checkable
@@ -334,7 +334,8 @@ class GridTiler(Tiler):
         tile_in_binary_mask_area = np.count_nonzero(tile_in_binary_mask)
 
         return (
-            tile_in_binary_mask_area / tile_area > COORDS_WITHIN_EXTRACTION_MASK_THRESH
+            tile_in_binary_mask_area / tile_area
+            > COORDS_WITHIN_EXTRACTION_MASK_THRESHOLD
         )
 
     def _grid_coordinates_from_bbox_coordinates(
