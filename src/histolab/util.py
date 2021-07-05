@@ -171,7 +171,7 @@ def regions_to_binary_mask(regions: List[Region], dims: Tuple[int, int]) -> np.n
     Parameters
     ----------
     regions : List[Region]
-        The regions to consider to create the binary mask.
+        The regions to create the binary mask.
     dims : Tuple[int, int]
         Dimensions of the resulting binary mask.
 
