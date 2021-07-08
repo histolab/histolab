@@ -44,9 +44,8 @@ The histolab package can be installed by using::
 
 Prerequisites
 *************
-histolab has only one system-wide dependency: `OpenSlide`.
+Please see `installation instructions <https://github.com/histolab/histolab/blob/master/docs/installation.rst>`_.
 
-You can download and install it from https://openslide.org/download/ according to your operating system.
 
 Authors
 *******
@@ -72,6 +71,7 @@ References
   :hidden:
 
   readme
+  installation
   quickstart
   tissue_masks
   contributing

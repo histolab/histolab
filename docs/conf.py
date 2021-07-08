@@ -59,6 +59,8 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_rtd_theme",
     "sphinxcontrib.katex",
+    "sphinxemoji.sphinxemoji",
+    "sphinx-prompt",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
