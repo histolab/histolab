@@ -464,7 +464,7 @@ def maskout_markers(rgb, mask=None, blue=True, green=True, red=False):
         marker_filters.append(red_pen_filter)
     masked_rgb = rgb.copy()
     if mask is None:
-        mask = np.zeros(rgb.size[:2], dtype=bool)
+        mask = np.ones(rgb.size[:2], dtype=bool)
     for filt in marker_filters:
         addon_mask = filt(masked_rgb, applyfilter=False)
         masked_rgb = apply_mask_image(masked_rgb, mask)
