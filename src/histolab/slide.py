@@ -206,7 +206,8 @@ class Slide:
         -------
         name : str
         """
-        return ntpath.basename(self._path).split(".")[0]
+        bname = ntpath.basename(self._path)
+        return bname[:bname.rfind(".")]
 
     @lazyproperty
     def processed_path(self) -> str:
