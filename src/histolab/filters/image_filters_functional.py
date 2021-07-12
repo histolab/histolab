@@ -404,7 +404,8 @@ def rag_threshold(
         raise ValueError("Input image cannot be RGBA")
     img_arr = np.array(img)
     labels = sk_segmentation.slic(
-        img_arr, n_segments, compactness, start_label=0, mask=mask)
+        img_arr, n_segments, compactness, mask=mask,
+        start_label=0 if mask is None else 1)
     green = sk_future.graph.rag_mean_color(img_arr, labels)
     labels2 = sk_future.graph.cut_threshold(labels, green, threshold)
     if return_labels:
