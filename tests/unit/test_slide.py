@@ -87,8 +87,10 @@ class Describe_Slide:
 
     @pytest.mark.parametrize(
         "slide_path, expected_value",
-        (("/foo/bar/myslide.svs", "myslide"), ("/foo/myslide.svs", "myslide")
-        ("/foo/name.has.dot.svs", "name.has.dot")),
+        (
+            ("/foo/bar/myslide.svs", "myslide"),
+            ("/foo/myslide.svs", "myslide")("/foo/name.has.dot.svs", "name.has.dot"),
+        ),
     )
     def it_knows_its_name(self, slide_path, expected_value):
         slide = Slide(slide_path, "processed/")
