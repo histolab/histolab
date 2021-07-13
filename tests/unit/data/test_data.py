@@ -52,7 +52,7 @@ def test_download_file_from_internet_but_it_is_broken():
 
 
 def test_cmu_small_region():
-    """ Test that "cmu_small_region" svs can be loaded. """
+    """Test that "cmu_small_region" svs can be loaded."""
     cmu_small_region_image, path = cmu_small_region()
     assert cmu_small_region_image.dimensions == (2220, 2967)
 
