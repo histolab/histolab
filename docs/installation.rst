@@ -96,4 +96,4 @@ Windows (PowerShell)
 .. prompt:: text
     :prompts: $
 
-    (Get-Item "C:\path\libpixman\libpixman.dll").VersionInfo | format-list
+    (Get-Item "C:\OpenSlide\bin\libpixman-1-0.dll").VersionInfo | format-list
