@@ -114,6 +114,11 @@ jobs:
           python -m pip install flake8
           python -m pip install pooch
 
+      - name: Black Code Style Format Check
+        id: black
+        run: |
+          black . --check
+
       - name: Lint with flake8
         id: flake8
         run: |
