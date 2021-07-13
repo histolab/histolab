@@ -1,6 +1,24 @@
 Changelog
 =========
 
+
+v0.2.6
+------
+**Bug Fix**
+
+- Fix ``polygon_to_mask_array`` return mask shape. (`#268 <https://github.com/histolab/histolab/pull/268>`_)
+- Fix overlapping extraction grids in ``GridTiler``. (`#270 <https://github.com/histolab/histolab/pull/270>`_)
+
+**New Features**
+
+- Add DAB filter. (`#277 <https://github.com/histolab/histolab/pull/277>`_)
+- Allow slide name to contain dot. (`#281 <https://github.com/histolab/histolab/pull/281>`_)
+
+**Documentation**
+
+- Docs fixes about Slide's processed_path. (`#276 <https://github.com/histolab/histolab/pull/276>`_)
+- Add instructions on how to install Pixman 0.40. (`#280 <https://github.com/histolab/histolab/pull/280>`_)
+
 v0.2.5
 ------
 **Bug Fix**
