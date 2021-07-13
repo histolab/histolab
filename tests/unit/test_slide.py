@@ -89,7 +89,8 @@ class Describe_Slide:
         "slide_path, expected_value",
         (
             ("/foo/bar/myslide.svs", "myslide"),
-            ("/foo/myslide.svs", "myslide")("/foo/name.has.dot.svs", "name.has.dot"),
+            ("/foo/myslide.svs", "myslide"),
+            ("/foo/name.has.dot.svs", "name.has.dot"),
         ),
     )
     def it_knows_its_name(self, slide_path, expected_value):
