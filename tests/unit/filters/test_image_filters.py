@@ -408,3 +408,16 @@ class DescribeImageFilters:
 
         F_rgb_to_lab.assert_called_once_with(image)
         assert type(rgb_to_lab(image)) == PIL.Image.Image
+
+    def it_calls_dab_channel_functional(self, request):
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        F_dab_channel = function_mock(
+            request, "histolab.filters.image_filters_functional.dab_channel"
+        )
+        F_dab_channel.return_value = image
+        dab_channel = imf.DABChannel()
+
+        dab_channel(image)
+
+        F_dab_channel.assert_called_once_with(image)
+        assert type(dab_channel(image)) == PIL.Image.Image

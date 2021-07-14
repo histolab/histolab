@@ -11,3 +11,5 @@ isort
 sphinxcontrib-katex
 pytest-html
 black
+sphinxemoji
+sphinx-prompt

@@ -1,6 +1,56 @@
 Changelog
 =========
 
+
+v0.2.6
+------
+**Bug Fix**
+
+- Fix ``polygon_to_mask_array`` return mask shape. (`#268 <https://github.com/histolab/histolab/pull/268>`_)
+- Fix overlapping extraction grids in ``GridTiler``. (`#270 <https://github.com/histolab/histolab/pull/270>`_)
+
+**New Features**
+
+- Add DAB filter. (`#277 <https://github.com/histolab/histolab/pull/277>`_)
+- Allow slide name to contain dot. (`#281 <https://github.com/histolab/histolab/pull/281>`_)
+
+**Documentation**
+
+- Docs fixes about Slide's processed_path. (`#276 <https://github.com/histolab/histolab/pull/276>`_)
+- Add instructions on how to install Pixman 0.40. (`#280 <https://github.com/histolab/histolab/pull/280>`_)
+
+v0.2.5
+------
+**Bug Fix**
+
+- `RandomTiler` coordinates selection within the binary mask. (`#256 <https://github.com/histolab/histolab/pull/256>`_)
+- `LocalOtsuThreshold` filter: now it returns correct type (PIL Image). (`#258 <https://github.com/histolab/histolab/pull/258>`_)
+- Coordinate definition in the scale coordinates of `RandomTiler` were reversed. (`#261 <https://github.com/histolab/histolab/pull/261>`_)
+
+**New Features**
+
+- Support and test for IHC-stained slides. (`#262 <https://github.com/histolab/histolab/pull/262>`_)
+
+**Documentation**
+
+- Extended documentations to include examples, images, and tutorials. Added IHC-stained slides in the data module. (`#232 <https://github.com/histolab/histolab/pull/232>`_)
+
+v0.2.4
+------
+**Bug Fix**
+
+- `RandomTiler` now respects the given tile size (`#243 <https://github.com/histolab/histolab/pull/243>`_)
+- Use logger object instead of logging module when logging tiler updates (`#237 <https://github.com/histolab/histolab/pull/237>`_)
+
+**New Features**
+
+- New `masks` module to create binary masks from slides with different strategies: `BiggestTissueBoxMask` and `TissueMask` (`#234 <https://github.com/histolab/histolab/pull/234>`_)
+- Refactor locate_mask to draw mask contours on the slide from an arbitrary BinaryMask object (`#248 <https://github.com/histolab/histolab/pull/248>`_)
+
+**Breaking Changes**
+
+- Refactor `Slide`: return thumbnail and scaled image instead of saving them (`#236 <https://github.com/histolab/histolab/pull/236>`_)
+
 v0.2.3
 ------
 **New Features**

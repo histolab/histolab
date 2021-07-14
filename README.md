@@ -1,15 +1,17 @@
 <img width="390" alt="histolab" src="https://user-images.githubusercontent.com/4196091/84828232-048fcc00-b026-11ea-8caa-5c14bb8565bd.png">
 
 
-[![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
 
 <table>
 <tr>
     <td>Test Status</td>
     <td>
         <img src="https://github.com/histolab/histolab/workflows/CI/badge.svg?branch=master">
-        <a href="https://coveralls.io/github/histolab/histolab?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/histolab/histolab/badge.svg?branch=master&kill_cache=1"></a>
-     </td>
+        <a href="https://codecov.io/gh/histolab/histolab">
+            <img src="https://codecov.io/gh/histolab/histolab/branch/master/graph/badge.svg?token=PL3VIM1PGL"/>
+        </a>
+    </td>
 </tr>
 <tr>
     <td>Code Quality</td>
@@ -54,7 +56,7 @@
 ## Table of Contents
 
 * [Motivation](#motivation)
- 
+
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Quickstart](#quickstart)
@@ -67,25 +69,23 @@
 * [Contribution guidelines](#contribution-guidelines)
 
 
-## Motivation 
-The histo-pathological analysis of tissue sections is the gold standard to assess the presence of many complex diseases, such as tumors, and understand their nature. 
+## Motivation
+The histo-pathological analysis of tissue sections is the gold standard to assess the presence of many complex diseases, such as tumors, and understand their nature.
 In daily practice, pathologists usually perform microscopy examination of tissue slides considering a limited number of regions and the clinical evaluation relies on several factors such as nuclei morphology, cell distribution, and color (staining): this process is time consuming, could lead to information loss, and suffers from inter-observer variability.
 
 The advent of digital pathology is changing the way pathologists work and collaborate, and has opened the way to a new era in computational pathology. In particular, histopathology is expected to be at the center of the AI revolution in medicine [1], prevision supported by the increasing success of deep learning applications to digital pathology.
 
 Whole Slide Images (WSIs), namely the translation of tissue slides from glass to digital format, are a great source of information from both a medical and a computational point of view. WSIs can be coloured with different staining techniques (e.g. H&E or IHC), and are usually very large in size (up to several GB per slide). Because of WSIs typical pyramidal structure, images can be retrieved at different magnification factors, providing a further layer of information beyond color.
 
-However, processing WSIs is far from being trivial. First of all, WSIs can be stored in different proprietary formats, according to the scanner used to digitalize the slides, and a standard protocol is still missing. WSIs can also present artifacts, such as shadows, mold, or annotations (pen marks) that are not useful. Moreover, giving their dimensions, it is not possible to process a WSI all at once, or, for example, to feed a neural network: it is necessary to crop smaller regions of tissues (tiles), which in turns require a tissue detection step.  
+However, processing WSIs is far from being trivial. First of all, WSIs can be stored in different proprietary formats, according to the scanner used to digitalize the slides, and a standard protocol is still missing. WSIs can also present artifacts, such as shadows, mold, or annotations (pen marks) that are not useful. Moreover, giving their dimensions, it is not possible to process a WSI all at once, or, for example, to feed a neural network: it is necessary to crop smaller regions of tissues (tiles), which in turns require a tissue detection step.
 
 The aim of this project is to provide a tool for WSI processing in a reproducible environment to support clinical and scientific research. histolab is designed to handle WSIs, automatically detect the tissue, and retrieve informative tiles, and it can thus be integrated in a deep learning pipeline.
 
-## Getting Started 
+## Getting Started
 
-### Prerequisites 
+### Prerequisites
 
-histolab has only one system-wide dependency: OpenSlide.
-
-You can download and install it from [OpenSlide](https://openslide.org/download/) according to your operating system.
+Please see [installation instructions](https://github.com/histolab/histolab/blob/master/docs/installation.rst).
 
 ### Documentation
 
@@ -93,14 +93,14 @@ Read the full documentation here https://histolab.readthedocs.io/en/latest/.
 
 ### Communication
 
-Join our user group on <img src=https://user-images.githubusercontent.com/4196091/101638148-01522780-3a2e-11eb-8502-f718564ffd43.png> [Slack](https://communityinviter.com/apps/histolab/histolab) 
+Join our user group on <img src=https://user-images.githubusercontent.com/4196091/101638148-01522780-3a2e-11eb-8502-f718564ffd43.png> [Slack](https://communityinviter.com/apps/histolab/histolab)
 
 ### 5 minutes introduction
 
 <a href="https://youtu.be/AdR4JK-Eq60" target="_blank"><img src=https://user-images.githubusercontent.com/4196091/105097293-a68a0200-5aa8-11eb-8327-6039940fbdca.png></a>
 
 
-# Quickstart 
+# Quickstart
 Here we present a step-by-step tutorial on the use of `histolab` to
 extract a tile dataset from example WSIs. The corresponding Jupyter
 Notebook is available at <https://github.com/histolab/histolab-box>:
@@ -110,7 +110,7 @@ used through [Docker](http://www.docker.com) on all platforms.
 Thus, the user can decide either to use `histolab` through
 `histolab-box` or installing it in his/her python virtual environment
 (using conda, pipenv, pyenv, virtualenv, etc...). In the latter case, as
-the `histolab` package has been published on ([PyPi](http://www.pypi.org)), 
+the `histolab` package has been published on ([PyPi](http://www.pypi.org)),
 it can be easily installed via the command:
 
 ```
@@ -241,7 +241,7 @@ each extraction method is customizable with several common parameters:
     levels);
 -   `check_tissue`: if a minimum percentage of tissue is required to
     save the tiles;
--  `tissue_percent`: number between 0.0 and 100.0 representing the 
+-  `tissue_percent`: number between 0.0 and 100.0 representing the
     minimum required percentage of tissue over the total area of the image
     (default is 80.0);
 -   `prefix`: a prefix to be added at the beginning of the tiles’
@@ -281,7 +281,7 @@ Notice that we also specify the random seed to ensure the
 reproducibility of the extraction process.
 
 We may want to check which tiles have been selected by the tiler, before starting the extraction procedure and saving them;
-the ``locate_tiles`` method of ``RandomTiler`` returns a scaled version of the slide with the corresponding tiles outlined. It is also possible to specify 
+the ``locate_tiles`` method of ``RandomTiler`` returns a scaled version of the slide with the corresponding tiles outlined. It is also possible to specify
 the transparency of the background slide, and the color used for the border of each tile:
 
 ```python
@@ -328,7 +328,7 @@ grid_tiles_extractor = GridTiler(
    level=0,
    check_tissue=False,
    pixel_overlap=0, # default
-   prefix="grid/", # save tiles in the "grid" subdirectory of slide's processed_path 
+   prefix="grid/", # save tiles in the "grid" subdirectory of slide's processed_path
    suffix=".png" # default
 )
 ```
@@ -391,7 +391,7 @@ scored_tiles_extractor = ScoreTiler(
     check_tissue=True,
     tissue_percent=80.0,
     pixel_overlap=0, # default
-    prefix="scored/", # save tiles in the "scored" subdirectory of slide's processed_path 
+    prefix="scored/", # save tiles in the "scored" subdirectory of slide's processed_path
     suffix=".png" # default
 )
 ```
@@ -419,26 +419,26 @@ scored_tiles_extractor.extract(ovarian_slide, report_path=SUMMARY_PATH)
 Representation of the score assigned to each extracted tile by the
 `NucleiScorer`, based on the amount of nuclei detected.
 
-## Versioning 
+## Versioning
 
-We use [PEP 440](https://www.python.org/dev/peps/pep-0440/) for versioning. 
+We use [PEP 440](https://www.python.org/dev/peps/pep-0440/) for versioning.
 
-## Authors 
+## Authors
 
-* **[Alessia Marcolini](https://github.com/alessiamarcolini)** 
+* **[Alessia Marcolini](https://github.com/alessiamarcolini)**
 * **[Ernesto Arbitrio](https://github.com/ernestoarbitrio)**
 * **[Nicole Bussola](https://gitlab.fbk.eu/bussola)**
 
 
-## License 
+## License
 
 This project is licensed under `Apache License  Version 2.0` - see the [LICENSE.txt](https://github.com/histolab/histolab/blob/master/LICENSE.txt) file for details
 
-## Roadmap 
+## Roadmap
 
 [Open issues](https://github.com/histolab/histolab/issues)
 
-## Acknowledgements 
+## Acknowledgements
 
 * [https://github.com/deroneriksson](https://github.com/deroneriksson)
 

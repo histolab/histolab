@@ -31,7 +31,14 @@ from .scorer import Scorer
 from .slide import Slide
 from .tile import Tile
 from .types import CoordinatePair
-from .util import region_coordinates, regions_from_binary_mask, scale_coordinates
+from .util import (
+    random_choice_true_mask2d,
+    rectangle_to_mask,
+    region_coordinates,
+    regions_from_binary_mask,
+    regions_to_binary_mask,
+    scale_coordinates,
+)
 
 try:
     from typing import Protocol, runtime_checkable
@@ -41,6 +48,8 @@ except ImportError:
 
 logger = logging.getLogger("tiler")
 
+COORDS_WITHIN_EXTRACTION_MASK_THRESHOLD = 0.8
+
 
 @runtime_checkable
 class Tiler(Protocol):
@@ -48,6 +57,7 @@ class Tiler(Protocol):
 
     level: int
     tile_size: Tuple[int, int]
+    mpp: float
 
     @abstractmethod
     def extract(
@@ -309,17 +319,66 @@ class GridTiler(Tiler):
 
     # ------- implementation helpers -------
 
+    @staticmethod
+    def _are_coordinates_within_extraction_mask(
+        tile_thumb_coords: CoordinatePair,
+        binary_mask_region: np.ndarray,
+    ) -> bool:
+        """Chack whether the ``tile_thumb_coords`` are inside of ``binary_mask_region``.
+
+        Return True if 80% of the tile area defined by tile_thumb_coords is inside the
+        area of the ``binary_mask_region.
+
+        Parameters
+        ----------
+        tile_thumb_coords : CoordinatePair
+            Coordinates of the tile at thumbnail dimension.
+        binary_mask_region : np.ndarray
+            Binary mask with True inside of the tissue region considered.
+
+        Returns
+        -------
+        bool
+            Whether the 80% of the tile area defined by tile_thumb_coords is inside the
+            area of the ``binary_mask_region.
+        """
+
+        tile_thumb_mask = rectangle_to_mask(
+            dims=binary_mask_region.shape, vertices=tile_thumb_coords
+        )
+
+        tile_in_binary_mask = binary_mask_region & tile_thumb_mask
+
+        tile_area = np.count_nonzero(tile_thumb_mask)
+        tile_in_binary_mask_area = np.count_nonzero(tile_in_binary_mask)
+
+        return (
+            tile_in_binary_mask_area / tile_area
+            > COORDS_WITHIN_EXTRACTION_MASK_THRESHOLD
+        )
+
     def _grid_coordinates_from_bbox_coordinates(
-        self, bbox_coordinates: CoordinatePair, slide: Slide
+        self,
+        bbox_coordinates_lvl: CoordinatePair,
+        slide: Slide,
+        binary_mask_region: np.ndarray,
     ) -> CoordinatePair:
         """Generate Coordinates at level 0 of grid tiles within a tissue box.
 
         Parameters
         ----------
-        bbox_coordinates: CoordinatePair
-            Coordinates of the tissue box from which to calculate the coordinates.
+        bbox_coordinates_lvl : CoordinatePair
+            Coordinates of the tissue box from which to calculate the coordinates of the
+            tiles.
         slide : Slide
             Slide from which to calculate the coordinates.
+        binary_mask_region : np.ndarray
+            Binary mask corresponding to the connected component (region) considered.
+
+        Notes
+        -----
+        This method needs to be called for every connected component (region) within the
+        extraction mask.
 
         Yields
         -------
@@ -328,28 +387,40 @@ class GridTiler(Tiler):
         """
         tile_w_lvl, tile_h_lvl = self.tile_size
 
-        n_tiles_row = self._n_tiles_row(bbox_coordinates)
-        n_tiles_column = self._n_tiles_column(bbox_coordinates)
+        n_tiles_row = self._n_tiles_row(bbox_coordinates_lvl)
+        n_tiles_column = self._n_tiles_column(bbox_coordinates_lvl)
 
         for i in range(n_tiles_row):
             for j in range(n_tiles_column):
-                x_ul_lvl = bbox_coordinates.x_ul + tile_w_lvl * i - self.pixel_overlap
-                y_ul_lvl = bbox_coordinates.y_ul + tile_h_lvl * j - self.pixel_overlap
+                x_ul_lvl = (
+                    bbox_coordinates_lvl.x_ul + tile_w_lvl * i - self.pixel_overlap
+                )
+                y_ul_lvl = (
+                    bbox_coordinates_lvl.y_ul + tile_h_lvl * j - self.pixel_overlap
+                )
 
-                x_ul_lvl = np.clip(x_ul_lvl, bbox_coordinates.x_ul, None)
-                y_ul_lvl = np.clip(y_ul_lvl, bbox_coordinates.y_ul, None)
+                x_ul_lvl = np.clip(x_ul_lvl, bbox_coordinates_lvl.x_ul, None)
+                y_ul_lvl = np.clip(y_ul_lvl, bbox_coordinates_lvl.y_ul, None)
 
                 x_br_lvl = x_ul_lvl + tile_w_lvl
                 y_br_lvl = y_ul_lvl + tile_h_lvl
 
-                tile_wsi_coords = scale_coordinates(
-                    reference_coords=CoordinatePair(
-                        x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl
-                    ),
+                tile_lvl_coords = CoordinatePair(x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl)
+                tile_thumb_coords = scale_coordinates(
+                    reference_coords=tile_lvl_coords,
                     reference_size=slide.level_dimensions(level=self.level),
-                    target_size=slide.level_dimensions(level=0),
+                    target_size=binary_mask_region.shape[::-1],
                 )
-                yield tile_wsi_coords
+
+                if self._are_coordinates_within_extraction_mask(
+                    tile_thumb_coords, binary_mask_region
+                ):
+                    tile_wsi_coords = scale_coordinates(
+                        reference_coords=tile_lvl_coords,
+                        reference_size=slide.level_dimensions(level=self.level),
+                        target_size=slide.level_dimensions(level=0),
+                    )
+                    yield tile_wsi_coords
 
     def _grid_coordinates_generator(
         self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
@@ -373,16 +444,18 @@ class GridTiler(Tiler):
         binary_mask = extraction_mask(slide)
 
         regions = regions_from_binary_mask(binary_mask)
-        # ----at the moment there is only one region----
         for region in regions:
-            bbox_coordinates_thumb = region_coordinates(region)
-            bbox_coordinates = scale_coordinates(
+            bbox_coordinates_thumb = region_coordinates(region)  # coords of the bbox
+            bbox_coordinates_lvl = scale_coordinates(
                 bbox_coordinates_thumb,
                 binary_mask.shape[::-1],
                 slide.level_dimensions(self.level),
             )
+
+            binary_mask_region = regions_to_binary_mask([region], binary_mask.shape)
+
             yield from self._grid_coordinates_from_bbox_coordinates(
-                bbox_coordinates, slide
+                bbox_coordinates_lvl, slide, binary_mask_region
             )
 
     def _tiles_generator(
@@ -410,7 +483,9 @@ class GridTiler(Tiler):
         )
         for coords in grid_coordinates_generator:
             try:
-                tile = slide.extract_tile(coords, level=self.level, mpp=self.mpp)
+                tile = slide.extract_tile(
+                    coords, level=self.level, mpp=self.mpp,
+                    tile_size=self.tile_size)
             except ValueError:
                 continue
 
@@ -595,10 +670,9 @@ class RandomTiler(Tiler):
         binary_mask = extraction_mask(slide)
         tile_w_lvl, tile_h_lvl = self.tile_size
 
-        x_ul_lvl = np.random.choice(np.where(binary_mask)[1])
-        y_ul_lvl = np.random.choice(np.where(binary_mask)[0])
+        x_ul_lvl, y_ul_lvl = random_choice_true_mask2d(binary_mask)
 
-        # Scale tile dimensions to thumbnail dimensions
+        # Scale tile dimensions to extraction mask dimensions
         tile_w_thumb = (
             tile_w_lvl * binary_mask.shape[1] / slide.level_dimensions(self.level)[0]
         )
@@ -610,7 +684,7 @@ class RandomTiler(Tiler):
         y_br_lvl = y_ul_lvl + tile_h_thumb
 
         tile_wsi_coords = scale_coordinates(
-            reference_coords=CoordinatePair(x_ul_lvl, y_ul_lvl, x_br_lvl, y_br_lvl),
+            reference_coords=CoordinatePair(y_ul_lvl, x_ul_lvl, y_br_lvl, x_br_lvl),
             reference_size=binary_mask.shape[::-1],
             target_size=slide.dimensions,
         )
@@ -647,7 +721,10 @@ class RandomTiler(Tiler):
         while True:
             tile_wsi_coords = self._random_tile_coordinates(slide, extraction_mask)
             try:
-                tile = slide.extract_tile(tile_wsi_coords, level=self.level, mpp=self.mpp)
+                tile = slide.extract_tile(
+                    tile_wsi_coords, level=self.level, mpp=self.mpp,
+                    tile_size=self.tile_size,
+                )
             except ValueError:
                 iteration -= 1
                 continue
@@ -777,7 +854,10 @@ class ScoreTiler(GridTiler):
         filenames = []
 
         for tiles_counter, (score, tile_wsi_coords) in enumerate(highest_score_tiles):
-            tile = slide.extract_tile(tile_wsi_coords, level=self.level, mpp=self.mpp)
+            tile = slide.extract_tile(
+                tile_wsi_coords, level=self.level, mpp=self.mpp,
+                tile_size=self.tile_size,
+            )
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             if save_tiles:
                 tile.save(os.path.join(slide.processed_path, tile_filename))

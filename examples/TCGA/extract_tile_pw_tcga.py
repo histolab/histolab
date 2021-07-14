@@ -22,15 +22,14 @@ def extract_random_tiles(
     seed: int,
     check_tissue: bool,
 ) -> None:
-    """Save random tiles extracted from WSIs in `dataset_dir` into
-    `processed_path`/tiles/
+    """Save random tiles extracted from WSIs in `dataset_dir` into `processed_path`
 
     Parameters
     ----------
     dataset_dir : str
         Path were the WSIs are saved
     processed_path : str
-        Path where to store the tiles (will be concatenated with /tiles)
+        Path where to store the tiles
     tile_size : Tuple[int, int]
         width and height of the cropped tiles
     n_tiles : int

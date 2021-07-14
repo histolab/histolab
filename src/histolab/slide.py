@@ -15,12 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------
-
-"""Provides the Slide class.
-
-Slide is the main API class for manipulating slide objects.
-"""
-
 import math
 import ntpath
 import os
@@ -33,18 +27,14 @@ import large_image  # for .scn slides where openslide fails!
 import PIL
 from PIL.Image import BICUBIC, LANCZOS
 from io import BytesIO
-from deprecated.sphinx import deprecated
+from skimage.measure import find_contours
 
 from .exceptions import LevelError
 from .filters.compositions import FiltersComposition
+from .masks import BinaryMask
 from .tile import Tile
-from .types import CoordinatePair, Region
-from .util import (
-    lazyproperty,
-    region_coordinates,
-    regions_from_binary_mask,
-    scale_coordinates,
-)
+from .types import CoordinatePair
+from .util import lazyproperty
 
 IMG_EXT = "png"
 
@@ -57,7 +47,7 @@ class Slide:
     path : Union[str, pathlib.Path]
         Path where the WSI is saved.
     processed_path : Union[str, pathlib.Path]
-        Path where thumbnails and scaled images will be saved to.
+        Path where the tiles will be saved to.
     """
 
     def __init__(
@@ -98,7 +88,7 @@ class Slide:
 
     @lazyproperty
     def dimensions(self) -> Tuple[int, int]:
-        """Return the slide dimensions (w,h) at level 0.
+        """Slide dimensions (w,h) at level 0.
 
         Returns
         -------
@@ -108,8 +98,9 @@ class Slide:
         return self._wsi.dimensions
 
     def extract_tile(
-            self, coords: CoordinatePair, level: int,
-            mpp: float = None, resize_to_exactly: Tuple = None) -> Tile:
+        self, coords: CoordinatePair, level: int, tile_size: Tuple,
+        mpp: float = None
+    ) -> Tile:
         """Extract a tile of the image at the selected level.
 
         Parameters
@@ -118,13 +109,10 @@ class Slide:
             Coordinates at level 0 from which to extract the tile.
         level : int
             Level from which to extract the tile.
+        tile_size: tuple
+            Final size of the tile (x,y).
         mpp : float
             Micron per pixel resolution. Takes precedence over level.
-        resize_to_exactly : Tuple
-            (Width, Height) to resize tile to. Helpful when mpp is used. IT
-            goes without saying that this would result in the returned tile
-            at a different mpp than asked. Helpful in a very limited
-            circumstance.
 
         Returns
         -------
@@ -142,20 +130,10 @@ class Slide:
             )
 
         if mpp is None:
-
-            coords_level = scale_coordinates(
-                reference_coords=coords,
-                reference_size=self.level_dimensions(level=0),
-                target_size=self.level_dimensions(level=level),
-            )
-
-            h_l = coords_level.y_br - coords_level.y_ul
-            w_l = coords_level.x_br - coords_level.x_ul
-
             image = self._wsi.read_region(
-                location=(coords.x_ul, coords.y_ul), level=level, size=(w_l, h_l)
+                location=(coords.x_ul, coords.y_ul), level=level,
+                size=tile_size
             )
-
         else:
             # use large image, which has much better support for
             # getting exact mpp resolutions
@@ -170,19 +148,18 @@ class Slide:
                 jpegQuality=100,
             )
             image = image.convert("RGB")
-
-        # Sometimes when mpp kwarg is used, the image size is going to be
-        # off from what the user expects at that level by a couple of pixels.
-        # Here we allow the use the flexibility to resize
-        if resize_to_exactly is not None:
-            asis = resize_to_exactly[0] == image.size[0]
+            # Sometimes when mpp kwarg is used, the image size is going to be
+            # off from what the user expects at that level by a couple of pixels.
+            # Here we allow the use the flexibility to resize
+            asis = all(tile_size[i] == j for i, j in enumerate(image.size))
             if not asis:
                 image = image.resize(
-                    resize_to_exactly,
-                    BICUBIC if resize_to_exactly[0] >= image.size[0] else LANCZOS
+                    tile_size,
+                    BICUBIC if tile_size[0] >= image.size[0] else LANCZOS
                 )
 
         tile = Tile(image, coords, level)
+
         return tile
 
     def level_dimensions(self, level: int = 0) -> Tuple[int, int]:
@@ -209,7 +186,7 @@ class Slide:
 
     @lazyproperty
     def levels(self) -> List[int]:
-        """Return the slide's available levels
+        """Slide's available levels
 
         Returns
         -------
@@ -218,21 +195,24 @@ class Slide:
         """
         return list(range(len(self._wsi.level_dimensions)))
 
-    def locate_biggest_tissue_box(
+    def locate_mask(
         self,
+        binary_mask: BinaryMask,
         scale_factor: int = 32,
         tissue_mask: bool = False,
         alpha: int = 128,
         outline: str = "red",
     ) -> PIL.Image.Image:
-        """Draw biggest tissue box reference on a rescaled version of the slide
+        """Draw binary mask contours on a rescaled version of the slide
 
         Parameters
         ----------
+        binary_mask : BinaryMask
+            Binary Mask object
         scale_factor : int
             Scaling factor for the returned image. Default is 32.
         tissue_mask : bool, optional
-            Whether to draw the biggest tissue box on the binary tissue mask instead of
+            Whether to draw the contours on the binary tissue mask instead of
             the rescaled version of the slide. Default is False.
         alpha : int
             The alpha level to be applied to the rescaled slide, default to 128.
@@ -242,48 +222,53 @@ class Slide:
         Returns
         -------
         PIL.Image.Image
-            PIL Image of the rescaled slide with the biggest tissue bounding box
-            outlined.
+            PIL Image of the rescaled slide with the binary mask contours outlined.
         """
         img = self.scaled_image(scale_factor)
-
-        filters = FiltersComposition(Slide).tissue_mask_filters
-
-        img_tissue_mask = filters(img)
-        regions = regions_from_binary_mask(img_tissue_mask)
-        biggest_region = self._biggest_regions(regions, n=1)[0]
-
-        biggest_region_coordinates = region_coordinates(biggest_region)
+        mask = binary_mask(self)
+        resized_mask = np.array(
+            PIL.Image.fromarray(mask).resize(img.size, PIL.Image.ANTIALIAS)
+        )
 
         if tissue_mask:
+            filters = FiltersComposition(Slide).tissue_mask_filters
+            img_tissue_mask = filters(img)
             img = PIL.Image.fromarray(img_tissue_mask).convert("RGB")
         else:
             img.putalpha(alpha)
 
-        draw = PIL.ImageDraw.Draw(img)
-        draw.rectangle(tuple(biggest_region_coordinates), outline=outline)
+        # pad the mask to have closed contours along the edges
+        padded_mask = np.pad(resized_mask, pad_width=1, mode="constant")
+        contours = [
+            cont - 1 for cont in find_contours(padded_mask, 0.5)
+        ]  # unpad countours
+
+        for contour in contours:
+            contour = np.ceil(contour)
+            contour = np.vstack([contour[:, 1], contour[:, 0]]).T
+            PIL.ImageDraw.Draw(img).polygon(contour.ravel().tolist(), outline=outline)
 
         return img
 
     @lazyproperty
     def name(self) -> str:
-        """Retrieve the slide name without extension.
+        """Slide name without extension.
 
         Returns
         -------
         name : str
         """
         bname = ntpath.basename(self._path)
-        return bname[:bname.rfind(".")]
+        return bname[: bname.rfind(".")]
 
     @lazyproperty
     def processed_path(self) -> str:
-        """Retrieve the path to store processed files generated from the slide.
+        """Path to store the tiles generated from the slide.
 
         Returns
         -------
         str
-            Path to store processed files generated from the slide
+            Path to store the tiles generated from the slide
         """
         return self._processed_path
 
@@ -299,7 +284,7 @@ class Slide:
         return dict(self._wsi.properties)
 
     def resampled_array(self, scale_factor: int = 32) -> np.array:
-        """Retrieve the resampled array from the original slide
+        """Return the resampled array from the original slide
 
         Parameters
         ----------
@@ -341,7 +326,7 @@ class Slide:
 
     @lazyproperty
     def thumbnail(self) -> PIL.Image.Image:
-        """Return the slide thumbnail.
+        """Slide thumbnail.
 
         Returns
         -------
@@ -363,38 +348,6 @@ class Slide:
         image_content = BytesIO(bytesim)
         image_content.seek(0)
         return PIL.Image.open(image_content)
-
-    @staticmethod
-    @deprecated(
-        version="0.2.4",
-        reason="This property will be moved in histolab.masks.BinaryMask",
-    )
-    def _biggest_regions(regions: List[Region], n: int = 1) -> List[Region]:
-        """Return the biggest ``n`` regions.
-
-        Parameters
-        ----------
-        regions : List[Region]
-            List of regions
-        n : int, optional
-            Number of regions to return, by default 1
-
-        Returns
-        -------
-        List[Region]
-            List of ``n`` biggest regions
-
-        Raises
-        ------
-        ValueError
-            If ``n`` is not between 1 and the number of elements of ``regions``
-        """
-
-        if not 1 <= n <= len(regions):
-            raise ValueError(f"n should be between 1 and {len(regions)}, got {n}")
-
-        sorted_regions = sorted(regions, key=lambda r: r.area, reverse=True)
-        return sorted_regions[:n]
 
     def _has_valid_coords(self, coords: CoordinatePair) -> bool:
         """Check if ``coords`` are valid 0-level coordinates.
@@ -475,8 +428,8 @@ class Slide:
             # use large image if tiff file only has one level
             meta = self._tilesource.getMetadata()
             img, _ = self._tilesource.getRegion(
-                scale = dict(magnification=meta['magnification'] / scale_factor),
-                format = large_image.tilesource.TILE_FORMAT_PIL,
+                scale=dict(magnification=meta['magnification'] / scale_factor),
+                format=large_image.tilesource.TILE_FORMAT_PIL,
             )
             img = img.convert("RGB")
         arr_img = np.asarray(img)
@@ -558,7 +511,6 @@ class Slide:
                 f"The wsi path resource doesn't exist: {self._path}"
             )
         return slide
-
 
     @lazyproperty
     def _tilesource(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
@@ -660,7 +612,10 @@ class SlideSet:
 
     @lazyproperty
     def slides_stats(self) -> dict:
-        """Retrieve statistic/graphs of slides files contained in the dataset.
+        """Statistics for the WSI collection, namely the number of available
+        slides; the slide with the maximum/minimum width; the slide with the
+        maximum/minimum height; the slide with the maximum/minimum size; the average
+        width/height/size of the slides.
 
         Returns
         ----------

@@ -28,7 +28,7 @@ from .filters.image_filters_functional import maskout_markers
 from .types import Region
 from .util import (
     lazyproperty,
-    polygon_to_mask_array,
+    rectangle_to_mask,
     region_coordinates,
     regions_from_binary_mask,
 )
@@ -61,7 +61,14 @@ class BinaryMask(ABC):
 
 
 class BiggestTissueBoxMask(BinaryMask):
-    """Object that represents the box containing the largest contiguous tissue area."""
+    r"""Object that represents the box containing the largest contiguous tissue area.
+
+    Internally, this class automatically detects the tissue regions via a predefined
+    sequence of filters, and then retain the largest connected component.
+
+    .. figure:: https://user-images.githubusercontent.com/31658006/116549379-b14d0200-a8f5-11eb-85b1-46abc14c73bf.jpeg
+
+    """  # noqa
 
     @staticmethod
     def _thumb_mask(slide, thumb=None):
@@ -93,7 +100,9 @@ class BiggestTissueBoxMask(BinaryMask):
         regions = regions_from_binary_mask(thumb_mask)
         biggest_region = self._regions(regions, n=1)[0]
         biggest_region_coordinates = region_coordinates(biggest_region)
-        thumb_bbox_mask = polygon_to_mask_array(thumb.size, biggest_region_coordinates)
+        thumb_bbox_mask = rectangle_to_mask(
+            thumb.size[::-1], biggest_region_coordinates
+        )
         return thumb_bbox_mask
 
     @staticmethod
@@ -130,7 +139,10 @@ class BiggestTissueBoxMask(BinaryMask):
 
 
 class TissueMask(BinaryMask):
-    """Object that represent the tissue area mask."""
+    """Object that represent the whole tissue area mask.
+
+    The tissue within the slide is automatically detected through a predefined
+    chain of filters."""
 
     @lru_cache(maxsize=100)
     def _mask(self, slide) -> np.ndarray:

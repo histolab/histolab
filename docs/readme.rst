@@ -4,7 +4,7 @@ Overview
 .. image:: https://user-images.githubusercontent.com/4196091/84828232-048fcc00-b026-11ea-8caa-5c14bb8565bd.png
    :alt: Logo
    :align: center
-   :width: 40em 
+   :width: 40em
 
 
 The aim of this project is to provide a tool for WSI processing in a reproducible environment to support clinical and
@@ -46,9 +46,7 @@ The histolab package can be installed by using::
 
 Prerequisites
 *************
-histolab has only one system-wide dependency: `OpenSlide`.
-
-You can download and install it from https://openslide.org/download/ according to your operating system.
+Please see `installation instructions <https://github.com/histolab/histolab/blob/master/docs/installation.rst>`_.
 
 
 Authors
@@ -72,7 +70,7 @@ References
 
 
 .. toctree::
-  
+
 
 .. toctree::
    :caption: API Reference

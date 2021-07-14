@@ -1,11 +1,5 @@
 import numpy as np
 import pytest
-
-from histolab.filters.compositions import _SlideFiltersComposition
-from histolab.filters.image_filters import Compose
-from histolab.filters.morphological_filters import RemoveSmallObjects
-from histolab.masks import BiggestTissueBoxMask, TissueMask
-from histolab.types import CP, Region
 from tests.unitutil import (
     PILIMG,
     base_test_slide,
@@ -15,14 +9,20 @@ from tests.unitutil import (
     property_mock,
 )
 
+from histolab.filters.compositions import _SlideFiltersComposition
+from histolab.filters.image_filters import Compose
+from histolab.filters.morphological_filters import RemoveSmallObjects
+from histolab.masks import BiggestTissueBoxMask, TissueMask
+from histolab.types import CP, Region
+
 
 class DescribeBiggestTissueBoxMask:
     def it_knows_its_biggest_regions(self):
         regions = [
-            Region(index=0, area=14, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
-            Region(index=1, area=2, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
-            Region(index=2, area=5, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
-            Region(index=3, area=10, bbox=(0, 0, 2, 2), center=(0.5, 0.5)),
+            Region(index=0, area=14, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None),
+            Region(index=1, area=2, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None),
+            Region(index=2, area=5, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None),
+            Region(index=3, area=10, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None),
         ]
         binary_mask = BiggestTissueBoxMask
 
@@ -57,7 +57,9 @@ class DescribeBiggestTissueBoxMask:
         RemoveSmallObjects_,
     ):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
-        regions = [Region(index=0, area=33, bbox=(0, 0, 2, 2), center=(0.5, 0.5))]
+        regions = [
+            Region(index=0, area=33, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None)
+        ]
         main_tissue_areas_mask_filters_ = property_mock(
             request, _SlideFiltersComposition, "tissue_mask_filters"
         )
@@ -82,10 +84,8 @@ class DescribeBiggestTissueBoxMask:
             request, "histolab.masks.region_coordinates"
         )
         region_coordinates_.return_values = CP(0, 0, 2, 2)
-        polygon_to_mask_array_ = function_mock(
-            request, "histolab.util.polygon_to_mask_array"
-        )
-        polygon_to_mask_array_((1000, 1000), CP(0, 0, 2, 2)).return_value = [
+        rectangle_to_mask_ = function_mock(request, "histolab.util.rectangle_to_mask")
+        rectangle_to_mask_((1000, 1000), CP(0, 0, 2, 2)).return_value = [
             [True, True],
             [False, True],
         ]
@@ -96,7 +96,7 @@ class DescribeBiggestTissueBoxMask:
         np.testing.assert_almost_equal(binary_mask, np.zeros((500, 500)))
         region_coordinates_.assert_called_once_with(regions[0])
         biggest_regions_.assert_called_once_with(regions, n=1)
-        polygon_to_mask_array_.assert_called_once_with(
+        rectangle_to_mask_.assert_called_once_with(
             (1000, 1000), CP(x_ul=0, y_ul=0, x_br=2, y_br=2)
         )
 

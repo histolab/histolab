@@ -108,6 +108,29 @@ def blue_pen_filter(img: PIL.Image.Image, applyfilter=True) -> PIL.Image.Image:
     return apply_mask_image(img, blue_pen_filter_img)
 
 
+def dab_channel(img: PIL.Image.Image) -> PIL.Image.Image:
+    """Obtain DAB channel from RGB image.
+
+    Input image is first converted into HED space and the DAB channel is
+    rescaled for increased contrast.
+
+    Parameters
+    ----------
+    img : Image.Image
+        Input RGB image
+
+    Returns
+    -------
+    Image.Image
+        Grayscale image corresponding to input image with DAB channel enhanced.
+    """
+    if img.mode not in ["RGB", "RGBA"]:
+        raise ValueError("Input image must be RGB/RGBA.")
+    dab = np.array(rgb_to_hed(img))[:, :, 2]
+    dab = sk_exposure.rescale_intensity(dab)
+    return np_to_pil(dab)
+
+
 def eosin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
     """Obtain Eosin channel from RGB image.
 

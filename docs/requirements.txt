@@ -2,4 +2,6 @@ histolab
 sphinx
 sphinx-rtd-theme
 sphinxcontrib-katex
+sphinxemoji
+sphinx-prompt
 IPython
