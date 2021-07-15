@@ -255,7 +255,7 @@ def aorta_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     Returns
     -------
     aorta_tissue : openslide.OpenSlide
-        Aorta tissue Whole-Slide-Image
+        H&E-stained Whole-Slide-Image of aortic tissue.
     path : str
         Path where the slide is saved
     """
@@ -277,7 +277,7 @@ def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     Returns
     -------
     breast_tissue : openslide.OpenSlide
-        Breast tissue Whole-Slide-Image
+        H&E-stained Whole-Slide-Image of breast tissue.
     path : str
         Path where the slide is saved
     """
@@ -289,7 +289,7 @@ def breast_tissue_diagnostic_green_pen() -> Tuple[
 ]:  # pragma: no cover
     """breast_tissue_diagnostic_green_pen() -> Tuple[openslide.OpenSlide, str]
 
-    Breast tissue, TCGA-BRCA dataset. Diagnostic slide with green pen.
+    Breast tissue, TCGA-BRCA dataset. Diagnostic slide with green pen marks.
 
     This image is available here
     https://portal.gdc.cancer.gov/files/da36d3aa-9b19-492a-af4f-cc028a926d96
@@ -301,7 +301,7 @@ def breast_tissue_diagnostic_green_pen() -> Tuple[
     Returns
     -------
     breast_tissue : openslide.OpenSlide
-        Breast tissue Whole-Slide-Image
+        H&E-stained Whole-Slide-Image of breast tissue with green pen marks.
     path : str
         Path where the slide is saved
     """
@@ -313,7 +313,7 @@ def breast_tissue_diagnostic_red_pen() -> Tuple[
 ]:  # pragma: no cover
     """breast_tissue_diagnostic_red_pen() -> Tuple[openslide.OpenSlide, str]
 
-    Breast tissue, TCGA-BRCA dataset. Diagnostic slide with red pen.
+    Breast tissue, TCGA-BRCA dataset. Diagnostic slide with red pen marks.
 
     This image is available here
     https://portal.gdc.cancer.gov/files/f8b4cee6-9149-45b4-ae53-82b0547e1e34
@@ -325,7 +325,7 @@ def breast_tissue_diagnostic_red_pen() -> Tuple[
     Returns
     -------
     breast_tissue : openslide.OpenSlide
-        Breast tissue Whole-Slide-Image
+        H&E-stained Whole-Slide-Image of breast tissue with red pen marks.
     path : str
         Path where the slide is saved
     """
@@ -337,7 +337,7 @@ def breast_tissue_diagnostic_black_pen() -> Tuple[
 ]:  # pragma: no cover
     """breast_tissue_diagnostic_black_pen() -> Tuple[openslide.OpenSlide, str]
 
-    Breast tissue, TCGA-BRCA dataset. Diagnostic slide with black pen.
+    Breast tissue, TCGA-BRCA dataset. Diagnostic slide with black pen marks.
 
     This image is available here
     https://portal.gdc.cancer.gov/files/31e248bf-ee24-4d18-bccb-47046fccb461
@@ -349,7 +349,7 @@ def breast_tissue_diagnostic_black_pen() -> Tuple[
     Returns
     -------
     breast_tissue : openslide.OpenSlide
-        Breast tissue Whole-Slide-Image
+        H&E-stained Whole-Slide-Image of breast tissue with green black marks.
     path : str
         Path where the slide is saved
     """
@@ -369,7 +369,7 @@ def cmu_small_region() -> Tuple[openslide.OpenSlide, str]:
     Returns
     -------
     cmu_mrxs_tissue : openslide.OpenSlide
-        Sample CMU tissue Whole-Slide-Image
+        H&E-stained Whole-Slide-Image of small tissue region.
     path : str
         Path where the slide is saved
     """
@@ -389,17 +389,53 @@ def heart_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     Returns
     -------
     heart_tissue : openslide.OpenSlide
-        Heart tissue Whole-Slide-Image
+        H&E-stained Whole-Slide-Image of heart tissue.
     path : str
         Path where the slide is saved
     """
     return _load_svs("aperio/JP2K-33003-2.svs")
 
 
+def ihc_breast() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
+    """ihc_breast() -> Tuple[openslide.OpenSlide, str]
+
+    Breast cancer resection, staining CD3 (brown) and CD20 (red).
+
+    This image is available here
+    https://idr.openmicroscopy.org/ under accession number idr0073, ID `breastCancer12`.
+
+    Returns
+    -------
+    ihc_breast : openslide.OpenSlide
+        IHC-stained Whole-Slide-Image of Breast tissue.
+    path : str
+        Path where the slide is saved
+    """
+    return _load_svs("9798433/?format=tif")
+
+
+def ihc_kidney() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
+    """ihc_kidney() -> Tuple[openslide.OpenSlide, str]
+
+    Renal allograft, staining CD3 (brown) and CD20 (red).
+
+    This image is available here
+    https://idr.openmicroscopy.org/ under accession number idr0073, ID `kidney_46_4`.
+
+    Returns
+    -------
+    ihc_kidney : openslide.OpenSlide
+        IHC-stained Whole-Slide-Image of kidney tissue.
+    path : str
+        Path where the slide is saved
+    """
+    return _load_svs("9798554/?format=tif")
+
+
 def ovarian_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """ovarian_tissue() -> Tuple[openslide.OpenSlide, str]
 
-    Ovarian tissue, TCGA-OV dataset.
+    tissue of Ovarian Serous Cystadenocarcinoma, TCGA-OV dataset.
 
     This image is available here
     https://portal.gdc.cancer.gov/files/b777ec99-2811-4aa4-9568-13f68e380c86
@@ -412,7 +448,7 @@ def ovarian_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     Returns
     -------
     prostate_tissue : openslide.OpenSlide
-        Ovarian tissue Whole-Slide-Image
+        H&E-stained Whole-Slide-Image of ovarian tissue.
     path : str
         Path where the slide is saved
     """
@@ -422,7 +458,7 @@ def ovarian_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
 def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     """prostate_tissue() -> Tuple[openslide.OpenSlide, str]
 
-    Prostate tissue, TCGA-PRAD dataset.
+    tissue of Prostate Adenocarcinoma, TCGA-PRAD dataset.
 
     This image is available here
     https://portal.gdc.cancer.gov/files/6b725022-f1d5-4672-8c6c-de8140345210
@@ -435,7 +471,7 @@ def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     Returns
     -------
     prostate_tissue : openslide.OpenSlide
-        Prostate tissue Whole-Slide-Image
+        H&E-stained Whole-Slide-Image of prostate tissue.
     path : str
         Path where the slide is saved
     """

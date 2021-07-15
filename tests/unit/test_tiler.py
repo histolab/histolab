@@ -14,6 +14,7 @@ from histolab.tile import Tile
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, Tiler
 from histolab.types import CP
 
+from ..base import COMPLEX_MASK4
 from ..unitutil import (
     ANY,
     PILIMG,
@@ -140,10 +141,10 @@ class Describe_RandomTiler:
         _box_mask_thumb.return_value = NpArrayMock.ONES_500X500_BOOL
         _tile_size = property_mock(request, RandomTiler, "tile_size")
         _tile_size.return_value = (128, 128)
-        _np_random_choice1 = function_mock(request, "numpy.random.choice")
-        _np_random_choice1.return_value = 0
-        _np_random_choice2 = function_mock(request, "numpy.random.choice")
-        _np_random_choice2.return_value = 0
+        _random_choice_true_mask2d = function_mock(
+            request, "histolab.tiler.random_choice_true_mask2d"
+        )
+        _random_choice_true_mask2d.return_value = (0, 0)
         _scale_coordinates = function_mock(request, "histolab.tiler.scale_coordinates")
         random_tiler = RandomTiler((128, 128), 10, 0)
         binary_mask = BiggestTissueBoxMask()
@@ -152,6 +153,9 @@ class Describe_RandomTiler:
 
         _box_mask_thumb.assert_called_once_with(binary_mask, slide)
         _tile_size.assert_has_calls([call((128, 128))])
+        _random_choice_true_mask2d.assert_called_once_with(
+            NpArrayMock.ONES_500X500_BOOL
+        )
         _scale_coordinates.assert_called_once_with(
             reference_coords=CP(x_ul=0, y_ul=0, x_br=128, y_br=128),
             reference_size=(500, 500),
@@ -351,9 +355,9 @@ class Describe_RandomTiler:
             random_tiler.extract(slide, binary_mask)
 
         assert re.sub(r":+\d{3}", "", caplog.text).splitlines() == [
-            "INFO     root:tiler.py \t Tile 0 saved: tile_0_level2_0-10-0-10.png",
-            "INFO     root:tiler.py \t Tile 1 saved: tile_1_level2_0-10-0-10.png",
-            "INFO     root:tiler.py 2 Random Tiles have been saved.",
+            "INFO     tiler:tiler.py \t Tile 0 saved: tile_0_level2_0-10-0-10.png",
+            "INFO     tiler:tiler.py \t Tile 1 saved: tile_1_level2_0-10-0-10.png",
+            "INFO     tiler:tiler.py 2 Random Tiles have been saved.",
         ]
         assert _tile_filename.call_args_list == [
             call(random_tiler, coords, 0),
@@ -573,8 +577,12 @@ class Describe_GridTiler:
         _grid_coordinates_generator.assert_called_once_with(
             grid_tiler, slide, binary_mask
         )
+
         assert _extract_tile.call_args_list == (
-            [call(slide, CP(0, 10, 0, 10), 0), call(slide, CP(0, 10, 0, 10), 0)]
+            [
+                call(slide, CP(0, 10, 0, 10), 0, (10, 10)),
+                call(slide, CP(0, 10, 0, 10), 0, (10, 10)),
+            ]
         )
         assert _has_enough_tissue.call_args_list == [call(tile1, 60), call(tile2, 60)]
         assert len(generated_tiles) == expected_n_tiles
@@ -625,8 +633,12 @@ class Describe_GridTiler:
         _grid_coordinates_generator.assert_called_once_with(
             grid_tiler, slide, binary_mask
         )
+
         assert _extract_tile.call_args_list == (
-            [call(slide, CP(0, 10, 0, 10), 0), call(slide, CP(0, 10, 0, 10), 0)]
+            [
+                call(slide, CP(0, 10, 0, 10), 0, (10, 10)),
+                call(slide, CP(0, 10, 0, 10), 0, (10, 10)),
+            ]
         )
         _has_enough_tissue.assert_not_called()
         assert len(generated_tiles) == expected_n_tiles
@@ -742,6 +754,28 @@ class Describe_GridTiler:
             == f"Tile size (50, 52) is larger than slide size {size} at level 0"
         )
         _has_valid_tile_size.assert_called_once_with(grid_tiler, slide)
+
+    @pytest.mark.parametrize(
+        "tile_coords, expected_result",
+        [
+            (CP(0, 0, 2, 2), False),  # completely outside of region
+            (CP(0, 0, 8, 8), False),  # only 205
+            (CP(2, 3, 6, 6), True),  # 85% in
+            (CP(3, 3, 5, 5), True),  # 100% in
+        ],
+    )
+    def it_knows_whether_coordinates_are_within_extraction_mask(
+        self, tile_coords, expected_result
+    ):
+        grid_tiler = GridTiler((2, 2), level=0)  # tile size doens't matter here
+        mask = COMPLEX_MASK4
+
+        coords_within_extraction_mask = (
+            grid_tiler._are_coordinates_within_extraction_mask(tile_coords, mask)
+        )
+
+        assert type(coords_within_extraction_mask) == bool
+        assert coords_within_extraction_mask == expected_result
 
 
 class Describe_ScoreTiler:
@@ -983,8 +1017,8 @@ class Describe_ScoreTiler:
         score_tiler.extract(slide, binary_mask)
 
         assert _extract_tile.call_args_list == [
-            call(slide, coords, 0),
-            call(slide, coords, 0),
+            call(slide, coords, 0, (10, 10)),
+            call(slide, coords, 0, (10, 10)),
         ]
         _tiles_generator.assert_called_with(score_tiler, slide, binary_mask)
         assert _tile_filename.call_args_list == [
@@ -1087,8 +1121,8 @@ class Describe_ScoreTiler:
         score_tiler.extract(slide, binary_mask, "report.csv")
 
         assert _extract_tile.call_args_list == [
-            call(slide, coords, 0),
-            call(slide, coords, 0),
+            call(slide, coords, 0, (10, 10)),
+            call(slide, coords, 0, (10, 10)),
         ]
         _tiles_generator.assert_called_with(score_tiler, slide, binary_mask)
         assert _tile_filename.call_args_list == [

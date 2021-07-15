@@ -2,23 +2,23 @@ Contributing
 ============
 
 When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change. 
+email, or any other method with the owners of this repository before making a change.
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
 Contribution guidelines and standards
 -------------------------------------
 
-Before sending your PR for review, make sure your changes are consistent with the guidelines and follow the coding 
+Before sending your PR for review, make sure your changes are consistent with the guidelines and follow the coding
 style.
 
 General guidelines and philosophy for contribution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-* Include unit tests when you contribute new features, as they help to a) prove that your code works correctly, and b) 
+* Include unit tests when you contribute new features, as they help to a) prove that your code works correctly, and b)
   guard against future breaking changes to lower the maintenance cost.
-* Bug fixes also generally require unit tests, because the presence of bugs usually indicates insufficient test 
+* Bug fixes also generally require unit tests, because the presence of bugs usually indicates insufficient test
   coverage.
 * Keep API compatibility in mind when you change code in Histolab core.
 * Tests coverage cannot decrease from the current %.
@@ -26,78 +26,77 @@ General guidelines and philosophy for contribution
 
 Contribution Workflow
 ---------------------
+Before working on your next contribution, make sure your local repository is up to date.
 
-Code contributions—bug fixes, new development, test improvement—all follow a GitHub-centered workflow. To participate 
+
+#.
+   Set the upstream remote. (You only have to do this once per project, not every time.)
+
+   ``$ git remote add upstream git@github.com:histolab/project-repo-name``
+
+#.
+   Switch to the local master branch.
+
+   ``$ git checkout master``
+
+#.
+   Pull down the changes from upstream.
+
+   ``$ git pull upstream master``
+
+#.
+   Push the changes to your GitHub account.
+
+    ``$ git push origin master``
+
+#.
+   Create a new branch if you are starting new work.
+
+   ``$ git checkout -b branch-name``
+
+Code contributions, bug fixes, new development, test improvement, all follow a GitHub-centered workflow. To participate
 in Histolab development, set up a GitHub account. Then:
 
 
-#. 
+#.
    Fork the repo https://github.com/histolab/histolab. Go to the project repo page and use the Fork button. This will
-   create a copy of the repo, under your username. (For more details on how to fork a repository see 
+   create a copy of the repo, under your username. (For more details on how to fork a repository see
    `this guide <https://help.github.com/articles/fork-a-repo/>`_.)
 
-#. 
-   Clone down the forked repo to your local machine. 
+#.
+   Clone down the forked repo to your local machine.
 
    ``$ git clone git@github.com:your-user-name/project-name.git``
 
-#. 
+#.
    Create a new branch to hold your work.
 
    ``$ git checkout -b new-branch-name``
 
-#. 
+#.
    Work on your code. Write and run tests.
 
-#. 
+#.
    Commit your changes.
 
    ``$ git add .``
 
    ``$ git commit -m "commit message here"``
 
-#. 
+#.
    Push your changes to your GitHub repo.
 
    ``$ git push origin branch-name``
 
-#. 
-   Open a Pull Request (PR). Go to the original project repo on GitHub. There will be a message about your recently 
-   pushed branch, asking if you would like to open a pull request. Follow the prompts, compare across repositories, 
-   and submit the PR. 
-   For more read `here <https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests>`_ 
+#.
+   Open a Pull Request (PR). Go to the original project repo on GitHub. There will be a message about your recently
+   pushed branch, asking if you would like to open a pull request. Follow the prompts, compare across repositories,
+   and submit the PR.
+   For more read `here <https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests>`_
 
-#. 
-   Maintainers and other contributors will review your PR. Please participate in the conversation, 
+#.
+   Maintainers and other contributors will review your PR. Please participate in the conversation,
    and try to make any requested changes. Once the PR is approved, the code will be merged.
-
-Before working on your next contribution, make sure your local repository is up to date.
-
-
-#. 
-   Set the upstream remote. (You only have to do this once per project, not every time.)
-
-   ``$ git remote add upstream git@github.com:histolab/project-repo-name``
-
-#. 
-   Switch to the local master branch.
-
-   ``$ git checkout master``
-
-#. 
-   Pull down the changes from upstream.
-
-   ``$ git pull upstream master``
-
-#. 
-   Push the changes to your GitHub account. (Optional, but a good practice.)
-
-    ``$ git push origin master``
-
-#. 
-   Create a new branch if you are starting new work.
-
-   ``$ git checkout -b branch-name``
 
 Additional git and GitHub resources:
 
@@ -113,19 +112,19 @@ Before starting contributing to Histolab, test that your local environment is up
 
 
 * Create a python 3.6 - 3.7 ``virtualenv``
-* 
+*
   Activate the env and in the project root run:
 
   ``pip install -e .[testing]``
 
   ``pip install -r requirements-dev.txt``
 
-* 
+*
   Install the pre-commit hooks (Optional, but useful for code style compliance)
 
    ``pre-commit install`` <- *to be ran in the project root directory*
 
-* 
+*
   Run the tests
 
    ``pytest tests/``
@@ -137,8 +136,8 @@ Our Pledge
 ^^^^^^^^^^
 
 In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project a harassment-free experience for everyone, 
-regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, 
+contributors and maintainers pledge to making participation in our project a harassment-free experience for everyone,
+regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality,
 personal appearance, race, religion, or sexual identity and orientation.
 
 Our Standards

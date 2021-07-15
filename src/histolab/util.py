@@ -89,31 +89,53 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
     return PIL.Image.fromarray(image_array)
 
 
-def polygon_to_mask_array(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
-    """Draw a white polygon of vertices on a black image of specified dimensions.
+def random_choice_true_mask2d(binary_mask: np.ndarray) -> Tuple[int, int]:
+    """Return a random pair of indices where the ``binary_mask`` is True.
+
+    Parameters
+    ----------
+    binary_mask : np.ndarray
+        Binary array.
+
+    Returns
+    -------
+    Tuple[int, int]
+        Random pair of indices where the ``binary_mask`` is True.
+    """
+    x = np.random.choice(np.where(binary_mask)[0])
+    y = np.random.choice(np.where(binary_mask[x])[0])
+
+    return x, y
+
+
+def rectangle_to_mask(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
+    """
+    Return a binary mask with True inside of rectangle ``vertices`` and False outside.
+
+    The returned mask has shape ``dims``.
 
     Parameters
     ----------
     dims : tuple
-        (w,h) of the black image
+        (w,h) of the binary mask
     vertices : CoordinatePair
         CoordinatePair representing the upper left and bottom right vertices of the
-        polygon
+        rectangle
 
     Returns
     -------
     np.ndarray
-        NumPy array corresponding to the image with the polygon
+        Binary mask with True inside of the rectangle, False outside.
     """
-    poly_vertices = [
+    rectangle_vertices = [
         (vertices.x_ul, vertices.y_ul),
         (vertices.x_ul, vertices.y_br),
         (vertices.x_br, vertices.y_br),
         (vertices.x_br, vertices.y_ul),
     ]
 
-    img = PIL.Image.new("L", dims, 0)
-    PIL.ImageDraw.Draw(img).polygon(poly_vertices, outline=1, fill=1)
+    img = PIL.Image.new("L", dims[::-1], 0)
+    PIL.ImageDraw.Draw(img).polygon(rectangle_vertices, outline=1, fill=1)
     return np.array(img).astype(bool)
 
 
@@ -132,10 +154,43 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     """
     thumb_labeled_regions = label(binary_mask)
     regions = [
-        Region(index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid)
+        Region(
+            index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid, coords=rp.coords
+        )
         for i, rp in enumerate(regionprops(thumb_labeled_regions))
     ]
     return regions
+
+
+def regions_to_binary_mask(regions: List[Region], dims: Tuple[int, int]) -> np.ndarray:
+    """Create a binary mask given a list of ``regions``.
+
+    For each region ``r``, the areas within ``r.coords`` are filled with True, False
+    outside.
+
+    Parameters
+    ----------
+    regions : List[Region]
+        The regions to create the binary mask.
+    dims : Tuple[int, int]
+        Dimensions of the resulting binary mask.
+
+    Returns
+    -------
+    np.ndarray
+        Binary mask from the ``regions`` coordinates.
+    """
+    img = PIL.Image.new("L", dims[::-1], 0)
+
+    for region in regions:
+        coords = region.coords
+        coords = np.vstack([coords[:, 1], coords[:, 0]]).T
+
+        PIL.ImageDraw.Draw(img).point(coords.ravel().tolist(), fill=1)
+
+    binary_mask_regions = np.array(img).astype(bool)
+
+    return binary_mask_regions
 
 
 def region_coordinates(region: Region) -> CoordinatePair:

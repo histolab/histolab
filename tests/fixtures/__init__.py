@@ -7,6 +7,8 @@ import os
 import numpy as np
 from PIL import Image
 
+from ..unitutil import on_ci
+
 
 class LazyResponder:
     """Loads and caches fixtures files by name from fixture directory.
@@ -36,19 +38,38 @@ class LazyResponder:
 class LazySVSResponseLoader(LazyResponder):
     """Specific class for SVS fixtures loader"""
 
-    def _svs_path(self, fixture_name):
+    slide_format = "SVS"
+
+    def _slide_path(self, fixture_name):
         return "%s/%s.svs" % (self._dirpath, fixture_name.replace("_", "-").lower())
 
-    def _load_svs(self, path):
+    def _load_slide(self, path):
         with open(path, "rb") as f:
             svs_image = f.name
         return svs_image
 
     def _load_to_cache(self, fixture_name):
-        svs_path = self._svs_path(fixture_name)
-        if not os.path.exists(svs_path):
-            raise ValueError("no SVS fixture found at %s" % svs_path)
-        self._cache[fixture_name] = self._load_svs(svs_path)
+        slide_path = self._slide_path(fixture_name)
+        if not os.path.exists(slide_path):
+            raise ValueError(f"no {self.slide_format} fixture found at {slide_path}")
+        self._cache[fixture_name] = self._load_slide(slide_path)
+
+
+class LazyExternalSVSResponseLoader(LazySVSResponseLoader):
+    def _load_to_cache(self, fixture_name):
+        slide_path = self._slide_path(fixture_name)
+        if not os.path.exists(slide_path) and on_ci():
+            raise ValueError(f"no {self.slide_format} fixture found at {slide_path}")
+        self._cache[fixture_name] = slide_path
+
+
+class LazyTIFFResponseLoader(LazySVSResponseLoader):
+    """Specific class for TIFF fixtures loader"""
+
+    slide_format = "TIFF"
+
+    def _slide_path(self, fixture_name):
+        return "%s/%s.tif" % (self._dirpath, fixture_name.replace("_", "-").lower())
 
 
 class LazyPILResponseLoader(LazyResponder):
@@ -84,6 +105,8 @@ class LazyNPYResponseLoader(LazyResponder):
 
 
 SVS = LazySVSResponseLoader("./svs-images")
+EXTERNAL_SVS = LazyExternalSVSResponseLoader("./external-svs")
+TIFF = LazyTIFFResponseLoader("./tiff-images")
 RGBA = LazyPILResponseLoader("./pil-images-rgba")
 RGB = LazyPILResponseLoader("./pil-images-rgb")
 GS = LazyPILResponseLoader("./pil-images-gs")

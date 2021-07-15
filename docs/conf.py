@@ -40,7 +40,7 @@ version = re.search('__version__ = "([^"]+)"', init_py).group(1)
 # -- Project information -----------------------------------------------------
 
 project = "histolab"
-copyright = "2020, histolab"
+copyright = "2021, histolab"
 author = "histolab"
 
 # The full version, including alpha/beta/rc tags
@@ -59,6 +59,8 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_rtd_theme",
     "sphinxcontrib.katex",
+    "sphinxemoji.sphinxemoji",
+    "sphinx-prompt",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -106,3 +108,4 @@ add_module_names = False
 
 autodoc_mock_imports = ["openslide-python", "openslide"]
 master_doc = "index"
+autodoc_typehints = "description"

@@ -35,4 +35,4 @@ jobs:
           fail-on-alert: true
           comment-on-alert: true
           alert-comment-cc-users: '@ernestoarbitrio'
-          alert-threshold: '200%'
+          alert-threshold: '300%'

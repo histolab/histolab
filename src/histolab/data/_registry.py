@@ -18,10 +18,13 @@ registry = {
     "tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461": "95163831d9076bb5e5b21790933dee9535a3607ba35bd6ae425374a45ecb1ba6",
     "tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210": "305c80e28227b25fdd0cc24726da4cf038380b4326e25c6518ffe23051a25ac0",
     "tcga/ovarian/b777ec99-2811-4aa4-9568-13f68e380c86": "f8e5059a0c9f8c026cfb2613cddef6562f8cdbd5954580282e2afa41d2f86a8c",
+    "9798433/?format=tif": "7db49ff9fc3f6022ae334cf019e94ef4450f7d4cf0d71783e0f6ea82965d3a52",
+    "9798554/?format=tif": "8a4318ac713b4cf50c3314760da41ab7653e10e90531ecd0c787f1386857a4ef",
 }
 
 APERIO_REPO_URL = "http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio"
 TCGA_REPO_URL = "https://api.gdc.cancer.gov/data"
+IDR_REPO_URL = "https://idr.openmicroscopy.org/webclient/render_image_download"
 
 registry_urls = {
     "histolab/broken.svs": "https://raw.githubusercontent.com/histolab/histolab/master/tests/fixtures/svs-images/broken.svs",
@@ -34,6 +37,8 @@ registry_urls = {
     "tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461": f"{TCGA_REPO_URL}/31e248bf-ee24-4d18-bccb-47046fccb461",
     "tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210": f"{TCGA_REPO_URL}/6b725022-f1d5-4672-8c6c-de8140345210",
     "tcga/ovarian/b777ec99-2811-4aa4-9568-13f68e380c86": f"{TCGA_REPO_URL}/b777ec99-2811-4aa4-9568-13f68e380c86",
+    "9798433/?format=tif": f"{IDR_REPO_URL}/9798433/?format=tif",
+    "9798554/?format=tif": f"{IDR_REPO_URL}/9798554/?format=tif",
 }
 
 legacy_registry = {

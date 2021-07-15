@@ -75,12 +75,25 @@ class Tile:
 
     @lazyproperty
     def coords(self) -> CoordinatePair:
+        """Level 0 Coordinates of the Slide from which the tile was extracted
+
+        Returns
+        -------
+        CoordinatePair
+            Level 0 Coordinates of the Slide from which the tile was extracted
+        """
         return self._coords
 
     def has_enough_tissue(
         self, tissue_percent: float = 80.0, near_zero_var_threshold: float = 0.1
     ) -> bool:
         """Check if the tile has enough tissue.
+
+        This method checks if the proportion of the detected tissue over the total area
+        of the tile is above a specified threshold (by default 80%). Internally, the
+        method  quantifies  the  amount  of  tissue  by  applying  a  chain  of filters,
+        including conversion to grayscale, Otsu thresholding, binary dilation and small
+        holes filling.
 
         Parameters
         ----------
@@ -113,10 +126,24 @@ class Tile:
 
     @lazyproperty
     def image(self) -> PIL.Image.Image:
+        """Image describing the tile.
+
+        Returns
+        -------
+        PIL.Image.Image
+            Image describing the tile.
+        """
         return self._image
 
     @lazyproperty
     def level(self) -> int:
+        """Level of tile extraction.
+
+        Returns
+        -------
+        int
+            Level of tile extraction.
+        """
         return self._level
 
     def save(self, path: Union[str, bytes, os.PathLike]) -> None:
@@ -160,12 +187,12 @@ class Tile:
 
     @lazyproperty
     def tissue_ratio(self) -> float:
-        """Return the ratio of the tissue area over the total area of the tile.
+        """Ratio of the tissue area over the total area of the tile.
 
         Returns
         -------
         float
-            The ratio of the tissue area over the total area of the tile
+            Ratio of the tissue area over the total area of the tile
         """
         tissue_mask = self._tissue_mask
         tissue_ratio = np.count_nonzero(tissue_mask) / tissue_mask.size

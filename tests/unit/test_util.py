@@ -6,18 +6,8 @@ import operator
 
 import numpy as np
 import pytest
-
-from histolab.types import CP, Region
-from histolab.util import (
-    apply_mask_image,
-    lazyproperty,
-    np_to_pil,
-    polygon_to_mask_array,
-    region_coordinates,
-    scale_coordinates,
-    threshold_to_mask,
-)
 from tests.base import (
+    COMPLEX_MASK,
     IMAGE1_GRAY,
     IMAGE1_RGB,
     IMAGE1_RGBA,
@@ -30,6 +20,19 @@ from tests.base import (
     IMAGE4_GRAY_WHITE,
     IMAGE4_RGB_WHITE,
     IMAGE4_RGBA_WHITE,
+)
+
+from histolab.types import CP, Region
+from histolab.util import (
+    apply_mask_image,
+    lazyproperty,
+    np_to_pil,
+    random_choice_true_mask2d,
+    rectangle_to_mask,
+    region_coordinates,
+    regions_to_binary_mask,
+    scale_coordinates,
+    threshold_to_mask,
 )
 
 from ..fixtures import MASKNPY, NPY
@@ -145,19 +148,57 @@ def test_apply_mask_image(img, mask, expected_array):
         ((5, 5), CP(2, 1, 4, 3), "mask-arrays/polygon-to-mask-array-2143"),
     ),
 )
-def test_util_polygon_to_mask_array(dims, vertices, expected_array):
-    polygon_mask = polygon_to_mask_array(dims, vertices)
+def test_util_rectangle_to_mask(dims, vertices, expected_array):
+    rectangle_mask = rectangle_to_mask(dims, vertices)
 
+    assert rectangle_mask.shape == dims
     np.testing.assert_array_almost_equal(
-        polygon_mask, load_expectation(expected_array, type_="npy")
+        rectangle_mask, load_expectation(expected_array, type_="npy")
     )
 
 
 def test_region_coordinates():
-    region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5))
+    region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5), coords=None)
     region_coords_ = region_coordinates(region)
 
     assert region_coords_ == CP(x_ul=1, y_ul=0, x_br=2, y_br=1)
+
+
+@pytest.mark.parametrize("seed", [(i,) for i in range(10)])
+def test_random_choice_true_mask2d(seed):
+    np.random.seed(seed)
+
+    x, y = random_choice_true_mask2d(COMPLEX_MASK)
+
+    assert COMPLEX_MASK[x, y]
+
+
+def test_regions_to_binary_mask():
+    regions = [
+        Region(
+            index=None,
+            area=None,
+            bbox=None,
+            center=None,
+            coords=np.array([[1, 3], [2, 3], [3, 2], [3, 3]]),
+        ),
+        Region(
+            index=None,
+            area=None,
+            bbox=None,
+            center=None,
+            coords=np.array([[3, 7], [4, 7], [4, 8]]),
+        ),
+    ]
+
+    binary_mask_regions = regions_to_binary_mask(regions, dims=(10, 10))
+
+    assert type(binary_mask_regions) == np.ndarray
+    assert binary_mask_regions.dtype == bool
+    np.testing.assert_array_almost_equal(
+        binary_mask_regions,
+        load_expectation("mask-arrays/regions-to-binary-mask", type_="npy"),
+    )
 
 
 class DescribeLazyPropertyDecorator:
