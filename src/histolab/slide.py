@@ -98,8 +98,8 @@ class Slide:
         return self._wsi.dimensions
 
     def extract_tile(
-        self, coords: CoordinatePair, level: int, tile_size: Tuple,
-        mpp: float = None
+        self, coords: CoordinatePair, tile_size: Tuple,
+        level: int = None, mpp: float = None,
     ) -> Tile:
         """Extract a tile of the image at the selected level.
 
@@ -107,10 +107,10 @@ class Slide:
         ----------
         coords : CoordinatePair
             Coordinates at level 0 from which to extract the tile.
+        tile_size: tuple
+            Final size of the extracted tile (x,y).
         level : int
             Level from which to extract the tile.
-        tile_size: tuple
-            Final size of the tile (x,y).
         mpp : float
             Micron per pixel resolution. Takes precedence over level.
 
@@ -119,8 +119,12 @@ class Slide:
         tile : Tile
             Image containing the selected tile.
         """
+        assert (level is not None) or (mpp is not None), \
+            "either level or mpp must be provided!"
 
-        level = level if level >= 0 else self._remap_level(level)
+        if level is not None:
+            level = level if level >= 0 else self._remap_level(level)
+
         if not self._has_valid_coords(coords):
             # OpenSlide doesn't complain if the coordinates for extraction are wrong,
             # but it returns an odd image.
@@ -148,9 +152,8 @@ class Slide:
                 jpegQuality=100,
             )
             image = image.convert("RGB")
-            # Sometimes when mpp kwarg is used, the image size is going to be
-            # off from what the user expects at that level by a couple of pixels.
-            # Here we allow the use the flexibility to resize
+            # Sometimes when mpp kwarg is used, the image size is off from
+            # what the user expects at that level by a couple of pixels
             asis = all(tile_size[i] == j for i, j in enumerate(image.size))
             if not asis:
                 image = image.resize(

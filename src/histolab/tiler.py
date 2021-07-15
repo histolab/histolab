@@ -200,6 +200,17 @@ class Tiler(Protocol):
                 f"{len(slide.levels)}"
             )
 
+    def _fix_tile_size_if_mpp(self, base_mpp):
+        """
+        Set tile size either to requested level or if MPP is requested,
+        set tile size relative to base mpp of slide instead.
+        """
+        if self.mpp is not None:
+            sf = self.mpp / base_mpp
+            self.tile_size = tuple(int(j * sf) for j in self.tile_size)
+            if hasattr(self, 'pixel_overlap'):
+                self.pixel_overlap = int(self.pixel_overlap * sf)
+
     def _validate_tile_size(self, slide: Slide) -> None:
         """Validate the tile size according to the Slide.
 
@@ -243,6 +254,8 @@ class GridTiler(Tiler):
         Prefix to be added to the tile filename. Default is an empty string.
     suffix : str, optional
         Suffix to be added to the tile filename. Default is '.png'
+    mpp : float
+        Micron per pixel resolution of extracted tiles. Takes precedence over level.
     """
 
     def __init__(
@@ -257,7 +270,8 @@ class GridTiler(Tiler):
         mpp: float = None,
     ):
         self.tile_size = tile_size
-        self.level = level
+        self.final_tile_size = tile_size
+        self.level = level if mpp is None else 0
         self.mpp = mpp
         self.check_tissue = check_tissue
         self.tissue_percent = tissue_percent
@@ -295,6 +309,7 @@ class GridTiler(Tiler):
         level = logging.getLevelName(log_level)
         logger.setLevel(level)
         self._validate_level(slide)
+        self._fix_tile_size_if_mpp(slide.base_mpp)
         self._validate_tile_size(slide)
 
         grid_tiles = self._tiles_generator(slide, extraction_mask)
@@ -484,8 +499,9 @@ class GridTiler(Tiler):
         for coords in grid_coordinates_generator:
             try:
                 tile = slide.extract_tile(
-                    coords, level=self.level, mpp=self.mpp,
-                    tile_size=self.tile_size)
+                    coords, tile_size=self.final_tile_size, mpp=self.mpp,
+                    level=self.level if self.mpp is None else None,
+                )
             except ValueError:
                 continue
 
@@ -554,6 +570,8 @@ class RandomTiler(Tiler):
     max_iter : int, optional
         Maximum number of iterations performed when searching for eligible (if
         ``check_tissue=True``) tiles. Must be grater than or equal to ``n_tiles``.
+    mpp : float
+            Micron per pixel resolution. Takes precedence over level.
     """
 
     def __init__(
@@ -573,9 +591,10 @@ class RandomTiler(Tiler):
         super().__init__()
 
         self.tile_size = tile_size
+        self.final_tile_size = tile_size
         self.n_tiles = n_tiles
         self.max_iter = max_iter
-        self.level = level
+        self.level = level if mpp is None else 0
         self.mpp = mpp
         self.seed = seed
         self.check_tissue = check_tissue
@@ -612,6 +631,7 @@ class RandomTiler(Tiler):
         level = logging.getLevelName(log_level)
         logger.setLevel(level)
         self._validate_level(slide)
+        self._fix_tile_size_if_mpp(slide.base_mpp)
         self._validate_tile_size(slide)
 
         random_tiles = self._tiles_generator(slide, extraction_mask)
@@ -722,8 +742,8 @@ class RandomTiler(Tiler):
             tile_wsi_coords = self._random_tile_coordinates(slide, extraction_mask)
             try:
                 tile = slide.extract_tile(
-                    tile_wsi_coords, level=self.level, mpp=self.mpp,
-                    tile_size=self.tile_size,
+                    tile_wsi_coords, tile_size=self.final_tile_size, mpp=self.mpp,
+                    level=self.level if self.mpp is None else None,
                 )
             except ValueError:
                 iteration -= 1
@@ -772,6 +792,8 @@ class ScoreTiler(GridTiler):
         Prefix to be added to the tile filename. Default is an empty string.
     suffix : str, optional
         Suffix to be added to the tile filename. Default is '.png'
+    mpp : float
+        Micron per pixel resolution. Takes precedence over level.
     """
 
     def __init__(
@@ -844,6 +866,7 @@ class ScoreTiler(GridTiler):
         level = logging.getLevelName(log_level)
         logger.setLevel(level)
         self._validate_level(slide)
+        self._fix_tile_size_if_mpp(slide.base_mpp)
         self._validate_tile_size(slide)
 
         highest_score_tiles, highest_scaled_score_tiles = self._tiles_generator(
@@ -855,8 +878,8 @@ class ScoreTiler(GridTiler):
 
         for tiles_counter, (score, tile_wsi_coords) in enumerate(highest_score_tiles):
             tile = slide.extract_tile(
-                tile_wsi_coords, level=self.level, mpp=self.mpp,
-                tile_size=self.tile_size,
+                tile_wsi_coords, tile_size=self.final_tile_size, mpp=self.mpp,
+                level=self.level if self.mpp is None else None,
             )
             tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
             if save_tiles:
