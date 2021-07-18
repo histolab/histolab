@@ -17,7 +17,7 @@ from ._registry import legacy_registry, registry, registry_urls
 if hasattr(os, "add_dll_directory"):
     from ctypes.util import find_library
 
-    with os.add_dll_directory(find_library("libopenslide-0.dll")):
+    with os.add_dll_directory(find_library("libopenslide")):
         import openslide
 else:
     import openslide
