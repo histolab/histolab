@@ -22,7 +22,15 @@ import pathlib
 from typing import TYPE_CHECKING, Iterator, List, Tuple, Union
 
 import numpy as np
-import openslide
+
+if hasattr(os, "add_dll_directory"):
+    from ctypes.util import find_library
+
+    with os.add_dll_directory(find_library("libopenslide-0.dll")):
+        import openslide
+else:
+    import openslide
+
 import PIL
 from skimage.measure import find_contours
 

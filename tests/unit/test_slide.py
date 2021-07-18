@@ -6,7 +6,6 @@ import os
 from pathlib import Path
 
 import numpy as np
-import openslide
 import PIL
 import pytest
 from PIL import ImageShow
@@ -29,6 +28,14 @@ from ..unitutil import (
     on_ci,
     property_mock,
 )
+
+if hasattr(os, "add_dll_directory"):
+    from ctypes.util import find_library
+
+    with os.add_dll_directory(find_library("libopenslide-0.dll")):
+        import openslide
+else:
+    import openslide
 
 
 class Describe_Slide:

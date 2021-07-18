@@ -8,12 +8,20 @@ import os
 import shutil
 from typing import Tuple
 
-import openslide
 import PIL
 from requests.exceptions import HTTPError
 
 from .. import __version__
 from ._registry import legacy_registry, registry, registry_urls
+
+if hasattr(os, "add_dll_directory"):
+    from ctypes.util import find_library
+
+    with os.add_dll_directory(find_library("libopenslide-0.dll")):
+        import openslide
+else:
+    import openslide
+
 
 legacy_data_dir = os.path.abspath(os.path.dirname(__file__))
 histolab_distribution_dir = os.path.join(legacy_data_dir, "..")

@@ -7,7 +7,6 @@ from importlib import reload
 from unittest.mock import patch
 
 import numpy as np
-import openslide
 import PIL
 import pytest
 from requests.exceptions import HTTPError
@@ -25,6 +24,14 @@ from histolab.data import (
 
 from ...fixtures import SVS
 from ...unitutil import ANY, fetch, function_mock
+
+if hasattr(os, "add_dll_directory"):
+    from ctypes.util import find_library
+
+    with os.add_dll_directory(find_library("libopenslide-0.dll")):
+        import openslide
+else:
+    import openslide
 
 
 def test_data_dir():
