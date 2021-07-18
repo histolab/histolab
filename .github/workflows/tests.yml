@@ -78,6 +78,7 @@ jobs:
             choco install 7zip-zstd
             wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
             7z e /c/downloads/openslide-win64-20171122.zip -aoa
+            export "PATH=C:/downloads/openslide-win64-20171122/bin:$PATH"
           else
             echo "$RUNNER_OS not supported"
             exit 1
