@@ -279,6 +279,33 @@ class RgbToLab(ImageFilter):
         return lab
 
 
+class RgbToOd(ImageFilter):
+    """Convert from RGB to optical density (OD_RGB) space.
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image in OD space
+
+
+    Example:
+        >>> from PIL import Image
+        >>> from histolab.filters.image_filters import RgbToOd
+        >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
+        >>> rgb_to_od = RgbToOd()
+        >>> image_od = rgb_to_od(image_rgb)
+    """  # noqa
+
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+        od = F.rgb_to_od(img)
+        return od
+
+
 class HematoxylinChannel(ImageFilter):
     """Obtain Hematoxylin channel from RGB image.
 

@@ -1718,3 +1718,47 @@ def test_dab_channel_raises_exception_on_gs_image():
 
     assert isinstance(err.value, Exception)
     assert str(err.value) == "Input image must be RGB/RGBA."
+
+
+@pytest.mark.parametrize(
+    "pil_image, expected_image",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "pil-images-rgb/diagnostic-slide-thumb-rgb-to-od",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
+            "pil-images-rgb/diagnostic-slide-thumb-hsv-rgb-to-od",
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
+            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-rgb-to-od",
+        ),
+    ),
+)
+def test_rgb_to_od_filter_with_rgb_image(pil_image, expected_image):
+    expected_value = load_expectation(expected_image, type_="png")
+
+    od_img = imf.rgb_to_od(pil_image)
+
+    np.testing.assert_allclose(np.array(od_img), np.array(expected_value))
+    assert np.unique(np.array(ImageChops.difference(od_img, expected_value)))[0] == 0
+
+
+def test_rgb_to_od_filter_with_rgba_image():
+    img = RGBA.TCGA_LUNG
+    expected_value = load_expectation(
+        "pil-images-rgba/tcga-lung-rgb-to-od", type_="png"
+    )
+
+    expected_warning_regex = (
+        r"Input image must be RGB. NOTE: the image will be converted to RGB before"
+        r" HED conversion."
+    )
+
+    with pytest.warns(UserWarning, match=expected_warning_regex):
+        od_img = imf.rgb_to_od(img)
+
+    np.testing.assert_array_almost_equal(np.array(od_img), np.array(expected_value))
+    assert np.unique(np.array(ImageChops.difference(od_img, expected_value)))[0] == 0
