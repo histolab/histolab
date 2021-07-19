@@ -539,6 +539,34 @@ def rgb_to_lab(
     return lab
 
 
+def rgb_to_od(img: PIL.Image.Image) -> PIL.Image.Image:
+    """Convert from RGB to optical density (OD_RGB) space.
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image in OD space
+    """
+    if img.mode == "RGBA":
+        img_arr = np.array(sk_color.rgba2rgb(img))
+        warn(
+            "Input image must be RGB. "
+            "NOTE: the image will be converted to RGB before HED conversion."
+        )
+    else:
+        img_arr = np.array(img)
+    mask = img_arr == 0
+    img_arr[mask] = 1
+    od_arr = np.maximum(-1 * np.log10(img_arr / 255), 1e-6).round(10)
+    od_arr = sk_exposure.rescale_intensity(od_arr)
+    return np_to_pil(od_arr)
+
+
 def stretch_contrast(
     img: PIL.Image.Image, low: int = 40, high: int = 60
 ) -> PIL.Image.Image:
