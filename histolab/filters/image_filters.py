@@ -765,18 +765,23 @@ class RagThreshold(ImageFilter):
         Color proximity versus space proximity factor. Default is 10.0
     threshold : int, optional
         Threshold value for combining regions. Default is 9.
+    return_labels: bool, optional
+        If True, returns a labeled nd array where value denotes segment
+        membership. Else returns a PIL image where each segment is colored
+        by the average color in it.
 
     Returns
     -------
-    PIL.Image.Image
+    PIL.Image.Image, if not return_labels
         Each segment has been colored based on the average
         color for that segment (and similar segments have been combined).
+    np.ndarray, if return_labels
+        Value denotes segment membership.
 
     Raises
     ------
     ValueError
         If ``img`` mode is RGBA.
-
 
     Example:
         >>> from PIL import Image
@@ -787,14 +792,30 @@ class RagThreshold(ImageFilter):
     """  # noqa
 
     def __init__(
-        self, n_segments: int = 800, compactness: float = 10.0, threshold: int = 9
+        self,
+        n_segments: int = 800,
+        compactness: float = 10.0,
+        threshold: int = 9,
+        return_labels: bool = False,
     ) -> PIL.Image.Image:
         self.n_segments = n_segments
         self.compactness = compactness
         self.threshold = threshold
+        self.return_labels = return_labels
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
-        return F.rag_threshold(img, self.n_segments, self.compactness, self.threshold)
+    def __call__(
+        self,
+        img: PIL.Image.Image,
+        mask: np.ndarray = None,
+    ) -> PIL.Image.Image:
+        return F.rag_threshold(
+            img,
+            n_segments=self.n_segments,
+            compactness=self.compactness,
+            threshold=self.threshold,
+            mask=mask,
+            return_labels=self.return_labels,
+        )
 
 
 class HysteresisThreshold(ImageFilter):
