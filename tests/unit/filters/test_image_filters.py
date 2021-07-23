@@ -162,7 +162,14 @@ class DescribeImageFilters:
 
         rag_threshold(image)
 
-        F_rag_threshold.assert_called_once_with(image, 3, 600, 15)
+        F_rag_threshold.assert_called_once_with(
+            image,
+            n_segments=3,
+            compactness=600,
+            threshold=15,
+            mask=None,
+            return_labels=False,
+        )
         assert type(rag_threshold(image)) == PIL.Image.Image
 
     def it_applies_hysteresis_threshold(self, request):
