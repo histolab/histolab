@@ -484,6 +484,37 @@ def test_rag_threshold_filter_on_rgb_image():
     )
 
 
+@pytest.mark.parametrize(
+    "pil_image, expected_image, masked",
+    (
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb-rag-threshold-labels",
+            False,
+        ),
+        (
+            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
+            "mask-arrays/diagnostic-slide-thumb-rgb-rag-threshold-maskedlabels",
+            True,
+        ),
+    ),
+)
+def test_rag_threshold_filter_return_labels(pil_image, expected_image, masked):
+    expected_value = load_expectation(expected_image, type_="npy")
+
+    if masked:
+        mask = np.ones((pil_image.size[1], pil_image.size[0]))
+        mask[:100, :] = 0
+        mask[:, :100] = 0
+        mask[-100:, :] = 0
+        mask[:, -100:] = 0
+    else:
+        mask = None
+
+    ragged = imf.rag_threshold(pil_image, 650, 20.6, 9, return_labels=True, mask=mask)
+    np.testing.assert_array_almost_equal(np.array(ragged), np.array(expected_value))
+
+
 def test_rag_threshold_filter_on_gs_image():
     gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(

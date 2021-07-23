@@ -413,6 +413,8 @@ def rag_threshold(
     n_segments: int = 800,
     compactness: float = 10.0,
     threshold: int = 9,
+    mask: np.ndarray = None,
+    return_labels=False,
 ) -> PIL.Image.Image:
     """Combine similar K-means segmented regions based on threshold value.
 
@@ -430,12 +432,23 @@ def rag_threshold(
         Color proximity versus space proximity factor. Default is 10.0.
     threshold : int, optional
         Threshold value for combining regions. Default is 9.
+    mask: np.ndarray, optional
+        If provided, superpixels are computed only where mask is True,
+        and seed points are homogeneously distributed over the mask
+        using a K-means clustering strategy (See skimage).
+        Must be the same size as img.
+    return_labels: bool, optional
+        If True, returns a labeled nd array where value denotes segment
+        membership. Else returns a PIL image where each segment is colored
+        by the average color in it.
 
     Returns
     -------
-    PIL.Image.Image
+    PIL.Image.Image, if not return_labels
         Each segment has been colored based on the average
         color for that segment (and similar segments have been combined).
+    np.ndarray, if return_labels
+        Value denotes segment membership.
 
     Raises
     ------
@@ -445,9 +458,17 @@ def rag_threshold(
     if img.mode == "RGBA":
         raise ValueError("Input image cannot be RGBA")
     img_arr = np.array(img)
-    labels = sk_segmentation.slic(img_arr, n_segments, compactness, start_label=0)
+    labels = sk_segmentation.slic(
+        img_arr,
+        n_segments,
+        compactness,
+        mask=mask,
+        start_label=0 if mask is None else 1,
+    )
     green = sk_future.graph.rag_mean_color(img_arr, labels)
     labels2 = sk_future.graph.cut_threshold(labels, green, threshold)
+    if return_labels:
+        return labels2
     rag = sk_color.label2rgb(labels2, img_arr, kind="avg", bg_label=-1)
     return np_to_pil(rag)
 
