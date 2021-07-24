@@ -30,6 +30,22 @@ from .types import CoordinatePair, Region
 
 warn = functools.partial(warnings.warn, stacklevel=2)
 
+LARGEIMAGE_INSTALL_PROMPT = (
+    "It maybe a good idea to install large_image to handle this. "
+    "See: https://github.com/girder/large_image"
+)
+
+
+def _check_largeimage_installation():
+    try:
+        import large_image
+
+        _ = large_image.__version__  # to avoid unused import linting error
+
+        return True
+    except (ModuleNotFoundError, ImportError):
+        return False
+
 
 def apply_mask_image(img: PIL.Image.Image, mask: np.ndarray) -> PIL.Image.Image:
     """Mask image with the provided binary mask.

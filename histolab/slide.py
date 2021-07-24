@@ -31,8 +31,13 @@ from .exceptions import HistolabException
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair
-from .util import lazyproperty
+from .util import (
+    LARGEIMAGE_INSTALL_PROMPT,
+    _check_largeimage_installation,
+    lazyproperty,
+)
 
+LARGEIMAGE_IS_INSTALLED = _check_largeimage_installation()
 if TYPE_CHECKING:
     from .masks import BinaryMask
 
@@ -51,10 +56,8 @@ if USE_LARGEIMAGE:
     from PIL.Image import BICUBIC, LANCZOS
 
 IMG_EXT = "png"
-LARGEIMAGE_INSTALL_PROMPT = (
-    "It maybe a good idea to install large_image to handle this. "
-    "See: https://github.com/girder/large_image"
-)
+IMG_UPSAMPLE_MODE = PIL.Image.BILINEAR  # TODO: BICUBIC is often better
+IMG_DOWNSAMPLE_MODE = PIL.Image.BILINEAR  # TODO: LANCZOS is often better
 
 
 class Slide:
@@ -77,7 +80,7 @@ class Slide:
         self,
         path: Union[str, pathlib.Path],
         processed_path: Union[str, pathlib.Path],
-        use_largeimage=USE_LARGEIMAGE,
+        use_largeimage=False,
     ) -> None:
         self._path = str(path) if isinstance(path, pathlib.Path) else path
 
@@ -85,7 +88,7 @@ class Slide:
             raise TypeError("processed_path cannot be None.")
         self._processed_path = processed_path
         if use_largeimage:
-            assert USE_LARGEIMAGE, "large_image module is not found!"
+            assert LARGEIMAGE_IS_INSTALLED, "large_image module is not found!"
         self._use_largeimage = use_largeimage
 
     def __repr__(self):
@@ -204,7 +207,10 @@ class Slide:
             asis = all(tile_size[i] == j for i, j in enumerate(image.size))
             if not asis:
                 image = image.resize(
-                    tile_size, BICUBIC if tile_size[0] >= image.size[0] else LANCZOS
+                    tile_size,
+                    IMG_UPSAMPLE_MODE
+                    if tile_size[0] >= image.size[0]
+                    else IMG_DOWNSAMPLE_MODE,
                 )
 
         tile = Tile(image, coords, level)
@@ -526,22 +532,25 @@ class Slide:
         """
 
         _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
-        if self._use_largeimage:
+        if self._use_largeimage and self._metadata["magnification"] is not None:
             img, _ = self._tilesource.getRegion(
-                scale=dict(
-                    magnification=self._metadata["magnification"] / scale_factor
-                ),
                 format=large_image.tilesource.TILE_FORMAT_PIL,
+                scale={"magnification": self._metadata["magnification"] / scale_factor},
             )
             img = img.convert("RGB")
         else:
             level = self._wsi.get_best_level_for_downsample(scale_factor)
-            whole_slide_image = self._wsi.read_region(
+            wsi_image = self._wsi.read_region(
                 (0, 0), level, self._wsi.level_dimensions[level]
             )
             # ---converts openslide read_region to an actual RGBA image---
-            whole_slide_image = whole_slide_image.convert("RGB")
-            img = whole_slide_image.resize((new_w, new_h), PIL.Image.BILINEAR)
+            wsi_image = wsi_image.convert("RGB")
+            img = wsi_image.resize(
+                (new_w, new_h),
+                IMG_UPSAMPLE_MODE
+                if new_w >= wsi_image.size[0]
+                else IMG_DOWNSAMPLE_MODE,
+            )
         arr_img = np.asarray(img)
         return img, arr_img
 
