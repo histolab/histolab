@@ -27,6 +27,7 @@ import PIL
 from skimage.measure import find_contours
 
 from .exceptions import LevelError, SlidePropertyError
+from .exceptions import HistolabException
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair
@@ -36,7 +37,24 @@ if TYPE_CHECKING:
     from .masks import BinaryMask
 
 
+# If possible, use large_image because it extends openslide to more formats
+try:
+    import large_image
+
+    USE_LARGEIMAGE = True
+except ModuleNotFoundError:
+    USE_LARGEIMAGE = False
+
+if USE_LARGEIMAGE:
+    from io import BytesIO
+
+    from PIL.Image import BICUBIC, LANCZOS
+
 IMG_EXT = "png"
+LARGEIMAGE_INSTALL_PROMPT = (
+    "It maybe a good idea to install large_image to handle this. "
+    "See: https://github.com/girder/large_image"
+)
 
 
 class Slide:
@@ -73,6 +91,35 @@ class Slide:
     # ---public interface methods and properties---
 
     @lazyproperty
+    def base_mpp(self) -> float:
+        """Get microns-per-pixel resolution at scan magnification."""
+        if USE_LARGEIMAGE:
+            return self._metadata["mm_x"] * (10 ** 3)
+
+        elif "openslide.mpp-x" in self.properties:
+            return float(self.properties["openslide.mpp-x"])
+        elif "aperio.MPP" in self.properties:
+            return float(self.properties["aperio.MPP"])
+        elif "tiff.XResolution" in self.properties:
+            resunit = self.properties["tiff.ResolutionUnit"]
+            if resunit == "centimeter":
+                return 1 / (float(self.properties["tiff.XResolution"]) * 1e-4)
+            else:
+                raise NotImplementedError(
+                    f"Unimplemented tiff.ResolutionUnit {resunit}"
+                )
+        else:
+            raise NotImplementedError(
+                "Unknown scan magnification! " + LARGEIMAGE_INSTALL_PROMPT
+            )
+
+    def get_mpp_at_level(self, level: int):
+        """Get microns-per-pixel resolution at a specific level."""
+        # large_image tile source has different internal repr. of levels
+        lvl = self._tilesource.levels - level - 1
+        return self._tilesource.getMagnificationForLevel(lvl)["mm_x"] * (10 ** 3)
+
+    @lazyproperty
     def dimensions(self) -> Tuple[int, int]:
         """Slide dimensions (w,h) at level 0.
 
@@ -81,10 +128,17 @@ class Slide:
         dimensions : Tuple[int, int]
             Slide dimensions (width, height)
         """
-        return self._wsi.dimensions
+        if USE_LARGEIMAGE:
+            return self._metadata["sizeX"], self._metadata["sizeY"]
+        else:
+            return self._wsi.dimensions
 
     def extract_tile(
-        self, coords: CoordinatePair, level: int, tile_size: Tuple
+        self,
+        coords: CoordinatePair,
+        tile_size: Tuple,
+        level: int = None,
+        mpp: float = None,
     ) -> Tile:
         """Extract a tile of the image at the selected level.
 
@@ -92,18 +146,25 @@ class Slide:
         ----------
         coords : CoordinatePair
             Coordinates at level 0 from which to extract the tile.
+        tile_size: tuple
+            Final size of the extracted tile (x,y).
         level : int
             Level from which to extract the tile.
-        tile_size: tuple
-            Final size of the tile (x,y).
+        mpp : float
+            Micron per pixel resolution. Takes precedence over level.
 
         Returns
         -------
         tile : Tile
             Image containing the selected tile.
         """
+        assert (level is not None) or (
+            mpp is not None
+        ), "either level or mpp must be provided!"
 
-        level = level if level >= 0 else self._remap_level(level)
+        if level is not None:
+            level = level if level >= 0 else self._remap_level(level)
+
         if not self._has_valid_coords(coords):
             # OpenSlide doesn't complain if the coordinates for extraction are wrong,
             # but it returns an odd image.
@@ -112,10 +173,36 @@ class Slide:
                 f"{self.dimensions}"
             )
 
-        image = self._wsi.read_region(
-            location=(coords.x_ul, coords.y_ul), level=level, size=tile_size
-        )
+        if mpp is None:
+            image = self._wsi.read_region(
+                location=(coords.x_ul, coords.y_ul), level=level, size=tile_size
+            )
+        else:
+            # only large_image support mpp
+            mm = mpp / 1000
+            image, _ = self._tilesource.getRegion(
+                region=dict(
+                    left=coords.x_ul,
+                    top=coords.y_ul,
+                    right=coords.x_br,
+                    bottom=coords.y_br,
+                    units="base_pixels",
+                ),
+                scale=dict(mm_x=mm, mm_y=mm),
+                format=large_image.tilesource.TILE_FORMAT_PIL,
+                jpegQuality=100,
+            )
+            image = image.convert("RGB")
+            # Sometimes when mpp kwarg is used, the image size is off from
+            # what the user expects by a couple of pixels
+            asis = all(tile_size[i] == j for i, j in enumerate(image.size))
+            if not asis:
+                image = image.resize(
+                    tile_size, BICUBIC if tile_size[0] >= image.size[0] else LANCZOS
+                )
+
         tile = Tile(image, coords, level)
+
         return tile
 
     def level_dimensions(self, level: int = 0) -> Tuple[int, int]:
@@ -347,9 +434,24 @@ class Slide:
         PIL.Image.Image
             The slide thumbnail.
         """
-        return self._wsi.get_thumbnail(self._thumbnail_size)
+        if USE_LARGEIMAGE:
+            thumb_bytes, _ = self._tilesource.getThumbnail(encoding="PNG")
+            thumbnail = self._bytes2pil(thumb_bytes).convert("RGB")
+            return thumbnail
+        else:
+            return self._wsi.get_thumbnail(self._thumbnail_size)
 
     # ------- implementation helpers -------
+
+    @lazyproperty
+    def _metadata(self) -> dict:
+        return self._tilesource.getMetadata()
+
+    @staticmethod
+    def _bytes2pil(bytesim):
+        image_content = BytesIO(bytesim)
+        image_content.seek(0)
+        return PIL.Image.open(image_content)
 
     def _has_valid_coords(self, coords: CoordinatePair) -> bool:
         """Check if ``coords`` are valid 0-level coordinates.
@@ -418,13 +520,22 @@ class Slide:
         """
 
         _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
-        level = self._wsi.get_best_level_for_downsample(scale_factor)
-        whole_slide_image = self._wsi.read_region(
-            (0, 0), level, self._wsi.level_dimensions[level]
-        )
-        # ---converts openslide read_region to an actual RGBA image---
-        whole_slide_image = whole_slide_image.convert("RGB")
-        img = whole_slide_image.resize((new_w, new_h), PIL.Image.BILINEAR)
+        if USE_LARGEIMAGE:
+            img, _ = self._tilesource.getRegion(
+                scale=dict(
+                    magnification=self._metadata["magnification"] / scale_factor
+                ),
+                format=large_image.tilesource.TILE_FORMAT_PIL,
+            )
+            img = img.convert("RGB")
+        else:
+            level = self._wsi.get_best_level_for_downsample(scale_factor)
+            whole_slide_image = self._wsi.read_region(
+                (0, 0), level, self._wsi.level_dimensions[level]
+            )
+            # ---converts openslide read_region to an actual RGBA image---
+            whole_slide_image = whole_slide_image.convert("RGB")
+            img = whole_slide_image.resize((new_w, new_h), PIL.Image.BILINEAR)
         arr_img = np.asarray(img)
         return img, arr_img
 
@@ -497,13 +608,31 @@ class Slide:
             slide = openslide.open_slide(self._path)
         except PIL.UnidentifiedImageError:
             raise PIL.UnidentifiedImageError(
-                "Your wsi has something broken inside, a doctor is needed"
+                "Your wsi has something broken inside, a doctor is needed. "
+                + LARGEIMAGE_INSTALL_PROMPT
             )
         except FileNotFoundError:
             raise FileNotFoundError(
                 f"The wsi path resource doesn't exist: {self._path}"
             )
+        except Exception as other_error:
+            msg = other_error.__repr__()
+            msg += f"\n{LARGEIMAGE_INSTALL_PROMPT}"
+            raise HistolabException(msg)
         return slide
+
+    @lazyproperty
+    def _tilesource(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
+        """Open the slide and returns a large_image tile source object
+
+        Returns
+        -------
+        source : large_image TileSource object
+            An TileSource object representing a whole-slide image.
+        """
+        assert USE_LARGEIMAGE, LARGEIMAGE_INSTALL_PROMPT
+        source = large_image.getTileSource(self._path)
+        return source
 
 
 class SlideSet:
