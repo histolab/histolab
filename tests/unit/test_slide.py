@@ -14,6 +14,7 @@ from PIL import ImageShow
 from histolab.exceptions import LevelError, SlidePropertyError
 from histolab.slide import Slide, SlideSet
 from histolab.types import CP
+from histolab.util import LARGEIMAGE_INSTALL_PROMPT
 
 from ..unitutil import (
     ANY,
@@ -173,9 +174,9 @@ class Describe_Slide:
             slide._wsi
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
-        assert (
-            str(err.value) == "Your wsi has something broken inside, a doctor is needed"
-        )
+        broken_err = "Your wsi has something broken inside, a doctor is needed"
+        broken_err += ". " + LARGEIMAGE_INSTALL_PROMPT
+        assert str(err.value) == broken_err
 
     def it_can_resample_itself(self, tmpdir, resampled_dims_):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
