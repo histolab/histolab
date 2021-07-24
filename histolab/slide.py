@@ -74,13 +74,19 @@ class Slide:
     """
 
     def __init__(
-        self, path: Union[str, pathlib.Path], processed_path: Union[str, pathlib.Path]
+        self,
+        path: Union[str, pathlib.Path],
+        processed_path: Union[str, pathlib.Path],
+        use_largeimage=None,
     ) -> None:
         self._path = str(path) if isinstance(path, pathlib.Path) else path
 
         if processed_path is None:
             raise TypeError("processed_path cannot be None.")
         self._processed_path = processed_path
+        self._use_largeimage = (
+            use_largeimage if use_largeimage is not None else USE_LARGEIMAGE
+        )
 
     def __repr__(self):
         return (
@@ -93,7 +99,7 @@ class Slide:
     @lazyproperty
     def base_mpp(self) -> float:
         """Get microns-per-pixel resolution at scan magnification."""
-        if USE_LARGEIMAGE:
+        if self._use_largeimage:
             return self._metadata["mm_x"] * (10 ** 3)
 
         elif "openslide.mpp-x" in self.properties:
@@ -128,7 +134,7 @@ class Slide:
         dimensions : Tuple[int, int]
             Slide dimensions (width, height)
         """
-        if USE_LARGEIMAGE:
+        if self._use_largeimage:
             return self._metadata["sizeX"], self._metadata["sizeY"]
         else:
             return self._wsi.dimensions
@@ -434,7 +440,7 @@ class Slide:
         PIL.Image.Image
             The slide thumbnail.
         """
-        if USE_LARGEIMAGE:
+        if self._use_largeimage:
             thumb_bytes, _ = self._tilesource.getThumbnail(encoding="PNG")
             thumbnail = self._bytes2pil(thumb_bytes).convert("RGB")
             return thumbnail
@@ -520,7 +526,7 @@ class Slide:
         """
 
         _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
-        if USE_LARGEIMAGE:
+        if self._use_largeimage:
             img, _ = self._tilesource.getRegion(
                 scale=dict(
                     magnification=self._metadata["magnification"] / scale_factor
@@ -630,7 +636,7 @@ class Slide:
         source : large_image TileSource object
             An TileSource object representing a whole-slide image.
         """
-        assert USE_LARGEIMAGE, LARGEIMAGE_INSTALL_PROMPT
+        assert self._use_largeimage, LARGEIMAGE_INSTALL_PROMPT
         source = large_image.getTileSource(self._path)
         return source
 
