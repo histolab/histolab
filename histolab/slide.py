@@ -77,16 +77,16 @@ class Slide:
         self,
         path: Union[str, pathlib.Path],
         processed_path: Union[str, pathlib.Path],
-        use_largeimage=None,
+        use_largeimage=USE_LARGEIMAGE,
     ) -> None:
         self._path = str(path) if isinstance(path, pathlib.Path) else path
 
         if processed_path is None:
             raise TypeError("processed_path cannot be None.")
         self._processed_path = processed_path
-        self._use_largeimage = (
-            use_largeimage if use_largeimage is not None else USE_LARGEIMAGE
-        )
+        if use_largeimage:
+            assert USE_LARGEIMAGE, "large_image module is not found!"
+        self._use_largeimage = use_largeimage
 
     def __repr__(self):
         return (
