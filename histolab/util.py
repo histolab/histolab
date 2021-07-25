@@ -36,15 +36,15 @@ LARGEIMAGE_INSTALL_PROMPT = (
 )
 
 
-def _check_largeimage_installation():
+def _check_largeimage():
     try:
         import large_image
 
         _ = large_image.__version__  # to avoid unused import linting error
 
-        return True
+        return True, ""
     except (ModuleNotFoundError, ImportError):
-        return False
+        return False, LARGEIMAGE_INSTALL_PROMPT
 
 
 def apply_mask_image(img: PIL.Image.Image, mask: np.ndarray) -> PIL.Image.Image:

@@ -15,6 +15,7 @@ from histolab.exceptions import LevelError, SlidePropertyError
 from histolab.slide import Slide, SlideSet
 from histolab.types import CP
 from histolab.util import LARGEIMAGE_INSTALL_PROMPT
+from histolab.util import _check_largeimage
 
 from ..unitutil import (
     ANY,
@@ -31,21 +32,30 @@ from ..unitutil import (
     property_mock,
 )
 
+LARGEIMAGE_IS_INSTALLED, LARGEIMAGE_INSTALL_PROMPT = _check_largeimage()
+
 
 class Describe_Slide:
     @pytest.mark.parametrize(
-        "slide_path, processed_path",
+        "slide_path, processed_path, use_largeimage",
         [
-            ("/foo/bar/myslide.svs", "/foo/bar/myslide/processed"),
-            (Path("/foo/bar/myslide.svs"), Path("/foo/bar/myslide/processed")),
+            ("/foo/bar/myslide.svs", "/foo/bar/myslide/processed", False),
+            ("/foo/bar/myslide.svs", "/foo/bar/myslide/processed", True),
+            (Path("/foo/bar/myslide.svs"), Path("/foo/bar/myslide/processed"), False),
         ],
     )
-    def it_constructs_from_args(self, request, slide_path, processed_path):
+    def it_constructs_from_args(
+        self, request, slide_path, processed_path, use_largeimage
+    ):
+
+        if use_largeimage and (not LARGEIMAGE_IS_INSTALLED):
+            return
+
         _init_ = initializer_mock(request, Slide)
 
-        slide = Slide(slide_path, processed_path)
+        slide = Slide(slide_path, processed_path, use_largeimage=use_largeimage)
 
-        _init_.assert_called_once_with(ANY, slide_path, processed_path)
+        _init_.assert_called_once_with(ANY, slide_path, processed_path, use_largeimage)
         assert isinstance(slide, Slide)
 
     def but_it_has_wrong_slide_path_type(self):
@@ -97,6 +107,28 @@ class Describe_Slide:
         name = slide.name
 
         assert name == expected_value
+
+    def it_raises_error_with_unknown_mpp(self, tmpdir):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+
+        with pytest.raises(NotImplementedError) as err:
+            _ = slide.base_mpp
+
+        assert isinstance(err.value, NotImplementedError)
+        assert str(err.value) == (
+            "Unknown scan magnification! " + LARGEIMAGE_INSTALL_PROMPT
+        )
+
+    def it_has_largeimage_tilesource(self, tmpdir):
+
+        if not LARGEIMAGE_IS_INSTALLED:
+            return
+
+        slide, _ = base_test_slide(
+            tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=True
+        )
+
+        assert slide._tilesource.name == "pilfile"
 
     def it_knows_its_dimensions(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
@@ -178,8 +210,21 @@ class Describe_Slide:
         broken_err += ". " + LARGEIMAGE_INSTALL_PROMPT
         assert str(err.value) == broken_err
 
-    def it_can_resample_itself(self, tmpdir, resampled_dims_):
-        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+    @pytest.mark.parametrize(
+        "use_largeimage",
+        [
+            (False,),
+            (True,),
+        ],
+    )
+    def it_can_resample_itself(self, tmpdir, resampled_dims_, use_largeimage):
+
+        if use_largeimage and (not LARGEIMAGE_IS_INSTALLED):
+            return
+
+        slide, _ = base_test_slide(
+            tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=use_largeimage
+        )
         resampled_dims_.return_value = (100, 200, 300, 400)
 
         _resample = slide._resample(32)
@@ -223,12 +268,27 @@ class Describe_Slide:
 
         assert type(scaled_image) == PIL.Image.Image
 
-    def it_knows_its_thumbnail(self, tmpdir, resampled_dims_):
+    @pytest.mark.parametrize(
+        "use_largeimage",
+        [
+            (False,),
+            (True,),
+        ],
+    )
+    def it_knows_its_thumbnail(self, tmpdir, resampled_dims_, use_largeimage):
+
+        if use_largeimage and (not LARGEIMAGE_IS_INSTALLED):
+            return
+
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
-        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        slide = Slide(
+            slide_path,
+            os.path.join(tmp_path_, "processed"),
+            use_largeimage=use_largeimage,
+        )
         resampled_dims_.return_value = (100, 200, 300, 400)
 
         thumb = slide.thumbnail

@@ -16,11 +16,11 @@ from unittest.mock import ANY, call  # noqa # isort:skip
 from unittest.mock import create_autospec, patch, PropertyMock  # isort:skip
 
 
-def base_test_slide(tmpdir, image):
+def base_test_slide(tmpdir, image, use_largeimage=False):
     tmp_path_ = tmpdir.mkdir("myslide")
     image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
     slide_path = os.path.join(tmp_path_, "mywsi.png")
-    slide = Slide(slide_path, "processed")
+    slide = Slide(slide_path, "processed", use_largeimage=use_largeimage)
     return slide, tmp_path_
 
 

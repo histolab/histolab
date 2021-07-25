@@ -31,13 +31,10 @@ from .exceptions import HistolabException
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair
-from .util import (
-    LARGEIMAGE_INSTALL_PROMPT,
-    _check_largeimage_installation,
-    lazyproperty,
-)
+from .util import _check_largeimage, lazyproperty
 
-LARGEIMAGE_IS_INSTALLED = _check_largeimage_installation()
+LARGEIMAGE_IS_INSTALLED, LARGEIMAGE_INSTALL_PROMPT = _check_largeimage()
+
 if TYPE_CHECKING:
     from .masks import BinaryMask
 
@@ -109,24 +106,14 @@ class Slide:
             return float(self.properties["openslide.mpp-x"])
         elif "aperio.MPP" in self.properties:
             return float(self.properties["aperio.MPP"])
-        elif "tiff.XResolution" in self.properties:
-            resunit = self.properties["tiff.ResolutionUnit"]
-            if resunit == "centimeter":
-                return 1 / (float(self.properties["tiff.XResolution"]) * 1e-4)
-            else:
-                raise NotImplementedError(
-                    f"Unimplemented tiff.ResolutionUnit {resunit}"
-                )
-        else:
-            raise NotImplementedError(
-                "Unknown scan magnification! " + LARGEIMAGE_INSTALL_PROMPT
-            )
-
-    def get_mpp_at_level(self, level: int):
-        """Get microns-per-pixel resolution at a specific level."""
-        # large_image tile source has different internal repr. of levels
-        lvl = self._tilesource.levels - level - 1
-        return self._tilesource.getMagnificationForLevel(lvl)["mm_x"] * (10 ** 3)
+        elif (
+            "tiff.XResolution" in self.properties
+            and self.properties["tiff.ResolutionUnit"] == "centimeter"
+        ):
+            return 1e4 / float(self.properties["tiff.XResolution"])
+        raise NotImplementedError(
+            "Unknown scan magnification! " + LARGEIMAGE_INSTALL_PROMPT
+        )
 
     @lazyproperty
     def dimensions(self) -> Tuple[int, int]:
@@ -532,25 +519,28 @@ class Slide:
         """
 
         _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
-        if self._use_largeimage and self._metadata["magnification"] is not None:
-            img, _ = self._tilesource.getRegion(
-                format=large_image.tilesource.TILE_FORMAT_PIL,
-                scale={"magnification": self._metadata["magnification"] / scale_factor},
+        if self._use_largeimage:
+            mg = "magnification"
+            kws = (
+                {"scale": {mg: self._metadata[mg] / scale_factor}}
+                if self._metadata[mg] is not None
+                else {}
             )
-            img = img.convert("RGB")
+            wsi_image, _ = self._tilesource.getRegion(
+                format=large_image.tilesource.TILE_FORMAT_PIL,
+                **kws,
+            )
         else:
             level = self._wsi.get_best_level_for_downsample(scale_factor)
             wsi_image = self._wsi.read_region(
                 (0, 0), level, self._wsi.level_dimensions[level]
             )
-            # ---converts openslide read_region to an actual RGBA image---
-            wsi_image = wsi_image.convert("RGB")
-            img = wsi_image.resize(
-                (new_w, new_h),
-                IMG_UPSAMPLE_MODE
-                if new_w >= wsi_image.size[0]
-                else IMG_DOWNSAMPLE_MODE,
-            )
+        # ---converts openslide read_region to an actual RGBA image---
+        wsi_image = wsi_image.convert("RGB")
+        img = wsi_image.resize(
+            (new_w, new_h),
+            IMG_UPSAMPLE_MODE if new_w >= wsi_image.size[0] else IMG_DOWNSAMPLE_MODE,
+        )
         arr_img = np.asarray(img)
         return img, arr_img
 
@@ -603,6 +593,7 @@ class Slide:
         Tuple[int, int]
             Thumbnail size
         """
+        assert not self._use_largeimage, "Please use thumbnail.size instead"
         return tuple(
             [
                 int(s / np.power(10, math.ceil(math.log10(s)) - 3))
