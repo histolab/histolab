@@ -8,6 +8,7 @@ import PIL
 import pytest
 
 from histolab.exceptions import LevelError, SlidePropertyError
+from histolab.exceptions import HistolabException
 from histolab.masks import BiggestTissueBoxMask, TissueMask
 from histolab.slide import Slide
 from histolab.util import _check_largeimage
@@ -184,6 +185,20 @@ class Describe_Slide:
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         broken_err = "Your wsi has something broken inside, a doctor is needed. "
         broken_err += LARGEIMAGE_INSTALL_PROMPT
+        assert str(err.value) == broken_err
+
+    def it_raises_miscellaneous_error(self):
+        slide = Slide(SVS.BROKEN, os.path.join(SVS.BROKEN, "processed"))
+
+        with pytest.raises(HistolabException) as err:
+            slide._path = None
+            slide._wsi
+
+        assert isinstance(err.value, HistolabException)
+        broken_err = (
+            "ArgumentError(\"argument 1: <class 'TypeError'>: Incorrect type\")"
+        )
+        broken_err += f"\n{LARGEIMAGE_INSTALL_PROMPT}"
         assert str(err.value) == broken_err
 
     @pytest.mark.parametrize(
