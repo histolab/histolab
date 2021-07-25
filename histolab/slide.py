@@ -104,13 +104,16 @@ class Slide:
 
         if "openslide.mpp-x" in self.properties:
             return float(self.properties["openslide.mpp-x"])
-        elif "aperio.MPP" in self.properties:
+
+        if "aperio.MPP" in self.properties:
             return float(self.properties["aperio.MPP"])
-        elif (
+
+        if (
             "tiff.XResolution" in self.properties
             and self.properties["tiff.ResolutionUnit"] == "centimeter"
         ):
             return 1e4 / float(self.properties["tiff.XResolution"])
+
         raise NotImplementedError(
             "Unknown scan magnification! " + LARGEIMAGE_INSTALL_PROMPT
         )
