@@ -102,7 +102,7 @@ class Slide:
         if self._use_largeimage:
             return self._metadata["mm_x"] * (10 ** 3)
 
-        elif "openslide.mpp-x" in self.properties:
+        if "openslide.mpp-x" in self.properties:
             return float(self.properties["openslide.mpp-x"])
         elif "aperio.MPP" in self.properties:
             return float(self.properties["aperio.MPP"])
@@ -126,8 +126,8 @@ class Slide:
         """
         if self._use_largeimage:
             return self._metadata["sizeX"], self._metadata["sizeY"]
-        else:
-            return self._wsi.dimensions
+
+        return self._wsi.dimensions
 
     def extract_tile(
         self,
@@ -437,8 +437,8 @@ class Slide:
             thumb_bytes, _ = self._tilesource.getThumbnail(encoding="PNG")
             thumbnail = self._bytes2pil(thumb_bytes).convert("RGB")
             return thumbnail
-        else:
-            return self._wsi.get_thumbnail(self._thumbnail_size)
+
+        return self._wsi.get_thumbnail(self._thumbnail_size)
 
     # ------- implementation helpers -------
 
