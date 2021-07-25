@@ -10,10 +10,13 @@ from histolab.masks import BiggestTissueBoxMask, TissueMask
 from histolab.scorer import NucleiScorer
 from histolab.slide import Slide
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler
+from histolab.util import _check_largeimage
 
 from ..fixtures import EXTERNAL_SVS, SVS, TIFF
 from ..unitutil import on_ci
 from ..util import expand_tests_report, load_expectation
+
+LARGEIMAGE_IS_INSTALLED, LARGEIMAGE_INSTALL_PROMPT = _check_largeimage()
 
 
 class DescribeRandomTiler:
@@ -146,35 +149,43 @@ class DescribeRandomTiler:
         np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
 
     @pytest.mark.parametrize(
-        "fixture_slide, tile_size, level, seed, n_tiles",
+        "fixture_slide, tile_size, level, seed, n_tiles, mpp",
         (
             # Squared tile size
-            (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 1, 42, 20),
-            (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 0, 42, 10),
-            (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 1, 2, 20),
-            (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 0, 2, 10),
-            (TIFF.KIDNEY_48_5, (10, 10), 0, 20, 20),
-            (TIFF.KIDNEY_48_5, (20, 20), 0, 20, 10),
+            (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 1, 42, 20, None),
+            (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 0, 42, 10, None),
+            (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 1, 2, 20, None),
+            (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 0, 2, 10, None),
+            (SVS.CMU_1_SMALL_REGION, (128, 128), 0, 2, 10, 0.5),
+            (TIFF.KIDNEY_48_5, (10, 10), 0, 20, 20, None),
+            (TIFF.KIDNEY_48_5, (20, 20), 0, 20, 10, None),
             # Not squared tile size
-            (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 1, 42, 20),
-            (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 0, 42, 10),
-            (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 1, 2, 20),
-            (TIFF.KIDNEY_48_5, (10, 20), 0, 2, 10),
-            (TIFF.KIDNEY_48_5, (20, 10), 0, 20, 20),
-            (TIFF.KIDNEY_48_5, (10, 15), 0, 20, 10),
+            (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 1, 42, 20, None),
+            (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 0, 42, 10, None),
+            (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 1, 2, 20, None),
+            (SVS.CMU_1_SMALL_REGION, (135, 128), 0, 2, 10, 0.5),
+            (TIFF.KIDNEY_48_5, (10, 20), 0, 2, 10, None),
+            (TIFF.KIDNEY_48_5, (20, 10), 0, 20, 20, None),
+            (TIFF.KIDNEY_48_5, (10, 15), 0, 20, 10, None),
         ),
     )
     def test_extract_tiles_respecting_the_given_tile_size(
-        self, tmpdir, fixture_slide, tile_size, level, seed, n_tiles
+        self, tmpdir, fixture_slide, tile_size, level, seed, n_tiles, mpp
     ):
+
+        use_largeimage = mpp is not None
+        if use_largeimage and (not LARGEIMAGE_IS_INSTALLED):
+            return
+
         processed_path = os.path.join(tmpdir, "processed")
-        slide = Slide(fixture_slide, processed_path)
+        slide = Slide(fixture_slide, processed_path, use_largeimage=use_largeimage)
         random_tiles_extractor = RandomTiler(
             tile_size=tile_size,
             n_tiles=n_tiles,
             level=level,
             seed=seed,
             check_tissue=True,
+            mpp=mpp,
         )
         binary_mask = BiggestTissueBoxMask()
 
