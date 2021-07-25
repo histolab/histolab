@@ -453,15 +453,22 @@ class Describe_Slideset:
         _slides_path = "/foo/bar/"
         _processed_path = "/foo/bar/wsislides/processed"
         _valid_extensions = [".svs", ".tiff"]
+        _keep_slides = ["mywsi.svs"]
 
-        slideset = SlideSet(_slides_path, _processed_path, _valid_extensions)
+        slideset = SlideSet(
+            _slides_path, _processed_path, _valid_extensions, keep_slides=_keep_slides
+        )
 
         _init_.assert_called_once_with(
-            ANY, _slides_path, _processed_path, _valid_extensions
+            ANY,
+            _slides_path,
+            _processed_path,
+            _valid_extensions,
+            keep_slides=_keep_slides,
         )
         assert isinstance(slideset, SlideSet)
 
-    def it_can_constructs_slides(self, request, tmpdir, Slide_):
+    def it_can_construct_slides(self, request, tmpdir, Slide_):
         tmp_path_ = tmpdir.mkdir("myslide")
         slides_ = method_mock(request, SlideSet, "__iter__")
         slides_.return_value = [Slide_ for _ in range(10)]
@@ -475,8 +482,14 @@ class Describe_Slideset:
     def it_knows_its_slides(self, tmpdir):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
-        image.save(os.path.join(tmp_path_, "mywsi.svs"), "TIFF")
+        image.save(os.path.join(tmp_path_, "mywsi1.svs"), "TIFF")
+        image.save(os.path.join(tmp_path_, "mywsi2.svs"), "TIFF")
         slideset = SlideSet(tmp_path_, "proc", [".svs"])
+
+        assert len(slideset) == 2
+
+        # it can keep a subset of slides
+        slideset = SlideSet(tmp_path_, "proc", [".svs"], keep_slides=["mywsi1.svs"])
 
         assert len(slideset) == 1
 
