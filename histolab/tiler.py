@@ -248,14 +248,14 @@ class Tiler(Protocol):
                 f"{len(slide.levels)}"
             )
 
-    def _fix_tile_size_if_mpp(self, base_mpp):
+    def _fix_tile_size_if_mpp(self, slide):
         """
         Set tile size either to requested level or if MPP is requested,
         set tile size relative to base mpp of slide instead.
         """
         if self.mpp is None:
             return
-        sf = self.mpp / base_mpp
+        sf = self.mpp / slide.base_mpp
         self.tile_size = tuple(int(j * sf) for j in self.tile_size)
         if hasattr(self, "pixel_overlap"):
             self.pixel_overlap = int(self.pixel_overlap * sf)
@@ -359,7 +359,7 @@ class GridTiler(Tiler):
         level = logging.getLevelName(log_level)
         logger.setLevel(level)
         self._validate_level(slide)
-        self._fix_tile_size_if_mpp(slide.base_mpp)
+        self._fix_tile_size_if_mpp(slide)
         self._validate_tile_size(slide)
 
         grid_tiles = self._tiles_generator(slide, extraction_mask)
@@ -681,7 +681,7 @@ class RandomTiler(Tiler):
         level = logging.getLevelName(log_level)
         logger.setLevel(level)
         self._validate_level(slide)
-        self._fix_tile_size_if_mpp(slide.base_mpp)
+        self._fix_tile_size_if_mpp(slide)
         self._validate_tile_size(slide)
 
         random_tiles = self._tiles_generator(slide, extraction_mask)
@@ -911,7 +911,7 @@ class ScoreTiler(GridTiler):
         level = logging.getLevelName(log_level)
         logger.setLevel(level)
         self._validate_level(slide)
-        self._fix_tile_size_if_mpp(slide.base_mpp)
+        self._fix_tile_size_if_mpp(slide)
         self._validate_tile_size(slide)
 
         highest_score_tiles, highest_scaled_score_tiles = self._tiles_generator(

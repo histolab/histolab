@@ -30,17 +30,30 @@ from ..unitutil import (
 
 
 class Describe_RandomTiler:
-    @pytest.mark.parametrize("level", (2, -2))
-    def it_constructs_from_args(self, level, request):
+    @pytest.mark.parametrize("level, mpp", ((2, None), (-2, None), (2, 0.5)))
+    def it_constructs_from_args(self, level, mpp, request):
         _init = initializer_mock(request, RandomTiler)
 
-        random_tiler = RandomTiler((512, 512), 10, level, 7, True, "", ".png", int(1e4))
+        random_tiler = RandomTiler(
+            (512, 512), 10, level, 7, True, "", ".png", int(1e4), mpp=mpp
+        )
 
         _init.assert_called_once_with(
-            ANY, (512, 512), 10, level, 7, True, "", ".png", int(1e4)
+            ANY, (512, 512), 10, level, 7, True, "", ".png", int(1e4), mpp=mpp
         )
         assert isinstance(random_tiler, RandomTiler)
         assert isinstance(random_tiler, Tiler)
+
+    @pytest.mark.parametrize(
+        "level, mpp, expected_level, expected_mpp",
+        ((2, None, 2, None), (None, 0.5, 0, 0.5), (2, 0.5, 0, 0.5)),
+    )
+    def mpp_supercedes_level(self, level, mpp, expected_level, expected_mpp):
+
+        tiler = RandomTiler((512, 512), 10, level=level, mpp=mpp)
+
+        assert tiler.level == expected_level
+        assert tiler.mpp == expected_mpp
 
     def but_it_has_wrong_tile_size_value(self):
         with pytest.raises(ValueError) as err:
@@ -410,13 +423,15 @@ class Describe_RandomTiler:
 
 
 class Describe_GridTiler:
-    @pytest.mark.parametrize("level", (2, -2))
-    def it_constructs_from_args(self, level, request):
+    @pytest.mark.parametrize("level, mpp", ((2, None), (-2, None), (2, 0.5)))
+    def it_constructs_from_args(self, level, mpp, request):
         _init = initializer_mock(request, GridTiler)
 
-        grid_tiler = GridTiler((512, 512), level, True, 80, 0, "", ".png")
+        grid_tiler = GridTiler((512, 512), level, True, 80, 0, "", ".png", mpp=mpp)
 
-        _init.assert_called_once_with(ANY, (512, 512), level, True, 80, 0, "", ".png")
+        _init.assert_called_once_with(
+            ANY, (512, 512), level, True, 80, 0, "", ".png", mpp=mpp
+        )
         assert isinstance(grid_tiler, GridTiler)
         assert isinstance(grid_tiler, Tiler)
 
@@ -846,10 +861,12 @@ class Describe_ScoreTiler:
     def it_constructs_from_args(self, request):
         _init = initializer_mock(request, ScoreTiler)
         rs = RandomScorer()
-        score_tiler = ScoreTiler(rs, (512, 512), 4, 2, True, 80, 0, "", ".png")
+        score_tiler = ScoreTiler(
+            rs, (512, 512), 4, 2, True, 80, 0, "", ".png", mpp=None
+        )
 
         _init.assert_called_once_with(
-            ANY, rs, (512, 512), 4, 2, True, 80, 0, "", ".png"
+            ANY, rs, (512, 512), 4, 2, True, 80, 0, "", ".png", mpp=None
         )
 
         assert isinstance(score_tiler, ScoreTiler)
