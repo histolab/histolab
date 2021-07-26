@@ -456,7 +456,7 @@ class Describe_Slideset:
         _keep_slides = ["mywsi.svs"]
 
         slideset = SlideSet(
-            _slides_path, _processed_path, _valid_extensions, keep_slides=_keep_slides
+            _slides_path, _processed_path, _valid_extensions, _keep_slides
         )
 
         _init_.assert_called_once_with(
@@ -464,7 +464,7 @@ class Describe_Slideset:
             _slides_path,
             _processed_path,
             _valid_extensions,
-            keep_slides=_keep_slides,
+            _keep_slides,
         )
         assert isinstance(slideset, SlideSet)
 

@@ -513,8 +513,8 @@ class SlideSet:
         self,
         slides_path: str,
         processed_path: str,
-        valid_extensions: list,
-        keep_slides: list = None,
+        valid_extensions: List[str],
+        keep_slides: List[str] = None,
     ) -> None:
         self._slides_path = slides_path
         self._processed_path = processed_path
