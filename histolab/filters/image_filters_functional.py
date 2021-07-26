@@ -432,11 +432,11 @@ def rag_threshold(
         Color proximity versus space proximity factor. Default is 10.0.
     threshold : int, optional
         Threshold value for combining regions. Default is 9.
-    mask: np.ndarray, optional
+    mask : np.ndarray, optional
         If provided, superpixels are computed only where mask is True,
         and seed points are homogeneously distributed over the mask
         using a K-means clustering strategy (See skimage).
-        Must be the same size as img.
+        Must be the same size as ``img``.
     return_labels : bool, optional
         If True, returns a labeled array where the value denotes segment
         membership. Otherwise, returns a PIL image where each segment is colored
