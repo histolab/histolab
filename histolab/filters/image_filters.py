@@ -765,17 +765,17 @@ class RagThreshold(ImageFilter):
         Color proximity versus space proximity factor. Default is 10.0
     threshold : int, optional
         Threshold value for combining regions. Default is 9.
-    return_labels: bool, optional
-        If True, returns a labeled nd array where value denotes segment
-        membership. Else returns a PIL image where each segment is colored
-        by the average color in it.
+    return_labels : bool, optional
+        If True, returns a labeled array where the value denotes segment
+        membership. Otherwise, returns a PIL image where each segment is colored
+        by the average color in it. Default is False.
 
     Returns
     -------
-    PIL.Image.Image, if not return_labels
+    PIL.Image.Image, if not ``return_labels``
         Each segment has been colored based on the average
         color for that segment (and similar segments have been combined).
-    np.ndarray, if return_labels
+    np.ndarray, if ``return_labels``
         Value denotes segment membership.
 
     Raises
