@@ -20,7 +20,7 @@ import csv
 import logging
 import os
 from abc import abstractmethod
-from typing import List, Tuple
+from typing import Iterable, List, Tuple
 
 import numpy as np
 import PIL
@@ -74,6 +74,7 @@ class Tiler(Protocol):
         scale_factor: int = 32,
         alpha: int = 128,
         outline: str = "red",
+        tiles: Iterable = None,
     ) -> PIL.Image.Image:
         """Draw tile box references on a rescaled version of the slide
 
@@ -90,6 +91,8 @@ class Tiler(Protocol):
             The alpha level to be applied to the rescaled slide, default to 128.
         outline: str
             The outline color for the tile annotations, default to 'red'.
+        tiles: Iterable
+            Tiles to visualize. Optional, will be extracted if None.
 
         Returns
         -------
@@ -100,11 +103,12 @@ class Tiler(Protocol):
         img.putalpha(alpha)
         draw = PIL.ImageDraw.Draw(img)
 
-        tiles = (
-            self._tiles_generator(slide, extraction_mask)[0]
-            if isinstance(self, ScoreTiler)
-            else self._tiles_generator(slide, extraction_mask)
-        )
+        if tiles is None:
+            tiles = (
+                self._tiles_generator(slide, extraction_mask)[0]
+                if isinstance(self, ScoreTiler)
+                else self._tiles_generator(slide, extraction_mask)
+            )
         tiles_coords = (tile[1] for tile in tiles)
         for coords in tiles_coords:
             rescaled = scale_coordinates(coords, slide.dimensions, img.size)
