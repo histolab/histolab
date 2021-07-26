@@ -414,7 +414,7 @@ def rag_threshold(
     compactness: float = 10.0,
     threshold: int = 9,
     mask: np.ndarray = None,
-    return_labels=False,
+    return_labels: bool = False,
 ) -> PIL.Image.Image:
     """Combine similar K-means segmented regions based on threshold value.
 
@@ -437,17 +437,17 @@ def rag_threshold(
         and seed points are homogeneously distributed over the mask
         using a K-means clustering strategy (See skimage).
         Must be the same size as img.
-    return_labels: bool, optional
-        If True, returns a labeled nd array where value denotes segment
-        membership. Else returns a PIL image where each segment is colored
-        by the average color in it.
+    return_labels : bool, optional
+        If True, returns a labeled array where the value denotes segment
+        membership. Otherwise, returns a PIL image where each segment is colored
+        by the average color in it. Default is False.
 
     Returns
     -------
-    PIL.Image.Image, if not return_labels
+    PIL.Image.Image, if not ``return_labels``
         Each segment has been colored based on the average
         color for that segment (and similar segments have been combined).
-    np.ndarray, if return_labels
+    np.ndarray, if ``return_labels``
         Value denotes segment membership.
 
     Raises
