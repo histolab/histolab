@@ -20,7 +20,7 @@ import csv
 import logging
 import os
 from abc import abstractmethod
-from typing import List, Tuple
+from typing import Iterable, List, Tuple, Union
 
 import numpy as np
 import PIL
@@ -73,7 +73,9 @@ class Tiler(Protocol):
         extraction_mask: BinaryMask = BiggestTissueBoxMask(),
         scale_factor: int = 32,
         alpha: int = 128,
-        outline: str = "red",
+        outline: Union[str, List] = "red",
+        linewidth: int = 1,
+        tiles: Iterable = None,
     ) -> PIL.Image.Image:
         """Draw tile box references on a rescaled version of the slide
 
@@ -90,6 +92,10 @@ class Tiler(Protocol):
             The alpha level to be applied to the rescaled slide, default to 128.
         outline: str
             The outline color for the tile annotations, default to 'red'.
+        linewidth: int
+            Thickness of line used to draw tiles
+        tiles: Iterable
+            Tiles to visualize. Optional, will be extracted if None.
 
         Returns
         -------
@@ -97,18 +103,28 @@ class Tiler(Protocol):
             PIL Image of the rescaled slide with the extracted tiles outlined
         """
         img = slide.scaled_image(scale_factor)
-        img.putalpha(alpha)
+        if alpha is not None:
+            img.putalpha(alpha)
         draw = PIL.ImageDraw.Draw(img)
 
-        tiles = (
-            self._tiles_generator(slide, extraction_mask)[0]
-            if isinstance(self, ScoreTiler)
-            else self._tiles_generator(slide, extraction_mask)
-        )
-        tiles_coords = (tile[1] for tile in tiles)
-        for coords in tiles_coords:
+        if tiles is None:
+            tiles = (
+                self._tiles_generator(slide, extraction_mask)[0]
+                if isinstance(self, ScoreTiler)
+                else self._tiles_generator(slide, extraction_mask)
+            )
+        tiles_coords = [tile[1] for tile in tiles]
+
+        # maybe user specified colors for each tile
+        if isinstance(outline, str):
+            outline = [outline] * len(tiles_coords)
+
+        for i, coords in enumerate(tiles_coords):
             rescaled = scale_coordinates(coords, slide.dimensions, img.size)
-            draw.rectangle(tuple(rescaled), outline=outline)
+            clr = outline[i]
+            if not isinstance(clr, str):
+                clr = tuple([int(255 * j) for j in clr])
+            draw.rectangle(tuple(rescaled), outline=clr, width=linewidth)
         return img
 
     # ------- implementation helpers -------

@@ -4,6 +4,7 @@ import os
 import re
 from unittest.mock import call
 
+import numpy as np
 import pytest
 
 from histolab.exceptions import LevelError, TileSizeError
@@ -777,6 +778,53 @@ class Describe_GridTiler:
 
         assert type(coords_within_extraction_mask) == bool
         assert coords_within_extraction_mask == expected_result
+
+    @pytest.mark.parametrize(
+        "alpha, pass_tiles, outline, expected_topleft",
+        (
+            (128, False, "red", (255, 255, 155, 155)),
+            (None, True, [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], (102, 102, 155, 155)),
+        ),
+    )
+    def it_can_locate_tiles(
+        self, request, tmpdir, alpha, pass_tiles, outline, expected_topleft
+    ):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+
+        coords = CP(0, 10, 0, 10)
+        tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, coords)
+        mock_tiles = [(tile, coords), (tile, coords)]
+
+        _tiles_generator = method_mock(request, GridTiler, "_tiles_generator")
+        _tiles_generator.return_value = mock_tiles
+
+        _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
+        _has_enough_tissue.side_effect = True
+        _grid_coordinates_generator = method_mock(
+            request, GridTiler, "_grid_coordinates_generator"
+        )
+        _grid_coordinates_generator.return_value = [CP(0, 10, 0, 10), CP(0, 10, 0, 10)]
+        _extract_tile.side_effect = mock_tiles
+        grid_tiler = GridTiler((10, 10), level=0, check_tissue=True, tissue_percent=60)
+        binary_mask = BiggestTissueBoxMask()
+
+        if pass_tiles:
+            tiles = list(grid_tiler._tiles_generator(slide, binary_mask))
+        else:
+            tiles = None
+
+        img = grid_tiler.locate_tiles(
+            slide=slide,
+            extraction_mask=binary_mask,
+            alpha=alpha,
+            outline=outline,
+            tiles=tiles,
+        )
+        img = np.uint8(img)
+
+        assert img.shape == (15, 15, 4 if alpha else 3)
+        assert tuple(img[:4, 0, 0]) == expected_topleft
 
 
 class Describe_ScoreTiler:
