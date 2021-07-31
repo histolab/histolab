@@ -103,8 +103,7 @@ class Tiler(Protocol):
             PIL Image of the rescaled slide with the extracted tiles outlined
         """
         img = slide.scaled_image(scale_factor)
-        if alpha is not None:
-            img.putalpha(alpha)
+        img.putalpha(alpha)
         draw = PIL.ImageDraw.Draw(img)
 
         if tiles is None:
