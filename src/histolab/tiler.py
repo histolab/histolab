@@ -73,7 +73,7 @@ class Tiler(Protocol):
         extraction_mask: BinaryMask = BiggestTissueBoxMask(),
         scale_factor: int = 32,
         alpha: int = 128,
-        outline: Union[str, List] = "red",
+        outline: Union[str, List[float], List[str], List[List[float]]] = "red",
         linewidth: int = 1,
         tiles: Iterable = None,
     ) -> PIL.Image.Image:
@@ -86,16 +86,31 @@ class Tiler(Protocol):
         extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`
-        scale_factor: int
+        scale_factor: int, optional
             Scaling factor for the returned image. Default is 32.
-        alpha: int
-            The alpha level to be applied to the rescaled slide, default to 128.
-        outline: str
-            The outline color for the tile annotations, default to 'red'.
-        linewidth: int
-            Thickness of line used to draw tiles
-        tiles: Iterable
-            Tiles to visualize. Optional, will be extracted if None.
+        alpha: int, optional
+            The alpha level to be applied to the rescaled slide. Default is 128.
+        outline: Union[str, List[str], List[List[float]]], optional
+            The outline color for the tile annotations. Default is 'red'.
+            You can prixide this as a string compatible with matplotlib, or
+            you can provide a list of the same length as the tiles, where
+            each color is your assigned color for the corresponding individual
+            tile. This list can be a list of matplotlib-style string colors, or
+            it maybe a list of lists of float in the [0, 1] range, each of
+            length 3, representing the red, green and blue color for each tile.
+            For example, if you have two tiles that you want to be colored
+            yellow, you can pass this argument as any of the following ..
+            - "yellow"
+            - ["yellow", "yellow"]
+            - [[1., 1., 0.], [1., 1., 0.]]
+        linewidth: int, optional
+            Thickness of line used to draw tiles. Default is 1.
+        tiles: Iterable, optional
+            Tiles to visualize. Will be extracted if None. Default is None.
+            You may decide to provide this argument if you do not want the
+            tiles to be re-extracted for visualization if you already have
+            the tiles in hand from, say, the ``_tiles_generator`` method of
+            the ``Tiler`` class.
 
         Returns
         -------
@@ -112,9 +127,8 @@ class Tiler(Protocol):
                 if isinstance(self, ScoreTiler)
                 else self._tiles_generator(slide, extraction_mask)
             )
-        tiles_coords = [tile[1] for tile in tiles]
+        tiles_coords = (tile[1] for tile in tiles)
 
-        # maybe user specified colors for each tile
         if isinstance(outline, str):
             outline = [outline] * len(tiles_coords)
 
