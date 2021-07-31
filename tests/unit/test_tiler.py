@@ -780,10 +780,47 @@ class Describe_GridTiler:
         assert coords_within_extraction_mask == expected_result
 
     @pytest.mark.parametrize(
+        "outline, n_tiles, expected_output",
+        (
+            ("yellow", 2, 2 * ["yellow"]),
+            (["yellow", "red"], 2, ["yellow", "red"]),
+            ([(255, 255, 0), (255, 0, 0)], 2, [(255, 255, 0), (255, 0, 0)]),
+        ),
+    )
+    def it_can_validate_and_fix_tile_outline(self, outline, n_tiles, expected_output):
+        tiler = GridTiler((10, 10))
+        fixed_outline = tiler._validate_and_fix_tile_outline(outline, n_tiles)
+        assert fixed_outline == expected_output
+
+    @pytest.mark.parametrize(
+        "outline, n_tiles, error_msg",
+        (
+            ("yellow", 0, "There are no tiles!"),
+            (
+                ["yellow", "yellow"],
+                3,
+                "There should be as many outlines as there are tiles!",
+            ),
+            (
+                ("yellow", "yellow"),
+                2,
+                "The parameter ``outline`` should be of type: "
+                "str, List[str], or List[List[int]]",
+            ),
+        ),
+    )
+    def it_throws_error_with_invalid_tile_outline(self, outline, n_tiles, error_msg):
+        tiler = GridTiler((10, 10))
+        with pytest.raises((AssertionError, ValueError)) as err:
+            tiler._validate_and_fix_tile_outline(outline, n_tiles)
+
+        assert str(err.value) == error_msg
+
+    @pytest.mark.parametrize(
         "alpha, pass_tiles, outline, expected_topleft",
         (
             (128, False, "red", (255, 255, 155, 155)),
-            (255, True, [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], (102, 102, 155, 155)),
+            (255, True, [(255, 0, 0), (255, 0, 0)], (255, 255, 155, 155)),
         ),
     )
     def it_can_locate_tiles(
@@ -809,17 +846,14 @@ class Describe_GridTiler:
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=True, tissue_percent=60)
         binary_mask = BiggestTissueBoxMask()
 
-        if pass_tiles:
-            tiles = list(grid_tiler._tiles_generator(slide, binary_mask))
-        else:
-            tiles = None
-
         img = grid_tiler.locate_tiles(
             slide=slide,
             extraction_mask=binary_mask,
             alpha=alpha,
             outline=outline,
-            tiles=tiles,
+            tiles=None
+            if not pass_tiles
+            else list(grid_tiler._tiles_generator(slide, binary_mask)),
         )
         img = np.uint8(img)
 
