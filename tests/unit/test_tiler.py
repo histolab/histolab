@@ -783,7 +783,7 @@ class Describe_GridTiler:
         "alpha, pass_tiles, outline, expected_topleft",
         (
             (128, False, "red", (255, 255, 155, 155)),
-            (None, True, [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], (102, 102, 155, 155)),
+            (255, True, [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], (102, 102, 155, 155)),
         ),
     )
     def it_can_locate_tiles(
