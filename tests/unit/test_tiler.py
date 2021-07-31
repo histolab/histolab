@@ -780,22 +780,8 @@ class Describe_GridTiler:
         assert coords_within_extraction_mask == expected_result
 
     @pytest.mark.parametrize(
-        "outline, n_tiles, expected_output",
-        (
-            ("yellow", 2, 2 * ["yellow"]),
-            (["yellow", "red"], 2, ["yellow", "red"]),
-            ([(255, 255, 0), (255, 0, 0)], 2, [(255, 255, 0), (255, 0, 0)]),
-        ),
-    )
-    def it_can_validate_and_fix_tile_outline(self, outline, n_tiles, expected_output):
-        tiler = GridTiler((10, 10))
-        fixed_outline = tiler._validate_and_fix_tile_outline(outline, n_tiles)
-        assert fixed_outline == expected_output
-
-    @pytest.mark.parametrize(
         "outline, n_tiles, error_msg",
         (
-            ("yellow", 0, "There are no tiles!"),
             (
                 ["yellow", "yellow"],
                 3,
@@ -807,17 +793,36 @@ class Describe_GridTiler:
                 "There should be as many outlines as there are tiles!",
             ),
             (
-                ("yellow", "yellow"),
+                0.5,
                 2,
                 "The parameter ``outline`` should be of type: "
-                "str, List[str], or List[List[int]]",
+                "str, Iterable[str], or Iterable[List[int]]",
             ),
         ),
     )
-    def it_throws_error_with_invalid_tile_outline(self, outline, n_tiles, error_msg):
-        tiler = GridTiler((10, 10))
-        with pytest.raises((AssertionError, ValueError)) as err:
-            tiler._validate_and_fix_tile_outline(outline, n_tiles)
+    def it_throws_error_with_invalid_tile_outline(
+        self, request, tmpdir, outline, n_tiles, error_msg
+    ):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+
+        coords = CP(0, 10, 0, 10)
+        tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, coords)
+        mock_tiles = [(tile, coords)] * n_tiles
+
+        _tiles_generator = method_mock(request, GridTiler, "_tiles_generator")
+        _tiles_generator.return_value = mock_tiles
+
+        _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
+        _has_enough_tissue.side_effect = True
+        _grid_coordinates_generator = method_mock(
+            request, GridTiler, "_grid_coordinates_generator"
+        )
+        _grid_coordinates_generator.return_value = [CP(0, 10, 0, 10), CP(0, 10, 0, 10)]
+        _extract_tile.side_effect = mock_tiles
+        grid_tiler = GridTiler((10, 10))
+        with pytest.raises(ValueError) as err:
+            grid_tiler.locate_tiles(slide=slide, outline=outline)
 
         assert str(err.value) == error_msg
 
@@ -825,6 +830,7 @@ class Describe_GridTiler:
         "alpha, pass_tiles, outline, expected_topleft",
         (
             (128, False, "red", (255, 255, 155, 155)),
+            (255, True, ["red", "red"], (255, 255, 155, 155)),
             (255, True, [(255, 0, 0), (255, 0, 0)], (255, 255, 155, 155)),
         ),
     )

@@ -20,6 +20,7 @@ import csv
 import logging
 import os
 from abc import abstractmethod
+from itertools import zip_longest
 from typing import Iterable, List, Tuple, Union
 
 import numpy as np
@@ -73,7 +74,7 @@ class Tiler(Protocol):
         extraction_mask: BinaryMask = BiggestTissueBoxMask(),
         scale_factor: int = 32,
         alpha: int = 128,
-        outline: Union[str, List[str], List[Tuple[int]]] = "red",
+        outline: Union[str, Iterable[str], Iterable[Tuple[int]]] = "red",
         linewidth: int = 1,
         tiles: Iterable[Tile] = None,
     ) -> PIL.Image.Image:
@@ -90,7 +91,7 @@ class Tiler(Protocol):
             Scaling factor for the returned image. Default is 32.
         alpha: int, optional
             The alpha level to be applied to the rescaled slide. Default is 128.
-        outline: Union[str, List[str], List[Tuple[int]]], optional
+        outline: Union[str, Iterable[str], Iterable[Tuple[int]]], optional
             The outline color for the tile annotations. Default is 'red'.
             You can provide this as a string compatible with matplotlib, or
             you can provide a list of the same length as the tiles, where
@@ -129,48 +130,53 @@ class Tiler(Protocol):
             )
         tiles_coords = (tile[1] for tile in tiles)
 
-        outline = self._validate_and_fix_tile_outline(outline, len(tiles))
-
-        for i, coords in enumerate(tiles_coords):
+        for coords, one_outline in self._tile_coords_and_outline_generator(
+            tiles_coords, outline
+        ):
             rescaled = scale_coordinates(coords, slide.dimensions, img.size)
-            draw.rectangle(tuple(rescaled), outline=outline[i], width=linewidth)
+            draw.rectangle(tuple(rescaled), outline=one_outline, width=linewidth)
         return img
 
     # ------- implementation helpers -------
 
     @staticmethod
-    def _validate_and_fix_tile_outline(
-        outline: Union[str, List[str], List[Tuple[int]]], n_tiles: int
-    ) -> Union[str, List[str], List[Tuple[int]]]:
-        """Validate and fix outline argument given to the method ``locate_tiles``.
+    def _tile_coords_and_outline_generator(
+        tiles_coords: Iterable[CoordinatePair],
+        outlines: Union[str, List[str], List[Tuple[int]]],
+    ) -> Union[str, Tuple[int]]:
+        """Zip tile coordinates and outlines from tile and outline iterators.
 
         Parameters
         ----------
-        outline: Union[str, List[str], List[List[int]]]
+        tiles_coords: Iterable[CoordinatePair]
+            Coordinates referring to the upper left and lower right corners.
+        outlines: Union[str, Iterable[str], Iterable[Tuple[int]]]
             See docstring for ``locate_tiles`` for details.
 
-        n_tiles: int
-            Number of tiles for which you are specifying the outline color.
-
-        Returns
+        Yields
         -------
-        Union[str, List[str], List[List[int]]]
+        CoordinatePair
+            Coordinates referring to the upper left and lower right corners.
+        Union[str, Tuple[int]]
             Fixed outline depending on user input to used by method ``locate_tiles``.
         """
-        assert n_tiles > 0, "There are no tiles!"
-        if isinstance(outline, str):
-            outline = [outline] * n_tiles
-        elif isinstance(outline, list):
-            assert (
-                len(outline) == n_tiles
-            ), "There should be as many outlines as there are tiles!"
+        if isinstance(outlines, str):
+            for coords in tiles_coords:
+                yield coords, outlines
+
+        elif hasattr(outlines, "__iter__"):
+            for coords, one_outline in zip_longest(tiles_coords, outlines):
+                if any(j is None for j in (coords, one_outline)):
+                    raise ValueError(
+                        "There should be as many outlines as there are tiles!"
+                    )
+                yield coords, one_outline
+
         else:
             raise ValueError(
                 "The parameter ``outline`` should be of type: "
-                "str, List[str], or List[List[int]]"
+                "str, Iterable[str], or Iterable[List[int]]"
             )
-
-        return outline
 
     def _has_valid_tile_size(self, slide: Slide) -> bool:
         """Return True if the tile size is smaller or equal than the ``slide`` size.
