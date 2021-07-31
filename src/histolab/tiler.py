@@ -73,9 +73,9 @@ class Tiler(Protocol):
         extraction_mask: BinaryMask = BiggestTissueBoxMask(),
         scale_factor: int = 32,
         alpha: int = 128,
-        outline: Union[str, List[float], List[str], List[List[float]]] = "red",
+        outline: Union[str, List[str], List[Tuple[int]]] = "red",
         linewidth: int = 1,
-        tiles: Iterable = None,
+        tiles: Iterable[Tile] = None,
     ) -> PIL.Image.Image:
         """Draw tile box references on a rescaled version of the slide
 
@@ -90,22 +90,22 @@ class Tiler(Protocol):
             Scaling factor for the returned image. Default is 32.
         alpha: int, optional
             The alpha level to be applied to the rescaled slide. Default is 128.
-        outline: Union[str, List[str], List[List[float]]], optional
+        outline: Union[str, List[str], List[Tuple[int]]], optional
             The outline color for the tile annotations. Default is 'red'.
-            You can prixide this as a string compatible with matplotlib, or
+            You can provide this as a string compatible with matplotlib, or
             you can provide a list of the same length as the tiles, where
             each color is your assigned color for the corresponding individual
             tile. This list can be a list of matplotlib-style string colors, or
-            it maybe a list of lists of float in the [0, 1] range, each of
+            it maybe a list of tuples of ints in the [0, 255] range, each of
             length 3, representing the red, green and blue color for each tile.
             For example, if you have two tiles that you want to be colored
             yellow, you can pass this argument as any of the following ..
             - "yellow"
             - ["yellow", "yellow"]
-            - [[1., 1., 0.], [1., 1., 0.]]
+            - [(255, 255, 0), (255, 255, 0)]
         linewidth: int, optional
             Thickness of line used to draw tiles. Default is 1.
-        tiles: Iterable, optional
+        tiles: Iterable[Tile], optional
             Tiles to visualize. Will be extracted if None. Default is None.
             You may decide to provide this argument if you do not want the
             tiles to be re-extracted for visualization if you already have
@@ -129,18 +129,48 @@ class Tiler(Protocol):
             )
         tiles_coords = (tile[1] for tile in tiles)
 
-        if isinstance(outline, str):
-            outline = [outline] * len(tiles_coords)
+        outline = self._validate_and_fix_tile_outline(outline, len(tiles))
 
         for i, coords in enumerate(tiles_coords):
             rescaled = scale_coordinates(coords, slide.dimensions, img.size)
-            clr = outline[i]
-            if not isinstance(clr, str):
-                clr = tuple([int(255 * j) for j in clr])
-            draw.rectangle(tuple(rescaled), outline=clr, width=linewidth)
+            draw.rectangle(tuple(rescaled), outline=outline[i], width=linewidth)
         return img
 
     # ------- implementation helpers -------
+
+    @staticmethod
+    def _validate_and_fix_tile_outline(
+        outline: Union[str, List[str], List[Tuple[int]]], n_tiles: int
+    ) -> Union[str, List[str], List[Tuple[int]]]:
+        """Validate and fix outline argument given to the method ``locate_tiles``.
+
+        Parameters
+        ----------
+        outline: Union[str, List[str], List[List[int]]]
+            See docstring for ``locate_tiles`` for details.
+
+        n_tiles: int
+            Number of tiles for which you are specifying the outline color.
+
+        Returns
+        -------
+        Union[str, List[str], List[List[int]]]
+            Fixed outline depending on user input to used by method ``locate_tiles``.
+        """
+        assert n_tiles > 0, "There are no tiles!"
+        if isinstance(outline, str):
+            outline = [outline] * n_tiles
+        elif isinstance(outline, list):
+            assert (
+                len(outline) == n_tiles
+            ), "There should be as many outlines as there are tiles!"
+        else:
+            raise ValueError(
+                "The parameter ``outline`` should be of type: "
+                "str, List[str], or List[List[int]]"
+            )
+
+        return outline
 
     def _has_valid_tile_size(self, slide: Slide) -> bool:
         """Return True if the tile size is smaller or equal than the ``slide`` size.
