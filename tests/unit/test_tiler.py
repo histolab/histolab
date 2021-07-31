@@ -802,6 +802,11 @@ class Describe_GridTiler:
                 "There should be as many outlines as there are tiles!",
             ),
             (
+                ["yellow", "yellow"],
+                1,
+                "There should be as many outlines as there are tiles!",
+            ),
+            (
                 ("yellow", "yellow"),
                 2,
                 "The parameter ``outline`` should be of type: "

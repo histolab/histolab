@@ -100,8 +100,8 @@ class Tiler(Protocol):
             length 3, representing the red, green and blue color for each tile.
             For example, if you have two tiles that you want to be colored
             yellow, you can pass this argument as any of the following ..
-            - "yellow"
-            - ["yellow", "yellow"]
+            - 'yellow'
+            - ['yellow', 'yellow']
             - [(255, 255, 0), (255, 255, 0)]
         linewidth: int, optional
             Thickness of line used to draw tiles. Default is 1.
