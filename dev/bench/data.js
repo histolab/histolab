@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1626900649685,
+  "lastUpdate": 1627895838742,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -6267,6 +6267,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.048919190265331e-7",
             "extra": "mean: 37.22828645600475 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "pamaron",
+            "username": "ernestoarbitrio"
+          },
+          "distinct": true,
+          "id": "d2a0bf09bde4b3e60e34dfa9ffbc8433d098f8c6",
+          "message": "Update scipy requirement from <1.7.1,>=1.5.0 to >=1.5.0,<1.7.2\n\nUpdates the requirements on [scipy](https://github.com/scipy/scipy) to permit the latest version.\n- [Release notes](https://github.com/scipy/scipy/releases)\n- [Commits](https://github.com/scipy/scipy/compare/v1.5.0...v1.7.1)\n\n---\nupdated-dependencies:\n- dependency-name: scipy\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2021-08-02T11:06:10+02:00",
+          "tree_id": "8f5eada24d1714e1d7eadb6aa0492171795cc466",
+          "url": "https://github.com/histolab/histolab/commit/d2a0bf09bde4b3e60e34dfa9ffbc8433d098f8c6"
+        },
+        "date": 1627895836632,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.834752821352755,
+            "unit": "iter/sec",
+            "range": "stddev: 0.005762337200521884",
+            "extra": "mean: 127.63644531000523 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 211.76580054711124,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001433415762459476",
+            "extra": "mean: 4.722197812000013 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 435.1679885849175,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00009568652702667979",
+            "extra": "mean: 2.2979631457998724 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 15828.053343977592,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000005371180829395956",
+            "extra": "mean: 63.1789632159971 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 16282.450912131755,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000004520519630597698",
+            "extra": "mean: 61.415815431994815 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 14892.944076690332,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00000419394329446203",
+            "extra": "mean: 67.14589102400168 usec\nrounds: 250"
           }
         ]
       }
