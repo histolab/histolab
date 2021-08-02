@@ -18,7 +18,13 @@ from ..util import expand_tests_report, load_expectation
 
 class DescribeRandomTiler:
     @pytest.mark.parametrize(
-        "fixture_slide, binary_mask, tile_size, level, outline, check_tissue, expectation",
+        "fixture_slide, "
+        "binary_mask, "
+        "tile_size, "
+        "level, "
+        "outline, "
+        "check_tissue, "
+        "expectation",
         [
             (
                 SVS.CMU_1_SMALL_REGION,
