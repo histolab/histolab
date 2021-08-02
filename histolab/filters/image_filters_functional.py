@@ -415,7 +415,7 @@ def rag_threshold(
     threshold: int = 9,
     mask: np.ndarray = None,
     return_labels: bool = False,
-) -> PIL.Image.Image:
+) -> Union[PIL.Image.Image, np.ndarray]:
     """Combine similar K-means segmented regions based on threshold value.
 
     Segment an image with K-means, build region adjacency graph based on
