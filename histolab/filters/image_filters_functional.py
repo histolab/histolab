@@ -19,7 +19,7 @@
 import math
 import operator
 from functools import reduce
-from typing import Any, Callable
+from typing import Any, Callable, Union
 
 import numpy as np
 import PIL
