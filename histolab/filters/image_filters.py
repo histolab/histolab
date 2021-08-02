@@ -797,7 +797,7 @@ class RagThreshold(ImageFilter):
         compactness: float = 10.0,
         threshold: int = 9,
         return_labels: bool = False,
-    ) -> PIL.Image.Image:
+    ) -> None:
         self.n_segments = n_segments
         self.compactness = compactness
         self.threshold = threshold
@@ -807,7 +807,7 @@ class RagThreshold(ImageFilter):
         self,
         img: PIL.Image.Image,
         mask: np.ndarray = None,
-    ) -> PIL.Image.Image:
+    ) -> Union[PIL.Image.Image, np.ndarray]:
         return F.rag_threshold(
             img,
             n_segments=self.n_segments,
