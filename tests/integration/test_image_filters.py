@@ -10,11 +10,19 @@ from ..fixtures import GS, NPY, RGB, RGBA
 from ..util import load_expectation
 
 
+def _create_rag_mask(pil_image):
+    mask = np.ones((pil_image.size[1], pil_image.size[0]))
+    mask[:100, :] = 0
+    mask[:, :100] = 0
+    mask[-100:, :] = 0
+    mask[:, -100:] = 0
+    return mask
+
+
 def test_invert_filter_with_rgb_image():
     expected_value = load_expectation(
         "pil-images-rgb/diagnostic-slide-thumb-rgb-inverted", type_="png"
     )
-
     inverted_img = imf.invert(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB)
 
     np.testing.assert_array_almost_equal(
@@ -484,34 +492,26 @@ def test_rag_threshold_filter_on_rgb_image():
     )
 
 
-def _create_rag_mask(pil_image):
-    mask = np.ones((pil_image.size[1], pil_image.size[0]))
-    mask[:100, :] = 0
-    mask[:, :100] = 0
-    mask[-100:, :] = 0
-    mask[:, -100:] = 0
-    return mask
-
-
 @pytest.mark.parametrize(
-    "pil_image, expected_image, mask",
+    "pil_image, mask, expected_image",
     (
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "mask-arrays/diagnostic-slide-thumb-rgb-rag-threshold-labels",
             None,
+            "mask-arrays/diagnostic-slide-thumb-rgb-rag-threshold-labels",
         ),
         (
             RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "mask-arrays/diagnostic-slide-thumb-rgb-rag-threshold-maskedlabels",
             _create_rag_mask(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB),
+            "mask-arrays/diagnostic-slide-thumb-rgb-rag-threshold-maskedlabels",
         ),
     ),
 )
-def test_rag_threshold_filter_return_labels(pil_image, expected_image, mask):
+def test_rag_threshold_filter_return_labels(pil_image, mask, expected_image):
     expected_value = load_expectation(expected_image, type_="npy")
 
     ragged = imf.rag_threshold(pil_image, 650, 20.6, 9, return_labels=True, mask=mask)
+
     np.testing.assert_array_almost_equal(np.array(ragged), np.array(expected_value))
 
 
