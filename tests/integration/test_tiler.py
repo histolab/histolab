@@ -10,13 +10,10 @@ from histolab.masks import BiggestTissueBoxMask, TissueMask
 from histolab.scorer import NucleiScorer
 from histolab.slide import Slide
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler
-from histolab.util import _check_largeimage
 
 from ..fixtures import EXTERNAL_SVS, SVS, TIFF
 from ..unitutil import on_ci
 from ..util import expand_tests_report, load_expectation
-
-LARGEIMAGE_IS_INSTALLED, LARGEIMAGE_INSTALL_PROMPT = _check_largeimage()
 
 
 class DescribeRandomTiler:
@@ -172,11 +169,7 @@ class DescribeRandomTiler:
     def test_extract_tiles_respecting_the_given_tile_size(
         self, tmpdir, fixture_slide, tile_size, level, seed, n_tiles, mpp
     ):
-
         use_largeimage = mpp is not None
-        if use_largeimage and (not LARGEIMAGE_IS_INSTALLED):
-            return
-
         processed_path = os.path.join(tmpdir, "processed")
         slide = Slide(fixture_slide, processed_path, use_largeimage=use_largeimage)
         random_tiles_extractor = RandomTiler(

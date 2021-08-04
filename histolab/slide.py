@@ -31,10 +31,9 @@ from .exceptions import HistolabException
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair
-from .util import _check_largeimage, lazyproperty
+from .util import lazyproperty
 
-LARGEIMAGE_IS_INSTALLED, LARGEIMAGE_INSTALL_PROMPT = _check_largeimage()
-
+try:
 if TYPE_CHECKING:
     from .masks import BinaryMask
 
@@ -42,15 +41,17 @@ if TYPE_CHECKING:
 # If possible, use large_image because it extends openslide to more formats
 try:
     import large_image
-
-    USE_LARGEIMAGE = True
-except ModuleNotFoundError:
-    USE_LARGEIMAGE = False
-
-if USE_LARGEIMAGE:
     from io import BytesIO
 
-    from PIL.Image import BICUBIC, LANCZOS
+    LARGEIMAGE_IS_INSTALLED = True
+    LARGEIMAGE_INSTALL_PROMPT = ""
+
+except (ModuleNotFoundError, ImportError):
+    LARGEIMAGE_IS_INSTALLED = False
+    LARGEIMAGE_INSTALL_PROMPT = (
+        "It maybe a good idea to install large_image to handle this. "
+        "See: https://github.com/girder/large_image"
+    )
 
 IMG_EXT = "png"
 IMG_UPSAMPLE_MODE = PIL.Image.BILINEAR

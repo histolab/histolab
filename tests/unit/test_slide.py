@@ -12,10 +12,8 @@ import pytest
 from PIL import ImageShow
 
 from histolab.exceptions import LevelError, SlidePropertyError
-from histolab.slide import Slide, SlideSet
 from histolab.types import CP
-from histolab.util import LARGEIMAGE_INSTALL_PROMPT
-from histolab.util import _check_largeimage
+from histolab.slide import Slide, SlideSet, LARGEIMAGE_INSTALL_PROMPT
 
 from ..unitutil import (
     ANY,
@@ -32,8 +30,6 @@ from ..unitutil import (
     property_mock,
 )
 
-LARGEIMAGE_IS_INSTALLED, LARGEIMAGE_INSTALL_PROMPT = _check_largeimage()
-
 
 class Describe_Slide:
     @pytest.mark.parametrize(
@@ -47,10 +43,6 @@ class Describe_Slide:
     def it_constructs_from_args(
         self, request, slide_path, processed_path, use_largeimage
     ):
-
-        if use_largeimage and (not LARGEIMAGE_IS_INSTALLED):
-            return
-
         _init_ = initializer_mock(request, Slide)
 
         slide = Slide(slide_path, processed_path, use_largeimage=use_largeimage)
@@ -120,10 +112,6 @@ class Describe_Slide:
         )
 
     def it_has_largeimage_tilesource(self, tmpdir):
-
-        if not LARGEIMAGE_IS_INSTALLED:
-            return
-
         slide, _ = base_test_slide(
             tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=True
         )
@@ -218,10 +206,6 @@ class Describe_Slide:
         ],
     )
     def it_can_resample_itself(self, tmpdir, resampled_dims_, use_largeimage):
-
-        if use_largeimage and (not LARGEIMAGE_IS_INSTALLED):
-            return
-
         slide, _ = base_test_slide(
             tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=use_largeimage
         )
@@ -276,10 +260,6 @@ class Describe_Slide:
         ],
     )
     def it_knows_its_thumbnail(self, tmpdir, resampled_dims_, use_largeimage):
-
-        if use_largeimage and (not LARGEIMAGE_IS_INSTALLED):
-            return
-
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
