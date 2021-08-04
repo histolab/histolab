@@ -10,14 +10,11 @@ import pytest
 from histolab.exceptions import LevelError, SlidePropertyError
 from histolab.exceptions import HistolabException
 from histolab.masks import BiggestTissueBoxMask, TissueMask
-from histolab.slide import Slide
-from histolab.util import _check_largeimage
+from histolab.slide import Slide, LARGEIMAGE_INSTALL_PROMPT
 
 from ..fixtures import EXTERNAL_SVS, SVS
 from ..unitutil import on_ci
 from ..util import load_expectation, load_python_expression
-
-LARGEIMAGE_IS_INSTALLED, LARGEIMAGE_INSTALL_PROMPT = _check_largeimage()
 
 
 class Describe_Slide:
@@ -46,10 +43,6 @@ class Describe_Slide:
         ],
     )
     def it_knows_its_base_mpp(self, use_largeimage, fake_props):
-
-        if use_largeimage and (not LARGEIMAGE_IS_INSTALLED):
-            return
-
         slide = Slide(
             SVS.CMU_1_SMALL_REGION,
             os.path.join(SVS.CMU_1_SMALL_REGION, "processed"),
@@ -84,10 +77,6 @@ class Describe_Slide:
         ],
     )
     def it_knows_the_right_slide_dimension(self, use_largeimage):
-
-        if use_largeimage and (not LARGEIMAGE_IS_INSTALLED):
-            return
-
         slide = Slide(
             SVS.CMU_1_SMALL_REGION,
             os.path.join(SVS.CMU_1_SMALL_REGION, "processed"),
