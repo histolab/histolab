@@ -139,6 +139,18 @@ class Tiler(Protocol):
 
     # ------- implementation helpers -------
 
+    def _fix_tile_size_if_mpp(self, slide):
+        """
+        Set tile size either to requested level or if MPP is requested,
+        set tile size relative to base mpp of slide instead.
+        """
+        if self.mpp is None:
+            return
+        sf = self.mpp / slide.base_mpp
+        self.tile_size = tuple(int(j * sf) for j in self.tile_size)
+        if hasattr(self, "pixel_overlap"):
+            self.pixel_overlap = int(self.pixel_overlap * sf)
+
     def _has_valid_tile_size(self, slide: Slide) -> bool:
         """Return True if the tile size is smaller or equal than the ``slide`` size.
 
@@ -247,18 +259,6 @@ class Tiler(Protocol):
                 f"Level {self.level} not available. Number of available levels: "
                 f"{len(slide.levels)}"
             )
-
-    def _fix_tile_size_if_mpp(self, slide):
-        """
-        Set tile size either to requested level or if MPP is requested,
-        set tile size relative to base mpp of slide instead.
-        """
-        if self.mpp is None:
-            return
-        sf = self.mpp / slide.base_mpp
-        self.tile_size = tuple(int(j * sf) for j in self.tile_size)
-        if hasattr(self, "pixel_overlap"):
-            self.pixel_overlap = int(self.pixel_overlap * sf)
 
     def _validate_tile_size(self, slide: Slide) -> None:
         """Validate the tile size according to the Slide.
