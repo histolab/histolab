@@ -10,7 +10,7 @@ import pytest
 from histolab.exceptions import LevelError, SlidePropertyError
 from histolab.exceptions import HistolabException
 from histolab.masks import BiggestTissueBoxMask, TissueMask
-from histolab.slide import Slide, LARGEIMAGE_INSTALL_PROMPT
+from histolab.slide import Slide
 
 from ..fixtures import EXTERNAL_SVS, SVS
 from ..unitutil import on_ci
@@ -28,7 +28,7 @@ class Describe_Slide:
         assert name == ntpath.basename(SVS.CMU_1_SMALL_REGION).split(".")[0]
 
     @pytest.mark.parametrize(
-        "use_largeimage, fake_props",
+        "use_largeimage, slide_props",
         [
             (True, None),
             (False, None),
@@ -42,16 +42,16 @@ class Describe_Slide:
             ),
         ],
     )
-    def it_knows_its_base_mpp(self, use_largeimage, fake_props):
+    def it_knows_its_base_mpp(self, use_largeimage, slide_props):
         slide = Slide(
             SVS.CMU_1_SMALL_REGION,
             os.path.join(SVS.CMU_1_SMALL_REGION, "processed"),
             use_largeimage=use_largeimage,
         )
-        if fake_props:
+        if slide_props:
             del slide.properties["openslide.mpp-x"]
             del slide.properties["aperio.MPP"]
-            slide.properties.update(fake_props)
+            slide.properties.update(slide_props)
 
         mpp = slide.base_mpp
 
@@ -172,9 +172,10 @@ class Describe_Slide:
             slide._wsi
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
-        broken_err = "Your wsi has something broken inside, a doctor is needed. "
-        broken_err += LARGEIMAGE_INSTALL_PROMPT
-        assert str(err.value) == broken_err
+        assert str(err.value) == (
+            "Your wsi has something broken inside, a doctor is needed. "
+            "Please set use_largeimage to True when instantiating Slide."
+        )
 
     def it_raises_miscellaneous_error(self):
         slide = Slide(SVS.BROKEN, os.path.join(SVS.BROKEN, "processed"))
@@ -184,11 +185,10 @@ class Describe_Slide:
             slide._wsi
 
         assert isinstance(err.value, HistolabException)
-        broken_err = (
+        assert str(err.value) == (
             "ArgumentError(\"argument 1: <class 'TypeError'>: Incorrect type\")"
+            "\nPlease set use_largeimage to True when instantiating Slide."
         )
-        broken_err += f"\n{LARGEIMAGE_INSTALL_PROMPT}"
-        assert str(err.value) == broken_err
 
     @pytest.mark.parametrize(
         "slide_fixture, tissue_mask, binary_mask, expectation",
