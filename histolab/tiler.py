@@ -139,7 +139,7 @@ class Tiler(Protocol):
 
     # ------- implementation helpers -------
 
-    def _get_proper_tile_size(self, slide) -> Tuple[Tuple[int, int], float]:
+    def _get_proper_tile_size(self, slide: Slide) -> Tuple[Tuple[int, int], float]:
         """Get the proper tile size for level or mpp requested.
 
         Parameters
