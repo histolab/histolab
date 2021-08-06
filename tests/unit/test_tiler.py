@@ -62,7 +62,7 @@ class Describe_RandomTiler:
     def it_can_fix_tile_size_if_mpp(self, mpp, fixed_tile_size):
         fake_slide = namedtuple("fake_slide", ["base_mpp"])
         tiler = RandomTiler((512, 512), 0, True, 80, 0, "", ".png", mpp=mpp)
-        tiler._fix_tile_size_if_mpp(fake_slide(0.25))
+        tiler._set_proper_tile_size(fake_slide(0.25))
 
         assert tiler.tile_size == fixed_tile_size
 
@@ -458,14 +458,16 @@ class Describe_GridTiler:
         assert tiler.mpp == expected_mpp
 
     @pytest.mark.parametrize(
-        "mpp, fixed_tile_size", ((None, (512, 512)), (0.5, (1024, 1024)))
+        "mpp, fixed_tile_size, fixed_overlap",
+        ((None, (512, 512), 32), (0.5, (1024, 1024), 64)),
     )
-    def it_can_fix_tile_size_if_mpp(self, mpp, fixed_tile_size):
+    def it_can_fix_tile_size_if_mpp(self, mpp, fixed_tile_size, fixed_overlap):
         fake_slide = namedtuple("fake_slide", ["base_mpp"])
-        tiler = GridTiler((512, 512), 0, True, 80, 0, "", ".png", mpp=mpp)
-        tiler._fix_tile_size_if_mpp(fake_slide(0.25))
+        tiler = GridTiler((512, 512), pixel_overlap=32, mpp=mpp)
+        tiler._set_proper_tile_size_and_overlap(fake_slide(0.25))
 
         assert tiler.tile_size == fixed_tile_size
+        assert tiler.pixel_overlap == fixed_overlap
 
     def but_it_has_wrong_tile_size_value(self):
         with pytest.raises(ValueError) as err:
