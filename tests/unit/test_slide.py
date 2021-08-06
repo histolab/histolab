@@ -119,12 +119,33 @@ class Describe_Slide:
 
         assert slide._tilesource.name == "pilfile"
 
+    def it_raises_error_if_tilesource_and_not_use_largeimage(self):
+        slide = Slide("/a/b/foo", "processed", use_largeimage=True)
+
+        with pytest.raises(ValueError) as err:
+            _ = slide._tilesource
+
+        assert isinstance(err.value, ValueError)
+        assert str(err.value) == (
+            "Please set use_largeimage to True when instantiating Slide."
+        )
+
     def it_knows_its_dimensions(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         slide_dims = slide.dimensions
 
         assert slide_dims == (500, 500)
+
+    @pytest.mark.parametrize("level, mpp", [(0, None), (None, 0.5)])
+    def it_raises_error_if_bad_args_for_extract_tile(self, level, mpp):
+        slide = Slide("/a/b/foo", "processed")
+
+        with pytest.raises(ValueError) as err:
+            slide.extract_tile(CP(0, 10, 0, 10), (10, 10), level=level, mpp=mpp)
+
+        assert isinstance(err.value, ValueError)
+        assert str(err.value) == "either level or mpp must be provided!"
 
     def it_knows_its_resampled_dimensions(self, dimensions_):
         """This test prove that given the dimensions (mock object here), it does
@@ -169,6 +190,15 @@ class Describe_Slide:
         thumb_size = slide._thumbnail_size
 
         assert thumb_size == (500, 500)
+
+    def it_raises_error_if_thumbnail_size_and_use_largeimage(self):
+        slide = Slide("/a/b/foo", "processed", use_largeimage=True)
+
+        with pytest.raises(ValueError) as err:
+            _ = slide._thumbnail_size
+
+        assert isinstance(err.value, ValueError)
+        assert str(err.value) == "Please use thumbnail.size instead"
 
     def it_creates_a_correct_slide_object(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_50X50_155_0_0)

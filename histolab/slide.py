@@ -45,7 +45,7 @@ try:
 
     LARGEIMAGE_IS_INSTALLED = True
 
-except (ModuleNotFoundError, ImportError):
+except (ModuleNotFoundError, ImportError):  # pragma: no cover
     LARGEIMAGE_IS_INSTALLED = False
 
 IMG_EXT = "png"
@@ -80,7 +80,7 @@ class Slide:
         if processed_path is None:
             raise TypeError("processed_path cannot be None.")
         self._processed_path = processed_path
-        if use_largeimage and not LARGEIMAGE_IS_INSTALLED:
+        if use_largeimage and not LARGEIMAGE_IS_INSTALLED:  # pragma: no cover
             raise ModuleNotFoundError(
                 "Setting use_large_image to True requires installation "
                 "of the large_image module. Please visit: "
@@ -161,7 +161,6 @@ class Slide:
             Image containing the selected tile.
         """
         if level is None and mpp is None:
-            # TODO: this should be covered by a test!!
             raise ValueError("either level or mpp must be provided!")
 
         if level is not None:
