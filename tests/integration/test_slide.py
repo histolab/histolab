@@ -173,8 +173,9 @@ class Describe_Slide:
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert str(err.value) == (
-            "Your wsi has something broken inside, a doctor is needed. "
-            "Please set use_largeimage to True when instantiating Slide."
+            "This slide may be corrupt or have a non-standard format not "
+            "handled by the openslide and PIL libraries. Consider setting "
+            "use_largeimage to True when instantiating this Slide."
         )
 
     def it_raises_miscellaneous_error(self):
@@ -187,7 +188,9 @@ class Describe_Slide:
         assert isinstance(err.value, HistolabException)
         assert str(err.value) == (
             "ArgumentError(\"argument 1: <class 'TypeError'>: Incorrect type\")"
-            "\nPlease set use_largeimage to True when instantiating Slide."
+            ". This slide may be corrupt or have a non-standard format not "
+            "handled by the openslide and PIL libraries. Consider setting "
+            "use_largeimage to True when instantiating this Slide."
         )
 
     @pytest.mark.parametrize(

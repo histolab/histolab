@@ -108,8 +108,9 @@ class Describe_Slide:
 
         assert isinstance(err.value, NotImplementedError)
         assert str(err.value) == (
-            "Unknown scan magnification! "
-            "Please set use_largeimage to True when instantiating Slide."
+            "Unknown scan magnification! This slide format may be best "
+            "handled using the large_image module. Consider setting "
+            "use_largeimage to True when instantiating this Slide."
         )
 
     def it_has_largeimage_tilesource(self, tmpdir):
@@ -127,7 +128,8 @@ class Describe_Slide:
 
         assert isinstance(err.value, ValueError)
         assert str(err.value) == (
-            "Please set use_largeimage to True when instantiating Slide."
+            "This property uses the large_image module. Please set "
+            "use_largeimage to True when instantiating this Slide."
         )
 
     def it_knows_its_dimensions(self, tmpdir):
@@ -143,9 +145,7 @@ class Describe_Slide:
         )
 
         with pytest.raises(ValueError) as err:
-            slide.extract_tile(
-                CP(0, 10, 0, 10), (10, 10), level=None, mpp=None
-            )
+            slide.extract_tile(CP(0, 10, 0, 10), (10, 10), level=None, mpp=None)
 
         assert isinstance(err.value, ValueError)
         assert str(err.value) == "either level or mpp must be provided!"
@@ -197,11 +197,14 @@ class Describe_Slide:
     def it_raises_error_if_thumbnail_size_and_use_largeimage(self):
         slide = Slide("/a/b/foo", "processed", use_largeimage=True)
 
-        with pytest.raises(ValueError) as err:
+        with pytest.raises(NotImplementedError) as err:
             slide._thumbnail_size
 
-        assert isinstance(err.value, ValueError)
-        assert str(err.value) == "Please use thumbnail.size instead"
+        assert isinstance(err.value, NotImplementedError)
+        assert str(err.value) == (
+            "When use_largeimage is set to True, the thumbnail is fetched "
+            "by the large_image module. Please use thumbnail.size instead."
+        )
 
     def it_creates_a_correct_slide_object(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_50X50_155_0_0)
@@ -229,8 +232,9 @@ class Describe_Slide:
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert str(err.value) == (
-            "Your wsi has something broken inside, a doctor is needed. "
-            "Please set use_largeimage to True when instantiating Slide."
+            "This slide may be corrupt or have a non-standard format not "
+            "handled by the openslide and PIL libraries. Consider setting "
+            "use_largeimage to True when instantiating this Slide."
         )
 
     @pytest.mark.parametrize(

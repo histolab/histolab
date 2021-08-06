@@ -87,9 +87,6 @@ class Slide:
                 "https://github.com/girder/large_image for instructions."
             )
         self._use_largeimage = use_largeimage
-        self._usage_requires_largeimage = (
-            "Please set use_largeimage to True when instantiating Slide."
-        )
 
     def __repr__(self):
         return (
@@ -118,7 +115,9 @@ class Slide:
             return 1e4 / float(self.properties["tiff.XResolution"])
 
         raise NotImplementedError(
-            "Unknown scan magnification! " + self._usage_requires_largeimage
+            "Unknown scan magnification! This slide format may be best "
+            "handled using the large_image module. Consider setting "
+            "use_largeimage to True when instantiating this Slide."
         )
 
     @lazyproperty
@@ -615,7 +614,10 @@ class Slide:
             Thumbnail size
         """
         if self._use_largeimage:
-            raise ValueError("Please use thumbnail.size instead")
+            raise NotImplementedError(
+                "When use_largeimage is set to True, the thumbnail is fetched "
+                "by the large_image module. Please use thumbnail.size instead."
+            )
 
         return tuple(
             [
@@ -634,7 +636,10 @@ class Slide:
             An TileSource object representing a whole-slide image.
         """
         if not self._use_largeimage:
-            raise ValueError(self._usage_requires_largeimage)
+            raise ValueError(
+                "This property uses the large_image module. Please set "
+                "use_largeimage to True when instantiating this Slide."
+            )
 
         source = large_image.getTileSource(self._path)
         return source
@@ -648,21 +653,21 @@ class Slide:
         slide : OpenSlide object
             An OpenSlide object representing a whole-slide image.
         """
+        bad_format_error = (
+            "This slide may be corrupt or have a non-standard format not "
+            "handled by the openslide and PIL libraries. Consider setting "
+            "use_largeimage to True when instantiating this Slide."
+        )
         try:
             slide = openslide.open_slide(self._path)
         except PIL.UnidentifiedImageError:
-            raise PIL.UnidentifiedImageError(
-                "Your wsi has something broken inside, a doctor is needed. "
-                + self._usage_requires_largeimage
-            )
+            raise PIL.UnidentifiedImageError(bad_format_error)
         except FileNotFoundError:
             raise FileNotFoundError(
                 f"The wsi path resource doesn't exist: {self._path}"
             )
         except Exception as other_error:
-            msg = other_error.__repr__()
-            msg += f"\n{self._usage_requires_largeimage}"
-            raise HistolabException(msg)
+            raise HistolabException(other_error.__repr__() + f". {bad_format_error}")
         return slide
 
 
