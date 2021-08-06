@@ -44,14 +44,9 @@ try:
     from io import BytesIO
 
     LARGEIMAGE_IS_INSTALLED = True
-    LARGEIMAGE_INSTALL_PROMPT = ""
 
 except (ModuleNotFoundError, ImportError):
     LARGEIMAGE_IS_INSTALLED = False
-    LARGEIMAGE_INSTALL_PROMPT = (
-        "It maybe a good idea to install large_image to handle this. "
-        "See: https://github.com/girder/large_image"
-    )
 
 IMG_EXT = "png"
 IMG_UPSAMPLE_MODE = PIL.Image.BILINEAR
@@ -85,9 +80,16 @@ class Slide:
         if processed_path is None:
             raise TypeError("processed_path cannot be None.")
         self._processed_path = processed_path
-        if use_largeimage:
-            assert LARGEIMAGE_IS_INSTALLED, "large_image module is not found!"
+        if use_largeimage and not LARGEIMAGE_IS_INSTALLED:
+            raise ModuleNotFoundError(
+                "Setting use_large_image to True requires installation "
+                "of the large_image module. Please visit: "
+                "https://github.com/girder/large_image for instructions."
+            )
         self._use_largeimage = use_largeimage
+        self._usage_requires_largeimage = (
+            "Please set use_largeimage to True when instantiating Slide."
+        )
 
     def __repr__(self):
         return (
@@ -116,7 +118,7 @@ class Slide:
             return 1e4 / float(self.properties["tiff.XResolution"])
 
         raise NotImplementedError(
-            "Unknown scan magnification! " + LARGEIMAGE_INSTALL_PROMPT
+            "Unknown scan magnification! " + self._usage_requires_largeimage
         )
 
     @lazyproperty
@@ -158,9 +160,9 @@ class Slide:
         tile : Tile
             Image containing the selected tile.
         """
-        assert (level is not None) or (
-            mpp is not None
-        ), "either level or mpp must be provided!"
+        if level is None and mpp is None:
+            # TODO: this should be covered by a test!!
+            raise ValueError("either level or mpp must be provided!")
 
         if level is not None:
             level = level if level >= 0 else self._remap_level(level)
@@ -178,7 +180,6 @@ class Slide:
                 location=(coords.x_ul, coords.y_ul), level=level, size=tile_size
             )
         else:
-            # only large_image support mpp
             mm = mpp / 1000
             image, _ = self._tilesource.getRegion(
                 region=dict(
@@ -195,8 +196,7 @@ class Slide:
             image = image.convert("RGB")
             # Sometimes when mpp kwarg is used, the image size is off from
             # what the user expects by a couple of pixels
-            asis = all(tile_size[i] == j for i, j in enumerate(image.size))
-            if not asis:
+            if not all(tile_size[i] == j for i, j in enumerate(image.size)):
                 image = image.resize(
                     tile_size,
                     IMG_UPSAMPLE_MODE
@@ -204,9 +204,7 @@ class Slide:
                     else IMG_DOWNSAMPLE_MODE,
                 )
 
-        tile = Tile(image, coords, level)
-
-        return tile
+        return Tile(image, coords, level)
 
     def level_dimensions(self, level: int = 0) -> Tuple[int, int]:
         """Return the slide dimensions (w,h) at the specified level
@@ -448,6 +446,17 @@ class Slide:
 
     @staticmethod
     def _bytes2pil(bytesim):
+        """Convert a bytes image to a PIL image object.
+
+        Parameters
+        ----------
+        bytesim : A bytes object.
+
+        Returns
+        -------
+        PIL.Image
+            A PIL Image object converted from the Bytes input.
+        """
         image_content = BytesIO(bytesim)
         image_content.seek(0)
         return PIL.Image.open(image_content)
@@ -474,6 +483,15 @@ class Slide:
 
     @lazyproperty
     def _metadata(self) -> dict:
+        """Get metadata about this slide, including magnification.
+
+        Returns
+        -------
+        dict
+           This function is a wrapper. Please read the documentation for
+           ``large_image.TileSource.getMetadata()`` for details on the return
+           keys and data types.
+        """
         return self._tilesource.getMetadata()
 
     def _remap_level(self, level: int) -> int:
@@ -524,15 +542,15 @@ class Slide:
 
         _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
         if self._use_largeimage:
-            mg = "magnification"
-            kws = (
-                {"scale": {mg: self._metadata[mg] / scale_factor}}
-                if self._metadata[mg] is not None
+            magnif = "magnification"
+            kwargs = (
+                {"scale": {magnif: self._metadata[magnif] / scale_factor}}
+                if self._metadata[magnif] is not None
                 else {}
             )
             wsi_image, _ = self._tilesource.getRegion(
                 format=large_image.tilesource.TILE_FORMAT_PIL,
-                **kws,
+                **kwargs,
             )
         else:
             level = self._wsi.get_best_level_for_downsample(scale_factor)
@@ -597,7 +615,9 @@ class Slide:
         Tuple[int, int]
             Thumbnail size
         """
-        assert not self._use_largeimage, "Please use thumbnail.size instead"
+        if self._use_largeimage:
+            raise ValueError("Please use thumbnail.size instead")
+
         return tuple(
             [
                 int(s / np.power(10, math.ceil(math.log10(s)) - 3))
@@ -614,7 +634,9 @@ class Slide:
         source : large_image TileSource object
             An TileSource object representing a whole-slide image.
         """
-        assert self._use_largeimage, LARGEIMAGE_INSTALL_PROMPT
+        if not self._use_largeimage:
+            raise ValueError(self._usage_requires_largeimage)
+
         source = large_image.getTileSource(self._path)
         return source
 
@@ -632,7 +654,7 @@ class Slide:
         except PIL.UnidentifiedImageError:
             raise PIL.UnidentifiedImageError(
                 "Your wsi has something broken inside, a doctor is needed. "
-                + LARGEIMAGE_INSTALL_PROMPT
+                + self._usage_requires_largeimage
             )
         except FileNotFoundError:
             raise FileNotFoundError(
@@ -640,7 +662,7 @@ class Slide:
             )
         except Exception as other_error:
             msg = other_error.__repr__()
-            msg += f"\n{LARGEIMAGE_INSTALL_PROMPT}"
+            msg += f"\n{self._usage_requires_largeimage}"
             raise HistolabException(msg)
         return slide
 
