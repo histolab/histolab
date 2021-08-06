@@ -461,7 +461,9 @@ class Describe_GridTiler:
         "mpp, fixed_tile_size, fixed_overlap",
         ((None, (512, 512), 32), (0.5, (1024, 1024), 64)),
     )
-    def it_can_fix_tile_size_if_mpp(self, mpp, fixed_tile_size, fixed_overlap):
+    def it_can_fix_tile_size_and_overlap_if_mpp(
+        self, mpp, fixed_tile_size, fixed_overlap
+    ):
         fake_slide = namedtuple("fake_slide", ["base_mpp"])
         tiler = GridTiler((512, 512), pixel_overlap=32, mpp=mpp)
         tiler._set_proper_tile_size_and_overlap(fake_slide(0.25))
