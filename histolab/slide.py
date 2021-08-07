@@ -27,13 +27,12 @@ import PIL
 from skimage.measure import find_contours
 
 from .exceptions import LevelError, SlidePropertyError
-from .exceptions import HistolabException
+from .exceptions import HistolabException, MayNeedLargeImageError
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair
 from .util import lazyproperty
 
-try:
 if TYPE_CHECKING:
     from .masks import BinaryMask
 
@@ -114,7 +113,7 @@ class Slide:
         ):
             return 1e4 / float(self.properties["tiff.XResolution"])
 
-        raise NotImplementedError(
+        raise MayNeedLargeImageError(
             "Unknown scan magnification! This slide format may be best "
             "handled using the large_image module. Consider setting "
             "use_largeimage to True when instantiating this Slide."
@@ -614,7 +613,7 @@ class Slide:
             Thumbnail size
         """
         if self._use_largeimage:
-            raise NotImplementedError(
+            raise MayNeedLargeImageError(
                 "When use_largeimage is set to True, the thumbnail is fetched "
                 "by the large_image module. Please use thumbnail.size instead."
             )
@@ -636,7 +635,7 @@ class Slide:
             An TileSource object representing a whole-slide image.
         """
         if not self._use_largeimage:
-            raise ValueError(
+            raise MayNeedLargeImageError(
                 "This property uses the large_image module. Please set "
                 "use_largeimage to True when instantiating this Slide."
             )

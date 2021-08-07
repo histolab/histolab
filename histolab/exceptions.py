@@ -41,6 +41,10 @@ class LevelError(HistolabException):
     """Raised when a requested level is not available"""
 
 
+class MayNeedLargeImageError(HistolabException):
+    """Raised when a method likely requires usage of large_image module"""
+
+
 class SlidePropertyError(HistolabException):
     """Raised when a requested slide property is not available"""
 
