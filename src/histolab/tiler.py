@@ -333,7 +333,7 @@ class GridTiler(Tiler):
         tile_area = np.count_nonzero(tile_thumb_mask)
         tile_in_binary_mask_area = np.count_nonzero(tile_in_binary_mask)
 
-        return (
+        return tile_area > 0 and (
             tile_in_binary_mask_area / tile_area
             > COORDS_WITHIN_EXTRACTION_MASK_THRESHOLD
         )
