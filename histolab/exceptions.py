@@ -33,16 +33,16 @@ class HistolabException(Exception):
         return ""
 
 
+class FilterCompositionError(HistolabException):
+    """Raised when a filter composition for the class is not available"""
+
+
 class LevelError(HistolabException):
     """Raised when a requested level is not available"""
 
 
 class SlidePropertyError(HistolabException):
     """Raised when a requested slide property is not available"""
-
-
-class FilterCompositionError(HistolabException):
-    """Raised when a filter composition for the class is not available"""
 
 
 class TileSizeError(HistolabException):
