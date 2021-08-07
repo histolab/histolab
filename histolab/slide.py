@@ -26,8 +26,13 @@ import openslide
 import PIL
 from skimage.measure import find_contours
 
-from .exceptions import LevelError, SlidePropertyError
-from .exceptions import HistolabException, MayNeedLargeImageError
+from .exceptions import (
+    HistolabException,
+    LevelError,
+    MayNeedLargeImageError,
+    SlidePropertyError,
+    TileSizeOrCoordinatesError,
+)
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair
@@ -39,8 +44,9 @@ if TYPE_CHECKING:
 
 # If possible, use large_image because it extends openslide to more formats
 try:
-    import large_image
     from io import BytesIO
+
+    import large_image
 
     LARGEIMAGE_IS_INSTALLED = True
 
@@ -167,7 +173,7 @@ class Slide:
         if not self._has_valid_coords(coords):
             # OpenSlide doesn't complain if the coordinates for extraction are wrong,
             # but it returns an odd image.
-            raise ValueError(
+            raise TileSizeOrCoordinatesError(
                 f"Extraction Coordinates {coords} not valid for slide with dimensions "
                 f"{self.dimensions}"
             )

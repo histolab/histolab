@@ -8,7 +8,7 @@ from unittest.mock import call
 import numpy as np
 import pytest
 
-from histolab.exceptions import LevelError, TileSizeError
+from histolab.exceptions import LevelError, TileSizeOrCoordinatesError
 from histolab.masks import BiggestTissueBoxMask
 from histolab.scorer import RandomScorer
 from histolab.slide import Slide
@@ -416,10 +416,10 @@ class Describe_RandomTiler:
         random_tiler = RandomTiler((50, 52), n_tiles=10, level=0)
         binary_mask = BiggestTissueBoxMask()
 
-        with pytest.raises(TileSizeError) as err:
+        with pytest.raises(TileSizeOrCoordinatesError) as err:
             random_tiler.extract(slide, binary_mask)
 
-        assert isinstance(err.value, TileSizeError)
+        assert isinstance(err.value, TileSizeOrCoordinatesError)
         assert (
             str(err.value)
             == f"Tile size (50, 52) is larger than slide size {size} at level 0"
@@ -798,10 +798,10 @@ class Describe_GridTiler:
         grid_tiler = GridTiler((50, 52), level=0)
         binary_mask = BiggestTissueBoxMask()
 
-        with pytest.raises(TileSizeError) as err:
+        with pytest.raises(TileSizeOrCoordinatesError) as err:
             grid_tiler.extract(slide, binary_mask)
 
-        assert isinstance(err.value, TileSizeError)
+        assert isinstance(err.value, TileSizeOrCoordinatesError)
         assert (
             str(err.value)
             == f"Tile size (50, 52) is larger than slide size {size} at level 0"
@@ -1170,10 +1170,10 @@ class Describe_ScoreTiler:
         score_tiler = ScoreTiler(None, (50, 52), 2, 0)
         binary_mask = BiggestTissueBoxMask()
 
-        with pytest.raises(TileSizeError) as err:
+        with pytest.raises(TileSizeOrCoordinatesError) as err:
             score_tiler.extract(slide, binary_mask)
 
-        assert isinstance(err.value, TileSizeError)
+        assert isinstance(err.value, TileSizeOrCoordinatesError)
         assert (
             str(err.value)
             == f"Tile size (50, 52) is larger than slide size {size} at level 0"

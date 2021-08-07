@@ -49,5 +49,5 @@ class SlidePropertyError(HistolabException):
     """Raised when a requested slide property is not available"""
 
 
-class TileSizeError(HistolabException):
-    """Raised when the tile size is larger than the slide size"""
+class TileSizeOrCoordinatesError(HistolabException):
+    """Raised when the tile size or coordinates are incorrect relative to slide."""
