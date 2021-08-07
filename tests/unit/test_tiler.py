@@ -758,6 +758,7 @@ class Describe_GridTiler:
     @pytest.mark.parametrize(
         "tile_coords, expected_result",
         [
+            (CP(2, 6, 6, 7), False),  # bad edge coordinates from np.ceil/floor
             (CP(0, 0, 2, 2), False),  # completely outside of region
             (CP(0, 0, 8, 8), False),  # only 205
             (CP(2, 3, 6, 6), True),  # 85% in
