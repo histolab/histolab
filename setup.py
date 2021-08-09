@@ -36,8 +36,12 @@ version = re.search('__version__ = "([^"]+)"', init_py).group(1)
 install_requires = parse_requirements("requirements.txt")
 
 test_requires = [
+    "large-image",
+    "large-image-source-openslide",
+    "large-image-source-pil",
     "pytest",
     "pytest-xdist",
+    "pooch",
     "coverage",
     "pytest-cov",
     "pytest-benchmark",
