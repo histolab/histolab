@@ -552,10 +552,13 @@ class Slide:
 
         _, _, new_w, new_h = self._resampled_dimensions(scale_factor)
         if self._use_largeimage:
-            magnif = "magnification"
             kwargs = (
-                {"scale": {magnif: self._metadata[magnif] / scale_factor}}
-                if self._metadata[magnif] is not None
+                {
+                    "scale": {
+                        "magnification": self._metadata["magnification"] / scale_factor
+                    }
+                }
+                if self._metadata["magnification"] is not None
                 else {}
             )
             wsi_image, _ = self._tilesource.getRegion(
