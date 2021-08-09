@@ -64,9 +64,9 @@ class Tiler(Protocol):
     def extract(
         self,
         slide: Slide,
-        log_level: str,
         extraction_mask: BinaryMask = BiggestTissueBoxMask(),
-    ):
+        log_level: str = "INFO",
+    ) -> None:
         pass  # pragma: no cover
 
     def locate_tiles(
