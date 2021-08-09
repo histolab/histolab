@@ -179,14 +179,13 @@ class Describe_Slide:
         )
 
     def it_raises_miscellaneous_error(self):
-        slide = Slide(SVS.BROKEN, os.path.join(SVS.BROKEN, "processed"))
+        slide = Slide(path=None, processed_path=os.path.join(SVS.BROKEN, "processed"))
 
         with pytest.raises(HistolabException) as err:
-            slide._path = None
             slide._wsi
 
         assert isinstance(err.value, HistolabException)
-        assert str(err.value) == (
+        assert str(err.value).replace(",", "") == (
             "ArgumentError(\"argument 1: <class 'TypeError'>: Incorrect type\")"
             ". This slide may be corrupt or have a non-standard format not "
             "handled by the openslide and PIL libraries. Consider setting "
