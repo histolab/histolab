@@ -103,7 +103,14 @@ class Slide:
 
     @lazyproperty
     def base_mpp(self) -> float:
-        """Get microns-per-pixel resolution at scan magnification."""
+        """Get microns-per-pixel resolution at scan magnification.
+
+        Returns
+        -------
+        float
+            Microns-per-pixel resolution at scan (base) magnification.
+
+        """
         if self._use_largeimage:
             return self._metadata["mm_x"] * (10 ** 3)
 
