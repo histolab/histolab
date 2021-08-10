@@ -182,7 +182,11 @@ class Slide:
         coords : CoordinatePair
             Coordinates at level 0 from which to extract the tile.
         tile_size: tuple
-            Final size of the extracted tile (x,y).
+            Final size of the extracted tile (x,y). If you choose to specify
+            the `mpp` argument, you may elect to set this as `None` to return
+            the tile as-is from `large_image` without any resizing. This is not
+            recommended, as tile size may be off by a couple of pixels when
+            coordinates are mapped to the exact mpp you request.
         level : int
             Level from which to extract the tile. If you specify this, and
             `mpp` is None, `openslide` will be used to fetch tiles from this
@@ -233,7 +237,7 @@ class Slide:
             image = image.convert("RGB")
             # Sometimes when mpp kwarg is used, the image size is off from
             # what the user expects by a couple of pixels
-            if not tile_size == image.size:
+            if tile_size is not None and not tile_size == image.size:
                 if any(
                     np.abs(tile_size[i] - j) > TILE_SIZE_PIXEL_TOLERANCE
                     for i, j in enumerate(image.size)
@@ -250,7 +254,8 @@ class Slide:
                     )
                 image = image.resize(
                     tile_size,
-                    IMG_UPSAMPLE_MODE if tile_size[0] >= image.size[0]
+                    IMG_UPSAMPLE_MODE
+                    if tile_size[0] >= image.size[0]
                     else IMG_DOWNSAMPLE_MODE,
                 )
 
