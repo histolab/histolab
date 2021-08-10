@@ -56,6 +56,7 @@ except (ModuleNotFoundError, ImportError):  # pragma: no cover
 IMG_EXT = "png"
 IMG_UPSAMPLE_MODE = PIL.Image.BILINEAR
 IMG_DOWNSAMPLE_MODE = PIL.Image.BILINEAR
+TILE_SIZE_PIXEL_TOLERANCE = 5
 
 
 class Slide:
@@ -233,10 +234,23 @@ class Slide:
             # Sometimes when mpp kwarg is used, the image size is off from
             # what the user expects by a couple of pixels
             if not tile_size == image.size:
+                if any(
+                    np.abs(tile_size[i] - j) > TILE_SIZE_PIXEL_TOLERANCE
+                    for i, j in enumerate(image.size)
+                ):
+                    raise RuntimeError(
+                        f"The tile you requested at a resolution of {mpp} MPP "
+                        f"has a size of {image.size}, yet you specified a "
+                        f"final `tile_size` of {tile_size}, which is a very "
+                        "different value. When you set `mpp`, the `tile_size` "
+                        "parameter is used to resize fetched tiles if they "
+                        f"are off by just {TILE_SIZE_PIXEL_TOLERANCE} pixels "
+                        "due to rounding differences etc. Please check if you "
+                        "requested the right `mpp` and/or `tile_size`."
+                    )
                 image = image.resize(
                     tile_size,
-                    IMG_UPSAMPLE_MODE
-                    if tile_size[0] >= image.size[0]
+                    IMG_UPSAMPLE_MODE if tile_size[0] >= image.size[0]
                     else IMG_DOWNSAMPLE_MODE,
                 )
 
