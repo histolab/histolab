@@ -67,6 +67,20 @@ class Slide:
         Path where the WSI is saved.
     processed_path : Union[str, pathlib.Path]
         Path where the tiles will be saved to.
+    use_largeimage : bool
+        Whether or not to use the ``large_image`` package for accessing the
+        slide and extracting or calculating various metadata. If this is False,
+        ``openslide`` is used. If it is True, ``large_image`` will try from the
+        various installed tile sources. For example, if you installed it using
+        ``large_image[all]``, it will try ``openslide`` first, then ``PIL`` and
+        so on, depending on the slide format and metadata. ``large_image`` also
+        handles a lot of internal logic like allowing fetching exact
+        micro-per-pixel resolution tiles by interpolating between the internal
+        levels of the slide. If you don't mind installing an extra dependency,
+        we recommend setting this to True and fetching Tiles at exact
+        resolutions as opposed to levels. Different scanners have different
+        specifications, and the same level may not always encode the same
+        magnification in different scanners and slide formats.
 
     Raises
     ------
