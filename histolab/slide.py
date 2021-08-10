@@ -68,15 +68,15 @@ class Slide:
     processed_path : Union[str, pathlib.Path]
         Path where the tiles will be saved to.
     use_largeimage : bool
-        Whether or not to use the ``large_image`` package for accessing the
-        slide and extracting or calculating various metadata. If this is False,
-        ``openslide`` is used. If it is True, ``large_image`` will try from the
-        various installed tile sources. For example, if you installed it using
-        ``large_image[all]``, it will try ``openslide`` first, then ``PIL`` and
-        so on, depending on the slide format and metadata. ``large_image`` also
-        handles a lot of internal logic like allowing fetching exact
-        micro-per-pixel resolution tiles by interpolating between the internal
-        levels of the slide. If you don't mind installing an extra dependency,
+        Whether or not to use the `large_image` package for accessing the
+        slide and extracting or calculating various metadata. If this is
+        `False`, `openslide` is used. If it is `True`, `large_image` will try
+        from the various installed tile sources. For example, if you installed
+        it using `large_image[all]`, it will try `openslide` first, then `PIL`,
+        and so on, depending on the slide format and metadata. `large_image`
+        also handles internal logic to enable fetching exact micro-per-pixel
+        resolution tiles by interpolating between the internal levels of the
+        slide. If you don't mind installing an extra dependency,
         we recommend setting this to True and fetching Tiles at exact
         resolutions as opposed to levels. Different scanners have different
         specifications, and the same level may not always encode the same
@@ -183,9 +183,14 @@ class Slide:
         tile_size: tuple
             Final size of the extracted tile (x,y).
         level : int
-            Level from which to extract the tile.
+            Level from which to extract the tile. If you specify this, and
+            `mpp` is None, `openslide` will be used to fetch tiles from this
+            level from the slide. `openslide` is used for fetching tiles by
+            level, regardless of `self.use_largeimage`.
         mpp : float
-            Micron per pixel resolution. Takes precedence over level.
+            Micron per pixel resolution. Takes precedence over level. If this
+            is not None, `large_image` will be used to fetch tiles at the exact
+            microns-per-pixel resolution requested.
 
         Returns
         -------

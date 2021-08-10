@@ -115,9 +115,7 @@ class Describe_Slide:
 
     def it_raises_error_with_unknown_mpp_with_largeimage(self, tmpdir):
         slide, _ = base_test_slide(
-            tmpdir,
-            PILIMG.RGBA_COLOR_500X500_155_249_240,
-            use_largeimage=True
+            tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=True
         )
 
         with pytest.raises(ValueError) as err:
