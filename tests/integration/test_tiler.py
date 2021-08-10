@@ -8,7 +8,7 @@ from PIL import Image
 
 from histolab.masks import BiggestTissueBoxMask, TissueMask
 from histolab.scorer import NucleiScorer
-from histolab.slide import Slide
+from histolab.slide import Slide, TILE_SIZE_PIXEL_TOLERANCE
 from histolab.tiler import GridTiler, RandomTiler, ScoreTiler
 
 from ..fixtures import EXTERNAL_SVS, SVS, TIFF
@@ -153,15 +153,14 @@ class DescribeRandomTiler:
             (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 0, 42, 10, None),
             (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 1, 2, 20, None),
             (SVS.TCGA_CR_7395_01A_01_TS1, (128, 128), 0, 2, 10, None),
-            (SVS.CMU_1_SMALL_REGION, (128, 128), 0, 2, 10, 0.5),
+            (SVS.CMU_1_SMALL_REGION, (128, 128), 0, 2, 5, 0.5),
             (TIFF.KIDNEY_48_5, (10, 10), 0, 20, 20, None),
             (TIFF.KIDNEY_48_5, (20, 20), 0, 20, 10, None),
             # Not squared tile size
             (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 1, 42, 20, None),
             (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 0, 42, 10, None),
             (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 1, 2, 20, None),
-            (SVS.CMU_1_SMALL_REGION, (135, 128), 0, 2, 10, 0.5),  # resized
-            (SVS.CMU_1_SMALL_REGION, (128, 126), 0, 2, 10, 0.5),  # not resized
+            (SVS.CMU_1_SMALL_REGION, (126, 128), 0, 10, 5, 0.5),
             (TIFF.KIDNEY_48_5, (10, 20), 0, 2, 10, None),
             (TIFF.KIDNEY_48_5, (20, 10), 0, 20, 20, None),
             (TIFF.KIDNEY_48_5, (10, 15), 0, 20, 10, None),
@@ -187,6 +186,83 @@ class DescribeRandomTiler:
 
         for tile in os.listdir(processed_path):
             assert Image.open(os.path.join(processed_path, tile)).size == tile_size
+
+    @pytest.mark.parametrize(
+        "fixture_slide, n_tiles, mpp, expected_tile_sizes",
+        (
+            (
+                SVS.CMU_1_SMALL_REGION,
+                3,
+                0.5,
+                ((127, 127), (127, 127), (127, 127)),
+            ),
+            (
+                SVS.CMU_1_SMALL_REGION,
+                3,
+                0.25,
+                ((127, 127), (129, 127), (127, 127)),
+            ),
+        ),
+    )
+    def test_extract_tiles_at_mpp_not_respecting_given_tile_size(
+        self, tmpdir, fixture_slide, n_tiles, mpp, expected_tile_sizes
+    ):
+        processed_path = os.path.join(tmpdir, "processed")
+        slide = Slide(fixture_slide, processed_path, use_largeimage=True)
+        random_tiles_extractor = RandomTiler(
+            tile_size=(128, 128),
+            n_tiles=n_tiles,
+            seed=0,
+            check_tissue=True,
+            mpp=mpp,
+        )
+        binary_mask = BiggestTissueBoxMask()
+
+        random_tiles_extractor.final_tile_size = None
+        random_tiles_extractor.extract(slide, binary_mask)
+
+        for tidx, tile in enumerate(os.listdir(processed_path)):
+            assert (
+                Image.open(os.path.join(processed_path, tile)).size
+                == expected_tile_sizes[tidx]
+            )
+
+    @pytest.mark.parametrize(
+        "fixture_slide, tile_size",
+        (
+            (SVS.CMU_1_SMALL_REGION, (300, 300)),
+            (SVS.CMU_1_SMALL_REGION, (20, 15)),
+        ),
+    )
+    def test_raise_error_if_mpp_and_discordant_tile_size(
+        self, tmpdir, fixture_slide, tile_size
+    ):
+        processed_path = os.path.join(tmpdir, "processed")
+        slide = Slide(fixture_slide, processed_path, use_largeimage=True)
+        random_tiles_extractor = RandomTiler(
+            tile_size=(128, 128),
+            n_tiles=3,
+            seed=0,
+            check_tissue=True,
+            mpp=0.5,
+        )
+        binary_mask = BiggestTissueBoxMask()
+
+        with pytest.raises(RuntimeError) as err:
+            random_tiles_extractor.final_tile_size = tile_size
+            random_tiles_extractor.extract(slide, binary_mask)
+
+        assert isinstance(err.value, RuntimeError)
+        assert str(err.value) == (
+            f"The tile you requested at a resolution of 0.5 MPP "
+            f"has a size of (128, 126), yet you specified a "
+            f"final `tile_size` of {tile_size}, which is a very "
+            "different value. When you set `mpp`, the `tile_size` "
+            "parameter is used to resize fetched tiles if they "
+            f"are off by just {TILE_SIZE_PIXEL_TOLERANCE} pixels "
+            "due to rounding differences etc. Please check if you "
+            "requested the right `mpp` and/or `tile_size`."
+        )
 
 
 class DescribeGridTiler:
