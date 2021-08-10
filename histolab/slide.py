@@ -126,7 +126,14 @@ class Slide:
 
         """
         if self._use_largeimage:
-            return self._metadata["mm_x"] * (10 ** 3)
+            if self._metadata["mm_x"] is not None:
+                return self._metadata["mm_x"] * (10 ** 3)
+            raise ValueError(
+                "Unknown scan resolution! This slide is missing metadata "
+                "needed for calculating the scanning resolution. Without "
+                "this information, you can only ask for a tile by level, "
+                "not mpp resolution."
+            )
 
         if "openslide.mpp-x" in self.properties:
             return float(self.properties["openslide.mpp-x"])

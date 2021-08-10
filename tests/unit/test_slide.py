@@ -100,7 +100,7 @@ class Describe_Slide:
 
         assert name == expected_value
 
-    def it_raises_error_with_unknown_mpp(self, tmpdir):
+    def it_raises_error_with_unknown_mpp_without_largeimage(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         with pytest.raises(MayNeedLargeImageError) as err:
@@ -111,6 +111,24 @@ class Describe_Slide:
             "Unknown scan magnification! This slide format may be best "
             "handled using the large_image module. Consider setting "
             "use_largeimage to True when instantiating this Slide."
+        )
+
+    def it_raises_error_with_unknown_mpp_with_largeimage(self, tmpdir):
+        slide, _ = base_test_slide(
+            tmpdir,
+            PILIMG.RGBA_COLOR_500X500_155_249_240,
+            use_largeimage=True
+        )
+
+        with pytest.raises(ValueError) as err:
+            slide.base_mpp
+
+        assert isinstance(err.value, ValueError)
+        assert str(err.value) == (
+            "Unknown scan resolution! This slide is missing metadata "
+            "needed for calculating the scanning resolution. Without "
+            "this information, you can only ask for a tile by level, "
+            "not mpp resolution."
         )
 
     def it_has_largeimage_tilesource(self, tmpdir):
