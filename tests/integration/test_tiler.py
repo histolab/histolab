@@ -160,7 +160,8 @@ class DescribeRandomTiler:
             (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 1, 42, 20, None),
             (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 0, 42, 10, None),
             (SVS.TCGA_CR_7395_01A_01_TS1, (135, 128), 1, 2, 20, None),
-            (SVS.CMU_1_SMALL_REGION, (135, 128), 0, 2, 10, 0.5),
+            (SVS.CMU_1_SMALL_REGION, (135, 128), 0, 2, 10, 0.5),  # resized
+            (SVS.CMU_1_SMALL_REGION, (128, 126), 0, 2, 10, 0.5),  # not resized
             (TIFF.KIDNEY_48_5, (10, 20), 0, 2, 10, None),
             (TIFF.KIDNEY_48_5, (20, 10), 0, 20, 20, None),
             (TIFF.KIDNEY_48_5, (10, 15), 0, 20, 10, None),
