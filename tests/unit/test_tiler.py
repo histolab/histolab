@@ -805,14 +805,11 @@ class Describe_GridTiler:
     ):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         _extract_tile = method_mock(request, Slide, "extract_tile")
-
         coords = CP(0, 10, 0, 10)
         tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, coords)
         mock_tiles = [(tile, coords)] * n_tiles
-
         _tiles_generator = method_mock(request, GridTiler, "_tiles_generator")
         _tiles_generator.return_value = mock_tiles
-
         _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
         _has_enough_tissue.side_effect = True
         _grid_coordinates_generator = method_mock(
@@ -821,6 +818,7 @@ class Describe_GridTiler:
         _grid_coordinates_generator.return_value = [CP(0, 10, 0, 10), CP(0, 10, 0, 10)]
         _extract_tile.side_effect = mock_tiles
         grid_tiler = GridTiler((10, 10))
+        
         with pytest.raises(ValueError) as err:
             grid_tiler.locate_tiles(slide=slide, outline=outline)
 

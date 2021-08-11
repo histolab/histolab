@@ -76,7 +76,7 @@ class Tiler(Protocol):
         alpha: int = 128,
         outline: Union[str, Iterable[str], Iterable[Tuple[int]]] = "red",
         linewidth: int = 1,
-        tiles: Iterable[Tile] = None,
+        tiles: Optional[Iterable[Tile]] = None,
     ) -> PIL.Image.Image:
         """Draw tile box references on a rescaled version of the slide
 
@@ -87,26 +87,26 @@ class Tiler(Protocol):
         extraction_mask : BinaryMask, optional
             BinaryMask object defining how to compute a binary mask from a Slide.
             Default `BiggestTissueBoxMask`
-        scale_factor: int, optional
+        scale_factor : int, optional
             Scaling factor for the returned image. Default is 32.
-        alpha: int, optional
+        alpha : int, optional
             The alpha level to be applied to the rescaled slide. Default is 128.
-        outline: Union[str, Iterable[str], Iterable[Tuple[int]]], optional
+        outline : Union[str, Iterable[str], Iterable[Tuple[int]]], optional
             The outline color for the tile annotations. Default is 'red'.
             You can provide this as a string compatible with matplotlib, or
             you can provide a list of the same length as the tiles, where
             each color is your assigned color for the corresponding individual
             tile. This list can be a list of matplotlib-style string colors, or
-            it maybe a list of tuples of ints in the [0, 255] range, each of
+            a list of tuples of ints in the [0, 255] range, each of
             length 3, representing the red, green and blue color for each tile.
             For example, if you have two tiles that you want to be colored
             yellow, you can pass this argument as any of the following ..
             - 'yellow'
             - ['yellow', 'yellow']
             - [(255, 255, 0), (255, 255, 0)]
-        linewidth: int, optional
+        linewidth : int, optional
             Thickness of line used to draw tiles. Default is 1.
-        tiles: Iterable[Tile], optional
+        tiles : Optional[Iterable[Tile]], optional
             Tiles to visualize. Will be extracted if None. Default is None.
             You may decide to provide this argument if you do not want the
             tiles to be re-extracted for visualization if you already have
@@ -167,15 +167,15 @@ class Tiler(Protocol):
 
         Parameters
         ----------
-        tiles_coords: Iterable[CoordinatePair]
-            Coordinates referring to the upper left and lower right corners.
-        outlines: Union[str, Iterable[str], Iterable[Tuple[int]]]
+        tiles_coords : Iterable[CoordinatePair]
+            Coordinates referring to the tiles' upper left and lower right corners.
+        outlines : Union[str, Iterable[str], Iterable[Tuple[int]]]
             See docstring for ``locate_tiles`` for details.
 
         Yields
         -------
         CoordinatePair
-            Coordinates referring to the upper left and lower right corners.
+            Coordinates referring to the tiles' upper left and lower right corners.
         Union[str, Tuple[int]]
             Fixed outline depending on user input to used by method ``locate_tiles``.
         """
