@@ -21,7 +21,7 @@ import logging
 import os
 from abc import abstractmethod
 from itertools import zip_longest
-from typing import Iterable, List, Tuple, Union
+from typing import Iterable, List, Optional, Tuple, Union
 
 import numpy as np
 import PIL
