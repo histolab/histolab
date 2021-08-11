@@ -804,19 +804,11 @@ class Describe_GridTiler:
         self, request, tmpdir, outline, n_tiles, error_msg
     ):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
-        _extract_tile = method_mock(request, Slide, "extract_tile")
         coords = CP(0, 10, 0, 10)
         tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, coords)
         mock_tiles = [(tile, coords)] * n_tiles
         _tiles_generator = method_mock(request, GridTiler, "_tiles_generator")
         _tiles_generator.return_value = mock_tiles
-        _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
-        _has_enough_tissue.side_effect = True
-        _grid_coordinates_generator = method_mock(
-            request, GridTiler, "_grid_coordinates_generator"
-        )
-        _grid_coordinates_generator.return_value = [CP(0, 10, 0, 10), CP(0, 10, 0, 10)]
-        _extract_tile.side_effect = mock_tiles
         grid_tiler = GridTiler((10, 10))
 
         with pytest.raises(ValueError) as err:
@@ -825,48 +817,33 @@ class Describe_GridTiler:
         assert str(err.value) == error_msg
 
     @pytest.mark.parametrize(
-        "alpha, pass_tiles, outline, expected_topleft",
+        "pass_tiles, outline, expected_topleft",
         (
-            (128, False, "red", (255, 255, 155, 155)),
-            (255, True, ["red", "red"], (255, 255, 155, 155)),
-            (255, True, [(255, 0, 0), (255, 0, 0)], (255, 255, 155, 155)),
+            (False, "red", (255, 255, 155, 155)),
+            (True, ["red", "red"], (255, 255, 155, 155)),
+            (True, [(255, 0, 0), (255, 0, 0)], (255, 255, 155, 155)),
         ),
     )
     def it_can_locate_tiles(
-        self, request, tmpdir, alpha, pass_tiles, outline, expected_topleft
+        self, request, tmpdir, pass_tiles, outline, expected_topleft
     ):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
-        _extract_tile = method_mock(request, Slide, "extract_tile")
-
         coords = CP(0, 10, 0, 10)
         tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, coords)
         mock_tiles = [(tile, coords), (tile, coords)]
-
-        _tiles_generator = method_mock(request, GridTiler, "_tiles_generator")
-        _tiles_generator.return_value = mock_tiles
-
-        _has_enough_tissue = method_mock(request, Tile, "has_enough_tissue")
-        _has_enough_tissue.side_effect = True
-        _grid_coordinates_generator = method_mock(
-            request, GridTiler, "_grid_coordinates_generator"
+        method_mock(request, GridTiler, "_tiles_generator", return_value=mock_tiles)
+        method_mock(
+            request,
+            GridTiler,
+            "_grid_coordinates_generator",
+            return_value=[CP(0, 10, 0, 10), CP(0, 10, 0, 10)],
         )
-        _grid_coordinates_generator.return_value = [CP(0, 10, 0, 10), CP(0, 10, 0, 10)]
-        _extract_tile.side_effect = mock_tiles
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=True, tissue_percent=60)
-        binary_mask = BiggestTissueBoxMask()
-
-        img = grid_tiler.locate_tiles(
-            slide=slide,
-            extraction_mask=binary_mask,
-            alpha=alpha,
-            outline=outline,
-            tiles=None
-            if not pass_tiles
-            else list(grid_tiler._tiles_generator(slide, binary_mask)),
-        )
+        tiles = None if not pass_tiles else mock_tiles
+        img = grid_tiler.locate_tiles(slide=slide, outline=outline, tiles=tiles)
         img = np.uint8(img)
 
-        assert img.shape == (15, 15, 4 if alpha else 3)
+        assert img.shape == (15, 15, 4)
         assert tuple(img[:4, 0, 0]) == expected_topleft
 
 
