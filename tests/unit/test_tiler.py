@@ -818,7 +818,7 @@ class Describe_GridTiler:
         _grid_coordinates_generator.return_value = [CP(0, 10, 0, 10), CP(0, 10, 0, 10)]
         _extract_tile.side_effect = mock_tiles
         grid_tiler = GridTiler((10, 10))
-        
+
         with pytest.raises(ValueError) as err:
             grid_tiler.locate_tiles(slide=slide, outline=outline)
 
