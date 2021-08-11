@@ -110,8 +110,7 @@ class Tiler(Protocol):
             Tiles to visualize. Will be extracted if None. Default is None.
             You may decide to provide this argument if you do not want the
             tiles to be re-extracted for visualization if you already have
-            the tiles in hand from, say, the ``_tiles_generator`` method of
-            the ``Tiler`` class.
+            the tiles in hand.
 
         Returns
         -------
@@ -185,7 +184,7 @@ class Tiler(Protocol):
 
         elif hasattr(outlines, "__iter__"):
             for coords, one_outline in zip_longest(tiles_coords, outlines):
-                if any(j is None for j in (coords, one_outline)):
+                if None in (coords, one_outline):
                     raise ValueError(
                         "There should be as many outlines as there are tiles!"
                     )
