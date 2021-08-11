@@ -68,14 +68,14 @@ class Slide:
         Path where the WSI is saved.
     processed_path : Union[str, pathlib.Path]
         Path where the tiles will be saved to.
-    use_largeimage : bool
+    use_largeimage : bool, optional
         Whether or not to use the `large_image` package for accessing the
         slide and extracting or calculating various metadata. If this is
         `False`, `openslide` is used. If it is `True`, `large_image` will try
         from the various installed tile sources. For example, if you installed
         it using `large_image[all]`, it will try `openslide` first, then `PIL`,
         and so on, depending on the slide format and metadata. `large_image`
-        also handles internal logic to enable fetching exact micro-per-pixel
+        also handles internal logic to enable fetching exact micron-per-pixel
         resolution tiles by interpolating between the internal levels of the
         slide. If you don't mind installing an extra dependency,
         we recommend setting this to True and fetching Tiles at exact
@@ -93,7 +93,7 @@ class Slide:
         self,
         path: Union[str, pathlib.Path],
         processed_path: Union[str, pathlib.Path],
-        use_largeimage=False,
+        use_largeimage: bool = False,
     ) -> None:
         self._path = str(path) if isinstance(path, pathlib.Path) else path
 
@@ -171,7 +171,7 @@ class Slide:
     def extract_tile(
         self,
         coords: CoordinatePair,
-        tile_size: Tuple,
+        tile_size: Tuple[int, int],
         level: int = None,
         mpp: float = None,
     ) -> Tile:
@@ -181,7 +181,7 @@ class Slide:
         ----------
         coords : CoordinatePair
             Coordinates at level 0 from which to extract the tile.
-        tile_size: tuple
+        tile_size : Tuple[int, int]
             Final size of the extracted tile (x,y). If you choose to specify
             the `mpp` argument, you may elect to set this as `None` to return
             the tile as-is from `large_image` without any resizing. This is not
@@ -203,7 +203,7 @@ class Slide:
             Image containing the selected tile.
         """
         if level is None and mpp is None:
-            raise ValueError("either level or mpp must be provided!")
+            raise ValueError("Either level or mpp must be provided!")
 
         if level is not None:
             level = level if level >= 0 else self._remap_level(level)
@@ -509,7 +509,7 @@ class Slide:
 
         Returns
         -------
-        PIL.Image
+        PIL.Image.Image
             A PIL Image object converted from the Bytes input.
         """
         image_content = BytesIO(bytesim)
@@ -687,7 +687,7 @@ class Slide:
         )
 
     @lazyproperty
-    def _tilesource(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
+    def _tile_source(self) -> Union[openslide.OpenSlide, openslide.ImageSlide]:
         """Open the slide and returns a large_image tile source object
 
         Returns
@@ -714,7 +714,7 @@ class Slide:
             An OpenSlide object representing a whole-slide image.
         """
         bad_format_error = (
-            "This slide may be corrupt or have a non-standard format not "
+            "This slide may be corrupted or have a non-standard format not "
             "handled by the openslide and PIL libraries. Consider setting "
             "use_largeimage to True when instantiating this Slide."
         )

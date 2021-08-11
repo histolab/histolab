@@ -144,8 +144,8 @@ class Tiler(Protocol):
 
         Parameters
         ----------
-        slide: Slide
-            The slide we want to tile.
+        slide : Slide
+            The slide to tile.
 
         Returns
         -------
@@ -158,8 +158,8 @@ class Tiler(Protocol):
         if self.mpp is None:
             return self.tile_size, 1.0
 
-        sf = self.mpp / slide.base_mpp
-        return tuple(int(j * sf) for j in self.tile_size), sf
+        scale_factor = self.mpp / slide.base_mpp
+        return tuple(int(j * scale_factor) for j in self.tile_size), scale_factor
 
     def _has_valid_tile_size(self, slide: Slide) -> bool:
         """Return True if the tile size is smaller or equal than the ``slide`` size.
@@ -315,7 +315,7 @@ class GridTiler(Tiler):
     suffix : str, optional
         Suffix to be added to the tile filename. Default is '.png'
     mpp : float, optional
-        Micron per pixel resolution of extracted tiles. Takes precedence over level.
+        Micron per pixel resolution of extracted tiles. Takes precedence over level. Default is None.
     """
 
     def __init__(
@@ -609,11 +609,11 @@ class GridTiler(Tiler):
 
         Parameters
         ----------
-        slide: Slide
-            The slide we want to tile.
+        slide : Slide
+            The slide to tile.
         """
-        self.tile_size, sf = self._get_proper_tile_size(slide)
-        self.pixel_overlap = int(sf * self.pixel_overlap)
+        self.tile_size, scale_factor = self._get_proper_tile_size(slide)
+        self.pixel_overlap = int(scale_factor * self.pixel_overlap)
 
 
 class RandomTiler(Tiler):
@@ -645,7 +645,7 @@ class RandomTiler(Tiler):
         Maximum number of iterations performed when searching for eligible (if
         ``check_tissue=True``) tiles. Must be grater than or equal to ``n_tiles``.
     mpp : float, optional
-        Micron per pixel resolution. If provided, takes precedence over level.
+        Micron per pixel resolution. If provided, takes precedence over level. Default is None.
     """
 
     def __init__(
@@ -787,8 +787,8 @@ class RandomTiler(Tiler):
 
         Parameters
         ----------
-        slide: Slide
-            The slide we want to tile.
+        slide : Slide
+            The slide to tile.
         """
         self.tile_size, _ = self._get_proper_tile_size(slide)
 
@@ -877,7 +877,7 @@ class ScoreTiler(GridTiler):
     suffix : str, optional
         Suffix to be added to the tile filename. Default is '.png'
     mpp : float, optional.
-        Micron per pixel resolution. If provided, takes precedence over level.
+        Micron per pixel resolution. If provided, takes precedence over level. Default is None.
     """
 
     def __init__(
