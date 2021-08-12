@@ -832,12 +832,6 @@ class Describe_GridTiler:
         tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, coords)
         mock_tiles = [(tile, coords), (tile, coords)]
         method_mock(request, GridTiler, "_tiles_generator", return_value=mock_tiles)
-        method_mock(
-            request,
-            GridTiler,
-            "_grid_coordinates_generator",
-            return_value=[CP(0, 10, 0, 10), CP(0, 10, 0, 10)],
-        )
         grid_tiler = GridTiler((10, 10), level=0, check_tissue=True, tissue_percent=60)
         tiles = None if not pass_tiles else mock_tiles
         img = grid_tiler.locate_tiles(slide=slide, outline=outline, tiles=tiles)
