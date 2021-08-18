@@ -1,6 +1,17 @@
 import numpy as np
 import pytest
-from tests.unitutil import (
+
+from histolab.filters.compositions import (
+    _SlideFiltersComposition,
+    _TileFiltersComposition,
+)
+from histolab.filters.image_filters import Compose
+from histolab.filters.morphological_filters import BinaryFillHoles, RemoveSmallObjects
+from histolab.masks import BiggestTissueBoxMask, TissueMask
+from histolab.tile import Tile
+from histolab.types import CP, Region
+
+from ..unitutil import (
     PILIMG,
     base_test_slide,
     class_mock,
@@ -8,12 +19,6 @@ from tests.unitutil import (
     method_mock,
     property_mock,
 )
-
-from histolab.filters.compositions import _SlideFiltersComposition
-from histolab.filters.image_filters import Compose
-from histolab.filters.morphological_filters import RemoveSmallObjects
-from histolab.masks import BiggestTissueBoxMask, TissueMask
-from histolab.types import CP, Region
 
 
 class DescribeBiggestTissueBoxMask:
@@ -102,7 +107,7 @@ class DescribeBiggestTissueBoxMask:
 
 
 class DescribeTissueMask:
-    def it_knows_its_mask(
+    def it_knows_its_mask_slide(
         self,
         request,
         tmpdir,
@@ -133,6 +138,28 @@ class DescribeTissueMask:
         tissue_mask = TissueMask()
 
         binary_mask = tissue_mask(slide)
+
+        assert binary_mask == expected_mask
+
+    def it_knows_its_mask_tile(
+        self, request, RgbToGrayscale_, OtsuThreshold_, BinaryDilation_
+    ):
+        tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, None, None)
+        main_tissue_areas_mask_filters_ = property_mock(
+            request, _TileFiltersComposition, "tissue_mask_filters"
+        )
+        expected_mask = [
+            [True, True],
+            [False, True],
+        ]
+        binary_fill_holes = method_mock(request, BinaryFillHoles, "__call__")
+        binary_fill_holes.return_value = expected_mask
+        main_tissue_areas_mask_filters_.return_value = Compose(
+            [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles()]
+        )
+        tissue_mask = TissueMask()
+
+        binary_mask = tissue_mask(tile)
 
         assert binary_mask == expected_mask
 
