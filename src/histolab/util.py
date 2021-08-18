@@ -18,6 +18,7 @@
 
 import functools
 import warnings
+from functools import singledispatch, update_wrapper
 from typing import Any, Callable, List, Tuple
 
 import numpy as np
@@ -313,3 +314,34 @@ def lazyproperty(f: Callable[..., Any]):
     """
     # pylint: disable=unused-variable
     return property(functools.lru_cache(maxsize=100)(f))
+
+
+def method_dispatch(func: Callable[..., Any]) -> Callable[..., Any]:
+    """Decorator like @singledispatch to dispatch on the second argument of a method.
+
+    It relies on @singledispatch to return a wrapper function that selects which
+    registered function to call based on the type of the second argument.
+
+    This is implementation is required in order to be compatible with Python versions
+    older than 3.8. In the future we could use ``functools.singledispatchmethod``.
+
+    Source: https://stackoverflow.com/a/24602374/7162549
+
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        Method to dispatch
+
+    Returns
+    -------
+    Callable[..., Any]
+        Selected method
+    """
+    dispatcher = singledispatch(func)
+
+    def wrapper(*args, **kw):
+        return dispatcher.dispatch(args[1].__class__)(*args, **kw)
+
+    wrapper.register = dispatcher.register
+    update_wrapper(wrapper, func)
+    return wrapper
