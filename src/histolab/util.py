@@ -18,7 +18,6 @@
 
 import functools
 import warnings
-from functools import singledispatch, update_wrapper
 from typing import Any, Callable, List, Tuple
 
 import numpy as np
@@ -337,11 +336,11 @@ def method_dispatch(func: Callable[..., Any]) -> Callable[..., Any]:
     Callable[..., Any]
         Selected method
     """
-    dispatcher = singledispatch(func)
+    dispatcher = functools.singledispatch(func)
 
     def wrapper(*args, **kw):
         return dispatcher.dispatch(args[1].__class__)(*args, **kw)
 
     wrapper.register = dispatcher.register
-    update_wrapper(wrapper, func)
+    functools.update_wrapper(wrapper, func)
     return wrapper
