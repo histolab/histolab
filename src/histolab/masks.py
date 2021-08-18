@@ -24,9 +24,11 @@ import numpy as np
 import histolab
 
 from .filters.compositions import FiltersComposition
+from .tile import Tile
 from .types import Region
 from .util import (
     lazyproperty,
+    method_dispatch,
     rectangle_to_mask,
     region_coordinates,
     regions_from_binary_mask,
@@ -135,6 +137,7 @@ class TissueMask(BinaryMask):
     chain of filters."""
 
     @lru_cache(maxsize=100)
+    @method_dispatch
     def _mask(self, slide) -> np.ndarray:
         """Return the thumbnail binary mask of the tissue area.
 
@@ -152,3 +155,23 @@ class TissueMask(BinaryMask):
         filters = FiltersComposition(histolab.slide.Slide).tissue_mask_filters
         thumb_mask = filters(thumb)
         return thumb_mask
+
+    @lru_cache(maxsize=100)
+    @_mask.register(Tile)
+    def _(self, tile: Tile) -> np.ndarray:
+        """Return the thumbnail binary mask of the tissue area.
+
+        Parameters
+        ----------
+        tile : Tile
+            The Tile from which to compute the extraction mask
+
+        Returns
+        -------
+        mask: np.ndarray
+            Binary mask of the tissue area. The dimensions are those of the tile.
+        """
+        tile_img = tile.image
+        filters = FiltersComposition(Tile).tissue_mask_filters
+        tile_mask = filters(tile_img)
+        return tile_mask
