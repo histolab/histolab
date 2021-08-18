@@ -6,7 +6,22 @@ import operator
 
 import numpy as np
 import pytest
-from tests.base import (
+
+from histolab.types import CP, Region
+from histolab.util import (
+    apply_mask_image,
+    lazyproperty,
+    method_dispatch,
+    np_to_pil,
+    random_choice_true_mask2d,
+    rectangle_to_mask,
+    region_coordinates,
+    regions_to_binary_mask,
+    scale_coordinates,
+    threshold_to_mask,
+)
+
+from ..base import (
     COMPLEX_MASK,
     IMAGE1_GRAY,
     IMAGE1_RGB,
@@ -21,20 +36,6 @@ from tests.base import (
     IMAGE4_RGB_WHITE,
     IMAGE4_RGBA_WHITE,
 )
-
-from histolab.types import CP, Region
-from histolab.util import (
-    apply_mask_image,
-    lazyproperty,
-    np_to_pil,
-    random_choice_true_mask2d,
-    rectangle_to_mask,
-    region_coordinates,
-    regions_to_binary_mask,
-    scale_coordinates,
-    threshold_to_mask,
-)
-
 from ..fixtures import MASKNPY, NPY
 from ..util import load_expectation, load_python_expression
 
@@ -239,3 +240,22 @@ class DescribeLazyPropertyDecorator:
     @pytest.fixture
     def obj(self, Obj):
         return Obj()
+
+
+def test_method_dispatch():
+    class Obj(object):
+        def __init__(self, **kwargs):
+            for k, v in kwargs.items():
+                setattr(self, k, v)
+
+        @method_dispatch
+        def get(self, arg):
+            return getattr(self, arg, None)
+
+        @get.register(list)
+        def _(self, arg):
+            return [self.get(x) for x in arg]
+
+    obj = Obj(a=1, b=2, c=3)
+    assert obj.get("b") == 2
+    assert obj.get(["a", "c"]) == [1, 3]
