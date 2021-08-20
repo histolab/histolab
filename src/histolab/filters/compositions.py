@@ -97,7 +97,6 @@ class FiltersComposition:
             - `morphological_filters.BinaryFillHoles(structure=np.ones((5, 5)))
               <morphological_filters.html#src.histolab.filters.morphological_filters.BinaryFillHoles>`_
         """
-        pass  # pragma: no cover
 
 
 class _SlideFiltersComposition(FiltersComposition):
