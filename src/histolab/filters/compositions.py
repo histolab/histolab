@@ -31,6 +31,14 @@ class FiltersComposition:
     ---------
     cls_ : type, {Tile, Slide}
         The class to get the appropriate filters composition for
+
+
+    Example:
+        >>> from histolab.filters.compositions import FiltersComposition
+        >>> from histolab.slide import Slide
+        >>> from histolab.tile import Tile
+        >>> filters_slide = FiltersComposition(Slide).tissue_mask_filters
+        >>> filters_tile = FiltersComposition(Tile).tissue_mask_filters
     """
 
     def __new__(cls: type, cls_):
@@ -46,6 +54,41 @@ class FiltersComposition:
         raise FilterCompositionError(
             f"Filters composition for the class {cls_.__name__} is not available"
         )
+
+    @lazyproperty
+    def tissue_mask_filters(self) -> imf.Compose:
+        """Return filters composition based on the ``cls_`` parameter.
+
+
+        Returns
+        -------
+        imf.Compose
+
+            If the ``cls_`` parameter is the class ``Slide`` the returned filters chain is
+            composed of:
+
+            - `image_filters.RgbToGrayscale() <image_filters.html#src.histolab.filters.image_filters.RgbToGrayscale>`_
+
+            - `image_filters.OtsuThreshold() <image_filters.html#src.histolab.filters.image_filters.OtsuThreshold>`_
+
+            - `morphological_filters.BinaryDilation() <morphological_filters.html#src.histolab.filters.morphological_filters.BinaryDilation>`_
+
+            - `morphological_filters.RemoveSmallHoles() <morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallHoles>`_
+
+            - `morphological_filters.RemoveSmallObjects() <morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallObjects>`_
+
+            If the ``cls_`` parameter is the class ``Tile`` the returned filters chain is
+            composed of:
+
+            - `image_filters.RgbToGrayscale() <image_filters.html#src.histolab.filters.image_filters.RgbToGrayscale>`_
+
+            - `image_filters.OtsuThreshold() <image_filters.html#src.histolab.filters.image_filters.OtsuThreshold>`_
+
+            - `morphological_filters.BinaryDilation() <morphological_filters.html#src.histolab.filters.morphological_filters.BinaryDilation>`_
+
+            - `morphological_filters.BinaryFillHoles(structure=np.ones((5, 5))) <morphological_filters.html#src.histolab.filters.morphological_filters.BinaryFillHoles>`_
+        """
+        pass  # pragma: no cover
 
 
 class _SlideFiltersComposition(FiltersComposition):

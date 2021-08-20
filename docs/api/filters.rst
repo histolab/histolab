@@ -14,6 +14,7 @@ Filters in ``histolab`` are designed to be applied singularly or combined in a c
    filters/image_filters_functional
    filters/morphological_filters
    filters/morphological_filters_functional
+   filters/compositions
 
 
 
