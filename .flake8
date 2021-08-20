@@ -17,16 +17,12 @@
 # if you drive < 5mph too fast. Disable E501 to avoid duplicate warnings.
 
 max-line-length = 88
-max-complexity = 12
+max-complexity = 10
 select = E,F,W,C,B,B9
 ignore =
     # E123 closing bracket does not match indentation of opening bracket’s line
     E123
     # E203 whitespace before ‘:’ (Not PEP8 compliant, Python Black)
     E203
-    # E501 line too long (82 > 79 characters) (replaced by B950 from flake8-bugbear, https://github.com/PyCQA/flake8-bugbear)
-    E501
     # W503 line break before binary operator (Not PEP8 compliant, Python Black)
     W503
-    # C901 function too complex - since many of zz9 functions are too complex with a lot of if branching
-    C901
