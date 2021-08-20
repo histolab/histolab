@@ -17,13 +17,14 @@
 # ------------------------------------------------------------------------
 from abc import ABC, abstractmethod
 from functools import lru_cache
-from typing import List
+from typing import List, Union
 
 import numpy as np
 
 import histolab
 
 from .filters.compositions import FiltersComposition
+from .slide import Slide
 from .tile import Tile
 from .types import Region
 from .util import (
@@ -133,8 +134,32 @@ class BiggestTissueBoxMask(BinaryMask):
 class TissueMask(BinaryMask):
     """Object that represent the whole tissue area mask.
 
-    The tissue within the slide is automatically detected through a predefined
+    The tissue within the slide or tile is automatically detected through a predefined
     chain of filters."""
+
+    def __call__(self, obj: Union[Slide, Tile]) -> np.ndarray:
+        """Apply a predefined chain of filters to calculate the tissue area mask.
+
+        The applied filters will be different based on the type of ``obj``, please see
+        `FiltersComposition <filters/compositions.html#src.histolab.filters.compositions.FiltersComposition>`_ .
+
+        Parameters
+        ----------
+        obj : Union[Slide, Tile]
+            ``Slide`` or ``Tile`` from which to compute the extraction mask.
+
+        Returns
+        -------
+        np.ndarray
+            Binary mask of the tissue area. The dimensions are those of the thumbnail in
+            case ``obj`` is a ``Slide``, otherwise they are the same as the tile.
+
+        See Also
+        --------
+        `filters.compositions.FiltersComposition <filters/compositions.html#src.histolab.filters.compositions.FiltersComposition>`_
+        """
+
+        return self._mask(obj)
 
     @lru_cache(maxsize=100)
     @method_dispatch
