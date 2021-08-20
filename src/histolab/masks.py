@@ -141,7 +141,8 @@ class TissueMask(BinaryMask):
         """Apply a predefined chain of filters to calculate the tissue area mask.
 
         The applied filters will be different based on the type of ``obj``, please see
-        `FiltersComposition <filters/compositions.html#src.histolab.filters.compositions.FiltersComposition>`_ .
+
+        `filters.compositions.FiltersComposition <filters/compositions.html#src.histolab.filters.compositions.FiltersComposition>`_
 
         Parameters
         ----------
@@ -157,7 +158,7 @@ class TissueMask(BinaryMask):
         See Also
         --------
         `filters.compositions.FiltersComposition <filters/compositions.html#src.histolab.filters.compositions.FiltersComposition>`_
-        """
+        """  # noqa: E501
 
         return self._mask(obj)
 
