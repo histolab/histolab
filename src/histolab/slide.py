@@ -19,7 +19,7 @@ import math
 import ntpath
 import os
 import pathlib
-from typing import Iterator, List, Tuple, Union
+from typing import TYPE_CHECKING, Iterator, List, Tuple, Union
 
 import numpy as np
 import openslide
@@ -28,10 +28,13 @@ from skimage.measure import find_contours
 
 from .exceptions import LevelError
 from .filters.compositions import FiltersComposition
-from .masks import BinaryMask
 from .tile import Tile
 from .types import CoordinatePair
 from .util import lazyproperty
+
+if TYPE_CHECKING:
+    from .masks import BinaryMask
+
 
 IMG_EXT = "png"
 
@@ -145,7 +148,7 @@ class Slide:
 
     def locate_mask(
         self,
-        binary_mask: BinaryMask,
+        binary_mask: "BinaryMask",
         scale_factor: int = 32,
         tissue_mask: bool = False,
         alpha: int = 128,
