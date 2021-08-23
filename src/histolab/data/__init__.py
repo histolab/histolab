@@ -19,7 +19,7 @@ legacy_data_dir = os.path.abspath(os.path.dirname(__file__))
 histolab_distribution_dir = os.path.join(legacy_data_dir, "..")
 
 try:
-    from pooch.utils import file_hash
+    from pooch import file_hash
 except ModuleNotFoundError:
     # Function taken from
     # https://github.com/fatiando/pooch/blob/master/pooch/utils.py
