@@ -114,8 +114,8 @@ def test_pooch_missing(monkeypatch):
     from histolab import data
 
     fakesysmodules = copy.copy(sys.modules)
-    fakesysmodules["pooch.utils"] = None
-    monkeypatch.delitem(sys.modules, "pooch.utils")
+    fakesysmodules["pooch"] = None
+    monkeypatch.delitem(sys.modules, "pooch")
     monkeypatch.setattr("sys.modules", fakesysmodules)
     file = SVS.CMU_1_SMALL_REGION
     reload(data)
@@ -129,8 +129,8 @@ def test_file_hash_with_wrong_algorithm(monkeypatch):
     from histolab import data
 
     fakesysmodules = copy.copy(sys.modules)
-    fakesysmodules["pooch.utils"] = None
-    monkeypatch.delitem(sys.modules, "pooch.utils")
+    fakesysmodules["pooch"] = None
+    monkeypatch.delitem(sys.modules, "pooch")
     monkeypatch.setattr("sys.modules", fakesysmodules)
     file = SVS.CMU_1_SMALL_REGION
     reload(data)

@@ -113,7 +113,7 @@ jobs:
           python -m pip install -e .[testing]
           python -m pip install flake8==3.8.4
           python -m pip install black==21.6b0
-          python -m pip install pooch
+          python -m pip install pooch==1.4.0
 
       - name: Black Code Style Format Check
         id: black
