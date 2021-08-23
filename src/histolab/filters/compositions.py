@@ -64,8 +64,8 @@ class FiltersComposition:
         -------
         imf.Compose
 
-            If the ``cls_`` parameter is the class ``Slide`` the returned filters chain is
-            composed of:
+            If the ``cls_`` parameter is the class ``Slide`` the returned filters chain
+            is composed of:
 
             - `image_filters.RgbToGrayscale()
               <image_filters.html#src.histolab.filters.image_filters.RgbToGrayscale>`_
@@ -82,8 +82,8 @@ class FiltersComposition:
             - `morphological_filters.RemoveSmallObjects()
               <morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallObjects>`_
 
-            If the ``cls_`` parameter is the class ``Tile`` the returned filters chain is
-            composed of:
+            If the ``cls_`` parameter is the class ``Tile`` the returned filters chain
+            is composed of:
 
             - `image_filters.RgbToGrayscale()
               <image_filters.html#src.histolab.filters.image_filters.RgbToGrayscale>`_
@@ -97,6 +97,7 @@ class FiltersComposition:
             - `morphological_filters.BinaryFillHoles(structure=np.ones((5, 5)))
               <morphological_filters.html#src.histolab.filters.morphological_filters.BinaryFillHoles>`_
         """
+        raise NotImplementedError
 
 
 class _SlideFiltersComposition(FiltersComposition):
