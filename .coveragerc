@@ -26,6 +26,9 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
 
+    # typing.TYPE_CHECKING is a s special constant that is assumed to be True by 3rd party static type checkers. It is False at runtime.
+    if TYPE_CHECKING:
+
 ignore_errors = True
 
 [html]
