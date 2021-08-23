@@ -123,7 +123,7 @@ jobs:
       - name: Lint with flake8
         id: flake8
         run: |
-          flake8 . --config .flake8 --count --statistics
+          flake8 . --config=setup.cfg --count --statistics
 
       - name: Retrieve saved WSIs
         uses: actions/download-artifact@v2
