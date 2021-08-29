@@ -49,7 +49,6 @@ try:
     import large_image
 
     LARGEIMAGE_IS_INSTALLED = True
-
 except (ModuleNotFoundError, ImportError):  # pragma: no cover
     LARGEIMAGE_IS_INSTALLED = False
 
