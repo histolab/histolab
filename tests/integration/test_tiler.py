@@ -195,46 +195,6 @@ class DescribeRandomTiler:
             assert Image.open(os.path.join(processed_path, tile)).size == tile_size
 
     @pytest.mark.parametrize(
-        "fixture_slide, n_tiles, mpp, expected_tile_sizes",
-        (
-            (
-                SVS.CMU_1_SMALL_REGION,
-                3,
-                0.5,
-                ((127, 127), (127, 127), (127, 127)),
-            ),
-            (
-                SVS.CMU_1_SMALL_REGION,
-                3,
-                0.25,
-                ((127, 127), (129, 127), (127, 127)),
-            ),
-        ),
-    )
-    def test_extract_tiles_at_mpp_not_respecting_given_tile_size(
-        self, tmpdir, fixture_slide, n_tiles, mpp, expected_tile_sizes
-    ):
-        processed_path = os.path.join(tmpdir, "processed")
-        slide = Slide(fixture_slide, processed_path, use_largeimage=True)
-        random_tiles_extractor = RandomTiler(
-            tile_size=(128, 128),
-            n_tiles=n_tiles,
-            seed=0,
-            check_tissue=True,
-            mpp=mpp,
-        )
-        binary_mask = BiggestTissueBoxMask()
-
-        random_tiles_extractor.final_tile_size = None
-        random_tiles_extractor.extract(slide, binary_mask)
-
-        for tidx, tile in enumerate(os.listdir(processed_path)):
-            assert (
-                Image.open(os.path.join(processed_path, tile)).size
-                == expected_tile_sizes[tidx]
-            )
-
-    @pytest.mark.parametrize(
         "fixture_slide, tile_size",
         (
             (SVS.CMU_1_SMALL_REGION, (300, 300)),

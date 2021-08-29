@@ -134,7 +134,7 @@ class Slide:
             and we cannot determine the magnification otherwise.
         """
         if self._use_largeimage:
-            if self._metadata["mm_x"] is not None:
+            if self._metadata.get("mm_x") is not None:
                 return self._metadata["mm_x"] * (10 ** 3)
             raise ValueError(
                 "Unknown scan resolution! This slide is missing metadata "
@@ -151,7 +151,7 @@ class Slide:
 
         if (
             "tiff.XResolution" in self.properties
-            and self.properties["tiff.ResolutionUnit"] == "centimeter"
+            and self.properties.get("tiff.ResolutionUnit") == "centimeter"
         ):
             return 1e4 / float(self.properties["tiff.XResolution"])
 
