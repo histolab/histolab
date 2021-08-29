@@ -232,7 +232,7 @@ class Slide:
             )
         else:
             mm = mpp / 1000
-            image, _ = self._tilesource.getRegion(
+            image, _ = self._tile_source.getRegion(
                 region=dict(
                     left=coords.x_ul,
                     top=coords.y_ul,
@@ -501,7 +501,7 @@ class Slide:
             The slide thumbnail.
         """
         if self._use_largeimage:
-            thumb_bytes, _ = self._tilesource.getThumbnail(encoding="PNG")
+            thumb_bytes, _ = self._tile_source.getThumbnail(encoding="PNG")
             thumbnail = self._bytes2pil(thumb_bytes).convert("RGB")
             return thumbnail
 
@@ -558,7 +558,7 @@ class Slide:
            ``large_image.TileSource.getMetadata()`` for details on the return
            keys and data types.
         """
-        return self._tilesource.getMetadata()
+        return self._tile_source.getMetadata()
 
     def _remap_level(self, level: int) -> int:
         """Remap negative index for the given level onto a positive one.
@@ -617,7 +617,7 @@ class Slide:
                 if self._metadata["magnification"] is not None
                 else {}
             )
-            wsi_image, _ = self._tilesource.getRegion(
+            wsi_image, _ = self._tile_source.getRegion(
                 format=large_image.tilesource.TILE_FORMAT_PIL,
                 **kwargs,
             )
@@ -683,17 +683,7 @@ class Slide:
         -------
         Tuple[int, int]
             Thumbnail size
-
-        Raises
-        ------
-        MayNeedLargeImageError
-            If `use_largeimage` was set to False when slide was initialized.
         """
-        if self._use_largeimage:
-            raise MayNeedLargeImageError(
-                "When use_largeimage is set to True, the thumbnail is fetched "
-                "by the large_image module. Please use thumbnail.size instead."
-            )
 
         return tuple(
             [
