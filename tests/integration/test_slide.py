@@ -30,8 +30,8 @@ class Describe_Slide:
     @pytest.mark.parametrize(
         "use_largeimage, slide_props",
         [
-            (True, None),
-            (False, None),
+            (True, {}),
+            (False, {}),
             (False, {"aperio.MPP": 0.499}),
             (
                 False,
@@ -48,14 +48,11 @@ class Describe_Slide:
             os.path.join(SVS.CMU_1_SMALL_REGION, "processed"),
             use_largeimage=use_largeimage,
         )
-        if slide_props:
-            del slide.properties["openslide.mpp-x"]
-            del slide.properties["aperio.MPP"]
-            slide.properties.update(slide_props)
+        slide.properties.update(slide_props)
 
         mpp = slide.base_mpp
 
-        np.testing.assert_almost_equal(mpp, 0.499)
+        assert mpp == 0.499
 
     def it_calculate_resampled_nparray_from_small_region_svs_image(self):
         slide = Slide(
