@@ -67,7 +67,7 @@ except ModuleNotFoundError:
 
 def _create_image_fetcher():
     try:
-        import pooch
+        from pooch import create, os_cache
     except ImportError:
         # Without pooch, fallback on the standard data directory
         # which for now, includes a few limited data samples
@@ -77,14 +77,14 @@ def _create_image_fetcher():
     url = "https://github.com/histolab/histolab/raw/{version}/histolab/"
 
     # Create a new friend to manage your sample data storage
-    image_fetcher = pooch.create(
+    image_fetcher = create(
         # Pooch uses appdirs to select an appropriate directory for the cache
         # on each platform.
         # https://github.com/ActiveState/appdirs
         # On linux this converges to
         # '$HOME/.cache/histolab-image'
         # With a version qualifier
-        path=pooch.os_cache("histolab-images"),
+        path=os_cache("histolab-images"),
         base_url=url,
         version=pooch_version,
         env="HISTOLAB_DATADIR",
