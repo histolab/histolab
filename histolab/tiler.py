@@ -327,7 +327,8 @@ class GridTiler(Tiler):
     suffix : str, optional
         Suffix to be added to the tile filename. Default is '.png'
     mpp : float, optional
-        Micron per pixel resolution of extracted tiles. Takes precedence over level. Default is None.
+        Micron per pixel resolution of extracted tiles. Takes precedence over level.
+        Default is None.
     """
 
     def __init__(
@@ -647,7 +648,8 @@ class RandomTiler(Tiler):
         Maximum number of iterations performed when searching for eligible (if
         ``check_tissue=True``) tiles. Must be grater than or equal to ``n_tiles``.
     mpp : float, optional
-        Micron per pixel resolution. If provided, takes precedence over level. Default is None.
+        Micron per pixel resolution. If provided, takes precedence over level.
+        Default is None.
     """
 
     def __init__(
@@ -869,7 +871,8 @@ class ScoreTiler(GridTiler):
     suffix : str, optional
         Suffix to be added to the tile filename. Default is '.png'
     mpp : float, optional.
-        Micron per pixel resolution. If provided, takes precedence over level. Default is None.
+        Micron per pixel resolution. If provided, takes precedence over level.
+        Default is None.
     """
 
     def __init__(
