@@ -173,7 +173,7 @@ class Describe_Slide:
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert str(err.value) == (
-            "This slide may be corrupt or have a non-standard format not "
+            "This slide may be corrupted or have a non-standard format not "
             "handled by the openslide and PIL libraries. Consider setting "
             "use_largeimage to True when instantiating this Slide."
         )
@@ -187,7 +187,7 @@ class Describe_Slide:
         assert isinstance(err.value, HistolabException)
         assert str(err.value).replace(",", "") == (
             "ArgumentError(\"argument 1: <class 'TypeError'>: Incorrect type\")"
-            ". This slide may be corrupt or have a non-standard format not "
+            ". This slide may be corrupted or have a non-standard format not "
             "handled by the openslide and PIL libraries. Consider setting "
             "use_largeimage to True when instantiating this Slide."
         )

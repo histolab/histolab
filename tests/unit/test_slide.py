@@ -9,6 +9,7 @@ import numpy as np
 import openslide
 import PIL
 import pytest
+from large_image.exceptions import TileSourceException
 from PIL import ImageShow
 
 from histolab.types import CP
@@ -134,13 +135,13 @@ class Describe_Slide:
             tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=True
         )
 
-        assert slide._tilesource.name == "pilfile"
+        assert slide._tile_source.name == "pilfile"
 
     def it_raises_error_if_tilesource_and_not_use_largeimage(self):
         slide = Slide("/a/b/foo", "processed")
 
         with pytest.raises(MayNeedLargeImageError) as err:
-            slide._tilesource
+            slide._tile_source
 
         assert isinstance(err.value, MayNeedLargeImageError)
         assert str(err.value) == (
@@ -164,7 +165,7 @@ class Describe_Slide:
             slide.extract_tile(CP(0, 10, 0, 10), (10, 10), level=None, mpp=None)
 
         assert isinstance(err.value, ValueError)
-        assert str(err.value) == "either level or mpp must be provided!"
+        assert str(err.value) == "Either level or mpp must be provided!"
 
     def it_knows_its_resampled_dimensions(self, dimensions_):
         """This test prove that given the dimensions (mock object here), it does
@@ -212,15 +213,11 @@ class Describe_Slide:
 
     def it_raises_error_if_thumbnail_size_and_use_largeimage(self):
         slide = Slide("/a/b/foo", "processed", use_largeimage=True)
-
-        with pytest.raises(MayNeedLargeImageError) as err:
+        with pytest.raises(TileSourceException) as err:
             slide._thumbnail_size
 
-        assert isinstance(err.value, MayNeedLargeImageError)
-        assert str(err.value) == (
-            "When use_largeimage is set to True, the thumbnail is fetched "
-            "by the large_image module. Please use thumbnail.size instead."
-        )
+        assert isinstance(err.value, TileSourceException)
+        assert str(err.value) == "No available tilesource for /a/b/foo"
 
     def it_creates_a_correct_slide_object(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_50X50_155_0_0)
@@ -248,7 +245,7 @@ class Describe_Slide:
 
         assert isinstance(err.value, PIL.UnidentifiedImageError)
         assert str(err.value) == (
-            "This slide may be corrupt or have a non-standard format not "
+            "This slide may be corrupted or have a non-standard format not "
             "handled by the openslide and PIL libraries. Consider setting "
             "use_largeimage to True when instantiating this Slide."
         )
