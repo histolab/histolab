@@ -271,6 +271,17 @@ class DescribeRandomTiler:
             "requested the right `mpp` and/or `tile_size`."
         )
 
+    @pytest.mark.parametrize(
+        "mpp, fixed_tile_size", ((None, (512, 512)), (0.75, (769, 769)))
+    )
+    def it_sets_tile_size_in_extract_if_mpp(self, mpp, fixed_tile_size, tmpdir):
+        slide = Slide(SVS.CMU_1_SMALL_REGION, tmpdir, use_largeimage=True)
+        tiler = RandomTiler((512, 512), 10, mpp=mpp)
+
+        tiler.extract(slide)
+
+        assert tiler.tile_size == fixed_tile_size
+
 
 class DescribeGridTiler:
     @pytest.mark.parametrize(
@@ -386,6 +397,21 @@ class DescribeGridTiler:
         expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
 
         np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
+
+    @pytest.mark.parametrize(
+        "mpp, fixed_tile_size, fixed_overlap",
+        ((None, (512, 512), 32), (0.75, (769, 769), 48)),
+    )
+    def it_sets_tile_size_and_overlap_in_extract_if_mpp(
+        self, mpp, fixed_tile_size, fixed_overlap, tmpdir
+    ):
+        slide = Slide(SVS.CMU_1_SMALL_REGION, tmpdir, use_largeimage=True)
+        tiler = GridTiler((512, 512), pixel_overlap=32, mpp=mpp)
+
+        tiler.extract(slide)
+
+        assert tiler.tile_size == fixed_tile_size
+        assert tiler.pixel_overlap == fixed_overlap
 
 
 class DescribeScoreTiler:
