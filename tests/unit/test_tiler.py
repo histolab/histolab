@@ -36,11 +36,11 @@ class Describe_RandomTiler:
         _init = initializer_mock(request, RandomTiler)
 
         random_tiler = RandomTiler(
-            (512, 512), 10, level, 7, True, "", ".png", int(1e4), mpp=mpp
+            tile_size=(512, 512), n_tiles=10, level=level, mpp=mpp
         )
 
         _init.assert_called_once_with(
-            ANY, (512, 512), 10, level, 7, True, "", ".png", int(1e4), mpp=mpp
+            random_tiler, tile_size=(512, 512), n_tiles=10, level=level, mpp=mpp
         )
         assert isinstance(random_tiler, RandomTiler)
         assert isinstance(random_tiler, Tiler)
@@ -49,22 +49,24 @@ class Describe_RandomTiler:
         "level, mpp, expected_level, expected_mpp",
         ((2, None, 2, None), (None, 0.5, 0, 0.5), (2, 0.5, 0, 0.5)),
     )
-    def mpp_supercedes_level(self, level, mpp, expected_level, expected_mpp):
+    def it_knows_when_mpp_supercedes_level(
+        self, level, mpp, expected_level, expected_mpp
+    ):
 
-        tiler = RandomTiler((512, 512), 10, level=level, mpp=mpp)
+        random_tiler = RandomTiler((512, 512), 10, level=level, mpp=mpp)
 
-        assert tiler.level == expected_level
-        assert tiler.mpp == expected_mpp
+        assert random_tiler.level == expected_level
+        assert random_tiler.mpp == expected_mpp
 
     @pytest.mark.parametrize(
         "mpp, fixed_tile_size", ((None, (512, 512)), (0.5, (1024, 1024)))
     )
     def it_can_fix_tile_size_if_mpp(self, mpp, fixed_tile_size):
         fake_slide = namedtuple("fake_slide", ["base_mpp"])
-        tiler = RandomTiler((512, 512), 0, True, 80, 0, "", ".png", mpp=mpp)
-        tiler._set_proper_tile_size(fake_slide(0.25))
+        random_tiler = RandomTiler((512, 512), 10, mpp=mpp)
+        random_tiler._set_proper_tile_size(fake_slide(0.25))
 
-        assert tiler.tile_size == fixed_tile_size
+        assert random_tiler.tile_size == fixed_tile_size
 
     def but_it_has_wrong_tile_size_value(self):
         with pytest.raises(ValueError) as err:
@@ -75,7 +77,7 @@ class Describe_RandomTiler:
 
     def or_it_has_not_available_level_value(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
-        random_tiler = RandomTiler((128, 128), 10, 3)
+        random_tiler = RandomTiler(tile_size=(128, 128), n_tiles=10, level=3)
         binary_mask = BiggestTissueBoxMask()
 
         with pytest.raises(LevelError) as err:
