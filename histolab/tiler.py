@@ -139,28 +139,6 @@ class Tiler(Protocol):
 
     # ------- implementation helpers -------
 
-    def _get_proper_tile_size(self, slide: Slide) -> Tuple[Tuple[int, int], float]:
-        """Get the proper tile size for level or mpp requested.
-
-        Parameters
-        ----------
-        slide : Slide
-            The slide to tile.
-
-        Returns
-        -------
-        Tuple[int, int]
-            Proper tile size at desired level or MPP resolution.
-        float
-            Scale factor that maps the original self.tile_size to proper one.
-
-        """
-        if self.mpp is None:
-            return self.tile_size, 1.0
-
-        scale_factor = self.mpp / slide.base_mpp
-        return tuple(int(j * scale_factor) for j in self.tile_size), scale_factor
-
     def _has_valid_tile_size(self, slide: Slide) -> bool:
         """Return True if the tile size is smaller or equal than the ``slide`` size.
 
@@ -179,6 +157,23 @@ class Tiler(Protocol):
             self.tile_size[0] <= slide.level_dimensions(self.level)[0]
             and self.tile_size[1] <= slide.level_dimensions(self.level)[1]
         )
+
+    def _scale_factor(self, slide: Slide) -> float:
+        """Retrieve the scale factor that maps the original tile_size to proper one.
+
+        Parameters
+        ----------
+        slide : Slide
+            The slide to tile.
+
+        Returns
+        -------
+        float
+            Scale factor that maps the original self.tile_size to proper one.
+        """
+        if self.mpp is None:
+            return 1.0
+        return self.mpp / slide.base_mpp
 
     @staticmethod
     def _tile_coords_and_outline_generator(
@@ -250,6 +245,23 @@ class Tiler(Protocol):
         self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
     ) -> Tuple[Tile, CoordinatePair]:
         pass  # pragma: no cover
+
+    def _tile_size(self, slide: Slide) -> Tuple[int, int]:
+        """Get the proper tile size for level or mpp requested.
+
+        Parameters
+        ----------
+        slide : Slide
+            The slide to tile.
+
+        Returns
+        -------
+        Tuple[int, int]
+            Proper tile size at desired level or MPP resolution.
+        """
+        if self.mpp is None:
+            return self.tile_size
+        return tuple(int(j * self._scale_factor(slide)) for j in self.tile_size)
 
     def _validate_level(self, slide: Slide) -> None:
         """Validate the Tiler's level according to the Slide.
@@ -369,7 +381,8 @@ class GridTiler(Tiler):
         level = logging.getLevelName(log_level)
         logger.setLevel(level)
         self._validate_level(slide)
-        self._set_proper_tile_size_and_overlap(slide)
+        self.tile_size = self._tile_size(slide)
+        self.pixel_overlap = int(self._scale_factor(slide) * self.pixel_overlap)
         self._validate_tile_size(slide)
 
         grid_tiles = self._tiles_generator(slide, extraction_mask)
@@ -533,6 +546,40 @@ class GridTiler(Tiler):
                 bbox_coordinates_lvl, slide, binary_mask_region
             )
 
+    def _n_tiles_column(self, bbox_coordinates: CoordinatePair) -> int:
+        """Return the number of tiles which can be extracted in a column.
+
+        Parameters
+        ----------
+        bbox_coordinates : CoordinatePair
+            Coordinates of the tissue box
+
+        Returns
+        -------
+        int
+            Number of tiles which can be extracted in a column.
+        """
+        return (bbox_coordinates.y_br - bbox_coordinates.y_ul) // (
+            self.tile_size[1] - self.pixel_overlap
+        )
+
+    def _n_tiles_row(self, bbox_coordinates: CoordinatePair) -> int:
+        """Return the number of tiles which can be extracted in a row.
+
+        Parameters
+        ----------
+        bbox_coordinates : CoordinatePair
+            Coordinates of the tissue box
+
+        Returns
+        -------
+        int
+            Number of tiles which can be extracted in a row.
+        """
+        return (bbox_coordinates.x_br - bbox_coordinates.x_ul) // (
+            self.tile_size[0] - self.pixel_overlap
+        )
+
     def _tiles_generator(
         self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
     ) -> Tuple[Tile, CoordinatePair]:
@@ -569,51 +616,6 @@ class GridTiler(Tiler):
 
             if not self.check_tissue or tile.has_enough_tissue(self.tissue_percent):
                 yield tile, coords
-
-    def _n_tiles_column(self, bbox_coordinates: CoordinatePair) -> int:
-        """Return the number of tiles which can be extracted in a column.
-
-        Parameters
-        ----------
-        bbox_coordinates : CoordinatePair
-            Coordinates of the tissue box
-
-        Returns
-        -------
-        int
-            Number of tiles which can be extracted in a column.
-        """
-        return (bbox_coordinates.y_br - bbox_coordinates.y_ul) // (
-            self.tile_size[1] - self.pixel_overlap
-        )
-
-    def _n_tiles_row(self, bbox_coordinates: CoordinatePair) -> int:
-        """Return the number of tiles which can be extracted in a row.
-
-        Parameters
-        ----------
-        bbox_coordinates : CoordinatePair
-            Coordinates of the tissue box
-
-        Returns
-        -------
-        int
-            Number of tiles which can be extracted in a row.
-        """
-        return (bbox_coordinates.x_br - bbox_coordinates.x_ul) // (
-            self.tile_size[0] - self.pixel_overlap
-        )
-
-    def _set_proper_tile_size_and_overlap(self, slide) -> None:
-        """Set the proper tile size and overlap for level or mpp requested.
-
-        Parameters
-        ----------
-        slide : Slide
-            The slide to tile.
-        """
-        self.tile_size, scale_factor = self._get_proper_tile_size(slide)
-        self.pixel_overlap = int(scale_factor * self.pixel_overlap)
 
 
 class RandomTiler(Tiler):
@@ -702,7 +704,7 @@ class RandomTiler(Tiler):
         level = logging.getLevelName(log_level)
         logger.setLevel(level)
         self._validate_level(slide)
-        self._set_proper_tile_size(slide)
+        self.tile_size = self._tile_size(slide)
         self._validate_tile_size(slide)
 
         random_tiles = self._tiles_generator(slide, extraction_mask)
@@ -781,16 +783,6 @@ class RandomTiler(Tiler):
         )
 
         return tile_wsi_coords
-
-    def _set_proper_tile_size(self, slide) -> None:
-        """Set the proper tile size for level or mpp requested.
-
-        Parameters
-        ----------
-        slide : Slide
-            The slide to tile.
-        """
-        self.tile_size, _ = self._get_proper_tile_size(slide)
 
     def _tiles_generator(
         self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
@@ -942,7 +934,8 @@ class ScoreTiler(GridTiler):
         level = logging.getLevelName(log_level)
         logger.setLevel(level)
         self._validate_level(slide)
-        self._set_proper_tile_size_and_overlap(slide)
+        self.tile_size = self._tile_size(slide)
+        self.pixel_overlap = int(self._scale_factor(slide) * self.pixel_overlap)
         self._validate_tile_size(slide)
 
         highest_score_tiles, highest_scaled_score_tiles = self._tiles_generator(
