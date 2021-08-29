@@ -27,32 +27,11 @@ class Describe_Slide:
 
         assert name == ntpath.basename(SVS.CMU_1_SMALL_REGION).split(".")[0]
 
-    @pytest.mark.parametrize(
-        "use_largeimage, slide_props",
-        [
-            (True, {}),
-            (False, {}),
-            (False, {"aperio.MPP": 0.499}),
-            (
-                False,
-                {
-                    "tiff.XResolution": 20040.080160320642,
-                    "tiff.ResolutionUnit": "centimeter",
-                },
-            ),
-        ],
-    )
-    def it_knows_its_base_mpp(self, use_largeimage, slide_props):
-        slide = Slide(
-            SVS.CMU_1_SMALL_REGION,
-            os.path.join(SVS.CMU_1_SMALL_REGION, "processed"),
-            use_largeimage=use_largeimage,
-        )
-        slide.properties.update(slide_props)
+    @pytest.mark.parametrize("use_largeimage", (True, False))
+    def it_knows_its_base_mpp(self, use_largeimage, tmpdir):
+        slide = Slide(SVS.CMU_1_SMALL_REGION, tmpdir, use_largeimage=use_largeimage)
 
-        mpp = slide.base_mpp
-
-        assert mpp == 0.499
+        assert slide.base_mpp == 0.499
 
     def it_calculate_resampled_nparray_from_small_region_svs_image(self):
         slide = Slide(

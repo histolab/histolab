@@ -16,6 +16,7 @@ from histolab.types import CP
 from histolab.exceptions import LevelError, MayNeedLargeImageError, SlidePropertyError
 from histolab.slide import Slide, SlideSet
 
+from ..fixtures import SVS
 from ..unitutil import (
     ANY,
     PILIMG,
@@ -101,28 +102,51 @@ class Describe_Slide:
 
         assert name == expected_value
 
-    def it_raises_error_with_unknown_mpp_without_largeimage(self, tmpdir):
-        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+    @pytest.mark.parametrize(
+        "use_largeimage, properties, metadata, expected_value",
+        (
+            (True, {}, {"mm_x": 1}, 1000.0),
+            (False, {"openslide.mpp-x": 33}, None, 33.0),
+            (False, {"aperio.MPP": 33}, None, 33.0),
+            (
+                False,
+                {"tiff.XResolution": 1000, "tiff.ResolutionUnit": "centimeter"},
+                None,
+                10.0,
+            ),
+        ),
+    )
+    def it_knows_its_base_mpp(
+        self, request, use_largeimage, properties, metadata, expected_value
+    ):
+        slide = Slide("foo", "bar", use_largeimage=use_largeimage)
+        property_mock(request, Slide, "properties", return_value=properties)
+        property_mock(request, Slide, "_metadata", return_value=metadata)
+
+        assert slide.base_mpp == expected_value
+
+    def but_it_raises_large_image_error_with_unknown_mpp_without_largeimage(
+        self, request
+    ):
+        slide = Slide("foo", "bar", use_largeimage=False)
+        property_mock(request, Slide, "properties", return_value={})
 
         with pytest.raises(MayNeedLargeImageError) as err:
             slide.base_mpp
 
-        assert isinstance(err.value, MayNeedLargeImageError)
         assert str(err.value) == (
             "Unknown scan magnification! This slide format may be best "
             "handled using the large_image module. Consider setting "
             "use_largeimage to True when instantiating this Slide."
         )
 
-    def it_raises_error_with_unknown_mpp_with_largeimage(self, tmpdir):
-        slide, _ = base_test_slide(
-            tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=True
-        )
+    def and_it_raises_value_error_with_unknown_mpp_with_largeimage(self, request):
+        slide = Slide("foo", "bar", use_largeimage=True)
+        property_mock(request, Slide, "_metadata", return_value={})
 
         with pytest.raises(ValueError) as err:
             slide.base_mpp
 
-        assert isinstance(err.value, ValueError)
         assert str(err.value) == (
             "Unknown scan resolution! This slide is missing metadata "
             "needed for calculating the scanning resolution. Without "
@@ -156,15 +180,39 @@ class Describe_Slide:
 
         assert slide_dims == (500, 500)
 
-    def it_raises_error_if_bad_args_for_extract_tile(self, tmpdir):
-        slide, _ = base_test_slide(
-            tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=True
+    def it_extracts_tile_with_mpp_without_image_resizing(self, tmpdir, request):
+        slide = Slide(SVS.CMU_1_SMALL_REGION, tmpdir, use_largeimage=True)
+        property_mock(request, PIL.Image.Image, "size", return_value=(128, 128))
+
+        tile = slide.extract_tile(CP(0, 10, 0, 10), (128, 128), level=None, mpp=0.25)
+
+        assert tile.image.size == (128, 128)
+
+    def but_it_raises_a_runtime_error_when_tile_size_and_mpp_are_not_compatible(
+        self, tmpdir, request
+    ):
+        slide = Slide(SVS.CMU_1_SMALL_REGION, tmpdir, use_largeimage=True)
+        property_mock(request, PIL.Image.Image, "size", return_value=(100, 100))
+
+        with pytest.raises(RuntimeError) as err:
+            slide.extract_tile(CP(0, 10, 0, 10), (128, 128), level=None, mpp=0.25)
+
+        assert (
+            str(err.value)
+            == "The tile you requested at a resolution of 0.25 MPP has a size of "
+            "(100, 100), yet you specified a final `tile_size` of (128, 128), "
+            "which is a very different value. When you set `mpp`, "
+            "the `tile_size` parameter is used to resize fetched tiles if they are "
+            "off by just 5 pixels due to rounding differences etc. Please check if "
+            "you requested the right `mpp` and/or `tile_size`."
         )
+
+    def it_raises_error_if_bad_args_for_extract_tile(self):
+        slide = Slide("foo", "bar", use_largeimage=True)
 
         with pytest.raises(ValueError) as err:
             slide.extract_tile(CP(0, 10, 0, 10), (10, 10), level=None, mpp=None)
 
-        assert isinstance(err.value, ValueError)
         assert str(err.value) == "Either level or mpp must be provided!"
 
     def it_knows_its_resampled_dimensions(self, dimensions_):
