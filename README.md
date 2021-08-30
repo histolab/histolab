@@ -20,6 +20,7 @@
         <a href="https://lgtm.com/projects/g/histolab/histolab/context:python" target="_blank"><img src="https://img.shields.io/lgtm/grade/python/g/histolab/histolab.svg?logo=lgtm&logoWidth=18"></a>
         <a href="https://www.codefactor.io/repository/github/histolab/histolab" target="_blank"><img src="https://www.codefactor.io/repository/github/histolab/histolab/badge"></a>
         <a href="https://github.com/psf/black" target="_blank"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+        <a href="https://github.com/PyCQA/bandit" target="_blank"><img src="https://img.shields.io/badge/security-bandit-yellow.svg"></a>
 </tr>
 <tr>
     <td>Version Info</td>
