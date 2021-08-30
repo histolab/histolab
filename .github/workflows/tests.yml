@@ -114,6 +114,7 @@ jobs:
           python -m pip install flake8==3.8.4
           python -m pip install black==21.6b0
           python -m pip install pooch==1.4.0
+          python -m pip install bandit==1.7.0
 
       - name: Black Code Style Format Check
         id: black
@@ -124,6 +125,11 @@ jobs:
         id: flake8
         run: |
           flake8 . --config=setup.cfg --count --statistics
+
+      - name: Check Vulnerabilities with Bandit
+        id: bandit
+        run: |
+          bandit -r -c bandit.yaml .
 
       - name: Retrieve saved WSIs
         uses: actions/download-artifact@v2
