@@ -261,10 +261,10 @@ class Describe_Slide:
 
     def it_raises_error_if_thumbnail_size_and_use_largeimage(self):
         slide = Slide("/a/b/foo", "processed", use_largeimage=True)
+
         with pytest.raises(TileSourceException) as err:
             slide._thumbnail_size
 
-        assert isinstance(err.value, TileSourceException)
         assert str(err.value) == "No available tilesource for /a/b/foo"
 
     def it_creates_a_correct_slide_object(self, tmpdir):
