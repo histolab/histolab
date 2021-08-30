@@ -144,9 +144,13 @@ def test_apply_mask_image(img, mask, expected_array):
 @pytest.mark.parametrize(
     "dims, vertices, expected_array",
     (
-        ((5, 5), CP(0, 3, 2, 5), "mask-arrays/polygon-to-mask-array-0325"),
-        ((5, 6), CP(1, 0, 2, 0), "mask-arrays/polygon-to-mask-array-1020"),
-        ((5, 5), CP(2, 1, 4, 3), "mask-arrays/polygon-to-mask-array-2143"),
+        ((5, 5), CP(0, 3, 2, 5), "mask-arrays/polygon-to-mask-array-0325"),  # square
+        ((5, 5), CP(2, 1, 4, 3), "mask-arrays/polygon-to-mask-array-2143"),  # square
+        (
+            (5, 6),
+            CP(1, 0, 2, 0),
+            "mask-arrays/polygon-to-mask-array-1020",
+        ),  # line - all false
     ),
 )
 def test_util_rectangle_to_mask(dims, vertices, expected_array):

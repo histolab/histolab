@@ -108,7 +108,7 @@ def random_choice_true_mask2d(binary_mask: np.ndarray) -> Tuple[int, int]:
     return x, y
 
 
-def rectangle_to_mask(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
+def rectangle_to_mask(dims: Tuple[int, int], vertices: CoordinatePair) -> np.ndarray:
     """
     Return a binary mask with True inside of rectangle ``vertices`` and False outside.
 
@@ -116,8 +116,8 @@ def rectangle_to_mask(dims: tuple, vertices: CoordinatePair) -> np.ndarray:
 
     Parameters
     ----------
-    dims : tuple
-        (w,h) of the binary mask
+    dims : Tuple[int, int]
+        (rows, columns) of the binary mask
     vertices : CoordinatePair
         CoordinatePair representing the upper left and bottom right vertices of the
         rectangle
