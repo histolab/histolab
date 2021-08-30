@@ -315,13 +315,14 @@ class Describe_Slide:
     @pytest.mark.parametrize(
         "coords, expected_result",
         (
-            (CP(0, 128, 0, 128), True),
-            (CP(800000, 90000, 8000010, 90010), False),
-            (CP(800000, 90000, -1, 90010), False),
+            (CP(0, 40, 0, 40), True),  # point
+            (CP(0, 0, 48, 50), True),  # valid box
+            (CP(800000, 90000, 8000010, 90010), False),  # out of bounds box
+            (CP(800000, 90000, -1, 90010), False),  # negative coordinates
         ),
     )
     def it_knows_if_coords_are_valid(self, coords, expected_result, tmpdir):
-        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_49X51_155_0_0)
 
         _are_valid = slide._has_valid_coords(coords)
 
