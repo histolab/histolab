@@ -13,3 +13,4 @@ pytest-html
 black
 sphinxemoji
 sphinx-prompt
+bandit
