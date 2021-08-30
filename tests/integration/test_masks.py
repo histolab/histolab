@@ -35,8 +35,9 @@ class DescribeBiggestTissueBoxMask:
         slide = Slide(wsi, "")
         expected_array = load_expectation(expected_array, type_="npy")
         biggest_tissue_box = BiggestTissueBoxMask()
+        mask = biggest_tissue_box(slide)
 
-        np.testing.assert_array_almost_equal(biggest_tissue_box(slide), expected_array)
+        np.testing.assert_array_almost_equal(mask, expected_array)
 
 
 class DescribeTissueMask:
