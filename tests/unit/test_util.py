@@ -16,6 +16,7 @@ from histolab.util import (
     random_choice_true_mask2d,
     rectangle_to_mask,
     region_coordinates,
+    regions_from_binary_mask,
     regions_to_binary_mask,
     scale_coordinates,
     threshold_to_mask,
@@ -23,6 +24,7 @@ from histolab.util import (
 
 from ..base import (
     COMPLEX_MASK,
+    COMPLEX_MASK4,
     IMAGE1_GRAY,
     IMAGE1_RGB,
     IMAGE1_RGBA,
@@ -166,7 +168,7 @@ def test_region_coordinates():
     region = Region(index=0, area=14, bbox=(0, 1, 1, 2), center=(0.5, 0.5), coords=None)
     region_coords_ = region_coordinates(region)
 
-    assert region_coords_ == CP(x_ul=1, y_ul=0, x_br=2, y_br=1)
+    assert region_coords_ == CP(x_ul=0, y_ul=1, x_br=1, y_br=2)
 
 
 @pytest.mark.parametrize("seed", [(i,) for i in range(10)])
@@ -204,6 +206,47 @@ def test_regions_to_binary_mask():
         binary_mask_regions,
         load_expectation("mask-arrays/regions-to-binary-mask", type_="npy"),
     )
+
+
+def test_regions_from_binary_mask():
+    expected_region = Region(
+        index=0,
+        area=20,
+        bbox=(2, 2, 7, 9),
+        center=(4.7, 4.45),
+        coords=np.array(
+            [
+                [2, 5],
+                [3, 3],
+                [3, 4],
+                [3, 5],
+                [3, 6],
+                [4, 3],
+                [4, 4],
+                [4, 5],
+                [4, 6],
+                [5, 2],
+                [5, 3],
+                [5, 4],
+                [5, 5],
+                [5, 6],
+                [6, 3],
+                [6, 4],
+                [6, 5],
+                [6, 6],
+                [7, 5],
+                [8, 5],
+            ]
+        ),
+    )
+    regions = regions_from_binary_mask(COMPLEX_MASK4)
+
+    assert len(regions) == 1
+    assert regions[0].index == expected_region.index
+    assert regions[0].area == expected_region.area
+    assert regions[0].bbox == expected_region.bbox
+    assert regions[0].center == expected_region.center
+    np.testing.assert_array_equal(regions[0].coords, expected_region.coords)
 
 
 class DescribeLazyPropertyDecorator:

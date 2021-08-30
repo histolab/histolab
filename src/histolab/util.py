@@ -155,7 +155,11 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     thumb_labeled_regions = label(binary_mask)
     regions = [
         Region(
-            index=i, area=rp.area, bbox=rp.bbox, center=rp.centroid, coords=rp.coords
+            index=i,
+            area=rp.area,
+            bbox=rp.bbox[:2][::-1] + rp.bbox[2:][::-1],  # from np coords to PIL coords
+            center=rp.centroid,
+            coords=rp.coords,
         )
         for i, rp in enumerate(regionprops(thumb_labeled_regions))
     ]
@@ -206,8 +210,7 @@ def region_coordinates(region: Region) -> CoordinatePair:
     CoordinatePair
         Coordinates of the bbox
     """
-    y_ul, x_ul, y_br, x_br = region.bbox
-    return CoordinatePair(x_ul, y_ul, x_br, y_br)
+    return CoordinatePair(*region.bbox)
 
 
 def scale_coordinates(
