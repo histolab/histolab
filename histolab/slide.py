@@ -241,7 +241,6 @@ class Slide:
                 format=large_image.tilesource.TILE_FORMAT_PIL,
                 jpegQuality=100,
             )
-            image = image.convert("RGB")
             # Sometimes when mpp kwarg is used, the image size is off from
             # what the user expects by a couple of pixels
             if tile_size is not None and not tile_size == image.size:
