@@ -441,7 +441,9 @@ class Describe_GridTiler:
         "level, mpp, expected_level, expected_mpp",
         ((2, None, 2, None), (None, 0.5, 0, 0.5), (2, 0.5, 0, 0.5)),
     )
-    def mpp_supercedes_level(self, level, mpp, expected_level, expected_mpp):
+    def it_knows_when_mpp_supercedes_level(
+        self, level, mpp, expected_level, expected_mpp
+    ):
 
         tiler = GridTiler((512, 512), level=level, mpp=mpp)
 
