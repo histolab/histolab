@@ -102,10 +102,10 @@ def random_choice_true_mask2d(binary_mask: np.ndarray) -> Tuple[int, int]:
     Tuple[int, int]
         Random pair of indices (column, row) where the ``binary_mask`` is True.
     """
-    true_y, true_x = np.where(binary_mask)
-    loc = np.random.randint(len(true_y) - 1)
+    y, x = np.where(binary_mask)
+    loc = np.random.randint(len(y) - 1)
 
-    return true_x[loc], true_y[loc]
+    return x[loc], y[loc]
 
 
 def rectangle_to_mask(dims: Tuple[int, int], vertices: CoordinatePair) -> np.ndarray:
