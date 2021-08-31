@@ -671,7 +671,7 @@ class Describe_GridTiler:
         assert isinstance(generated_tiles[0][0], Tile)
         assert generated_tiles[0][1] == coords2
 
-    def and_doesnt_raise_error_with_wrong_coordinates(self, request, tmpdir):
+    def and_it_does_not_raise_error_with_wrong_coordinates(self, request, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         coords = CP(5800, 5800, 6000, 6000)
         _grid_coordinates_generator = method_mock(
