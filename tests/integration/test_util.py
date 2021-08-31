@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from histolab.masks import BiggestTissueBoxMask, TissueMask
@@ -17,8 +18,9 @@ from ..fixtures import SVS, TIFF
     ],
 )
 def test_random_choice_true_mask2d_find_right_coordinates(fixture_slide, binary_mask):
+    np.random.seed(0)
     slide = Slide(fixture_slide, "")
     bbox = binary_mask(slide)
 
-    x, y = random_choice_true_mask2d(bbox)
-    assert bbox[x, y]
+    col, row = random_choice_true_mask2d(bbox)
+    assert bbox[row, col]

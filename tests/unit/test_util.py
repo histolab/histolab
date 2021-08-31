@@ -175,9 +175,9 @@ def test_region_coordinates():
 def test_random_choice_true_mask2d(seed):
     np.random.seed(seed)
 
-    x, y = random_choice_true_mask2d(COMPLEX_MASK)
+    col, row = random_choice_true_mask2d(COMPLEX_MASK)
 
-    assert COMPLEX_MASK[x, y]
+    assert COMPLEX_MASK[row, col]
 
 
 def test_regions_to_binary_mask():

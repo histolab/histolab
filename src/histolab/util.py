@@ -90,7 +90,7 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
 
 
 def random_choice_true_mask2d(binary_mask: np.ndarray) -> Tuple[int, int]:
-    """Return a random pair of indices where the ``binary_mask`` is True.
+    """Return a random pair of indices (column, row) where the ``binary_mask`` is True.
 
     Parameters
     ----------
@@ -100,12 +100,12 @@ def random_choice_true_mask2d(binary_mask: np.ndarray) -> Tuple[int, int]:
     Returns
     -------
     Tuple[int, int]
-        Random pair of indices where the ``binary_mask`` is True.
+        Random pair of indices (column, row) where the ``binary_mask`` is True.
     """
-    x = np.random.choice(np.where(binary_mask)[0])
-    y = np.random.choice(np.where(binary_mask[x])[0])
+    true_y, true_x = np.where(binary_mask)
+    loc = np.random.randint(len(true_y) - 1)
 
-    return x, y
+    return true_x[loc], true_y[loc]
 
 
 def rectangle_to_mask(dims: Tuple[int, int], vertices: CoordinatePair) -> np.ndarray:
