@@ -40,7 +40,7 @@ class DescribeRandomTiler:
                 BiggestTissueBoxMask(),
                 (512, 512),
                 0,
-                ["red", "red"],
+                ["red"] * 100,
                 False,
                 "tiles-location-images/cmu-1-small-region-tl-random-BTB-false-512x512",
             ),
@@ -49,7 +49,7 @@ class DescribeRandomTiler:
                 BiggestTissueBoxMask(),
                 (512, 512),
                 0,
-                [(255, 0, 0), (255, 0, 0)],
+                [(255, 0, 0)] * 100,
                 False,
                 "tiles-location-images/cmu-1-small-region-tl-random-BTB-false-512x512",
             ),
@@ -65,11 +65,11 @@ class DescribeRandomTiler:
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
                 BiggestTissueBoxMask(),
-                (512, 530),
+                (128, 530),
                 0,
                 "red",
                 False,
-                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-random-BTB-f-512x530",
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-random-BTB-f-128x530",
             ),
             (
                 SVS.CMU_1_SMALL_REGION,
@@ -123,7 +123,7 @@ class DescribeRandomTiler:
         slide = Slide(fixture_slide, "")
         random_tiles_extractor = RandomTiler(
             tile_size=tile_size,
-            n_tiles=2,
+            n_tiles=100,
             level=level,
             seed=42,
             check_tissue=check_tissue,
