@@ -152,12 +152,18 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     List[Region]
         Properties for all the regions present in the binary mask
     """
+
+    def _convert_np_coords_to_pil_coords(
+        bbox_np: Tuple[int, int, int, int]
+    ) -> Tuple[int, int, int, int]:
+        return (*reversed(bbox_np[:2]), *reversed(bbox_np[2:]))
+
     thumb_labeled_regions = label(binary_mask)
     regions = [
         Region(
             index=i,
             area=rp.area,
-            bbox=rp.bbox[:2][::-1] + rp.bbox[2:][::-1],  # from np coords to PIL coords
+            bbox=_convert_np_coords_to_pil_coords(rp.bbox),
             center=rp.centroid,
             coords=rp.coords,
         )
