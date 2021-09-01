@@ -3,6 +3,7 @@
 """Unit test suite for histolab.util module."""
 
 import operator
+from collections import namedtuple
 
 import numpy as np
 import pytest
@@ -39,7 +40,10 @@ from ..base import (
     IMAGE4_RGBA_WHITE,
 )
 from ..fixtures import MASKNPY, NPY
+from ..unitutil import function_mock
 from ..util import load_expectation, load_python_expression
+
+RegionProps = namedtuple("RegionProps", ("area", "bbox", "centroid", "coords"))
 
 
 @pytest.mark.parametrize(
@@ -208,45 +212,94 @@ def test_regions_to_binary_mask():
     )
 
 
-def test_regions_from_binary_mask():
-    expected_region = Region(
-        index=0,
-        area=20,
-        bbox=(2, 2, 7, 9),
-        center=(4.7, 4.45),
-        coords=np.array(
+@pytest.mark.parametrize(
+    "mask, region_props, label_return_value, expected_bbox",
+    [
+        (
+            np.array([[True, False], [True, True]]),
             [
-                [2, 5],
-                [3, 3],
-                [3, 4],
-                [3, 5],
-                [3, 6],
-                [4, 3],
-                [4, 4],
-                [4, 5],
-                [4, 6],
-                [5, 2],
-                [5, 3],
-                [5, 4],
-                [5, 5],
-                [5, 6],
-                [6, 3],
-                [6, 4],
-                [6, 5],
-                [6, 6],
-                [7, 5],
-                [8, 5],
-            ]
+                RegionProps(
+                    area=3,
+                    bbox=(0, 1, 2, 3),
+                    centroid=(0.6666666666666666, 0.3333333333333333),
+                    coords=np.array([[0, 0], [1, 0], [1, 1]]),
+                )
+            ],
+            [[1, 0], [1, 1]],
+            (1, 0, 3, 2),
         ),
-    )
-    regions = regions_from_binary_mask(COMPLEX_MASK4)
+        (
+            COMPLEX_MASK4,
+            [
+                RegionProps(
+                    area=20,
+                    bbox=(2, 2, 9, 7),
+                    centroid=(4.7, 4.45),
+                    coords=np.array(
+                        [
+                            [2, 5],
+                            [3, 3],
+                            [3, 4],
+                            [3, 5],
+                            [3, 6],
+                            [4, 3],
+                            [4, 4],
+                            [4, 5],
+                            [4, 6],
+                            [5, 2],
+                            [5, 3],
+                            [5, 4],
+                            [5, 5],
+                            [5, 6],
+                            [6, 3],
+                            [6, 4],
+                            [6, 5],
+                            [6, 6],
+                            [7, 5],
+                            [8, 5],
+                        ]
+                    ),
+                )
+            ],
+            np.array(
+                [
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+                    [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+                    [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+                    [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ]
+            ),
+            (2, 2, 7, 9),
+        ),
+    ],
+)
+def test_regions_from_binary_mask(
+    request, mask, region_props, label_return_value, expected_bbox
+):
+    label = function_mock(request, "histolab.util.label")
+    regionprops = function_mock(request, "histolab.util.regionprops")
+    regionprops.return_value = region_props
+    label(mask).return_value = label_return_value
 
-    assert len(regions) == 1
-    assert regions[0].index == expected_region.index
-    assert regions[0].area == expected_region.area
-    assert regions[0].bbox == expected_region.bbox
-    assert regions[0].center == expected_region.center
-    np.testing.assert_array_equal(regions[0].coords, expected_region.coords)
+    regions_from_binary_mask_ = regions_from_binary_mask(mask)
+
+    regionprops.assert_called_once_with(label(mask))
+    assert type(regions_from_binary_mask_) == list
+    assert len(regions_from_binary_mask_) == 1
+    assert type(regions_from_binary_mask_[0]) == Region
+    assert regions_from_binary_mask_[0].index == 0
+    assert regions_from_binary_mask_[0].area == region_props[0].area
+    assert regions_from_binary_mask_[0].bbox == expected_bbox
+    assert regions_from_binary_mask_[0].center == region_props[0].centroid
+    np.testing.assert_array_equal(
+        regions_from_binary_mask_[0].coords, region_props[0].coords
+    )
 
 
 class DescribeLazyPropertyDecorator:
