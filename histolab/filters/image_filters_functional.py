@@ -551,7 +551,7 @@ def rgb_to_lab(
     return lab
 
 
-def rgb_to_od(img: PIL.Image.Image) -> PIL.Image.Image:
+def rgb_to_od(img: PIL.Image.Image) -> np.ndarray:
     """Convert from RGB to optical density (OD_RGB) space.
 
     Parameters
@@ -561,7 +561,7 @@ def rgb_to_od(img: PIL.Image.Image) -> PIL.Image.Image:
 
     Returns
     -------
-    PIL.Image.Image
+    np.ndarray
         Image in OD space
     """
     if img.mode == "RGBA":
@@ -576,7 +576,7 @@ def rgb_to_od(img: PIL.Image.Image) -> PIL.Image.Image:
     img_arr[mask] = 1
     od_arr = np.maximum(-1 * np.log10(img_arr / 255), 1e-6).round(10)
     od_arr = sk_exposure.rescale_intensity(od_arr)
-    return np_to_pil(od_arr)
+    return od_arr
 
 
 def stretch_contrast(

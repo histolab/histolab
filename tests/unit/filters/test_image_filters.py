@@ -423,14 +423,14 @@ class DescribeImageFilters:
         assert type(dab_channel(image)) == PIL.Image.Image
 
     def it_calls_rgb_to_od_functional(self, request):
-        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image = np.array(PILIMG.RGBA_COLOR_500X500_155_249_240)
         F_rgb_to_od = function_mock(
             request, "histolab.filters.image_filters_functional.rgb_to_od"
         )
         F_rgb_to_od.return_value = image
         rgb_to_od = imf.RgbToOd()
 
-        rgb_to_od(image)
+        im_od = rgb_to_od(image)
 
         F_rgb_to_od.assert_called_once_with(image)
-        assert isinstance(rgb_to_od(image), PIL.Image.Image)
+        assert isinstance(im_od, np.ndarray)
