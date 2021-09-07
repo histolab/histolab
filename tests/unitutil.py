@@ -114,6 +114,7 @@ def is_win32():
 
 
 class PILImageMock:
+    np.random.seed(0)
     RGBA_COLOR_500X500_155_249_240 = Image.new(
         "RGBA", size=(500, 500), color=(155, 249, 240)
     )
@@ -125,6 +126,8 @@ class PILImageMock:
     RGB_RANDOM_COLOR_500X500 = Image.fromarray(
         (np.random.rand(500, 500, 3) * 255).astype("uint8")
     ).convert("RGB")
+
+    RGBA_RANDOM_COLOR_500X500 = RGB_RANDOM_COLOR_500X500.convert("RGBA")
 
     RGB_RANDOM_COLOR_10X10 = Image.fromarray(
         (np.random.rand(10, 10, 3) * 255).astype("uint8")
