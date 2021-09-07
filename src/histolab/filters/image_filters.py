@@ -289,7 +289,7 @@ class RgbToOd(ImageFilter):
 
     Returns
     -------
-    PIL.Image.Image
+    np.ndarray
         Image in OD space
 
 
@@ -301,7 +301,7 @@ class RgbToOd(ImageFilter):
         >>> image_od = rgb_to_od(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         od = F.rgb_to_od(img)
         return od
 
