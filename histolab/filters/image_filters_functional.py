@@ -572,10 +572,8 @@ def rgb_to_od(img: PIL.Image.Image) -> np.ndarray:
         )
     else:
         img_arr = np.array(img)
-    mask = img_arr == 0
-    img_arr[mask] = 1
-    od_arr = np.maximum(-1 * np.log10(img_arr / 255), 1e-6).round(10)
-    od_arr = sk_exposure.rescale_intensity(od_arr)
+
+    od_arr = -np.log((img_arr.astype(np.float) + 1) / 240)
     return od_arr
 
 
