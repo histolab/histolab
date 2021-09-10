@@ -568,7 +568,7 @@ def rgb_to_od(img: PIL.Image.Image) -> np.ndarray:
         img_arr = np.array(sk_color.rgba2rgb(img))
         warn(
             "Input image must be RGB. "
-            "NOTE: the image will be converted to RGB before HED conversion."
+            "NOTE: the image will be converted to RGB before OD conversion."
         )
     else:
         img_arr = np.array(img)
