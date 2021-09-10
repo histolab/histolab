@@ -1738,7 +1738,7 @@ def test_rgb_to_od_filter_with_rgba_image():
 
     expected_warning_regex = (
         r"Input image must be RGB. NOTE: the image will be converted to RGB before"
-        r" HED conversion."
+        r" OD conversion."
     )
 
     with pytest.warns(UserWarning, match=expected_warning_regex):
