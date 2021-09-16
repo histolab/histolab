@@ -540,13 +540,15 @@ def rgb_to_lab(
     return lab
 
 
-def rgb_to_od(img: PIL.Image.Image) -> np.ndarray:
+def rgb_to_od(img: PIL.Image.Image, background_intensity: int = 240) -> np.ndarray:
     """Convert from RGB to optical density (OD_RGB) space.
 
     Parameters
     ----------
     img : PIL.Image.Image
         Input image
+    background_intensity : int, optional
+        Background transmitted light intensity. Default is 240.
 
     Returns
     -------
@@ -564,7 +566,7 @@ def rgb_to_od(img: PIL.Image.Image) -> np.ndarray:
 
     img_arr = np.array(img)
 
-    od_arr = -np.log((img_arr.astype(np.float) + 1) / 240)
+    od_arr = -np.log((img_arr.astype(np.float) + 1) / background_intensity)
     return od_arr
 
 
