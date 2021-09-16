@@ -286,6 +286,8 @@ class RgbToOd(ImageFilter):
     ----------
     img : PIL.Image.Image
         Input image
+    background_intensity : int, optional
+        Background transmitted light intensity. Default is 240.
 
     Returns
     -------
@@ -301,8 +303,11 @@ class RgbToOd(ImageFilter):
         >>> image_od = rgb_to_od(image_rgb)
     """  # noqa
 
+    def __init__(self, background_intensity: int = 240) -> None:
+        self.background_intensity = background_intensity
+
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
-        od = F.rgb_to_od(img)
+        od = F.rgb_to_od(img, self.background_intensity)
         return od
 
 
