@@ -482,6 +482,7 @@ def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
             "Input image must be RGB. "
             "NOTE: the image will be converted to RGB before HED conversion."
         )
+
     img_arr = np.array(img)
     hed_arr = sk_color.rgb2hed(img_arr)
     hed = np_to_pil(hed_arr)
@@ -565,13 +566,15 @@ def rgb_to_od(img: PIL.Image.Image) -> np.ndarray:
         Image in OD space
     """
     if img.mode == "RGBA":
-        img_arr = np.array(sk_color.rgba2rgb(img))
+        red, green, blue, _ = img.split()
+        img = PIL.Image.merge("RGB", (red, green, blue))
+
         warn(
             "Input image must be RGB. "
             "NOTE: the image will be converted to RGB before OD conversion."
         )
-    else:
-        img_arr = np.array(img)
+
+    img_arr = np.array(img)
 
     od_arr = -np.log((img_arr.astype(np.float) + 1) / 240)
     return od_arr
