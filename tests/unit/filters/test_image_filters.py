@@ -450,11 +450,11 @@ class DescribeImageFilters:
             request, "histolab.filters.image_filters_functional.rgb_to_od"
         )
         F_rgb_to_od.return_value = image
-        rgb_to_od = imf.RgbToOd()
+        rgb_to_od = imf.RgbToOd(250)
 
         im_od = rgb_to_od(image)
 
-        F_rgb_to_od.assert_called_once_with(image)
+        F_rgb_to_od.assert_called_once_with(image, 250)
         assert isinstance(im_od, np.ndarray)
 
     def it_calls_hed_to_rgb_functional(self, request):
