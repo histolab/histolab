@@ -1,11 +1,15 @@
 import numpy as np
 import pytest
 
+from histolab.filters.image_filters import RgbToOd
 from histolab.masks import TissueMask
 from histolab.mixins import LinalgMixin
-from histolab.stain_normalizer import MacenkoStainNormalizer
+from histolab.stain_normalizer import (
+    MacenkoStainNormalizer,
+    TransformerStainMatrixMixin,
+)
 
-from ..unitutil import PILIMG, NpArrayMock, method_mock
+from ..unitutil import ANY, PILIMG, NpArrayMock, function_mock, method_mock
 
 
 class Describe_MacenkoStainNormalizer:
@@ -224,3 +228,69 @@ class Describe_MacenkoStainNormalizer:
             macenko_stain_normalizer.stain_matrix(img, stains=["one", "two", "three"])
 
         assert str(err.value) == "Only two-stains lists are currently supported."
+
+
+class Describe_TransformerStainMatrixMixin:
+    @pytest.fixture
+    def Mixed(self):
+        class Mixed(TransformerStainMatrixMixin):
+            def stain_matrix(self, img, background_intensity):
+                return np.zeros((3, 3))
+
+        return Mixed
+
+    def it_knows_how_to_find_concentrations(self, request, Mixed):
+        mixed_class = Mixed()
+        img = PILIMG.RGB_RANDOM_COLOR_500X500
+        stain_matrix = np.array(
+            [
+                [0.52069671, 0.20735896, 0.12419761],
+                [0.76067927, 0.84840022, -0.51667523],
+                [0.38761062, 0.48705166, 0.84712553],
+            ]
+        )
+        _rgbtood_call = method_mock(request, RgbToOd, "__call__")
+        _rgbtood_call.return_value = np.ones((3, 500, 500))
+        _np_linalg_lstsq = function_mock(request, "numpy.linalg.lstsq")
+        _np_linalg_lstsq.return_value = (np.ones((3, 250000)),)
+
+        concentrations = mixed_class._find_concentrations(img, stain_matrix)
+
+        assert isinstance(concentrations, np.ndarray)
+        np.testing.assert_array_equal(concentrations, np.ones((3, 250000)))
+        _rgbtood_call.assert_called_once_with(ANY, img)
+        np.testing.assert_array_equal(
+            _np_linalg_lstsq.call_args_list[0][0][0], stain_matrix
+        )
+        np.testing.assert_array_equal(
+            _np_linalg_lstsq.call_args_list[0][0][1], np.ones((3, 250000))
+        )
+        assert _np_linalg_lstsq.call_args_list[0][1]["rcond"] is None
+
+    def it_knows_how_to_fit(self, Mixed, request):
+        stain_matrix_ = method_mock(request, Mixed, "stain_matrix")
+        stain_matrix_.return_value = np.zeros((3, 3))
+        _find_concentrations_ = method_mock(
+            request, Mixed, "_find_concentrations", autospec=False
+        )
+        _find_concentrations_.return_value = np.ones((3, 250000))
+        mixed_class = Mixed()
+        img = PILIMG.RGB_RANDOM_COLOR_500X500
+
+        mixed_class.fit(img, 240)
+
+        assert isinstance(mixed_class.stain_matrix_target, np.ndarray)
+        np.testing.assert_allclose(mixed_class.stain_matrix_target, np.zeros((3, 3)))
+        stain_matrix_.assert_called_once_with(mixed_class, img, 240)
+        assert _find_concentrations_.call_args_list[0][0][0] == img
+        np.testing.assert_allclose(
+            _find_concentrations_.call_args_list[0][0][1], np.zeros((3, 3))
+        )
+        assert _find_concentrations_.call_args_list[0][0][2] == 240
+        assert isinstance(mixed_class.max_concentrations_target, np.ndarray)
+        np.testing.assert_allclose(
+            mixed_class.max_concentrations_target,
+            np.ones(
+                3,
+            ),
+        )
