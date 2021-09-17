@@ -31,9 +31,92 @@ from .filters.image_filters import RgbToOd
 from .masks import TissueMask
 from .mixins import LinalgMixin
 from .tile import Tile
+from .util import np_to_pil
 
 
-class MacenkoStainNormalizer(LinalgMixin):
+class TransformerStainMatrixMixin:
+    """Mixin class implementing ``fit`` and ``transform`` methods for stain normalizers.
+
+    It assumes that the subclass implements a method returning a 3x3 array of stain
+    vectors with signature
+    ``stain_matrix(self, img_rgb: PIL.Image.Image, background_intensity: int)``.
+    """
+
+    def fit(self, target_rgb: PIL.Image.Image, background_intensity: int = 240) -> None:
+        """Fit stain normalizer using ``target_img``.
+
+        Parameters
+        ----------
+        target_rgb : PIL.Image.Image
+            Target image for stain normalization. Can be either RGB or RGBA.
+        background_intensity : int, optional
+            Background transmitted light intensity. Default is 240.
+        """
+        self.stain_matrix_target = self.stain_matrix(
+            target_rgb, background_intensity=background_intensity
+        )
+
+        target_concentrations = self._find_concentrations(
+            target_rgb, self.stain_matrix_target, background_intensity
+        )
+
+        self.max_concentrations_target = np.percentile(
+            target_concentrations, 99, axis=1
+        )
+
+    def transform(
+        self, img_rgb: PIL.Image.Image, background_intensity: int = 240
+    ) -> PIL.Image.Image:
+        """Normalize staining of ``img_rgb``.
+
+        Parameters
+        ----------
+        img_rgb : PIL.Image.Image
+            Image to normalize.
+        background_intensity : int, optional
+            Background transmitted light intensity. Default is 240.
+
+        Returns
+        -------
+        PIL.Image.Image
+            Stain normalized image
+        """
+        stain_matrix_source = self.stain_matrix(
+            img_rgb, background_intensity=background_intensity
+        )
+
+        source_concentrations = self._find_concentrations(
+            img_rgb, stain_matrix_source, background_intensity
+        )
+
+        max_concentrations_source = np.percentile(source_concentrations, 99, axis=1)
+        max_concentrations_source = np.divide(
+            max_concentrations_source, self.max_concentrations_target
+        )
+        C2 = np.divide(source_concentrations, max_concentrations_source[:, np.newaxis])
+
+        img_norm = np.multiply(
+            background_intensity, np.exp(-self.stain_matrix_target.dot(C2))
+        )
+        img_norm = np.clip(img_norm, a_min=None, a_max=255)
+        img_norm = np.reshape(img_norm.T, (*img_rgb.size[::-1], 3))
+        return np_to_pil(img_norm)
+
+    @staticmethod
+    def _find_concentrations(
+        img_rgb, stain_matrix: np.ndarray, background_intensity: int = 240
+    ) -> np.ndarray:
+        OD = RgbToOd(background_intensity)(img_rgb)
+        # rows correspond to channels (RGB), columns to OD values
+        OD = np.reshape(OD, (-1, 3)).T
+
+        # determine concentrations of the individual stains
+        C = np.linalg.lstsq(stain_matrix, OD, rcond=None)[0]
+
+        return C
+
+
+class MacenkoStainNormalizer(LinalgMixin, TransformerStainMatrixMixin):
 
     stain_color_map = {
         "hematoxylin": [0.65, 0.70, 0.29],
