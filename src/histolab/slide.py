@@ -26,7 +26,7 @@ import openslide
 import PIL
 from skimage.measure import find_contours
 
-from .exceptions import LevelError
+from .exceptions import LevelError, PropertyError
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair
@@ -133,6 +133,40 @@ class Slide:
             raise LevelError(
                 f"Level {level} not available. Number of available levels: "
                 f"{len(self._wsi.level_dimensions)}"
+            )
+
+    def level_magnification_factor(self, level: int = 0) -> str:
+        """Return the magnification factor at the specified level.
+         Notice that the conversion level-magnification can be computed only
+        if the native magnification is available in the slide metadata.
+
+        Parameters
+        ---------
+        level : int
+            The level which magnification factor is requested, default is 0
+
+        Returns
+        -------
+        magnification factor : str
+            Magnification factor at speficied level
+        """
+        level = level if level >= 0 else self._remap_level(level)
+        if level > (len(self._wsi.level_dimensions) + 1):
+            raise LevelError(
+                f"Level {level} not available. Number of available levels: "
+                f"{len(self._wsi.level_dimensions)}"
+            )
+        if "openslide.objective-power" in self._wsi.properties:
+            native_magn = self._wsi.properties["openslide.objective-power"]
+            downsample_factor = round(
+                float(self._wsi.properties[f"openslide.level[{level}].downsample"])
+            )
+            level_magnification = int(native_magn) / downsample_factor
+            return f"{native_magn}X" if level == 0 else f"{level_magnification}X"
+        else:
+            raise PropertyError(
+                f"Native magnification not available. Available slide properties: "
+                f"{list(self._wsi.properties.keys())}"
             )
 
     @lazyproperty
