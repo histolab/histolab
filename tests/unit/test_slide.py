@@ -15,7 +15,6 @@ from histolab.exceptions import LevelError, SlidePropertyError
 from histolab.slide import Slide, SlideSet
 from histolab.types import CP
 
-from ..fixtures import EXTERNAL_SVS, SVS
 from ..unitutil import (
     ANY,
     PILIMG,
@@ -278,70 +277,11 @@ class Describe_Slide:
             == f"Level {level} not available. Number of available levels: 1"
         )
 
-    @pytest.mark.parametrize(
-        "fixture_slide, level, expected_value",
-        (
-            pytest.param(
-                EXTERNAL_SVS.LIVER_1,
-                0,
-                "20X",
-                marks=pytest.mark.skipif(not on_ci(), reason="To run only on CI"),
-            ),
-            pytest.param(
-                EXTERNAL_SVS.LIVER_1,
-                1,
-                "5.0X",
-                marks=pytest.mark.skipif(not on_ci(), reason="To run only on CI"),
-            ),
-            pytest.param(
-                EXTERNAL_SVS.LIVER_1,
-                2,
-                "1.25X",
-                marks=pytest.mark.skipif(not on_ci(), reason="To run only on CI"),
-            ),
-        ),
-    )
-    def it_knows_its_magnification_factors(self, fixture_slide, level, expected_value):
-        slide = Slide(fixture_slide, "")
-
-        magnification_factor = slide.level_magnification_factor(level=level)
-
-        assert magnification_factor == expected_value
-
-    @pytest.mark.parametrize(
-        "fixture_slide, level",
-        (
-            (SVS.TCGA_CR_7395_01A_01_TS1, 0),
-            (SVS.TCGA_CR_7395_01A_01_TS1, 1),
-        ),
-    )
-    def but_it_raises_exception_when_magnification_cannot_be_computed(
-        self, fixture_slide, level
+    @pytest.mark.parametrize("level", (1, -3))
+    def it_raises_an_exception_when_magnification_factor_in_unavailable(
+        self, level, tmpdir
     ):
-        slide = Slide(fixture_slide, "")
-
-        with pytest.raises(SlidePropertyError) as err:
-            slide.level_magnification_factor(level=level)
-
-        assert isinstance(err.value, SlidePropertyError)
-        assert (
-            str(err.value)
-            == f"Native magnification not available. Available slide properties: "
-            f"{list(slide.properties.keys())}"
-        )
-
-    @pytest.mark.parametrize(
-        "fixture_slide, level",
-        [
-            pytest.param(
-                EXTERNAL_SVS.LIVER_1,
-                4,
-                marks=pytest.mark.skipif(not on_ci(), reason="To run only on CI"),
-            ),
-        ],
-    )
-    def and_when_level_is_incorrect(self, fixture_slide, level):
-        slide = Slide(fixture_slide, "")
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 
         with pytest.raises(LevelError) as err:
             slide.level_magnification_factor(level=level)
@@ -349,7 +289,19 @@ class Describe_Slide:
         assert isinstance(err.value, LevelError)
         assert (
             str(err.value)
-            == f"Level {level} not available. Number of available levels: 3"
+            == f"Level {level} not available. Number of available levels: 1"
+        )
+
+    def it_raises_an_exception_when_native_magnification_in_unavailable(self, tmpdir):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+
+        with pytest.raises(SlidePropertyError) as err:
+            slide.level_magnification_factor()
+
+        assert isinstance(err.value, SlidePropertyError)
+        assert (
+            str(err.value)
+            == "Native magnification not available. Available slide properties: []"
         )
 
     @pytest.mark.parametrize(

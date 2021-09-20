@@ -116,7 +116,7 @@ dimensions at native magnification or at a specified level:
    Dimensions at level 2: (1875, 2124)
 
 .. note::
-    If the native magnification, *i.e.* the magnification factor used to scan the slide, is provided in the slide properties, it is also possible
+    If the native magnification, *i.e.*, the magnification factor used to scan the slide, is provided in the slide properties, it is also possible
     to convert the desired level to its corresponding magnification factor with the ``level_magnification_factor`` property.
 
 .. code-block:: ipython3
