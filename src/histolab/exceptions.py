@@ -37,7 +37,7 @@ class LevelError(HistolabException):
     """Raised when a requested level is not available"""
 
 
-class PropertyError(HistolabException):
+class SlidePropertyError(HistolabException):
     """Raised when a requested slide property is not available"""
 
 
