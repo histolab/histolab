@@ -164,7 +164,9 @@ class Describe_MacenkoStainNormalizer:
                 [-0.70721327, -0.03681175],
             ]
         )
-        _normalize_columns = method_mock(request, LinalgMixin, "normalize_columns")
+        _normalize_columns = method_mock(
+            request, LinalgMixin, "normalize_columns", autospec=False
+        )
         _normalize_columns.return_value = np.array(
             [
                 [0.71250099, 0.28600942],
