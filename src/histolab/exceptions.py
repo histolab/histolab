@@ -37,6 +37,10 @@ class LevelError(HistolabException):
     """Raised when a requested level is not available"""
 
 
+class PropertyError(HistolabException):
+    """Raised when a requested slide property is not available"""
+
+
 class FilterCompositionError(HistolabException):
     """Raised when a filter composition for the class is not available"""
 
