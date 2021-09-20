@@ -11,7 +11,7 @@ import PIL
 import pytest
 from PIL import ImageShow
 
-from histolab.exceptions import LevelError, PropertyError
+from histolab.exceptions import LevelError, SlidePropertyError
 from histolab.slide import Slide, SlideSet
 from histolab.types import CP
 
@@ -320,10 +320,10 @@ class Describe_Slide:
     ):
         slide = Slide(fixture_slide, "")
 
-        with pytest.raises(PropertyError) as err:
+        with pytest.raises(SlidePropertyError) as err:
             slide.level_magnification_factor(level=level)
 
-        assert isinstance(err.value, PropertyError)
+        assert isinstance(err.value, SlidePropertyError)
         assert (
             str(err.value)
             == f"Native magnification not available. Available slide properties: "
@@ -343,7 +343,7 @@ class Describe_Slide:
     def and_when_level_is_incorrect(self, fixture_slide, level):
         slide = Slide(fixture_slide, "")
 
-        with pytest.raises(PropertyError) as err:
+        with pytest.raises(LevelError) as err:
             slide.level_magnification_factor(level=level)
 
         assert isinstance(err.value, LevelError)

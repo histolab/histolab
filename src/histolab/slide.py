@@ -26,7 +26,7 @@ import openslide
 import PIL
 from skimage.measure import find_contours
 
-from .exceptions import LevelError, PropertyError
+from .exceptions import LevelError, SlidePropertyError
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair
@@ -48,6 +48,11 @@ class Slide:
         Path where the WSI is saved.
     processed_path : Union[str, pathlib.Path]
         Path where the tiles will be saved to.
+
+    Raises
+    ------
+    TypeError:
+        If the processed path is not specified.
     """
 
     def __init__(
@@ -125,6 +130,11 @@ class Slide:
         -------
         dimensions : Tuple[int, int]
             Slide dimensions at the specified level (width, height)
+
+        Raises
+        ------
+        IndexError:
+            If the specified level is not available
         """
         level = level if level >= 0 else self._remap_level(level)
         try:
@@ -137,6 +147,7 @@ class Slide:
 
     def level_magnification_factor(self, level: int = 0) -> str:
         """Return the magnification factor at the specified level.
+
          Notice that the conversion level-magnification can be computed only
         if the native magnification is available in the slide metadata.
 
@@ -149,6 +160,14 @@ class Slide:
         -------
         magnification factor : str
             Magnification factor at speficied level
+
+        Raises
+        ------
+        LevelError:
+            If the specified level is not available.
+        KeyError:
+            If the slide's native magnification is not available in the file
+            metadata.
         """
         level = level if level >= 0 else self._remap_level(level)
         if level > (len(self._wsi.level_dimensions) + 1):
@@ -156,17 +175,22 @@ class Slide:
                 f"Level {level} not available. Number of available levels: "
                 f"{len(self._wsi.level_dimensions)}"
             )
-        if "openslide.objective-power" in self._wsi.properties:
-            native_magn = self._wsi.properties["openslide.objective-power"]
-            downsample_factor = round(
-                float(self._wsi.properties[f"openslide.level[{level}].downsample"])
-            )
-            level_magnification = int(native_magn) / downsample_factor
-            return f"{native_magn}X" if level == 0 else f"{level_magnification}X"
-        raise PropertyError(
-            f"Native magnification not available. Available slide properties: "
-            f"{list(self._wsi.properties.keys())}"
+        properties = self._wsi.properties
+        downsample_factor = (
+            round(float(properties[f"openslide.level[{level}].downsample"]))
+            if level != 0
+            else 1
         )
+        try:
+            level_magnification = (
+                int(properties["openslide.objective-power"]) / downsample_factor
+            )
+            return f"{level_magnification}X"
+        except KeyError:
+            raise SlidePropertyError(
+                f"Native magnification not available. Available slide properties: "
+                f"{list(self._wsi.properties.keys())}"
+            )
 
     @lazyproperty
     def levels(self) -> List[int]:
