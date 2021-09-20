@@ -115,6 +115,27 @@ dimensions at native magnification or at a specified level:
    Dimensions at level 1: (7500, 8496)
    Dimensions at level 2: (1875, 2124)
 
+.. note::
+    If the native magnification, *i.e.* the magnification factor used to scan the slide, is provided in the slide properties, it is also possible
+    to convert the desired level to its corresponding magnification factor with the ``level_magnification_factor`` property.
+
+.. code-block:: ipython3
+
+   print(
+        "Native magnification factor:",
+        prostate_slide.level_magnification_factor()
+    )
+
+    print(
+        "Magnification factor corresponding to level 1:",
+        prostate_slide.level_magnification_factor(level=1),
+    )
+
+.. code-block:: bash
+
+    Native magnification factor: 20X
+    Magnification factor corresponding to level 1: 5.0X
+
 Moreover, we can retrieve or show the slide thumbnail in a separate window:
 
 .. code-block:: ipython3
