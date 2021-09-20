@@ -1,4 +1,5 @@
 import numpy as np
+import PIL
 import pytest
 
 from histolab.filters.image_filters import RgbToOd
@@ -296,3 +297,29 @@ class Describe_TransformerStainMatrixMixin:
                 3,
             ),
         )
+
+    def it_knows_how_to_transform(self, Mixed, request):
+        stain_matrix_ = method_mock(request, Mixed, "stain_matrix")
+        stain_matrix_.return_value = np.zeros((3, 3))
+        _find_concentrations_ = method_mock(
+            request, Mixed, "_find_concentrations", autospec=False
+        )
+        _find_concentrations_.return_value = np.ones((3, 250000))
+        img = PILIMG.RGB_RANDOM_COLOR_500X500
+        np_to_pil_ = function_mock(request, "histolab.stain_normalizer.np_to_pil")
+        np_to_pil_.return_value = img
+        mixed_class = Mixed()
+        # fake fitting
+        mixed_class.max_concentrations_target = np.ones((3,))
+        mixed_class.stain_matrix_target = np.zeros((3, 3))
+
+        img_normalized = mixed_class.transform(img)
+
+        assert isinstance(img_normalized, PIL.Image.Image)
+        stain_matrix_.assert_called_once_with(mixed_class, img, 240)
+        assert _find_concentrations_.call_args_list[0][0][0] == img
+        np.testing.assert_allclose(
+            _find_concentrations_.call_args_list[0][0][1], np.zeros((3, 3))
+        )
+        assert _find_concentrations_.call_args_list[0][0][2] == 240
+        np_to_pil_.assert_called_once()
