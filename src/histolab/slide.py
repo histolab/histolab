@@ -163,11 +163,10 @@ class Slide:
             )
             level_magnification = int(native_magn) / downsample_factor
             return f"{native_magn}X" if level == 0 else f"{level_magnification}X"
-        else:
-            raise PropertyError(
-                f"Native magnification not available. Available slide properties: "
-                f"{list(self._wsi.properties.keys())}"
-            )
+        raise PropertyError(
+            f"Native magnification not available. Available slide properties: "
+            f"{list(self._wsi.properties.keys())}"
+        )
 
     @lazyproperty
     def levels(self) -> List[int]:
