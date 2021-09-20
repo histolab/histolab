@@ -51,7 +51,7 @@ class Slide:
 
     Raises
     ------
-    TypeError:
+    TypeError
         If the processed path is not specified.
     """
 
@@ -124,7 +124,7 @@ class Slide:
         Parameters
         ---------
         level : int
-            The level which dimensions are requested, default is 0
+            The level which dimensions are requested, default is 0.
 
         Returns
         -------
@@ -133,7 +133,7 @@ class Slide:
 
         Raises
         ------
-        IndexError:
+        LevelError
             If the specified level is not available
         """
         level = level if level >= 0 else self._remap_level(level)
@@ -154,7 +154,7 @@ class Slide:
         Parameters
         ---------
         level : int
-            The level which magnification factor is requested, default is 0
+            The level which magnification factor is requested, default is 0.
 
         Returns
         -------
@@ -163,19 +163,19 @@ class Slide:
 
         Raises
         ------
-        LevelError:
+        LevelError
             If the specified level is not available.
-        KeyError:
+        SlidePropertyError
             If the slide's native magnification is not available in the file
             metadata.
         """
         level = level if level >= 0 else self._remap_level(level)
-        if level > (len(self._wsi.level_dimensions) + 1):
+        if level not in self.levels:
             raise LevelError(
                 f"Level {level} not available. Number of available levels: "
                 f"{len(self._wsi.level_dimensions)}"
             )
-        properties = self._wsi.properties
+        properties = self.properties
         downsample_factor = (
             round(float(properties[f"openslide.level[{level}].downsample"]))
             if level != 0
@@ -189,7 +189,7 @@ class Slide:
         except KeyError:
             raise SlidePropertyError(
                 f"Native magnification not available. Available slide properties: "
-                f"{list(self._wsi.properties.keys())}"
+                f"{list(self.properties.keys())}"
             )
 
     @lazyproperty
