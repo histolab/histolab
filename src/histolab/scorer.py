@@ -68,16 +68,22 @@ class RandomScorer(Scorer):
 
 
 class CellularityScorer(Scorer):
-    """Implement a basic Scorer that estimates the cellularity in an H&E-stained tile.
+    """Implement a Scorer that estimates the cellularity in an H&E-stained tile.
 
-    This class deconvolves the hematoxylin channel and use the fraction of tile
+    This class deconvolves the hematoxylin channel and uses the fraction of tile
     occupied by hematoxylin as the cellularity score.
 
     Notice that this scorer is useful when tiles are extracted at a very low resolution
-    with no artifacts; in this case, NucleiScorer() would not work well as nuclei are n
-    o discernible at low magnification.
+    with no artifacts; in this case,  using the``NucleiScorer()`` instead would not
+    work well as nuclei are no discernible at low magnification.
 
     .. automethod:: __call__
+
+    Parameters
+    ----------
+    consider_tissue : bool, optional
+        Whether the detected tissue on the tile should be considered to compute the
+        cellularity score. Default is True
     """
 
     def __init__(self, consider_tissue: bool = True) -> None:
