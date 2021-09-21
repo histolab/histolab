@@ -24,6 +24,7 @@ import numpy as np
 from .filters import image_filters as imf
 from .filters import morphological_filters as mof
 from .filters.util import mask_difference
+from .masks import TissueMask
 from .tile import Tile
 
 try:
@@ -66,11 +67,55 @@ class RandomScorer(Scorer):
         return np.random.random()
 
 
+class CellularityScorer(Scorer):
+    """Implement a basic Scorer that estimates the cellularity in an H&E-stained tile.
+
+    This class deconvolves the hematoxylin channel and use the fraction of tile
+    occupied by hematoxylin as the cellularity score.
+
+    Notice that this scorer is useful when tiles are extracted at a very low resolution
+    with no artifacts; in this case, NucleiScorer() would not work well as nuclei are n
+    o discernible at low magnification.
+
+    .. automethod:: __call__
+    """
+
+    def __init__(self, consider_tissue: bool = True) -> None:
+        self.consider_tissue = consider_tissue
+
+    def __call__(self, tile: Tile) -> float:
+        """Return the tile cellularity score.
+
+        Parameters
+        ----------
+        tile : Tile
+            The tile to calculate the score from.
+        consider_tissue : bool
+            Whether the cellularity score should be computed by considering the tissue
+            on the tile. Default is True
+
+        Returns
+        -------
+        float
+            Cellularity score
+        """
+
+        tissue_mask = TissueMask()
+        filters_cellularity = imf.Compose(
+            [imf.HematoxylinChannel(), imf.YenThreshold(operator.gt)]
+        )
+
+        mask_nuclei = np.array(tile.apply_filters(filters_cellularity).image)
+
+        return (
+            np.count_nonzero(mask_nuclei) / np.count_nonzero(tissue_mask(tile))
+            if self.consider_tissue
+            else np.count_nonzero(mask_nuclei) / mask_nuclei.size
+        )
+
+
 class NucleiScorer(Scorer):
     r"""Implement a Scorer that estimates the presence of nuclei in an H&E-stained tile.
-
-    This class implements an hybrid algorithm that combines thresholding and
-    morphological operations to segment nuclei on H&E-stained histological images.
 
     This class implements an hybrid algorithm that combines thresholding and
     morphological operations to segment nuclei on H&E-stained histological images.
