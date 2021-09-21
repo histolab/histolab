@@ -12,10 +12,11 @@ Thus, the user can decide either to use ``histolab`` through
 ``histolab-box`` or installing it in his/her python virtual environment
 (using conda, pipenv, pyenv, virtualenv, etc...). In the latter case, as
 the ``histolab`` package has been published on
-`PyPi <http://www.pypi.org>`_, it can be easily installed via the command:
+`PyPI <http://www.pypi.org>`_, it can be easily installed via the command:
 
 
-.. code-block:: bash
+.. prompt:: text
+   :prompts: $
 
    pip install histolab
 
@@ -153,7 +154,7 @@ parameters:
 -  ``check_tissue``: if a minimum percentage of tissue is required to
    save the tiles;
 
--  `` tissue_percent``: number between 0.0 and 100.0 representing the 
+-  `` tissue_percent``: number between 0.0 and 100.0 representing the
    minimum required percentage of tissue over the total area of the image
    (default is 80.0)
 
@@ -194,7 +195,7 @@ Notice that we also specify the random seed to ensure the reproducibility of
 the extraction process.
 
 We may want to check which tiles have been selected by the tiler, before starting the extraction procedure and saving them;
-the ``locate_tiles`` method of ``RandomTiler`` returns a scaled version of the slide with the corresponding tiles outlined. It is also possible to specify 
+the ``locate_tiles`` method of ``RandomTiler`` returns a scaled version of the slide with the corresponding tiles outlined. It is also possible to specify
 the transparency of the background slide, and the color used for the border of the tiles:
 
 .. code-block:: ipython3
