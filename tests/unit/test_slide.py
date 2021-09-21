@@ -277,6 +277,82 @@ class Describe_Slide:
             == f"Level {level} not available. Number of available levels: 1"
         )
 
+    @pytest.mark.parametrize(
+        "properties",
+        (
+            (
+                {
+                    "openslide.objective-power": "20",
+                    "openslide.level[1].downsample": "4.003",
+                    "openslide.level[2].downsample": "16",
+                }
+            ),
+        ),
+    )
+    def it_knows_its_magnification(self, request, properties, tmpdir):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        property_mock(request, Slide, "properties", return_value=properties)
+        property_mock(request, Slide, "levels", return_value=[0, 1, 2])
+
+        assert slide.level_magnification_factor(1) == "5.0X"
+        assert slide.level_magnification_factor(2) == "1.25X"
+
+    @pytest.mark.parametrize(
+        "properties, error",
+        (
+            (
+                {
+                    "openslide.objective-power": "20",
+                },
+                "Downsample factor for level 1 not available. Available slide "
+                "properties: ['openslide.objective-power']",
+            ),
+            (
+                {
+                    "openslide.level[1].downsample": "4.003",
+                    "openslide.level[2].downsample": "16",
+                },
+                "Native magnification not available. Available slide properties: "
+                "['openslide.level[1].downsample', 'openslide.level[2].downsample']",
+            ),
+        ),
+    )
+    def but_it_raises_an_exception_if_metadata_are_unavailable(
+        self, request, properties, error, tmpdir
+    ):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        property_mock(request, Slide, "properties", return_value=properties)
+        property_mock(request, Slide, "levels", return_value=[0, 1, 2])
+        with pytest.raises(SlidePropertyError) as err:
+            slide.level_magnification_factor(1)
+
+        assert isinstance(err.value, SlidePropertyError)
+        assert str(err.value) == error
+
+    @pytest.mark.parametrize(
+        "properties",
+        (
+            (
+                {
+                    "openslide.objective-power": "20",
+                    "openslide.level[1].downsample": "4.003",
+                    "openslide.level[2].downsample": "16",
+                },
+            ),
+        ),
+    )
+    def and_it_raises_an_exception_if_level_in_incorrect(
+        self, request, properties, tmpdir
+    ):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        property_mock(request, Slide, "properties", return_value=properties)
+        property_mock(request, Slide, "levels", return_value=[0, 1, 2])
+        with pytest.raises(LevelError) as err:
+            slide.level_magnification_factor(4)
+
+        assert isinstance(err.value, LevelError)
+        assert str(err.value) == "Level 4 not available. Number of available levels: 1"
+
     @pytest.mark.parametrize("level", (1, -3))
     def it_raises_an_exception_when_magnification_factor_in_unavailable(
         self, level, tmpdir
