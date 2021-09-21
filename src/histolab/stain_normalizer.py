@@ -157,7 +157,7 @@ class MacenkoStainNormalizer(LinalgMixin, TransformerStainMatrixMixin):
         Raises
         ------
         ValueError
-            if ``stain`` is not a two-stains list
+            if ``stains`` is not a two-stains list
         ValueError
             if the input image is not RGB or RGBA
 

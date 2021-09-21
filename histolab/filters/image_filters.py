@@ -991,8 +991,8 @@ class OtsuThreshold(ImageFilter):
         >>> image_thresholded_array = otsu_threshold(image_gray)
 
 
-    Reference
-    ---------
+    References
+    ----------
     .. [7] N Otsu. “A threshold selection method from gray-level histograms”. IEEE
         Trans SystMan Cybern Syst 9.1 (1979)
     """  # noqa
