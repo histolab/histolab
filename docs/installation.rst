@@ -56,7 +56,7 @@ Install Pixman 0.40 on Windows
 
 ``OpenSlide`` builds are the same for all Windows versions and they include pixman 0.34.
 
-Pixman 0.40 can be retrieved using ``pacman`` (the package manager of Arch Linux, see `https://www.msys2.org/`_ for more info):
+Pixman 0.40 can be retrieved using ``pacman`` (the package manager of Arch Linux, see `<https://www.msys2.org/>`_ for more info):
 
 .. prompt:: text
     :prompts: $
