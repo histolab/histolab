@@ -177,12 +177,12 @@ class Slide:
                 f"Level {level} not available. Number of available levels: "
                 f"{len(self._wsi.level_dimensions)}"
             )
-        elif level > 0 and f"openslide.level[{level}].downsample" not in properties:
+        if level > 0 and f"openslide.level[{level}].downsample" not in properties:
             raise SlidePropertyError(
                 f"Downsample factor for level {level} not available. "
                 f"Available slide properties: {list(self.properties.keys())}"
             )
-        elif "openslide.objective-power" not in properties:
+        if "openslide.objective-power" not in properties:
             raise SlidePropertyError(
                 f"Native magnification not available. Available slide properties: "
                 f"{list(self.properties.keys())}"
