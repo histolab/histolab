@@ -351,10 +351,10 @@ class Describe_Slide:
             slide.level_magnification_factor(4)
 
         assert isinstance(err.value, LevelError)
-        assert str(err.value) == "Level 4 not available. Number of available levels: 1"
+        assert str(err.value) == "Level 4 not available. Number of available levels: 3"
 
     @pytest.mark.parametrize("level", (1, -3))
-    def it_raises_an_exception_when_magnification_factor_in_unavailable(
+    def it_raises_an_exception_when_magnification_factor_is_unavailable(
         self, level, tmpdir
     ):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
