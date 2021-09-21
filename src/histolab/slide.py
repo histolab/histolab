@@ -175,7 +175,7 @@ class Slide:
         if level not in self.levels:
             raise LevelError(
                 f"Level {level} not available. Number of available levels: "
-                f"{len(self._wsi.level_dimensions)}"
+                f"{len(self.levels)}"
             )
         if level > 0 and f"openslide.level[{level}].downsample" not in properties:
             raise SlidePropertyError(
