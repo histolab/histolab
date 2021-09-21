@@ -71,6 +71,7 @@ class Describe_Slide:
                 "1.25X",
                 marks=pytest.mark.skipif(not on_ci(), reason="To run only on CI"),
             ),
+            (SVS.CMU_1_SMALL_REGION, 0, "20.0X"),
         ),
     )
     def it_knows_its_magnification_factors(self, fixture_slide, level, expected_value):
