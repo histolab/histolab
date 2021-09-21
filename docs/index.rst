@@ -87,6 +87,7 @@ References
    api/masks
    api/tile
    api/tiler
+   api/stain_normalizer
    api/scorer
    api/data
    api/util
