@@ -166,8 +166,8 @@ class Slide:
         LevelError
             If the specified level is not available.
         SlidePropertyError
-            If the slide's native magnification is not available in the file
-            metadata.
+            If the slide's native magnification or the downsample factor for the
+            specified level are not available in the file's metadata.
         """
         level = level if level >= 0 else self._remap_level(level)
         properties = self.properties
