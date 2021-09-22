@@ -28,7 +28,7 @@ class LinalgMixin:
     @staticmethod
     def two_principal_components(arr: np.ndarray) -> np.ndarray:
         """
-        Return the two principal components of the covariance matrix of ``arr``.
+        Return the first two principal components of the covariance matrix of ``arr``.
 
         Parameters
         ----------
