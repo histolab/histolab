@@ -79,7 +79,7 @@ class TransformerStainMatrixMixin:
         Returns
         -------
         PIL.Image.Image
-            Stain normalized image
+            Image with normalized stain
         """
         stain_matrix_source = self.stain_matrix(
             img_rgb, background_intensity=background_intensity
@@ -93,10 +93,12 @@ class TransformerStainMatrixMixin:
         max_concentrations_source = np.divide(
             max_concentrations_source, self.max_concentrations_target
         )
-        C2 = np.divide(source_concentrations, max_concentrations_source[:, np.newaxis])
+        conc_tmp = np.divide(
+            source_concentrations, max_concentrations_source[:, np.newaxis]
+        )
 
         img_norm = np.multiply(
-            background_intensity, np.exp(-self.stain_matrix_target.dot(C2))
+            background_intensity, np.exp(-self.stain_matrix_target.dot(conc_tmp))
         )
         img_norm = np.clip(img_norm, a_min=None, a_max=255)
         img_norm = np.reshape(img_norm.T, (*img_rgb.size[::-1], 3))
@@ -104,20 +106,45 @@ class TransformerStainMatrixMixin:
 
     @staticmethod
     def _find_concentrations(
-        img_rgb, stain_matrix: np.ndarray, background_intensity: int = 240
+        img_rgb: PIL.Image.Image,
+        stain_matrix: np.ndarray,
+        background_intensity: int = 240,
     ) -> np.ndarray:
-        OD = RgbToOd(background_intensity)(img_rgb)
+        """Return concentrations of the individual stains in ``img_rgb``.
+
+        Parameters
+        ----------
+        img_rgb : PIL.Image.Image
+            Input image.
+        stain_matrix : np.ndarray
+            Stain matrix of ``img_rgb``.
+        background_intensity : int, optional
+            Background transmitted light intensity. Default is 240.
+
+        Returns
+        -------
+        np.ndarray
+            Concentrations of the individual stains in ``img_rgb``.
+        """
+        od = RgbToOd(background_intensity)(img_rgb)
         # rows correspond to channels (RGB), columns to OD values
-        OD = np.reshape(OD, (-1, 3)).T
+        od = np.reshape(od, (-1, 3)).T
 
         # determine concentrations of the individual stains
-        C = np.linalg.lstsq(stain_matrix, OD, rcond=None)[0]
-
-        return C
+        return np.linalg.lstsq(stain_matrix, od, rcond=None)[0]
 
 
 class MacenkoStainNormalizer(LinalgMixin, TransformerStainMatrixMixin):
+    """Stain normalizer using the method of M. Macenko et al. [1]_
 
+    References
+    ----------
+    .. [1] Macenko, Marc, et al. "A method for normalizing histology slides for
+        quantitative analysis." 2009 IEEE International Symposium on Biomedical
+        Imaging: From Nano to Macro. IEEE, 2009.
+    """
+
+    # normalized OD matrix M for hematoxylin, eosin and DAB stains
     stain_color_map = {
         "hematoxylin": [0.65, 0.70, 0.29],
         "eosin": [0.07, 0.99, 0.11],
@@ -133,7 +160,7 @@ class MacenkoStainNormalizer(LinalgMixin, TransformerStainMatrixMixin):
         background_intensity: int = 240,
         stains: List[str] = None,
     ) -> np.ndarray:
-        """Stain matrix estimation via method of M. Macenko et al. [1]_
+        """Return stain matrix estimation for color deconvolution with Macenko's method.
 
         Parameters
         ----------
@@ -160,12 +187,6 @@ class MacenkoStainNormalizer(LinalgMixin, TransformerStainMatrixMixin):
             if ``stains`` is not a two-stains list
         ValueError
             if the input image is not RGB or RGBA
-
-        References
-        ----------
-        .. [1] Macenko, Marc, et al. "A method for normalizing histology slides for
-            quantitative analysis." 2009 IEEE International Symposium on Biomedical
-            Imaging: From Nano to Macro. IEEE, 2009.
         """
 
         if stains is not None and len(stains) != 2:
@@ -181,15 +202,15 @@ class MacenkoStainNormalizer(LinalgMixin, TransformerStainMatrixMixin):
         tissue_mask = TissueMask()
         mask = tissue_mask(tile)
 
-        OD = RgbToOd(background_intensity)(img_rgb)
-        OD = OD[mask].reshape(-1, 3)
+        od = RgbToOd(background_intensity)(img_rgb)
+        od = od[mask].reshape(-1, 3)
 
         # Remove data with OD intensity less than β
-        ODhat = OD[~np.any(OD < beta, axis=1)]
+        od_hat = od[~np.any(od < beta, axis=1)]
 
         # Calculate principal components and project input
-        V = self.two_principal_components(ODhat)
-        proj = np.dot(ODhat, V)
+        V = self.two_principal_components(od_hat)
+        proj = np.dot(od_hat, V)
 
         # Angular coordinates with repect to the principle, orthogonal eigenvectors
         phi = np.arctan2(proj[:, 1], proj[:, 0])
