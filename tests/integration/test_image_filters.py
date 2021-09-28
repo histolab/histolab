@@ -6,7 +6,7 @@ from PIL import ImageChops
 
 import histolab.filters.image_filters_functional as imf
 
-from ..fixtures import GS, RGB, RGBA
+from ..fixtures import GS, MASKNPY, RGB, RGBA
 from ..util import load_expectation
 
 
@@ -1729,3 +1729,21 @@ def test_rgb_to_od_filter_with_rgba_image():
         od_img = imf.rgb_to_od(img)
 
     np.testing.assert_array_almost_equal(od_img, expected_value)
+
+
+@pytest.mark.parametrize(
+    "pil_image, expected_image",
+    (
+        (
+            MASKNPY.DIAGNOSTIC_SLIDE_THUMB_LAB,
+            "pil-images-rgb/diagnostic-slide-thumb-lab-to-rgb",
+        ),
+    ),
+)
+def test_lab_to_rgb_filter_with_rgb_image(pil_image, expected_image):
+    expected_value = load_expectation(expected_image, type_="png")
+
+    rgb_img = imf.lab_to_rgb(pil_image)
+
+    np.testing.assert_array_almost_equal(np.array(rgb_img), np.array(expected_value))
+    assert np.unique(np.array(ImageChops.difference(rgb_img, expected_value)))[0] == 0

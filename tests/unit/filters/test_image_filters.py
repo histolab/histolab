@@ -407,7 +407,7 @@ class DescribeImageFilters:
         rgb_to_lab(image)
 
         F_rgb_to_lab.assert_called_once_with(image, "A", "2")
-        assert type(rgb_to_lab(image)) == np.array
+        assert type(rgb_to_lab(image)) == np.ndarray
 
     def it_calls_dab_channel_functional(self, request):
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
@@ -434,3 +434,17 @@ class DescribeImageFilters:
 
         F_rgb_to_od.assert_called_once_with(image, 250)
         assert isinstance(im_od, np.ndarray)
+
+    def it_calls_lab_to_rgb_functional(self, request):
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image_arr = np.array(image)
+        F_lab_to_rgb = function_mock(
+            request, "histolab.filters.image_filters_functional.lab_to_rgb"
+        )
+        F_lab_to_rgb.return_value = image
+        lab_to_rgb = imf.LabToRgb("A", "2")
+
+        lab_to_rgb(image_arr)
+
+        F_lab_to_rgb.assert_called_once_with(image_arr, "A", "2")
+        assert type(lab_to_rgb(image_arr)) == PIL.Image.Image

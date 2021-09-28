@@ -315,6 +315,32 @@ def kmeans_segmentation(
     return np_to_pil(sk_color.label2rgb(labels, img_arr, kind="avg", bg_label=-1))
 
 
+def lab_to_rgb(
+    img: PIL.Image.Image, illuminant: str = "D65", observer: int = "2"
+) -> PIL.Image.Image:
+    """Lab to RGB color space conversion.
+
+    Parameters
+    ----------
+    img : PIL.Image.Image
+        Input image in Lab space.
+    illuminant : {“A”, “D50”, “D55”, “D65”, “D75”, “E”}, optional
+        The name of the illuminant (the function is NOT case sensitive). Default is
+        "D65".
+    observer : {“2”, “10”}, optional
+        The aperture angle of the observer. Default is "2".
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image in RGB space.
+    """
+    img_arr = np.array(img)
+    rgb_arr = sk_color.lab2rgb(img_arr, illuminant=illuminant, observer=observer)
+    rgb = np_to_pil(rgb_arr)
+    return rgb
+
+
 def local_equalization(img: PIL.Image.Image, disk_size: int = 50) -> PIL.Image.Image:
     """Filter gray image using local equalization.
 
