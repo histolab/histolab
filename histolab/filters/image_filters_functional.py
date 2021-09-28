@@ -517,7 +517,7 @@ def rgb_to_hsv(img: PIL.Image.Image) -> np.ndarray:
 
 def rgb_to_lab(
     img: PIL.Image.Image, illuminant: str = "D65", observer: int = "2"
-) -> PIL.Image.Image:
+) -> np.ndarray:
     """Convert from the sRGB color space to the CIE Lab colorspace.
 
     sRGB color space reference: IEC 61966-2-1:1999
@@ -527,13 +527,14 @@ def rgb_to_lab(
     img : PIL.Image.Image
         Input image
     illuminant : {“A”, “D50”, “D55”, “D65”, “D75”, “E”}, optional
-        The name of the illuminant (the function is NOT case sensitive).
+        The name of the illuminant (the function is NOT case sensitive). Default is
+        "D65".
     observer : {“2”, “10”}, optional
-        The aperture angle of the observer.
+        The aperture angle of the observer. Default is "2".
 
     Returns
     -------
-    PIL.Image.Image
+    np.ndarray
         Image in LAB space
 
     Raises
@@ -545,8 +546,7 @@ def rgb_to_lab(
         raise Exception("Input image must be RGB")
     img_arr = np.array(img)
     lab_arr = sk_color.rgb2lab(img_arr, illuminant=illuminant, observer=observer)
-    lab = np_to_pil(lab_arr)
-    return lab
+    return lab_arr
 
 
 def rgb_to_od(img: PIL.Image.Image) -> np.ndarray:
