@@ -267,7 +267,7 @@ class RgbToLab(ImageFilter):
         >>> from histolab.filters.image_filters import RgbToLab
         >>> image_rgb = Image.open("tests/fixtures/pil-images-rgb/tcga-lung-rgb.png")
         >>> rgb_to_lab = RgbToLab()
-        >>> image_hed = rgb_to_lab(image_rgb)
+        >>> image_lab = rgb_to_lab(image_rgb)
     """  # noqa
 
     def __init__(self, illuminant: str = "D65", observer: int = "2") -> None:
@@ -626,6 +626,41 @@ class AdaptiveEqualization(ImageFilter):
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         adaptive_equ = F.adaptive_equalization(img, self.n_bins, self.clip_limit)
         return adaptive_equ
+
+
+class LabToRgb(ImageFilter):
+    """Lab to RGB color space conversion.
+
+    Parameters
+    ----------
+    img : np.array
+        Input image in Lab space.
+    illuminant : {“A”, “D50”, “D55”, “D65”, “D75”, “E”}, optional
+        The name of the illuminant (the function is NOT case sensitive). Default is
+        "D65".
+    observer : {“2”, “10”}, optional
+        The aperture angle of the observer. Default is "2".
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image in RGB space.
+
+    Example:
+        >>> import numpy as np
+        >>> from histolab.filters.image_filters import LabToRgb
+        >>> arr_lab = np.load("tests/fixtures/mask-arrays/diagnostic_slide_thumb_lab")
+        >>> lab_to_rgb = LabToRgb()
+        >>> image_rgb = lab_to_rgb(arr_lab)
+    """
+
+    def __init__(self, illuminant: str = "D65", observer: int = "2") -> None:
+        self.illuminant = illuminant
+        self.observer = observer
+
+    def __call__(self, np_arr: np.ndarray) -> PIL.Image.Image:
+        lab = F.lab_to_rgb(np_arr, self.illuminant, self.observer)
+        return lab
 
 
 class LocalEqualization(ImageFilter):
