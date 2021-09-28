@@ -253,7 +253,7 @@ class RgbToLab(ImageFilter):
 
     Returns
     -------
-    PIL.Image.Image
+    np.ndarray
         Image in LAB space
 
     Raises
@@ -274,7 +274,7 @@ class RgbToLab(ImageFilter):
         self.illuminant = illuminant
         self.observer = observer
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         lab = F.rgb_to_lab(img, self.illuminant, self.observer)
         return lab
 
