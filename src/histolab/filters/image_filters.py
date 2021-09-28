@@ -275,7 +275,7 @@ class RgbToLab(ImageFilter):
         self.observer = observer
 
     def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
-        lab = F.rgb_to_lab(img)
+        lab = F.rgb_to_lab(img, self.illuminant, self.observer)
         return lab
 
 

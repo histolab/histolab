@@ -402,11 +402,11 @@ class DescribeImageFilters:
             request, "histolab.filters.image_filters_functional.rgb_to_lab"
         )
         F_rgb_to_lab.return_value = image
-        rgb_to_lab = imf.RgbToLab()
+        rgb_to_lab = imf.RgbToLab("A", "2")
 
         rgb_to_lab(image)
 
-        F_rgb_to_lab.assert_called_once_with(image)
+        F_rgb_to_lab.assert_called_once_with(image, "A", "2")
         assert type(rgb_to_lab(image)) == PIL.Image.Image
 
     def it_calls_dab_channel_functional(self, request):
