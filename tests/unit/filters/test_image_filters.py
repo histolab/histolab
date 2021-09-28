@@ -401,13 +401,13 @@ class DescribeImageFilters:
         F_rgb_to_lab = function_mock(
             request, "histolab.filters.image_filters_functional.rgb_to_lab"
         )
-        F_rgb_to_lab.return_value = image
+        F_rgb_to_lab.return_value = np.array(image)
         rgb_to_lab = imf.RgbToLab("A", "2")
 
         rgb_to_lab(image)
 
         F_rgb_to_lab.assert_called_once_with(image, "A", "2")
-        assert type(rgb_to_lab(image)) == PIL.Image.Image
+        assert type(rgb_to_lab(image)) == np.array
 
     def it_calls_dab_channel_functional(self, request):
         image = PILIMG.RGBA_COLOR_500X500_155_249_240

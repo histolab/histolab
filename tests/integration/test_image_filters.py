@@ -1643,30 +1643,14 @@ def test_yen_threshold_filter_on_gs_image():
     np.testing.assert_array_equal(yen_threshold_mask, expected_value)
 
 
-@pytest.mark.parametrize(
-    "pil_image, expected_image",
-    (
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "pil-images-rgb/diagnostic-slide-thumb-rgb-to-lab",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
-            "pil-images-rgb/diagnostic-slide-thumb-hsv-rgb-to-lab",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
-            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-rgb-to-lab",
-        ),
-    ),
-)
-def test_rgb_to_lab_filter_with_rgb_image(pil_image, expected_image):
-    expected_value = load_expectation(expected_image, type_="png")
+def test_rgb_to_lab_filter_with_rgb_image():
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-rgb-to-lab", type_="npy"
+    )
 
-    lab_img = imf.rgb_to_lab(pil_image)
+    lab_img = imf.rgb_to_lab(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB)
 
-    np.testing.assert_array_almost_equal(np.array(lab_img), np.array(expected_value))
-    assert np.unique(np.array(ImageChops.difference(lab_img, expected_value)))[0] == 0
+    np.testing.assert_array_almost_equal(lab_img, expected_value)
 
 
 @pytest.mark.parametrize(
