@@ -254,12 +254,12 @@ class RgbToLab(ImageFilter):
     Returns
     -------
     np.ndarray
-        Image in LAB space
+        Array representation of the image in LAB space
 
     Raises
     ------
     Exception
-        If the image mode is not RGB
+        If the ``img`` mode is not RGB
 
 
     Example:
@@ -473,11 +473,11 @@ class StretchContrast(ImageFilter):
 
     Parameters
     ----------
-    img: PIL.Image.Image
+    img : PIL.Image.Image
         Input image
-    low: int, optional
+    low : int, optional
         Range low value (0 to 255). Default is 40.
-    high: int, optional
+    high : int, optional
         Range high value (0 to 255). Default is 60
 
     Returns
@@ -670,9 +670,9 @@ class LocalEqualization(ImageFilter):
 
     Parameters
     ---------
-    img: PIL.Image.Image
+    img : PIL.Image.Image
         Grayscale input image
-    disk_size: int, optional
+    disk_size : int, optional
         Radius of the disk structuring element used for the local histograms.
         Default is 50
 
@@ -852,7 +852,7 @@ class LocalOtsuThreshold(ImageFilter):
 
     Parameters
     ----------
-    img: PIL.Image.Image
+    img : PIL.Image.Image
         Input 2-dimensional image
     disk_size : float, optional
         Radius of the disk structuring element used to compute the Otsu threshold for

@@ -355,9 +355,9 @@ def local_equalization(img: PIL.Image.Image, disk_size: int = 50) -> PIL.Image.I
 
     Parameters
     ---------
-    img: PIL.Image.Image
+    img : PIL.Image.Image
         Input image. Notice that it must be 2D
-    disk_size: int, optional
+    disk_size : int, optional
         Radius of the disk structuring element used for the local histograms. Default is
         50.
 
@@ -387,7 +387,7 @@ def local_otsu_threshold(
 
     Parameters
     ----------
-    img: PIL.Image.Image
+    img : PIL.Image.Image
         Input 2-dimensional image
     disk_size : float, optional
         Radius of the disk structuring element used to compute
@@ -561,7 +561,7 @@ def rgb_to_lab(
     Returns
     -------
     np.ndarray
-        Image in LAB space
+        Array representation of the image in LAB space
 
     Raises
     ------
@@ -612,11 +612,11 @@ def stretch_contrast(
 
     Parameters
     ----------
-    img: PIL.Image.Image
+    img : PIL.Image.Image
         Input image
-    low: int
+    low : int
         Range low value (0 to 255). Default is 40.
-    high: int
+    high : int
         Range high value (0 to 255). Default is 60.
 
     Returns
