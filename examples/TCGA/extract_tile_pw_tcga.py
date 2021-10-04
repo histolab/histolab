@@ -1,7 +1,7 @@
 import argparse
 import os
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Union
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -14,8 +14,8 @@ PATIENT_COL_NAME = "case_submitter_id"
 
 
 def extract_random_tiles(
-    dataset_dir: str,
-    processed_path: str,
+    dataset_dir: Union[str, Path],
+    processed_path: Union[str, Path],
     tile_size: Tuple[int, int],
     n_tiles: int,
     level: int,
@@ -43,7 +43,7 @@ def extract_random_tiles(
     """
     slideset = SlideSet(dataset_dir, processed_path, valid_extensions=[".svs"])
 
-    for slide in tqdm(slideset.slides):
+    for slide in tqdm(list(slideset)):
         prefix = f"{slide.name}_"
         random_tiles_extractor = RandomTiler(
             tile_size=tile_size,
