@@ -8,5 +8,5 @@ Util
    :caption: API Reference
    :hidden:
 
-.. automodule:: src.histolab.util
+.. automodule:: histolab.util
     :members:

@@ -27,7 +27,7 @@ def parse_requirements(filename):
 
 # read required text from files
 thisdir = os.path.dirname(__file__)
-init_py = ascii_bytes_from(thisdir, "src", "histolab", "__init__.py")
+init_py = ascii_bytes_from(thisdir, "histolab", "__init__.py")
 readme = ascii_bytes_from(thisdir, "README.md")
 # This allows users to check installed version with:
 # `python -c 'from histolab import __version__; print(__version__)'`
@@ -57,7 +57,7 @@ setuptools.setup(
     install_requires=install_requires,
     tests_require=test_requires,
     extras_require={"testing": test_requires},
-    packages=setuptools.find_packages("src", exclude=["tests", "examples"]),
+    packages=setuptools.find_packages(exclude=["tests", "examples"]),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
@@ -67,7 +67,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "Intended Audience :: Science/Research",
     ],
-    package_dir={"": "src"},
     include_package_data=True,
     entry_points={},
     test_suite="pytest",

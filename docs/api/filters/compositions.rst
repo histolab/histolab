@@ -6,7 +6,7 @@ Compositions
    :caption: Filters
    :maxdepth: 2
 
-.. automodule:: src.histolab.filters.compositions
+.. automodule:: histolab.filters.compositions
     :members:
 
 .. toctree::

@@ -33,7 +33,7 @@ def ascii_bytes_from(path, *paths):
 
 # read required text from files
 thisdir = os.path.dirname(__file__)
-init_py = ascii_bytes_from(thisdir, "..", "src", "histolab", "__init__.py")
+init_py = ascii_bytes_from(thisdir, "..", "histolab", "__init__.py")
 version = re.search('__version__ = "([^"]+)"', init_py).group(1)
 
 

@@ -23,57 +23,57 @@ The ``data`` module gives access to a set of publicly available WSIs, stained wi
      - Size (MB)
      - Repository
      - Staining
-   * - `Aorta <data.html#src.histolab.data.aorta_tissue>`_
+   * - `Aorta <data.html#histolab.data.aorta_tissue>`_
      - 15374x17497
      - 63.8
      - OpenSlide
      - H&E
-   * - `CMU small sample <data.html#src.histolab.data.cmu_small_region>`_
+   * - `CMU small sample <data.html#histolab.data.cmu_small_region>`_
      - 2220x2967
      - 1.8
      - OpenSlide
      - H&E
-   * - `Breast <data.html#src.histolab.data.breast_tissue>`_
+   * - `Breast <data.html#histolab.data.breast_tissue>`_
      - 96972x30682
      - 299.1
      - TCGA-BRCA
      - H&E
-   * - `Breast (black pen) <data.html#src.histolab.data.breast_tissue_diagnostic_black_pen>`_
+   * - `Breast (black pen) <data.html#histolab.data.breast_tissue_diagnostic_black_pen>`_
      - 121856x94697
      - 1740.8
      - TCGA-BRCA
      - H&E
-   * - `Breast (green pen) <data.html#src.histolab.data.breast_tissue_diagnostic_green_pen>`_
+   * - `Breast (green pen) <data.html#histolab.data.breast_tissue_diagnostic_green_pen>`_
      - 98874x64427
      - 719.6
      - TCGA-BRCA
      - H&E
-   * - `Breast (red pen) <data.html#src.histolab.data.breast_tissue_diagnostic_red_pen>`_
+   * - `Breast (red pen) <data.html#histolab.data.breast_tissue_diagnostic_red_pen>`_
      - 60928x75840
      - 510.9
      - TCGA-BRCA
      - H&E
-   * - `Breast (IHC) <data.html#src.histolab.data.ihc_breast>`_
+   * - `Breast (IHC) <data.html#histolab.data.ihc_breast>`_
      - 99606x7121
      - 218.3
      - IDR
      - IHC
-   * - `Heart <data.html#src.histolab.data.heart_tissue>`_
+   * - `Heart <data.html#histolab.data.heart_tissue>`_
      - 32672x47076
      - 289.3
      - OpenSlide
      - H&E
-   * - `Kidney <data.html#src.histolab.data.ihc_kidney>`_
+   * - `Kidney <data.html#histolab.data.ihc_kidney>`_
      - 5179x4192
      - 66.1
      - IDR
      - IHC
-   * - `Ovary <data.html#src.histolab.data.ovarian_tissue>`_
+   * - `Ovary <data.html#histolab.data.ovarian_tissue>`_
      - 30001x33987
      - 389.1
      - TCGA-OV
      - H&E
-   * - `Prostate <data.html#src.histolab.data.prostate_tissue>`_
+   * - `Prostate <data.html#histolab.data.prostate_tissue>`_
      - 16000x15316
      - 46.1
      - TCGA-PRAD
@@ -92,7 +92,7 @@ TCGA-BRCA: TCGA Breast Invasive Carcinoma dataset; TCGA-PRAD: TCGA Prostate Aden
    :caption: API Reference
    :maxdepth: 2
 
-.. automodule:: src.histolab.data
+.. automodule:: histolab.data
     :members:
 
 .. toctree::

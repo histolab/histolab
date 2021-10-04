@@ -142,7 +142,7 @@ class TissueMask(BinaryMask):
 
         The applied filters will be different based on the type of ``obj``, please see
 
-        `filters.compositions.FiltersComposition <filters/compositions.html#src.histolab.filters.compositions.FiltersComposition>`_
+        `filters.compositions.FiltersComposition <filters/compositions.html#histolab.filters.compositions.FiltersComposition>`_
 
         Parameters
         ----------
@@ -157,7 +157,7 @@ class TissueMask(BinaryMask):
 
         See Also
         --------
-        `filters.compositions.FiltersComposition <filters/compositions.html#src.histolab.filters.compositions.FiltersComposition>`_
+        `filters.compositions.FiltersComposition <filters/compositions.html#histolab.filters.compositions.FiltersComposition>`_
         """  # noqa: E501
 
         return self._mask(obj)

@@ -1,4 +1,4 @@
-graft src
+graft histolab
 graft tests
 
 include README.md

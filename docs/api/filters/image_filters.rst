@@ -5,7 +5,7 @@ Image Filters
    :caption: Filters
    :maxdepth: 2
 
-.. automodule:: src.histolab.filters.image_filters
+.. automodule:: histolab.filters.image_filters
     :members:
 
 .. toctree::

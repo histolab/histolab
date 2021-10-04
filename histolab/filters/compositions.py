@@ -68,34 +68,34 @@ class FiltersComposition:
             is composed of:
 
             - `image_filters.RgbToGrayscale()
-              <image_filters.html#src.histolab.filters.image_filters.RgbToGrayscale>`_
+              <image_filters.html#histolab.filters.image_filters.RgbToGrayscale>`_
 
             - `image_filters.OtsuThreshold()
-              <image_filters.html#src.histolab.filters.image_filters.OtsuThreshold>`_
+              <image_filters.html#histolab.filters.image_filters.OtsuThreshold>`_
 
             - `morphological_filters.BinaryDilation()
-              <morphological_filters.html#src.histolab.filters.morphological_filters.BinaryDilation>`_
+              <morphological_filters.html#histolab.filters.morphological_filters.BinaryDilation>`_
 
             - `morphological_filters.RemoveSmallHoles()
-              <morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallHoles>`_
+              <morphological_filters.html#histolab.filters.morphological_filters.RemoveSmallHoles>`_
 
             - `morphological_filters.RemoveSmallObjects()
-              <morphological_filters.html#src.histolab.filters.morphological_filters.RemoveSmallObjects>`_
+              <morphological_filters.html#histolab.filters.morphological_filters.RemoveSmallObjects>`_
 
             If the ``cls_`` parameter is the class ``Tile`` the returned filters chain
             is composed of:
 
             - `image_filters.RgbToGrayscale()
-              <image_filters.html#src.histolab.filters.image_filters.RgbToGrayscale>`_
+              <image_filters.html#histolab.filters.image_filters.RgbToGrayscale>`_
 
             - `image_filters.OtsuThreshold()
-              <image_filters.html#src.histolab.filters.image_filters.OtsuThreshold>`_
+              <image_filters.html#histolab.filters.image_filters.OtsuThreshold>`_
 
             - `morphological_filters.BinaryDilation()
-              <morphological_filters.html#src.histolab.filters.morphological_filters.BinaryDilation>`_
+              <morphological_filters.html#histolab.filters.morphological_filters.BinaryDilation>`_
 
             - `morphological_filters.BinaryFillHoles(structure=np.ones((5, 5)))
-              <morphological_filters.html#src.histolab.filters.morphological_filters.BinaryFillHoles>`_
+              <morphological_filters.html#histolab.filters.morphological_filters.BinaryFillHoles>`_
         """
         raise NotImplementedError("Must be implemented by each subclass")
 
