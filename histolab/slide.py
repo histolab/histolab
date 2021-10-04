@@ -148,7 +148,7 @@ class Slide:
     def level_magnification_factor(self, level: int = 0) -> str:
         """Return the magnification factor at the specified level.
 
-         Notice that the conversion level-magnification can be computed only
+        Notice that the conversion level-magnification can be computed only
         if the native magnification is available in the slide metadata.
 
         Parameters

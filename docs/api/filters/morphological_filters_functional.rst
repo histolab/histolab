@@ -5,7 +5,7 @@ Morphological Filters Functional
    :caption: Filters
    :maxdepth: 2
 
-.. automodule:: src.histolab.filters.morphological_filters_functional
+.. automodule:: histolab.filters.morphological_filters_functional
     :members:
 
 

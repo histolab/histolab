@@ -146,7 +146,7 @@ jobs:
       - name: DocTests
         id: doctests
         run: |
-          python -m pytest src/ --doctest-modules
+          python -m pytest histolab/ --doctest-modules
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1

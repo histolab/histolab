@@ -24,7 +24,7 @@ cleandocs:
 	$(MAKE) -C docs clean
 
 coverage:
-	pytest --cov-report term-missing --cov=src --cov=tests
+	pytest --cov-report term-missing --cov=histolab --cov=tests
 
 dist:
 	rm -rf dist/
@@ -37,7 +37,7 @@ opendocs:
 	open docs/_build/html/index.html
 
 unit-coverage:
-	pytest --cov-report term-missing --cov=src tests/unit
+	pytest --cov-report term-missing --cov=histolab tests/unit
 
 upload:
 	rm -rf dist/
