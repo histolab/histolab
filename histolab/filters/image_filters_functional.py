@@ -458,7 +458,7 @@ def red_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
     return apply_mask_image(img, red_pen_filter_img)
 
 
-def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
+def rgb_to_hed(img: PIL.Image.Image) -> np.ndarray:
     """Convert RGB channels to HED channels.
 
     image color space (RGB) is converted to Hematoxylin-Eosin-Diaminobenzidine space.
@@ -470,7 +470,7 @@ def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
 
     Returns
     -------
-    PIL.Image.Image
+    np.ndarray
         Image in HED space
     """
     if img.mode not in ["RGB", "RGBA"]:
@@ -485,9 +485,7 @@ def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
 
     img_arr = np.array(img)
     hed_arr = sk_color.rgb2hed(img_arr)
-    hed = np_to_pil(hed_arr)
-
-    return hed
+    return hed_arr
 
 
 def rgb_to_hsv(img: PIL.Image.Image) -> np.ndarray:

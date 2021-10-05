@@ -220,7 +220,7 @@ class RgbToHed(ImageFilter):
 
     Returns
     -------
-    PIL.Image.Image
+    np.ndarray
         Image in HED space
 
 
@@ -232,7 +232,7 @@ class RgbToHed(ImageFilter):
         >>> image_hed = rgb_to_hed(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         hed = F.rgb_to_hed(img)
         return hed
 

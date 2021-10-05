@@ -74,19 +74,18 @@ def test_invert_filter_with_gs_image():
 
 def test_rgb_to_hed_filter_with_rgb_image():
     expected_value = load_expectation(
-        "pil-images-rgb/diagnostic-slide-thumb-rgb-to-hed", type_="png"
+        "arrays/diagnostic-slide-thumb-rgb-to-hed", type_="npy"
     )
 
-    hed_img = imf.rgb_to_hed(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB)
+    hed_arr = imf.rgb_to_hed(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB)
 
-    np.testing.assert_array_almost_equal(np.array(hed_img), np.array(expected_value))
-    assert np.unique(np.array(ImageChops.difference(hed_img, expected_value)))[0] == 0
+    np.testing.assert_array_almost_equal(hed_arr, expected_value)
 
 
 def test_rgb_to_hed_filter_with_rgba_image():
     img = RGBA.DIAGNOSTIC_SLIDE_THUMB
     expected_value = load_expectation(
-        "pil-images-rgba/diagnostic-slide-thumb-rgba-to-hed", type_="png"
+        "arrays/diagnostic-slide-thumb-rgb-to-hed", type_="npy"
     )
     expected_warning_regex = (
         r"Input image must be RGB. NOTE: the image will be converted to RGB before"
@@ -94,10 +93,9 @@ def test_rgb_to_hed_filter_with_rgba_image():
     )
 
     with pytest.warns(UserWarning, match=expected_warning_regex):
-        hed_img = imf.rgb_to_hed(img)
+        hed_arr = imf.rgb_to_hed(img)
 
-    np.testing.assert_array_almost_equal(np.array(hed_img), np.array(expected_value))
-    assert np.unique(np.array(ImageChops.difference(hed_img, expected_value)))[0] == 0
+    np.testing.assert_array_almost_equal(hed_arr, expected_value)
 
 
 def test_rgb_to_hed_raises_exception_on_gs_image():
