@@ -40,13 +40,13 @@ class DescribeImageFilters:
         F_rgb_to_hed = function_mock(
             request, "histolab.filters.image_filters_functional.rgb_to_hed"
         )
-        F_rgb_to_hed.return_value = image
+        F_rgb_to_hed.return_value = np.array(image)
         rgb_to_hed = imf.RgbToHed()
 
         rgb_to_hed(image)
 
         F_rgb_to_hed.assert_called_once_with(image)
-        assert type(rgb_to_hed(image)) == PIL.Image.Image
+        assert type(rgb_to_hed(image)) == np.ndarray
 
     def it_calls_hematoxylin_channel_functional(self, request):
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
