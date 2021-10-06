@@ -434,3 +434,16 @@ class DescribeImageFilters:
 
         F_rgb_to_od.assert_called_once_with(image)
         assert isinstance(im_od, np.ndarray)
+
+    def it_calls_hed_to_rgb_functional(self, request):
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        F_hed_to_rgb = function_mock(
+            request, "histolab.filters.image_filters_functional.hed_to_rgb"
+        )
+        F_hed_to_rgb.return_value = image
+        hed_to_rgb = imf.HedToRgb(np.array(image))
+
+        hed_to_rgb(image)
+
+        F_hed_to_rgb.assert_called_once_with(image)
+        assert type(hed_to_rgb(image)) == PIL.Image.Image

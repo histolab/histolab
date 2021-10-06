@@ -24,6 +24,7 @@ import numpy as np
 import PIL
 import PIL.ImageDraw
 from skimage.measure import label, regionprops
+from skimage.util.dtype import img_as_ubyte
 
 from .types import CoordinatePair, Region
 
@@ -78,7 +79,7 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
         return (
             img_array.astype(np.uint8)
             if np.max(img_array) > 1
-            else (img_array * 255).astype(np.uint8)
+            else img_as_ubyte(img_array)
         )
 
     types_factory = {

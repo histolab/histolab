@@ -6,7 +6,7 @@ from PIL import ImageChops
 
 import histolab.filters.image_filters_functional as imf
 
-from ..fixtures import GS, RGB, RGBA
+from ..fixtures import GS, NPY, RGB, RGBA
 from ..util import load_expectation
 
 
@@ -1707,3 +1707,14 @@ def test_rgb_to_od_filter_with_rgba_image():
         od_img = imf.rgb_to_od(img)
 
     np.testing.assert_array_almost_equal(od_img, expected_value)
+
+
+def test_hed_to_rgb():
+    hed_arr = NPY.DIAGNOSTIC_SLIDE_THUMB_HED
+    expected_value = load_expectation(
+        "pil-images-rgb/diagnostic-slide-thumb-hed-to-rgb", type_="png"
+    )
+
+    rgb_img = imf.hed_to_rgb(hed_arr)
+
+    np.testing.assert_array_almost_equal(rgb_img, expected_value)
