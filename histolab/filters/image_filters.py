@@ -306,6 +306,33 @@ class RgbToOd(ImageFilter):
         return od
 
 
+class HedToRgb(ImageFilter):
+    """Convert HED channels to RGB channels.
+
+    Parameters
+    ----------
+    img_arr : np.ndarray
+        Input image in HED color space
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image in RGB space
+
+
+    Example:
+        >>> import numpy as np
+        >>> from histolab.filters.image_filters import HedToRgb
+        >>> hed_arr = np.load("tests/fixtures/arrays/diagnostic_slide_thumb_hed.npy")
+        >>> hed_to_rgb = HedToRgb()
+        >>> rgb = hed_to_rgb(hed_arr)
+    """  # noqa
+
+    def __call__(self, img_arr: np.array) -> PIL.Image.Image:
+        rgb = F.hed_to_rgb(img_arr)
+        return rgb
+
+
 class HematoxylinChannel(ImageFilter):
     """Obtain Hematoxylin channel from RGB image.
 

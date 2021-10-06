@@ -461,7 +461,7 @@ def red_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
 def rgb_to_hed(img: PIL.Image.Image) -> np.ndarray:
     """Convert RGB channels to HED channels.
 
-    image color space (RGB) is converted to Hematoxylin-Eosin-Diaminobenzidine space.
+    Image color space (RGB) is converted to Hematoxylin-Eosin-Diaminobenzidine space.
 
     Parameters
     ----------
@@ -827,6 +827,23 @@ def green_filter(
     green = img_arr[:, :, 1] < green_thresh
     blue = img_arr[:, :, 2] < blue_thresh
     return red | green | blue
+
+
+def hed_to_rgb(img_arr: np.ndarray) -> PIL.Image.Image:
+    """Convert HED channels to RGB channels.
+
+    Parameters
+    ----------
+    img_arr : np.ndarray
+        Input image in HED color space
+
+    Returns
+    -------
+    PIL.Image.Image
+        Image in RGB space
+    """
+    rgb = sk_color.hed2rgb(img_arr)
+    return np_to_pil(rgb)
 
 
 def hysteresis_threshold_mask(
