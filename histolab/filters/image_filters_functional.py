@@ -476,13 +476,13 @@ def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
     if img.mode not in ["RGB", "RGBA"]:
         raise Exception("Input image must be RGB.")
     if img.mode == "RGBA":
-        img_arr = np.array(sk_color.rgba2rgb(img))
+        red, green, blue, _ = img.split()
+        img = PIL.Image.merge("RGB", (red, green, blue))
         warn(
             "Input image must be RGB. "
             "NOTE: the image will be converted to RGB before HED conversion."
         )
-    else:
-        img_arr = np.array(img)
+    img_arr = np.array(img)
     hed_arr = sk_color.rgb2hed(img_arr)
     hed = np_to_pil(hed_arr)
 
