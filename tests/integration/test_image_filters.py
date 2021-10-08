@@ -609,7 +609,7 @@ def test_rag_threshold_filter_on_rgb_image(pil_image, expected_image):
 def test_rag_threshold_filter_on_gs_image():
     gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(
-        "pil-images-gs/diagnostic-slide-thumb-gs-rag-threshold", type_="png"
+        "pil-images-rgb/diagnostic-slide-thumb-gs-rag-threshold", type_="png"
     )
 
     rag_threshold_img = imf.rag_threshold(gs_img, 650, 20.6, 15)
