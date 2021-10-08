@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1633516429730,
+  "lastUpdate": 1633706572667,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -7191,6 +7191,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.3113033357593479e-7",
             "extra": "mean: 37.65106202400057 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "5de2c9f0e48f0e1469d9029b91c22b92d55ebd52",
+          "message": "Update scikit-image requirement\n\nUpdates the requirements on [scikit-image](https://github.com/scikit-image/scikit-image) to permit the latest version.\n- [Release notes](https://github.com/scikit-image/scikit-image/releases)\n- [Changelog](https://github.com/scikit-image/scikit-image/blob/master/RELEASE.txt)\n- [Commits](https://github.com/scikit-image/scikit-image/compare/v0.17.1...v0.18.0)\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2021-10-08T17:20:36+02:00",
+          "tree_id": "5caedc36e52645c30da309e3df01c443acf31170",
+          "url": "https://github.com/histolab/histolab/commit/5de2c9f0e48f0e1469d9029b91c22b92d55ebd52"
+        },
+        "date": 1633706571990,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.712232485198931,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0030756231885228366",
+            "extra": "mean: 129.66414094999962 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 203.2229966464075,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00007730761495787745",
+            "extra": "mean: 4.920702954400007 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 426.076476638756,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00009843850430085827",
+            "extra": "mean: 2.3469965014000023 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 17271.739146984382,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000015698459369552066",
+            "extra": "mean: 57.89804903199911 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 17820.74354039708,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000013924737887893492",
+            "extra": "mean: 56.11438140800033 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 15577.315424947748,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000015963624048620757",
+            "extra": "mean: 64.19591391199901 usec\nrounds: 250"
           }
         ]
       }
