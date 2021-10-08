@@ -71,27 +71,12 @@ def test_invert_filter_with_gs_image():
     )
 
 
-@pytest.mark.parametrize(
-    "pil_image, expected_image",
-    (
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "pil-images-rgb/diagnostic-slide-thumb-rgb-to-hed",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
-            "pil-images-rgb/diagnostic-slide-thumb-hsv-rgb-to-hed",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
-            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-rgb-to-hed",
-        ),
-    ),
-)
-def test_rgb_to_hed_filter_with_rgb_image(pil_image, expected_image):
-    expected_value = load_expectation(expected_image, type_="png")
+def test_rgb_to_hed_filter_with_rgb_image():
+    expected_value = load_expectation(
+        "pil-images-rgb/diagnostic-slide-thumb-rgb-to-hed", type_="png"
+    )
 
-    hed_img = imf.rgb_to_hed(pil_image)
+    hed_img = imf.rgb_to_hed(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB)
 
     np.testing.assert_array_almost_equal(np.array(hed_img), np.array(expected_value))
     assert np.unique(np.array(ImageChops.difference(hed_img, expected_value)))[0] == 0
