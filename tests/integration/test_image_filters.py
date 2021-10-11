@@ -1,10 +1,9 @@
 import operator
 
+import histolab.filters.image_filters_functional as imf
 import numpy as np
 import pytest
 from PIL import ImageChops
-
-import histolab.filters.image_filters_functional as imf
 
 from ..fixtures import GS, RGB, RGBA
 from ..util import load_expectation
@@ -527,6 +526,16 @@ def test_kmeans_segmentation_filter_on_rgba_image():
         )[0]
         == 0
     )
+
+
+def test_kmeans_segmentation_raises_value_error_on_rgba_images():
+    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
+
+    with pytest.raises(ValueError) as err:
+        imf.kmeans_segmentation(rgba_img)
+
+    assert isinstance(err.value, ValueError)
+    assert str(err.value) == "Input image cannot be RGBA"
 
 
 @pytest.mark.parametrize(

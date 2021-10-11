@@ -309,7 +309,14 @@ def kmeans_segmentation(
     PIL.Image.Image
         RGB image where each segment has been colored based on the average
         color for that segment.
+
+    Raises
+    ------
+    ValueError
+        If ``img`` is RGBA.
     """
+    if img.mode == "RGBA":
+        raise ValueError("Input image cannot be RGBA")
     img_arr = np.array(img)
     labels = sk_segmentation.slic(img_arr, n_segments, compactness, start_label=0)
     return np_to_pil(sk_color.label2rgb(labels, img_arr, kind="avg", bg_label=-1))
@@ -403,6 +410,11 @@ def rag_threshold(
     PIL.Image.Image
         Each segment has been colored based on the average
         color for that segment (and similar segments have been combined).
+
+    Raises
+    ------
+    ValueError
+        If ``img`` is RGBA.
     """
     if img.mode == "RGBA":
         raise ValueError("Input image cannot be RGBA")
