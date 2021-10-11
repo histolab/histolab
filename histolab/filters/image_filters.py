@@ -659,6 +659,11 @@ class KmeansSegmentation(ImageFilter):
         Image where each segment has been colored based on the average
         color for that segment.
 
+    Raises
+    ------
+    ValueError
+        If ``img`` is RGBA.
+
 
     Example:
         >>> from PIL import Image
@@ -704,6 +709,11 @@ class RagThreshold(ImageFilter):
     PIL.Image.Image
         Each segment has been colored based on the average
         color for that segment (and similar segments have been combined).
+
+    Raises
+    ------
+    ValueError
+        If ``img`` is RGBA.
 
 
     Example:
