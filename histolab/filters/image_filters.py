@@ -662,7 +662,7 @@ class KmeansSegmentation(ImageFilter):
     Raises
     ------
     ValueError
-        If ``img`` is RGBA.
+        If ``img`` mode is RGBA.
 
 
     Example:
@@ -713,7 +713,7 @@ class RagThreshold(ImageFilter):
     Raises
     ------
     ValueError
-        If ``img`` is RGBA.
+        If ``img`` mode is RGBA.
 
 
     Example:
