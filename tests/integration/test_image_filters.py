@@ -494,25 +494,6 @@ def test_local_equalization_raises_exception_on_rgb_images(pil_rgb_image):
     assert str(err.value) == "Input must be 2D."
 
 
-def test_kmeans_segmentation_filter_on_rgba_image():
-    rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
-    expected_value = load_expectation(
-        "pil-images-rgba/diagnostic-slide-thumb-kmeans-segmentation", type_="png"
-    )
-
-    kmeans_segmentation_img = imf.kmeans_segmentation(rgba_img, 800, 10)
-
-    np.testing.assert_array_almost_equal(
-        np.array(kmeans_segmentation_img), np.array(expected_value)
-    )
-    assert (
-        np.unique(
-            np.array(ImageChops.difference(kmeans_segmentation_img, expected_value))
-        )[0]
-        == 0
-    )
-
-
 def test_kmeans_segmentation_raises_value_error_on_rgba_images():
     rgba_img = RGBA.DIAGNOSTIC_SLIDE_THUMB
 
