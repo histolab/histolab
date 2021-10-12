@@ -313,7 +313,7 @@ def kmeans_segmentation(
     Raises
     ------
     ValueError
-        If ``img`` is RGBA.
+        If ``img`` mode is RGBA.
     """
     if img.mode == "RGBA":
         raise ValueError("Input image cannot be RGBA")
@@ -414,7 +414,7 @@ def rag_threshold(
     Raises
     ------
     ValueError
-        If ``img`` is RGBA.
+        If ``img`` mode is RGBA.
     """
     if img.mode == "RGBA":
         raise ValueError("Input image cannot be RGBA")
