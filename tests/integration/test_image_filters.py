@@ -540,7 +540,7 @@ def test_kmeans_segmentation_filter_on_rgb_image(pil_image, expected_image):
 def test_kmeans_segmentation_filter_on_gs_image():
     gs_img = GS.DIAGNOSTIC_SLIDE_THUMB_GS
     expected_value = load_expectation(
-        "pil-images-gs/diagnostic-slide-thumb-gs-kmeans-segmentation", type_="png"
+        "pil-images-rgb/diagnostic-slide-thumb-gs-kmeans-segmentation", type_="png"
     )
 
     kmeans_segmentation_img = imf.kmeans_segmentation(gs_img, 800, 10)
