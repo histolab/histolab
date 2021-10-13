@@ -32,7 +32,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macOS-latest, ubuntu-latest]
-        python-version: 3.7
+        python-version: [3.7]
         include:
           - os: macOS-latest
             python-version: 3.8
