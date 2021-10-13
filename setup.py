@@ -41,6 +41,7 @@ test_requires = [
     "coverage",
     "pytest-cov",
     "pytest-benchmark",
+    "pytest-html",
 ]
 
 setuptools.setup(
