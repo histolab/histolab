@@ -60,7 +60,6 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=["tests", "examples"]),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: Apache Software License",
@@ -71,5 +70,5 @@ setuptools.setup(
     entry_points={},
     test_suite="pytest",
     zip_safe=True,
-    python_requires=">=3.6",
+    python_requires=">=3.7",
 )
