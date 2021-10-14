@@ -337,17 +337,17 @@ class HematoxylinChannel(ImageFilter):
     """Obtain Hematoxylin channel from RGB image.
 
     Input image is first converted into HED space and the hematoxylin channel is
-    rescaled for increased contrast.
+    extracted via color deconvolution.
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image
 
     Returns
     -------
-    Image.Image
-        Grayscale image corresponding to input image with Hematoxylin channel enhanced.
+    PIL.Image.Image
+        RGB image with Hematoxylin staining separated.
 
 
     Example:
@@ -358,7 +358,7 @@ class HematoxylinChannel(ImageFilter):
         >>> image_h = hematoxylin_channel(image_rgb)
     """  # noqa
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         hematoxylin = F.hematoxylin_channel(img)
         return hematoxylin
 
