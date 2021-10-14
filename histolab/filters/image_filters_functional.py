@@ -193,7 +193,7 @@ def hematoxylin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
     """Obtain Hematoxylin channel from RGB image.
 
     Input image is first converted into HED space and the hematoxylin channel is
-    rescaled for increased contrast.
+    extracted via color deconvolution.
 
     Parameters
     ----------
@@ -202,14 +202,15 @@ def hematoxylin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
 
     Returns
     -------
-    Image.Image
-        Grayscale image corresponding to input image with Hematoxylin channel enhanced.
+    PIL.Image.Image
+        RGB image with Hematoxylin staining separated.
     """
     if img.mode not in ["RGB", "RGBA"]:
         raise ValueError("Input image must be RGB/RGBA.")
-    hematoxylin = np.array(rgb_to_hed(img))[:, :, 0]
-    hematoxylin = sk_exposure.rescale_intensity(hematoxylin)
-    return np_to_pil(hematoxylin)
+    hed = rgb_to_hed(img)
+    null = np.zeros_like(hed[:, :, 0])
+    hematoxylin = hed_to_rgb(np.stack((hed[:, :, 0], null, null), axis=-1))
+    return hematoxylin
 
 
 def histogram_equalization(img: PIL.Image.Image, nbins: int = 256) -> PIL.Image.Image:
