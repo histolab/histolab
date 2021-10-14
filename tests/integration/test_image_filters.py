@@ -1714,6 +1714,10 @@ def test_hed_to_rgb():
     expected_value = load_expectation(
         "pil-images-rgb/diagnostic-slide-thumb-hed-to-rgb", type_="png"
     )
+    # rountrip RGB<->HED is not possible, so
+    # "expectations/pil-images-rgb/diagnostic-slide-thumb-hed-to-rgb.png" won't be equal
+    # to "fixtures/pil-images-rgb/diagnostic-slide-thumb-rgb.png".
+    # See https://github.com/scikit-image/scikit-image/pull/5172
 
     rgb_img = imf.hed_to_rgb(hed_arr)
 
