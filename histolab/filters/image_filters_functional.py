@@ -130,23 +130,24 @@ def eosin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
     """Obtain Eosin channel from RGB image.
 
     Input image is first converted into HED space and the Eosin channel is
-    rescaled for increased contrast.
+    extracted via color deconvolution.
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image
 
     Returns
     -------
-    Image.Image
-        Grayscale image corresponding to input image with Eosin channel enhanced.
+    PIL.Image.Image
+        RGB image with Eosin staining separated.
     """
     if img.mode not in ["RGB", "RGBA"]:
         raise ValueError("Input image must be RGB/RGBA.")
-    eosin = np.array(rgb_to_hed(img))[:, :, 1]
-    eosin = sk_exposure.rescale_intensity(eosin)
-    return np_to_pil(eosin)
+    hed = rgb_to_hed(img)
+    null = np.zeros_like(hed[:, :, 0])
+    eosin = hed_to_rgb(np.stack((null, hed[:, :, 1], null), axis=-1))
+    return eosin
 
 
 def green_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
