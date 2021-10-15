@@ -38,6 +38,10 @@ jobs:
             python-version: 3.8
           - os: ubuntu-latest
             python-version: 3.8
+          - os: macOS-latest
+            python-version: 3.9
+          - os: ubuntu-latest
+            python-version: 3.9
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
