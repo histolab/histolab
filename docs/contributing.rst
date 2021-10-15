@@ -47,7 +47,7 @@ Before working on your next contribution, make sure your local repository is up 
 #.
    Push the changes to your GitHub account.
 
-    ``$ git push origin master``
+   ``$ git push origin master``
 
 #.
    Create a new branch if you are starting new work.
@@ -111,7 +111,7 @@ Create your local environment
 Before starting contributing to Histolab, test that your local environment is up and running. Here some steps:
 
 
-* Create a python 3.7 or 3.8 ``virtualenv``
+* Create a python 3.7, 3.8 or 3.9 ``virtualenv``
 *
   Activate the env and in the project root run:
 
@@ -122,12 +122,12 @@ Before starting contributing to Histolab, test that your local environment is up
 *
   Install the pre-commit hooks (Optional, but useful for code style compliance)
 
-   ``pre-commit install`` <- *to be ran in the project root directory*
+  ``pre-commit install`` <- *to be ran in the project root directory*
 
 *
   Run the tests
 
-   ``pytest tests/``
+  ``pytest tests/``
 
 Code of Conduct
 ---------------
