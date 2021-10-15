@@ -290,7 +290,7 @@ class RgbToOd(ImageFilter):
     Returns
     -------
     np.ndarray
-        Image in OD space
+        Array representation of the image in OD space
 
 
     Example:
