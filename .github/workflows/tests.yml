@@ -17,8 +17,8 @@ jobs:
         id: load-wsis
         run: |
           mkdir -p tests/fixtures/external-svs
-          wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -O tests/fixtures/external-svs/cmu-3.svs --no-passive
-          wget ftp://ftp.biosciencedbc.jp/archive/open-tggates-pathological-images/LATEST/images/isoniazid/Liver/2458.svs -O tests/fixtures/external-svs/liver-1.svs --no-passive
+          wget --passive-ftp ftp://ftp.biosciencedbc.jp/archive/open-tggates-pathological-images/LATEST/images/isoniazid/Liver/2458.svs -O tests/fixtures/external-svs/liver-1.svs
+          wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -O tests/fixtures/external-svs/cmu-3.svs
       - name: Temporarly save WSI artifacts
         uses: actions/upload-artifact@v2
         with:
