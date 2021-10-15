@@ -563,7 +563,7 @@ def rgb_to_od(img: PIL.Image.Image) -> np.ndarray:
     Returns
     -------
     np.ndarray
-        Image in OD space
+        Array representation of the image in OD space
     """
     if img.mode == "RGBA":
         red, green, blue, _ = img.split()
