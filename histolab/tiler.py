@@ -611,9 +611,6 @@ class RandomTiler(Tiler):
         suffix: str = ".png",
         max_iter: int = int(1e4),
     ):
-
-        super().__init__()
-
         self.tile_size = tile_size
         self.n_tiles = n_tiles
         self.max_iter = max_iter
