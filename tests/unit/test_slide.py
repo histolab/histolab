@@ -30,10 +30,11 @@ from ..unitutil import (
 )
 
 if hasattr(os, "add_dll_directory"):
+    from ctypes import cdll
     from ctypes.util import find_library
 
-    with os.add_dll_directory(find_library("libopenslide")):
-        import openslide
+    cdll.LoadLibrary(find_library("libopenslide-0.dll"))
+    import openslide
 else:
     import openslide
 

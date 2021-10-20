@@ -10,38 +10,39 @@ on:
 
 jobs:
 
-  wsi-artifacts:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download WSI artifacts
-        id: load-wsis
-        run: |
-          mkdir -p tests/fixtures/external-svs
-          wget --passive-ftp ftp://ftp.biosciencedbc.jp/archive/open-tggates-pathological-images/LATEST/images/isoniazid/Liver/2458.svs -O tests/fixtures/external-svs/liver-1.svs
-          wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -O tests/fixtures/external-svs/cmu-3.svs
-      - name: Temporarly save WSI artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: wsi-artifact
-          path: tests/fixtures/external-svs
-          retention-days: 1
+  # wsi-artifacts:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download WSI artifacts
+  #       id: load-wsis
+  #       run: |
+  #         mkdir -p tests/fixtures/external-svs
+  #         wget --passive-ftp ftp://ftp.biosciencedbc.jp/archive/open-tggates-pathological-images/LATEST/images/isoniazid/Liver/2458.svs -O tests/fixtures/external-svs/liver-1.svs
+  #         wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -O tests/fixtures/external-svs/cmu-3.svs
+  #     - name: Temporarly save WSI artifacts
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: wsi-artifact
+  #         path: tests/fixtures/external-svs
+  #         retention-days: 1
 
   build:
     needs: wsi-artifacts
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, macOS-latest, ubuntu-latest]
-        python-version: [3.7]
-        include:
-          - os: macOS-latest
-            python-version: 3.8
-          - os: ubuntu-latest
-            python-version: 3.8
-          - os: macOS-latest
-            python-version: 3.9
-          - os: ubuntu-latest
-            python-version: 3.9
+        # os: [windows-latest, macOS-latest, ubuntu-latest]
+        os: [windows-latest]
+        python-version: [3.8]
+        # include:
+        #   - os: macOS-latest
+        #     python-version: 3.8
+        #   - os: ubuntu-latest
+        #     python-version: 3.8
+        #   - os: macOS-latest
+        #     python-version: 3.9
+        #   - os: ubuntu-latest
+        #     python-version: 3.9
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
