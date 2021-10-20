@@ -147,8 +147,7 @@ jobs:
       - name: Test with pytest
         id: tests
         run: |
-          pwd
-          ls
+          echo %cd%
           python -c "print(__import__('os').environ['PATH'])"
           python -m pytest --ignore=tests/benchmarks --cov=histolab --cov-report=xml
 
