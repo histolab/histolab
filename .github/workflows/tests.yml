@@ -82,6 +82,8 @@ jobs:
             export PATH=$PATH:"/c/downloads/openslide-win64-20171122/bin"
             ls -lah /c/downloads
             ls -lah C:/downloads
+            ls .
+            pwd
           else
             echo "$RUNNER_OS not supported"
             exit 1
