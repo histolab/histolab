@@ -27,7 +27,7 @@ jobs:
           retention-days: 1
 
   build:
-    # needs: wsi-artifacts
+    needs: wsi-artifacts
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
