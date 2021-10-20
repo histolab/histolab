@@ -80,7 +80,7 @@ jobs:
             wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
             7z e /c/downloads/openslide-win64-20171122.zip -aoa
             export PATH=$PATH:"/c/downloads/openslide-win64-20171122/bin"
-            echo $PATH
+            ls -lah /c/downloads/openslide-win64-20171122/bin
           else
             echo "$RUNNER_OS not supported"
             exit 1
