@@ -79,7 +79,7 @@ jobs:
             choco install 7zip-zstd
             wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
             7z e /c/downloads/openslide-win64-20171122.zip -aoa
-            export PATH=$PATH:"/d/a/histolab/histolab"
+            $ENV:PATH="$ENV:PATH;D:\a\histolab\histolab"
           else
             echo "$RUNNER_OS not supported"
             exit 1
@@ -147,7 +147,6 @@ jobs:
       - name: Test with pytest
         id: tests
         run: |
-          $ENV:PATH="$ENV:PATH;D:\a\histolab\histolab"
           python -m pytest --ignore=tests/benchmarks --cov=histolab --cov-report=xml
 
       - name: DocTests
