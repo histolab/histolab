@@ -147,7 +147,8 @@ jobs:
       - name: Test with pytest
         id: tests
         run: |
-          python -c "import os; os.environ['PATH']+=';D:\a\histolab\histolab'"
+          $ENV:PATH="$ENV:PATH;D:\a\histolab\histolab"
+          dir
           python -c "print(__import__('os').environ['PATH'])"
           python -m pytest --ignore=tests/benchmarks --cov=histolab --cov-report=xml
 
