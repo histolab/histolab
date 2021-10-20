@@ -80,25 +80,26 @@ jobs:
             wget https://github.com/openslide/openslide-winbuild/releases/download/v20171122/openslide-win64-20171122.zip -P /c/downloads
             7z e /c/downloads/openslide-win64-20171122.zip -aoa
             export PATH=$PATH:"/c/downloads/openslide-win64-20171122/bin"
+            echo $PATH
           else
             echo "$RUNNER_OS not supported"
             exit 1
           fi
         shell: bash
 
-      - uses: msys2/setup-msys2@v2
-        if: ${{ runner.os == 'Windows' }}
-        with:
-          update: true
+      # - uses: msys2/setup-msys2@v2
+      #   if: ${{ runner.os == 'Windows' }}
+      #   with:
+      #     update: true
 
-      - name: Install Pixman 0.40 on Windows
-        id: pixman-windows
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          pacman --noconfirm -S --needed mingw-w64-x86_64-pixman
-          pacman -Ql mingw-w64-x86_64-pixman
-          cp /mingw64/bin/libpixman-1-0.dll .
-        shell: msys2 {0}
+      # - name: Install Pixman 0.40 on Windows
+      #   id: pixman-windows
+      #   if: ${{ runner.os == 'Windows' }}
+      #   run: |
+      #     pacman --noconfirm -S --needed mingw-w64-x86_64-pixman
+      #     pacman -Ql mingw-w64-x86_64-pixman
+      #     cp /mingw64/bin/libpixman-1-0.dll .
+      #   shell: msys2 {0}
 
       - name: Get pip cache dir
         id: pip-cache
