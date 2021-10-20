@@ -138,11 +138,11 @@ jobs:
         run: |
           bandit -r -c bandit.yaml .
 
-      - name: Retrieve saved WSIs
-        uses: actions/download-artifact@v2
-        with:
-          name: wsi-artifact
-          path: tests/fixtures/external-svs
+      # - name: Retrieve saved WSIs
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: wsi-artifact
+      #     path: tests/fixtures/external-svs
 
       - name: Test with pytest
         id: tests
@@ -169,11 +169,11 @@ jobs:
           steps: ${{ toJson(steps) }}
         if: failure()
 
-  delete-wsi-artifacts:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: geekyeggo/delete-artifact@v1
-        with:
-          name: wsi-artifact
-          failOnError: false
+  # delete-wsi-artifacts:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - uses: geekyeggo/delete-artifact@v1
+  #       with:
+  #         name: wsi-artifact
+  #         failOnError: false
