@@ -107,23 +107,24 @@ def dab_channel(img: PIL.Image.Image) -> PIL.Image.Image:
     """Obtain DAB channel from RGB image.
 
     Input image is first converted into HED space and the DAB channel is
-    rescaled for increased contrast.
+    extracted via color deconvolution.
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image
 
     Returns
     -------
-    Image.Image
-        Grayscale image corresponding to input image with DAB channel enhanced.
+    PIL.Image.Image
+        RGB image with DAB staining separated.
     """
     if img.mode not in ["RGB", "RGBA"]:
         raise ValueError("Input image must be RGB/RGBA.")
-    dab = np.array(rgb_to_hed(img))[:, :, 2]
-    dab = sk_exposure.rescale_intensity(dab)
-    return np_to_pil(dab)
+    hed = rgb_to_hed(img)
+    null = np.zeros_like(hed[:, :, 0])
+    dab = hed_to_rgb(np.stack((null, null, hed[:, :, 2]), axis=-1))
+    return dab
 
 
 def eosin_channel(img: PIL.Image.Image) -> PIL.Image.Image:

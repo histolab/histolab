@@ -397,17 +397,17 @@ class DABChannel(ImageFilter):
     """Obtain DAB channel from RGB image.
 
     Input image is first converted into HED space and the DAB channel is
-    rescaled for increased contrast.
+    extracted via color deconvolution.
 
     Parameters
     ----------
-    img : Image.Image
+    img : PIL.Image.Image
         Input RGB image
 
     Returns
     -------
-    Image.Image
-        Grayscale image corresponding to input image with DAB channel enhanced.
+    PIL.Image.Image
+        RGB image with Eosin staining separated.
 
 
     Example:
@@ -418,7 +418,7 @@ class DABChannel(ImageFilter):
         >>> image_d = dab_channel(image_rgb)
     """  # noqa
 
-    def __call__(self, img):
+    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
         dab = F.dab_channel(img)
         return dab
 
