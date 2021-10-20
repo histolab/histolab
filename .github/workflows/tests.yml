@@ -81,7 +81,7 @@ jobs:
             7z e /c/downloads/openslide-win64-20171122.zip -aoa
             export PATH=$PATH:"/c/downloads/openslide-win64-20171122/bin"
             ls -lah /c/downloads
-            ls -lah C:\downloads\
+            ls -lah C:/downloads
           else
             echo "$RUNNER_OS not supported"
             exit 1
