@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1634647005135,
+  "lastUpdate": 1634801544453,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -7785,6 +7785,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 4.989900454082252e-7",
             "extra": "mean: 42.96404961600024 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "51ae30f9a2ec478165ce30df12eacc8da6886df8",
+          "message": "Update numpy requirement from <1.21.3,>=1.18.4 to >=1.18.4,<1.21.4\n\nUpdates the requirements on [numpy](https://github.com/numpy/numpy) to permit the latest version.\n- [Release notes](https://github.com/numpy/numpy/releases)\n- [Changelog](https://github.com/numpy/numpy/blob/main/doc/HOWTO_RELEASE.rst.txt)\n- [Commits](https://github.com/numpy/numpy/compare/v1.18.4...v1.21.3)\n\n---\nupdated-dependencies:\n- dependency-name: numpy\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2021-10-21T09:30:28+02:00",
+          "tree_id": "16dfd3588d87e4ad6506487fa25824f7b4de2280",
+          "url": "https://github.com/histolab/histolab/commit/51ae30f9a2ec478165ce30df12eacc8da6886df8"
+        },
+        "date": 1634801543794,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 9.66533787517807,
+            "unit": "iter/sec",
+            "range": "stddev: 0.005496485195738102",
+            "extra": "mean: 103.46249793999846 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 314.21769643024965,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00030659890031709474",
+            "extra": "mean: 3.182506941400038 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 472.89033599384913,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00010763100372368302",
+            "extra": "mean: 2.1146551829999907 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 17641.21936988311,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000002623570728172965",
+            "extra": "mean: 56.685424008001974 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 18523.69806832174,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000021817042646447827",
+            "extra": "mean: 53.98490065599526 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 18564.178341761195,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000004365570280158292",
+            "extra": "mean: 53.867183431999365 usec\nrounds: 250"
           }
         ]
       }
