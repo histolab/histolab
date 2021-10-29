@@ -84,6 +84,11 @@ class CellularityScorer(Scorer):
     consider_tissue : bool, optional
         Whether the detected tissue on the tile should be considered to compute the
         cellularity score. Default is True
+
+    Notes
+    -----
+    If the tile presents artifacts (e.g., tissue folds, markers), the scorer cannot be
+    fully trusted.
     """
 
     def __init__(self, consider_tissue: bool = True) -> None:
@@ -108,7 +113,11 @@ class CellularityScorer(Scorer):
 
         tissue_mask = TissueMask()
         filters_cellularity = imf.Compose(
-            [imf.HematoxylinChannel(), imf.YenThreshold(operator.gt)]
+            [
+                imf.HematoxylinChannel(),
+                imf.RgbToGrayscale(),
+                imf.YenThreshold(operator.lt),
+            ]
         )
 
         mask_nuclei = np.array(tile.apply_filters(filters_cellularity).image)
