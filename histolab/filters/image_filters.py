@@ -408,8 +408,8 @@ class RgbToHsv(ImageFilter):
 
     Returns
     -------
-    PIL.Image.Image
-        Image in HED space
+    np.ndarray
+        Array representation of the image in HSV space
 
 
     Example:
@@ -420,7 +420,7 @@ class RgbToHsv(ImageFilter):
         >>> image_hsv = rgb_to_hsv(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
         hsv = F.rgb_to_hsv(img)
         return hsv
 

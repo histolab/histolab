@@ -1,9 +1,10 @@
 import operator
 
-import histolab.filters.image_filters_functional as imf
 import numpy as np
 import pytest
 from PIL import ImageChops
+
+import histolab.filters.image_filters_functional as imf
 
 from ..fixtures import GS, RGB, RGBA
 from ..util import load_expectation
@@ -192,26 +193,14 @@ def test_eosin_channel_raises_exception_on_gs_image():
     assert str(err.value) == "Input image must be RGB/RGBA."
 
 
-@pytest.mark.parametrize(
-    "pil_image, expected_image",
-    (
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "pil-images-rgb/diagnostic-slide-thumb-rgb-to-hsv",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
-            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-rgb-to-hsv",
-        ),
-    ),
-)
-def test_rgb_to_hsv_filter_with_rgb_image(pil_image, expected_image):
-    expected_value = load_expectation(expected_image, type_="png")
+def test_rgb_to_hsv_filter_with_rgb_image():
+    expected_value = load_expectation(
+        "mask-arrays/diagnostic-slide-thumb-rgb-to-hsv", type_="npy"
+    )
 
-    hsv_img = imf.rgb_to_hsv(pil_image)
+    hsv_arr = imf.rgb_to_hsv(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB)
 
-    np.testing.assert_array_almost_equal(np.array(hsv_img), np.array(expected_value))
-    assert np.unique(np.array(ImageChops.difference(hsv_img, expected_value)))[0] == 0
+    np.testing.assert_array_almost_equal(hsv_arr, expected_value)
 
 
 def test_rgb_to_hsv_raises_exception_on_rgba_image():

@@ -490,10 +490,10 @@ def rgb_to_hed(img: PIL.Image.Image) -> PIL.Image.Image:
     return hed
 
 
-def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
+def rgb_to_hsv(img: PIL.Image.Image) -> np.ndarray:
     """Convert RGB channels to HSV channels.
 
-    image color space (RGB) is converted to Hue - Saturation - Value (HSV) space.
+    Image color space (RGB) is converted to Hue - Saturation - Value (HSV) space.
 
     Parameters
     ----------
@@ -502,8 +502,8 @@ def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
 
     Returns
     -------
-    PIL.Image.Image
-        Image in HED space
+    np.ndarray
+        Array representation of the image in HSV space
 
     Raises
     ------
@@ -513,9 +513,7 @@ def rgb_to_hsv(img: PIL.Image.Image) -> PIL.Image.Image:
     if img.mode != "RGB":
         raise Exception("Input image must be RGB")
     img_arr = np.array(img)
-    hsv_arr = sk_color.rgb2hsv(img_arr)
-    hsv = np_to_pil(hsv_arr)
-    return hsv
+    return sk_color.rgb2hsv(img_arr)
 
 
 def rgb_to_lab(
