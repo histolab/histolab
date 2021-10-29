@@ -221,7 +221,7 @@ class RgbToHed(ImageFilter):
     Returns
     -------
     np.ndarray
-        Image in HED space
+        Array representation of the image in HED space
 
 
     Example:
@@ -312,7 +312,7 @@ class HedToRgb(ImageFilter):
     Parameters
     ----------
     img_arr : np.ndarray
-        Input image in HED color space
+        Array representation of the image in HED color space
 
     Returns
     -------

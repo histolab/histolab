@@ -123,8 +123,7 @@ def dab_channel(img: PIL.Image.Image) -> PIL.Image.Image:
         raise ValueError("Input image must be RGB/RGBA.")
     hed = rgb_to_hed(img)
     null = np.zeros_like(hed[:, :, 0])
-    dab = hed_to_rgb(np.stack((null, null, hed[:, :, 2]), axis=-1))
-    return dab
+    return hed_to_rgb(np.stack((null, null, hed[:, :, 2]), axis=-1))
 
 
 def eosin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
@@ -147,8 +146,7 @@ def eosin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
         raise ValueError("Input image must be RGB/RGBA.")
     hed = rgb_to_hed(img)
     null = np.zeros_like(hed[:, :, 0])
-    eosin = hed_to_rgb(np.stack((null, hed[:, :, 1], null), axis=-1))
-    return eosin
+    return hed_to_rgb(np.stack((null, hed[:, :, 1], null), axis=-1))
 
 
 def green_pen_filter(img: PIL.Image.Image) -> PIL.Image.Image:
@@ -211,8 +209,7 @@ def hematoxylin_channel(img: PIL.Image.Image) -> PIL.Image.Image:
         raise ValueError("Input image must be RGB/RGBA.")
     hed = rgb_to_hed(img)
     null = np.zeros_like(hed[:, :, 0])
-    hematoxylin = hed_to_rgb(np.stack((hed[:, :, 0], null, null), axis=-1))
-    return hematoxylin
+    return hed_to_rgb(np.stack((hed[:, :, 0], null, null), axis=-1))
 
 
 def histogram_equalization(img: PIL.Image.Image, nbins: int = 256) -> PIL.Image.Image:
@@ -474,7 +471,7 @@ def rgb_to_hed(img: PIL.Image.Image) -> np.ndarray:
     Returns
     -------
     np.ndarray
-        Image in HED space
+        Array representation of the image in HED space
     """
     if img.mode not in ["RGB", "RGBA"]:
         raise Exception("Input image must be RGB.")
@@ -839,7 +836,7 @@ def hed_to_rgb(img_arr: np.ndarray) -> PIL.Image.Image:
     Parameters
     ----------
     img_arr : np.ndarray
-        Input image in HED color space
+        Array representation of the image in HED color space
 
     Returns
     -------
