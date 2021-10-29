@@ -138,6 +138,11 @@ class NucleiScorer(Scorer):
     Notice that we introduced the hyperbolic tangent to bound the weight of the tissue
     ratio over the nuclei ratio.
 
+    Notes
+    -----
+    If the tile presents artifacts (e.g., tissue folds, markers), the scorer cannot be
+    fully trusted.
+
     .. automethod:: __call__
     """
 
@@ -156,10 +161,19 @@ class NucleiScorer(Scorer):
         """
 
         filters_raw_nuclei = imf.Compose(
-            [imf.HematoxylinChannel(), imf.YenThreshold(operator.gt)]
+            [
+                imf.HematoxylinChannel(),
+                imf.RgbToGrayscale(),
+                imf.YenThreshold(operator.lt),
+            ]
         )
         filters_nuclei_cleaner = imf.Compose(
-            [imf.HematoxylinChannel(), imf.YenThreshold(operator.gt), mof.WhiteTopHat()]
+            [
+                imf.HematoxylinChannel(),
+                imf.RgbToGrayscale(),
+                imf.YenThreshold(operator.lt),
+                mof.WhiteTopHat(),
+            ]
         )
 
         mask_raw_nuclei = np.array(tile.apply_filters(filters_raw_nuclei).image)
