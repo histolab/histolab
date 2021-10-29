@@ -1,7 +1,7 @@
 import pytest
-from histolab.tile import Tile
 
 from histolab import scorer
+from histolab.tile import Tile
 
 from ..fixtures import TILES
 
@@ -9,32 +9,35 @@ from ..fixtures import TILES
 class Describe_Scorers:
     @pytest.mark.parametrize(
         "tile_img, expected_score",
-        (
+        (  # IMPORTANT: with artifacts, the NucleiScorer cannot be fully trusted
             # level 0
-            (TILES.VERY_LOW_NUCLEI_SCORE_LEVEL0, 0.0042),
-            (TILES.LOW_NUCLEI_SCORE_LEVEL0, 0.03001),
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL0, 0.266),
-            (TILES.HIGH_NUCLEI_SCORE_LEVEL0, 0.008),
+            (TILES.VERY_LOW_NUCLEI_SCORE_LEVEL0, 5e-05),
+            (TILES.LOW_NUCLEI_SCORE_LEVEL0, 0.01066),
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL0, 0.01673),
+            (TILES.HIGH_NUCLEI_SCORE_LEVEL0, 0.37285),
             # level 1
             (
                 TILES.VERY_LOW_NUCLEI_SCORE_RED_PEN_LEVEL1,
-                0.10605,
+                0.00177,
             ),  # breast - red pen
-            (TILES.LOW_NUCLEI_SCORE_LEVEL1, 0.00704),  # breast - green pen
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1, 0.08904),  # aorta
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1_2, 0.09247),  # breast - green pen
-            (TILES.MEDIUM_NUCLEI_SCORE_GREEN_PEN_LEVEL1, 0.08088),
+            (TILES.LOW_NUCLEI_SCORE_LEVEL1, 0.01641),  # breast - green pen
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1, 0.00698),  # aorta
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1_2, 0.14523),  # breast - green pen
+            (TILES.MEDIUM_NUCLEI_SCORE_GREEN_PEN_LEVEL1, 0.35342),
             # breast - green pen
-            (TILES.HIGH_NUCLEI_SCORE_RED_PEN_LEVEL1, 0.10297),  # breast - red pen
+            (
+                TILES.HIGH_NUCLEI_SCORE_RED_PEN_LEVEL1,
+                0.03176,
+            ),  # breast - red pen + tissue fold
             # level 2
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL2, 0.00337),  # prostate
-            (TILES.HIGH_NUCLEI_SCORE_LEVEL2, 0.00217),  # prostate
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL2, 0.03463),  # prostate
+            (TILES.HIGH_NUCLEI_SCORE_LEVEL2, 0.00326),  # prostate
             # no tissue
             (TILES.NO_TISSUE, 0.0),
-            (TILES.NO_TISSUE2, 0.0),
-            (TILES.NO_TISSUE_LINE, 0.00026),
-            (TILES.NO_TISSUE_RED_PEN, 0.20831),
-            (TILES.NO_TISSUE_GREEN_PEN, 0.23808),
+            (TILES.NO_TISSUE2, 1e-05),
+            (TILES.NO_TISSUE_LINE, 0.00028),
+            (TILES.NO_TISSUE_RED_PEN, 0.18849),
+            (TILES.NO_TISSUE_GREEN_PEN, 0.30601),
         ),
     )
     def it_knows_nuclei_score(self, tile_img, expected_score):
