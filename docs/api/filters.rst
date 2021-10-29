@@ -21,9 +21,6 @@ Filters in ``histolab`` are designed to be applied singularly or combined in a c
 * Image filters:
     * **Transforming image color space**: Color images can be represented using alternative color spaces and the most common one is the RGB space, where the image is represented using distinct channels for Red, Green and Blue. RGB images can be converted to grayscale, namely shifting from 3-channel images to single channel images, e.g. for use with thresholding. ``histolab`` leverages the `Pillow's ImageOps <https://pillow.readthedocs.io/en/stable/reference/ImageOps.html>`_ module for the conversion to the grayscale color space. Besides RGB and grayscale, several color models are extensively used, such as the HSV space, a cylindrical color model where the three independent channels represent the Hue, Saturation and Value of the color. The  HED space [1]_ has been designed to specifically represent the contribution of Hematoxylin, Eosin and Diaminobenzidine dyes in H&E-stained slides and therefore is widely used in pathology (for example, to analyse microscopic blood images [2]_).
 
-    .. figure:: https://user-images.githubusercontent.com/31658006/111822707-6bf3e880-88e4-11eb-8b38-6e108d7adbb7.jpeg
-       :alt: Color space conversion filters
-       :align: center
 
 
 
