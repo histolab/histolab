@@ -1,5 +1,5 @@
 histolab
-sphinx
+sphinx==4.2.0
 sphinx-rtd-theme
 sphinxcontrib-katex
 sphinxemoji
