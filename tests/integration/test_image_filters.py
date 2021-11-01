@@ -326,27 +326,12 @@ def test_histogram_equalization_filter_on_rgba_image():
     )
 
 
-@pytest.mark.parametrize(
-    "pil_image, expected_image",
-    (
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "pil-images-rgb/diagnostic-slide-thumb-rgb-histogram-equalization",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
-            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-histogram-equalization",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
-            "pil-images-rgb/diagnostic-slide-thumb-hsv-histogram-equalization",
-        ),
-    ),
-)
-def test_histogram_equalization_filter_on_rgb_image(pil_image, expected_image):
-    expected_value = load_expectation(expected_image, type_="png")
+def test_histogram_equalization_filter_on_rgb_image():
+    expected_value = load_expectation(
+        "pil-images-rgb/diagnostic-slide-thumb-rgb-histogram-equalization", type_="png"
+    )
 
-    hist_equ_img = imf.histogram_equalization(pil_image, 200)
+    hist_equ_img = imf.histogram_equalization(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB, 200)
 
     np.testing.assert_array_almost_equal(
         np.array(hist_equ_img), np.array(expected_value)
