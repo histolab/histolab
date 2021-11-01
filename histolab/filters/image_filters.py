@@ -323,7 +323,7 @@ class HedToRgb(ImageFilter):
     Example:
         >>> import numpy as np
         >>> from histolab.filters.image_filters import HedToRgb
-        >>> hed_arr = np.load("tests/fixtures/arrays/diagnostic_slide_thumb_hed.npy")
+        >>> hed_arr = np.load("tests/fixtures/arrays/diagnostic-slide-thumb-hed.npy")
         >>> hed_to_rgb = HedToRgb()
         >>> rgb = hed_to_rgb(hed_arr)
     """  # noqa
