@@ -485,7 +485,7 @@ def rgb_to_hed(img: PIL.Image.Image) -> np.ndarray:
 
     img_arr = np.array(img)
     hed_arr = sk_color.rgb2hed(img_arr)
-    hed_arr[hed_arr < 0] = 0  # TODO: remove this after skimage fixes `rgb2hed()`
+    hed_arr[hed_arr < 0] = 0  # remove this after skimage fixes `rgb2hed()`
     return hed_arr
 
 
