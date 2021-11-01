@@ -388,27 +388,12 @@ def test_adaptive_equalization_filter_on_rgba_image():
     )
 
 
-@pytest.mark.parametrize(
-    "pil_image, expected_image",
-    (
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_RGB,
-            "pil-images-rgb/diagnostic-slide-thumb-rgb-adaptive-equalization",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_YCBCR,
-            "pil-images-rgb/diagnostic-slide-thumb-ycbcr-adaptive-equalization",
-        ),
-        (
-            RGB.DIAGNOSTIC_SLIDE_THUMB_HSV,
-            "pil-images-rgb/diagnostic-slide-thumb-hsv-adaptive-equalization",
-        ),
-    ),
-)
-def test_adaptive_equalization_filter_on_rgb_image(pil_image, expected_image):
-    expected_value = load_expectation(expected_image, type_="png")
+def test_adaptive_equalization_filter_on_rgb_image():
+    expected_value = load_expectation(
+        "pil-images-rgb/diagnostic-slide-thumb-rgb-adaptive-equalization", type_="png"
+    )
 
-    adap_equ_img = imf.adaptive_equalization(pil_image, 200, 0.2)
+    adap_equ_img = imf.adaptive_equalization(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB, 200, 0.2)
 
     np.testing.assert_array_almost_equal(
         np.array(adap_equ_img), np.array(expected_value)
