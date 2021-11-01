@@ -584,7 +584,7 @@ class AdaptiveEqualization(ImageFilter):
     lighter regions that may be poorly enhanced by the global histogram equalization
     transformation.
 
-    .. figure:: https://user-images.githubusercontent.com/31658006/116540919-13ecd080-a8eb-11eb-99ef-c879f80fe542.png
+    .. figure:: https://user-images.githubusercontent.com/20052362/139672710-e75d1f0e-e5f3-4365-8f83-b0d2316bfb10.png
 
     The Adaptive Equalization filter is based on the scikit-image implementation of
     the contrast limited adaptive histogram equalization (CLAHE) [1]_.
