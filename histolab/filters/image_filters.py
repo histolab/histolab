@@ -529,7 +529,7 @@ class HistogramEqualization(ImageFilter):
     equalization, as it works uniformly on the whole image and the transformation of one
     pixel is independent from the transformation used on the neighboring pixels [4]_.
 
-    .. figure:: https://user-images.githubusercontent.com/31658006/116540462-76919c80-a8ea-11eb-86f0-0b0d318292e3.png
+    .. figure:: https://user-images.githubusercontent.com/20052362/139671873-fa61fc20-a6b8-4302-8596-b6542b5b3aaf.png
 
     Notice that the histogram equalization method can be used for RGB images
     by applying the same algorithm on the R, G, and B channels separately [5]_;
