@@ -1687,3 +1687,12 @@ def test_lab_to_rgb_filter_with_rgb_image():
 
     np.testing.assert_array_almost_equal(np.array(rgb_img), np.array(expected_value))
     assert np.unique(np.array(ImageChops.difference(rgb_img, expected_value)))[0] == 0
+
+
+def test_rgb_lab_roundtrip():
+    img = RGB.DIAGNOSTIC_SLIDE_THUMB_RGB
+
+    img_ = imf.lab_to_rgb(imf.rgb_to_lab(img))
+
+    np.testing.assert_array_almost_equal(np.array(img_), np.array(img))
+    assert np.unique(np.array(ImageChops.difference(img_, img)))[0] == 0
