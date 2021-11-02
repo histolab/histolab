@@ -122,10 +122,6 @@ jobs:
           python -m pip install pooch
           python -m pip install bandit==1.7.0
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
-
       - name: Black Code Style Format Check
         id: black
         run: |
