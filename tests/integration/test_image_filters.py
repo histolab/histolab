@@ -6,7 +6,7 @@ from PIL import ImageChops
 
 import histolab.filters.image_filters_functional as imf
 
-from ..fixtures import GS, MASKNPY, NPY, RGB, RGBA
+from ..fixtures import GS, NPY, RGB, RGBA
 from ..util import load_expectation
 
 
@@ -1577,7 +1577,7 @@ def test_yen_threshold_filter_on_gs_image():
 
 def test_rgb_to_lab_filter_with_rgb_image():
     expected_value = load_expectation(
-        "mask-arrays/diagnostic-slide-thumb-rgb-to-lab", type_="npy"
+        "arrays/diagnostic-slide-thumb-rgb-to-lab", type_="npy"
     )
 
     lab_img = imf.rgb_to_lab(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB)
