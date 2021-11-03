@@ -649,7 +649,7 @@ class LabToRgb(ImageFilter):
     Example:
         >>> import numpy as np
         >>> from histolab.filters.image_filters import LabToRgb
-        >>> arr_lab = np.load("tests/fixtures/mask-arrays/diagnostic_slide_thumb_lab")
+        >>> arr_lab = np.load("tests/fixtures/arrays/diagnostic-slide-thumb-lab.npy")
         >>> lab_to_rgb = LabToRgb()
         >>> image_rgb = lab_to_rgb(arr_lab)
     """
