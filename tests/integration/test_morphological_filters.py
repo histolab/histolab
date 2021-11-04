@@ -19,22 +19,6 @@ from ..util import load_expectation
             "objects-mask",
         ),
         (
-            MASKNPY.DIAGNOSTIC_SLIDE_THUMB_HSV_OTSU_THRESHOLD_MASK,
-            3000,
-            True,
-            95,
-            "mask-arrays/diagnostic-slide-thumb-hsv-otsu-threshold-remove-small-objects"
-            "-mask",
-        ),
-        (
-            MASKNPY.DIAGNOSTIC_SLIDE_THUMB_HSV_OTSU_THRESHOLD_MASK,
-            3000,
-            False,
-            95,
-            "mask-arrays/diagnostic-slide-thumb-hsv-otsu-threshold-remove-small-objects"
-            "2-mask",
-        ),
-        (
             MASKNPY.DIAGNOSTIC_SLIDE_THUMB_RGB1_HYSTERESIS_THRESHOLD_MASK,
             1200,
             True,
