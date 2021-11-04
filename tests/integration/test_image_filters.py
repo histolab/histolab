@@ -178,7 +178,7 @@ def test_eosin_channel_raises_exception_on_gs_image():
 
 def test_rgb_to_hsv_filter_with_rgb_image():
     expected_value = load_expectation(
-        "mask-arrays/diagnostic-slide-thumb-rgb-to-hsv", type_="npy"
+        "arrays/diagnostic-slide-thumb-rgb-to-hsv", type_="npy"
     )
 
     hsv_arr = imf.rgb_to_hsv(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB)
@@ -1282,7 +1282,7 @@ def test_dab_channel_raises_exception_on_gs_image():
 
 def test_rgb_to_od_filter_with_rgb_image():
     expected_value = load_expectation(
-        "mask-arrays/diagnostic-slide-thumb-rgb-to-od", type_="npy"
+        "arrays/diagnostic-slide-thumb-rgb-to-od", type_="npy"
     )
 
     od_img = imf.rgb_to_od(
@@ -1294,7 +1294,7 @@ def test_rgb_to_od_filter_with_rgb_image():
 
 def test_rgb_to_od_filter_with_rgba_image():
     img = RGBA.TCGA_LUNG
-    expected_value = load_expectation("mask-arrays/tcga-lung-rgb-to-od", type_="npy")
+    expected_value = load_expectation("arrays/tcga-lung-rgb-to-od", type_="npy")
 
     expected_warning_regex = (
         r"Input image must be RGB. NOTE: the image will be converted to RGB before"
