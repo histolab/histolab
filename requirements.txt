@@ -1,6 +1,6 @@
 numpy >=1.18.4,<1.21.5
 Pillow
 scikit-image >=0.17.1,<0.18.4
-scipy >=1.5.0,<1.7.2
+scipy >=1.5.0,<1.7.3
 openslide-python
 typing_extensions
