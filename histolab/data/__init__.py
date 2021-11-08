@@ -297,9 +297,12 @@ def breast_tissue_diagnostic_green_pen() -> Tuple[
     Breast tissue, TCGA-BRCA dataset. Diagnostic slide with green pen marks.
 
     This image is available here
-    https://portal.gdc.cancer.gov/files/da36d3aa-9b19-492a-af4f-cc028a926d96
+    https://portal.gdc.cancer.gov/files/3845b8bd-cbe0-49cf-a418-a8120f6c23db
     or through the API
-    https://api.gdc.cancer.gov/data/da36d3aa-9b19-492a-af4f-cc028a926d96
+    https://api.gdc.cancer.gov/data/3845b8bd-cbe0-49cf-a418-a8120f6c23db
+
+    It corresponds to TCGA file
+    `TCGA-A1-A0SH-01Z-00-DX1.90E71B08-E1D9-4FC2-85AC-062E56DDF17C.svs`
 
     Access: open
 
@@ -310,7 +313,9 @@ def breast_tissue_diagnostic_green_pen() -> Tuple[
     path : str
         Path where the slide is saved
     """
-    return _load_svs("tcga/breast/da36d3aa-9b19-492a-af4f-cc028a926d96")
+    return _load_svs(
+        "tcga/breast/TCGA-A1-A0SH-01Z-00-DX1.90E71B08-E1D9-4FC2-85AC-062E56DDF17C.svs"
+    )
 
 
 def breast_tissue_diagnostic_red_pen() -> Tuple[
