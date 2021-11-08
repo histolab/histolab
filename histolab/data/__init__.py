@@ -268,9 +268,12 @@ def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     Breast tissue, TCGA-BRCA dataset.
 
     This image is available here
-    https://portal.gdc.cancer.gov/files/9c960533-2e58-4e54-97b2-8454dfb4b8c8
+    https://portal.gdc.cancer.gov/files/ad9ed74a-2725-49e6-bf7a-ef100e299989
     or through the API
-    https://api.gdc.cancer.gov/data/9c960533-2e58-4e54-97b2-8454dfb4b8c8
+    https://api.gdc.cancer.gov/data/ad9ed74a-2725-49e6-bf7a-ef100e299989
+
+    It corresponds to TCGA file
+    `TCGA-A8-A082-01A-01-TS1.3cad4a77-47a6-4658-becf-d8cffa161d3a.svs`
 
     Access: open
 
@@ -281,7 +284,9 @@ def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     path : str
         Path where the slide is saved
     """
-    return _load_svs("tcga/breast/9c960533-2e58-4e54-97b2-8454dfb4b8c8")
+    return _load_svs(
+        "tcga/breast/TCGA-A8-A082-01A-01-TS1.3cad4a77-47a6-4658-becf-d8cffa161d3a.svs"
+    )
 
 
 def breast_tissue_diagnostic_green_pen() -> Tuple[
