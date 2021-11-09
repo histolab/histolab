@@ -1,12 +1,5 @@
 # Create a leakage-free dataset of tiles for TCGA
 
----
-
-:warning: *<u>As reported here https://portal.gdc.cancer.gov/ all slide and diagnostic images from the TCGA program are currently unavailable for download.
-This example might not works because of the unavailability of the external service</u>*
-
----
-
 `extract_tile_pw_tcga.py` is a Python script proposed as reference to retrieve a reproducible dataset of tiles using a collection of WSIs from the [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga) public repository. In particular, it can be easily integrated in deep learning pipeline(s) for computational pathology.
 
 ## Prerequisites
