@@ -120,10 +120,6 @@ pip install histolab
 
 ## TCGA data
 
-**NOTE: Some histolab demo data could not work.**
-
-*All slide and diagnostic images from the TCGA program are currently unavailable for download. Please check https://portal.gdc.cancer.gov/ for further information.*
-
 First things first, let’s import some data to work with, for example the
 prostate tissue slide and the ovarian tissue slide available in the
 `data` module:
