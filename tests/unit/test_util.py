@@ -7,7 +7,6 @@ from collections import namedtuple
 
 import numpy as np
 import pytest
-
 from histolab.types import CP, Region
 from histolab.util import (
     apply_mask_image,
@@ -67,6 +66,13 @@ def test_scale_coordinates(ref_coords, ref_size, target_size, expected_value):
         (NPY.NP_TO_PIL_L, "L", (2, 2), np.uint8, "python-expr/np-to-pil-l"),
         (NPY.NP_TO_PIL_LA, "LA", (2, 2), np.uint8, "python-expr/np-to-pil-la"),
         (NPY.NP_TO_PIL_RGBA, "RGBA", (4, 4), np.uint8, "python-expr/np-to-pil-rgba"),
+        (
+            NPY.NP_TO_PIL_RGBA_FLOAT01,
+            "RGBA",
+            (4, 4),
+            np.uint8,
+            "python-expr/np-to-pil-rgba",
+        ),
     ),
 )
 def test_util_np_to_pil(
