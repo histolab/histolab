@@ -39,7 +39,6 @@ The automatic download of WSIs via the [GDC wrapper](https://github.com/histolab
 The `extract_tile_pw_tcga.py` will perform the following steps:
 
 1. a fixed number of tiles (100 by default) are randomly extracted from each WSI by the `extract_random_tiles` function. The directory where to store the tiles, along with several parameters that detail the extraction protocol (i.e. `n_tiles`, `seed`, `check_tissue`), can be defined as command-line arguments.
-**Note** `histolab` automatically saves the generated tiles in the 'tiles' subdirectory.
 
 2. the `split_tiles_patient_wise` function sorts the tiles into the training and the test set (80-20 partition by default) adopting a *Patient-Wise* splitting protocol, namely ensuring that tiles belonging to the same subject are either in the training or the test set.
 
