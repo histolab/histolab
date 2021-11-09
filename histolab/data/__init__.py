@@ -355,9 +355,12 @@ def breast_tissue_diagnostic_black_pen() -> Tuple[
     Breast tissue, TCGA-BRCA dataset. Diagnostic slide with black pen marks.
 
     This image is available here
-    https://portal.gdc.cancer.gov/files/31e248bf-ee24-4d18-bccb-47046fccb461
+    https://portal.gdc.cancer.gov/files/e70c89a5-1c2f-43f8-b6be-589beea55338
     or through the API
-    https://api.gdc.cancer.gov/data/31e248bf-ee24-4d18-bccb-47046fccb461
+    https://api.gdc.cancer.gov/data/e70c89a5-1c2f-43f8-b6be-589beea55338
+
+    It corresponds to TCGA file
+    `TCGA-BH-A201-01Z-00-DX1.6D6E3224-50A0-45A2-B231-EEF27CA7EFD2.svs`
 
     Access: open
 
@@ -368,7 +371,9 @@ def breast_tissue_diagnostic_black_pen() -> Tuple[
     path : str
         Path where the slide is saved
     """
-    return _load_svs("tcga/breast/31e248bf-ee24-4d18-bccb-47046fccb461")
+    return _load_svs(
+        "tcga/breast/TCGA-BH-A201-01Z-00-DX1.6D6E3224-50A0-45A2-B231-EEF27CA7EFD2.svs"
+    )
 
 
 def cmu_small_region() -> Tuple[openslide.OpenSlide, str]:
