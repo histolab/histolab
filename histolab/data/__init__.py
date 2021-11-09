@@ -195,9 +195,7 @@ def _fetch(data_filename: str) -> str:
         # error, change this to `raise ... from None`. See PEP 3134.
         raise ConnectionError(
             "Tried to download a histolab dataset, but no internet "
-            "connection is available. To avoid this message in the "
-            "future, try `histolab.data.download_all()` when you are "
-            "connected to the internet."
+            "connection is available."
         )
     return resolved_path
 
