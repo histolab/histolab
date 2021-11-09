@@ -458,9 +458,12 @@ def ovarian_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     tissue of Ovarian Serous Cystadenocarcinoma, TCGA-OV dataset.
 
     This image is available here
-    https://portal.gdc.cancer.gov/files/b777ec99-2811-4aa4-9568-13f68e380c86
+    https://portal.gdc.cancer.gov/files/e968375e-ef58-4607-b457-e6818b2e8431
     or through the API
-    https://api.gdc.cancer.gov/data/b777ec99-2811-4aa4-9568-13f68e380c86
+    https://api.gdc.cancer.gov/data/e968375e-ef58-4607-b457-e6818b2e8431
+
+    It corresponds to TCGA file
+    `CGA-13-1404-01A-01-TS1.cecf7044-1d29-4d14-b137-821f8d48881e.svs`
 
 
     Access: open
@@ -472,7 +475,9 @@ def ovarian_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     path : str
         Path where the slide is saved
     """
-    return _load_svs("tcga/ovarian/b777ec99-2811-4aa4-9568-13f68e380c86")
+    return _load_svs(
+        "tcga/ovarian/TCGA-13-1404-01A-01-TS1.cecf7044-1d29-4d14-b137-821f8d48881e.svs"
+    )
 
 
 def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
