@@ -481,9 +481,12 @@ def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     tissue of Prostate Adenocarcinoma, TCGA-PRAD dataset.
 
     This image is available here
-    https://portal.gdc.cancer.gov/files/6b725022-f1d5-4672-8c6c-de8140345210
+    https://portal.gdc.cancer.gov/files/5a8ce04a-0178-49e2-904c-30e21fb4e41e
     or through the API
-    https://api.gdc.cancer.gov/data/6b725022-f1d5-4672-8c6c-de8140345210
+    https://api.gdc.cancer.gov/data/5a8ce04a-0178-49e2-904c-30e21fb4e41e
+
+    It corresponds to TCGA file
+    `TCGA-CH-5753-01A-01-BS1.4311c533-f9c1-4c6f-8b10-922daa3c2e3e.svs`
 
 
     Access: open
@@ -495,4 +498,6 @@ def prostate_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     path : str
         Path where the slide is saved
     """
-    return _load_svs("tcga/prostate/6b725022-f1d5-4672-8c6c-de8140345210")
+    return _load_svs(
+        "tcga/prostate/TCGA-CH-5753-01A-01-BS1.4311c533-f9c1-4c6f-8b10-922daa3c2e3e.svs"
+    )
