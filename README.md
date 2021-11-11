@@ -48,8 +48,8 @@
 
 | Operating System  | Python version  |
 |-------------------|-----------------|
-|  Linux            | <img src=https://img.shields.io/badge/-3.7%20%7C%203.8%20%7C%203.9-blue>|
-|  MacOs            | <img src=https://img.shields.io/badge/-3.7%20%7C%203.8%20%7C%203.9-blue>|
+|  Linux            | <img src=https://img.shields.io/badge/-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue>|
+|  MacOs            | <img src=https://img.shields.io/badge/-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue>|
 |  Windows          | <img src=https://img.shields.io/badge/-3.7%20-blue>|
 
 ---
