@@ -1,6 +1,22 @@
 Changelog
 =========
 
+v0.3.1
+------
+**Bug Fix**
+
+- Map TCGA old UUID with new UUID to fix `data` module. (`#346 <https://github.com/histolab/histolab/pull/346>`_)
+
+**Dependencies**
+
+- Support Python 3.10. (`#336 <https://github.com/histolab/histolab/pull/336>`_)
+- Support scipy 1.7.2. (`#345 <https://github.com/histolab/histolab/pull/345>`_)
+- Upgrade sphinx to 4.2.3. (`#349 <https://github.com/histolab/histolab/pull/349>`_)
+
+**Other**
+
+- Add test for `np_to_pil` with float values [0,1] array. (`#347 <https://github.com/histolab/histolab/pull/347>`_)
+
 v0.3.0
 ------
 **Bug Fix**
