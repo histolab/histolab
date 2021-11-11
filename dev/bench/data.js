@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1636539617294,
+  "lastUpdate": 1636624257138,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -8445,6 +8445,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 9.856943610861257e-8",
             "extra": "mean: 36.7521447520046 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "1d2dff41e72c21b8d5da5a881f867bdc48581316",
+          "message": "Bump sphinx from 4.2.0 to 4.3.0\n\nBumps [sphinx](https://github.com/sphinx-doc/sphinx) from 4.2.0 to 4.3.0.\n- [Release notes](https://github.com/sphinx-doc/sphinx/releases)\n- [Changelog](https://github.com/sphinx-doc/sphinx/blob/4.x/CHANGES)\n- [Commits](https://github.com/sphinx-doc/sphinx/compare/v4.2.0...v4.3.0)\n\n---\nupdated-dependencies:\n- dependency-name: sphinx\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2021-11-11T10:48:38+01:00",
+          "tree_id": "30a5a5d4ea239dbc699c561edb7429e7ed30803f",
+          "url": "https://github.com/histolab/histolab/commit/1d2dff41e72c21b8d5da5a881f867bdc48581316"
+        },
+        "date": 1636624256372,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.670623321068092,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00783747025132979",
+            "extra": "mean: 130.3675018500003 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 209.84268853816351,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0004044689380684808",
+            "extra": "mean: 4.765474589400014 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 447.43840307053097,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00015692073031325465",
+            "extra": "mean: 2.2349445044000102 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 14794.572471333397,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000005656477982868394",
+            "extra": "mean: 67.5923553680002 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 12838.627138451739,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000006479680649057928",
+            "extra": "mean: 77.88994798400176 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 15085.830578427393,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000006113976013943835",
+            "extra": "mean: 66.2873677919988 usec\nrounds: 250"
           }
         ]
       }
