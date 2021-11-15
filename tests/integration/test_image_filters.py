@@ -512,7 +512,7 @@ def test_rag_threshold_filter_return_labels(pil_image, mask, expected_image):
 
     ragged = imf.rag_threshold(pil_image, 650, 20.6, 9, return_labels=True, mask=mask)
 
-    np.testing.assert_array_almost_equal(np.array(ragged), np.array(expected_value))
+    np.testing.assert_array_almost_equal(ragged, expected_value)
 
 
 def test_rag_threshold_filter_on_gs_image():
