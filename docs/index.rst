@@ -44,7 +44,7 @@ The histolab package can be installed by using::
 
 Prerequisites
 *************
-Please see `installation instructions <https://github.com/histolab/histolab/blob/master/docs/installation.rst>`_.
+Please see `installation instructions <installation.html>`_.
 
 
 Authors
