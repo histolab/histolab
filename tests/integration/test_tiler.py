@@ -222,7 +222,7 @@ class DescribeRandomTiler:
         assert isinstance(err.value, RuntimeError)
         assert str(err.value) == (
             f"The tile you requested at a resolution of 0.5 MPP "
-            f"has a size of (128, 126), yet you specified a "
+            f"has a size of (127, 127), yet you specified a "
             f"final `tile_size` of {tile_size}, which is a very "
             "different value. When you set `mpp`, the `tile_size` "
             "parameter is used to resize fetched tiles if they "
