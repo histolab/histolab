@@ -1,6 +1,22 @@
 Changelog
 =========
 
+v0.4.0
+------
+**Bug Fix**
+
+- Fix `SlideSet` not passing along args to `Slide`. (`#351 <https://github.com/histolab/histolab/pull/351>`_)
+
+**New Features**
+
+- Add RAG threshold parameters to allow return labels and masking. (`#300 <https://github.com/histolab/histolab/pull/300>`_)
+- Support fetching exact MPP resolutions. (`#301 <https://github.com/histolab/histolab/pull/301>`_)
+- Allow only keeping a subset of slides for `SlideSet`. (`#303 <https://github.com/histolab/histolab/pull/303>`_)
+
+**Documentation**
+
+- Fix link to installation instructions. (`#350 <https://github.com/histolab/histolab/pull/350>`_)
+
 v0.3.1
 ------
 **Bug Fix**
