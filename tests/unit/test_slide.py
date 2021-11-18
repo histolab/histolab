@@ -12,9 +12,9 @@ import pytest
 from large_image.exceptions import TileSourceException
 from PIL import ImageShow
 
-from histolab.types import CP
 from histolab.exceptions import LevelError, MayNeedLargeImageError, SlidePropertyError
 from histolab.slide import Slide, SlideSet
+from histolab.types import CP
 
 from ..fixtures import SVS
 from ..unitutil import (
@@ -595,9 +595,14 @@ class Describe_Slideset:
         _processed_path = "/foo/bar/wsislides/processed"
         _valid_extensions = [".svs", ".tiff"]
         _keep_slides = ["mywsi.svs"]
+        _slide_kwargs = {"use_largeimage": True}
 
         slideset = SlideSet(
-            _slides_path, _processed_path, _valid_extensions, _keep_slides
+            _slides_path,
+            _processed_path,
+            _valid_extensions,
+            _keep_slides,
+            _slide_kwargs,
         )
 
         _init_.assert_called_once_with(
@@ -606,6 +611,7 @@ class Describe_Slideset:
             _processed_path,
             _valid_extensions,
             _keep_slides,
+            _slide_kwargs,
         )
         assert isinstance(slideset, SlideSet)
 
@@ -644,6 +650,22 @@ class Describe_Slideset:
 
         assert isinstance(err.value, FileNotFoundError)
         assert err.value.errno == errno.ENOENT
+
+    @pytest.mark.parametrize("slide_kwargs", (({"use_largeimage": True}), ({})))
+    def it_creates_its_slides_with_the_correct_parameters(
+        self, tmpdir, request, slide_kwargs
+    ):
+        slide_init_ = initializer_mock(request, Slide)
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi1.svs"), "TIFF")
+        slideset = SlideSet(tmp_path_, "proc", [".svs"], slide_kwargs=slide_kwargs)
+
+        slideset.__iter__()
+
+        slide_init_.assert_called_once_with(
+            ANY, os.path.join(tmp_path_, "mywsi1.svs"), "proc", **slide_kwargs
+        )
 
     def it_can_access_directly_to_the_slides(self, request, Slide_):
         slideset = instance_mock(request, SlideSet)
