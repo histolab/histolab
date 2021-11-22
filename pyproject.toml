@@ -1,3 +1,60 @@
+[tool.poetry]
+name = "histolab"
+version = "0.4.0"
+description = "Python library for Digital Pathology Image Processing"
+authors = ["E. Arbitrio, N. Bussola, A. Marcolini"]
+license = "Apache-2.0"
+readme = "README.md"
+maintainers = ["Ernesto Arbitrio <ernesto.arbitrio@gmail.com>", "Alessia Marcolini <98marcolini@gmail.com>", "Nicole Bussola <nicole.bussolaceradini@gmail.com>"]
+homepage = "https://github.com/histolab/histolab"
+repository = "https://github.com/histolab/histolab"
+documentation = "https://histolab.readthedocs.io"
+packages = [{include="histolab"}]
+classifiers = [
+        "Operating System :: OS Independent",
+        "Intended Audience :: Science/Research",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4"
+Pillow = "^8.4.0"
+scikit-image = ">=0.17.1,<0.18.4"
+numpy = "^1.21.4"
+scipy = "^1.7.2"
+openslide-python = "^1.1.2"
+typing-extensions = "^4.0.0"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^4.0.1"
+pre-commit = "^2.15.0"
+pyflakes = "^2.4.0"
+pycodestyle = "^2.8.0"
+toml = "^0.10.2"
+twine = "^3.6.0"
+Sphinx = "^4.3.0"
+sphinx-rtd-theme = "^1.0.0"
+ipdb = "^0.13.9"
+isort = "^5.10.1"
+sphinxcontrib-katex = "^0.8.6"
+pytest-html = "^3.1.1"
+black = "^21.11b1"
+sphinxemoji = "^0.2.0"
+sphinx-prompt = "^1.5.0"
+bandit = "^1.7.1"
+large-image = "^1.8.6"
+large-image-source-openslide = "^1.8.6"
+large-image-source-pil = "^1.8.6"
+pytest = "^6.2.5"
+pytest-xdist = "^2.4.0"
+pooch = "^1.5.2"
+coverage = "^6.1.2"
+pytest-cov = "^3.0.0"
+pytest-benchmark = "^3.4.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.black]
 line-length = 88
 include = '\.pyi?$'
