@@ -64,6 +64,13 @@ class Describe_Tile:
 
         assert level == 0
 
+    def it_knows_its_default_level(self):
+        tile = Tile(None, None)
+
+        level = tile.level
+
+        assert level is None
+
     def it_can_save_the_tile_image(self, tmpdir):
         tmp_path_ = os.path.join(tmpdir.mkdir("mydir"), "mytile.png")
         _image = PILIMG.RGBA_COLOR_50X50_155_0_0

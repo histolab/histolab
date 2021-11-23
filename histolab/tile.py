@@ -18,7 +18,7 @@
 
 import os
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 import numpy as np
 import PIL
@@ -39,10 +39,15 @@ class Tile:
     coords : CoordinatePair
         Level 0 Coordinates of the Slide from which the tile was extracted
     level : int, optional
-        Level of tile extraction, by default 0
+        Level of tile extraction, by default None
     """
 
-    def __init__(self, image: PIL.Image.Image, coords: CoordinatePair, level: int = 0):
+    def __init__(
+        self,
+        image: PIL.Image.Image,
+        coords: CoordinatePair,
+        level: Optional[int] = None,
+    ):
         self._image = image
         self._coords = coords
         self._level = level
