@@ -1267,26 +1267,26 @@ def test_yen_threshold_filter_on_gs_image():
     np.testing.assert_array_equal(yen_threshold_mask, expected_value)
 
 
-def test_rgb_to_lab_filter_with_rgb_image():
+@pytest.mark.parametrize(
+    "pil_image",
+    (RGBA.DIAGNOSTIC_SLIDE_THUMB, RGB.DIAGNOSTIC_SLIDE_THUMB_RGB),
+)
+def test_rgb_to_lab_filter_with_rgb_and_rgba_image(pil_image):
     expected_value = load_expectation(
         "arrays/diagnostic-slide-thumb-rgb-to-lab", type_="npy"
     )
 
-    lab_img = imf.rgb_to_lab(RGB.DIAGNOSTIC_SLIDE_THUMB_RGB)
+    lab_img = imf.rgb_to_lab(pil_image)
 
     np.testing.assert_array_almost_equal(lab_img, expected_value)
 
 
-@pytest.mark.parametrize(
-    "pil_image",
-    (RGBA.DIAGNOSTIC_SLIDE_THUMB, GS.DIAGNOSTIC_SLIDE_THUMB_GS),
-)
-def test_rgb_to_lab_raises_exception_on_gs_and_rgba_image(pil_image):
-    with pytest.raises(Exception) as err:
-        imf.rgb_to_lab(pil_image)
+def test_rgb_to_lab_raises_exception_on_gs_image():
+    with pytest.raises(ValueError) as err:
+        imf.rgb_to_lab(GS.DIAGNOSTIC_SLIDE_THUMB_GS)
 
-    assert isinstance(err.value, Exception)
-    assert str(err.value) == "Input image must be RGB"
+    assert isinstance(err.value, ValueError)
+    assert str(err.value) == "Input image must be RGB or RGBA"
 
 
 def test_dab_channel_filter_with_rgb_image():

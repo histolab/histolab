@@ -583,13 +583,18 @@ def rgb_to_lab(
     np.ndarray
         Array representation of the image in LAB space
 
-    Raises
-    ------
-    Exception
-        If the image mode is not RGB
     """
-    if img.mode != "RGB":
-        raise Exception("Input image must be RGB")
+    if img.mode == "L":
+        raise ValueError("Input image must be RGB or RGBA")
+
+    if img.mode == "RGBA":
+        red, green, blue, _ = img.split()
+        img = PIL.Image.merge("RGB", (red, green, blue))
+
+        warn(
+            "Input image must be RGB. "
+            "NOTE: the image will be converted to RGB before OD conversion."
+        )
     img_arr = np.array(img)
     lab_arr = sk_color.rgb2lab(img_arr, illuminant=illuminant, observer=observer)
     return lab_arr
