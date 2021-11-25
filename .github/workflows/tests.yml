@@ -18,8 +18,7 @@ jobs:
       id: cache-wsis
       with:
         path: |
-          ~/cache
-          !~/cache/exclude
+          tests/fixtures/external-svs
         key: wsi-files
 
       - name: Download WSI artifacts
