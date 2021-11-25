@@ -13,13 +13,12 @@ jobs:
   wsi-artifacts:
     runs-on: ubuntu-latest
     steps:
-    - name: Cache multiple paths
-      uses: actions/cache@v2
-      id: cache-wsis
-      with:
-        path: |
-          tests/fixtures/external-svs
-        key: wsi-files
+      - name: Cache WSI files
+        uses: actions/cache@v2
+        id: cache-wsis
+        with:
+          path: tests/fixtures/external-svs
+          key: wsi-files
 
       - name: Download WSI artifacts
         if: steps.cache-wsis.outputs.cache-hit != 'true'
