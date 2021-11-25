@@ -16,7 +16,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4"
+python = ">=3.7,<3.11"
 Pillow = "^8.4.0"
 scikit-image = ">=0.17.1,<0.18.4"
 numpy = "^1.21.4"
