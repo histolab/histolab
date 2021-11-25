@@ -13,12 +13,23 @@ jobs:
   wsi-artifacts:
     runs-on: ubuntu-latest
     steps:
+    - name: Cache multiple paths
+      uses: actions/cache@v2
+      id: cache-wsis
+      with:
+        path: |
+          ~/cache
+          !~/cache/exclude
+        key: wsi-files
+
       - name: Download WSI artifacts
+        if: steps.cache-wsis.outputs.cache-hit != 'true'
         id: load-wsis
         run: |
           mkdir -p tests/fixtures/external-svs
           wget https://dbarchive.biosciencedbc.jp/data/open-tggates-pathological-images/LATEST/images/isoniazid/Liver/2458.svs -O tests/fixtures/external-svs/liver-1.svs
           wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -O tests/fixtures/external-svs/cmu-3.svs
+
       - name: Temporarly save WSI artifacts
         uses: actions/upload-artifact@v2
         with:
