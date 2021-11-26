@@ -1,0 +1,16 @@
+tasks:
+  - init: |
+      mkdir downloads
+      cd downloads
+      wget https://www.cairographics.org/releases/pixman-0.40.0.tar.gz
+      tar -xvf pixman-0.40.0.tar.gz
+      cd pixman-0.40.0
+      ./configure
+      make
+      sudo make install
+      cd ../../
+      sudo apt install -y openslide-tools
+      python -m pip install --upgrade pip
+      python -m pip install -e .[testing]
+      python -m pip install -r requirements-dev.txt
+      pre-commit install
