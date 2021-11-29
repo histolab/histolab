@@ -45,3 +45,42 @@ class DescribeScorers:
         assert isinstance(nuclei_scorer, scorer.NucleiScorer)
         assert type(score) == np.float64
         assert score == 0  # to avoid float representation issues
+
+    def it_can_construct_cellurarity_scorer_considering_tissue(self, request):
+        image = PILIMG.RGB_RANDOM_COLOR_10X10
+        apply_filters_ = method_mock(request, Tile, "apply_filters")
+        apply_filters_.return_value = Tile(PIL.Image.fromarray(COMPLEX_MASK), None, 0)
+        tissue_mask_ = property_mock(request, Tile, "tissue_mask")
+        tissue_mask_.return_value = COMPLEX_MASK
+        tile = Tile(image, None, 0)
+        cellularity_scorer = scorer.CellularityScorer(consider_tissue=True)
+
+        score = cellularity_scorer(tile)
+
+        tissue_mask_.assert_called_once()
+        assert len(apply_filters_.call_args_list) == 1
+        # not possible to test filters compositions instances used in the call
+
+        assert apply_filters_.call_args_list[0][0][0] == tile
+        assert isinstance(cellularity_scorer, scorer.CellularityScorer)
+        assert type(score) == float
+        assert score == 1  # to avoid float representation issues
+
+    def it_can_construct_cellurarity_scorer_without_considering_tissue(self, request):
+        image = PILIMG.RGB_RANDOM_COLOR_10X10
+        apply_filters_ = method_mock(request, Tile, "apply_filters")
+        apply_filters_.return_value = Tile(PIL.Image.fromarray(COMPLEX_MASK), None, 0)
+        tissue_mask_ = property_mock(request, Tile, "tissue_mask")
+        tissue_mask_.return_value = COMPLEX_MASK
+        tile = Tile(image, None, 0)
+        cellularity_scorer = scorer.CellularityScorer(consider_tissue=False)
+
+        score = cellularity_scorer(tile)
+
+        assert len(apply_filters_.call_args_list) == 1
+        # not possible to test filters compositions instances used in the call
+        assert apply_filters_.call_args_list[0][0][0] == tile
+
+        assert isinstance(cellularity_scorer, scorer.CellularityScorer)
+        assert type(score) == float
+        assert score == 0.61  # to avoid float representation issues
