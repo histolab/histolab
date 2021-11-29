@@ -214,6 +214,38 @@ class Describe_Tile:
         assert filtered_image.coords is None
         assert filtered_image.level == 0
 
+    def it_knows_its_tissue_mask(
+        self,
+        request,
+        RgbToGrayscale_,
+        OtsuThreshold_,
+        BinaryDilation_,
+        BinaryFillHoles_,
+    ):
+        _tile_tissue_mask_filters = property_mock(
+            request, _TileFiltersComposition, "tissue_mask_filters"
+        )
+        filters = Compose(
+            [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
+        )
+        _tile_tissue_mask_filters.return_value = filters
+        _call = method_mock(request, Compose, "__call__")
+        mask_with_border = np.ones((30, 30), dtype=np.uint8) * 255
+        mask_with_border[
+            10:20,
+            10:20,
+        ] = COMPLEX_MASK
+        _call.return_value = mask_with_border
+        image = PILIMG.RGB_RANDOM_COLOR_10X10
+        tile = Tile(image, None, 0)
+
+        tissue_mask = tile.tissue_mask
+
+        _tile_tissue_mask_filters.assert_called_once()
+        assert _call.call_args_list[0][0][1].size == (30, 30)  # image with border
+        assert type(tissue_mask) == np.ndarray
+        np.testing.assert_allclose(tissue_mask, COMPLEX_MASK)
+
     # fixture components ---------------------------------------------
 
     @pytest.fixture

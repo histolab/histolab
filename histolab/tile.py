@@ -167,6 +167,53 @@ class Tile:
         self._image.save(path)
 
     @lazyproperty
+    def tissue_mask(self) -> np.ndarray:
+        """Return a binary mask representing the tissue in the tile.
+
+        Returns
+        -------
+        np.ndarray
+            Binary mask representing the tissue in the tile.
+
+        Notes
+        -----
+        In order to address an issue with the calculation of the tissue mask in tiles
+        where the tissue covers all the tile area, the filters are applied on the tile
+        with a white border of 10px, and then the border is removed from the returned
+        mask.
+        """
+        np_tile = np.array(self._image)
+
+        border_thickness = 10
+
+        # create a "white" array 20px bigger than the tile
+        container_size = (
+            np_tile.shape[0] + 2 * border_thickness,
+            np_tile.shape[1] + 2 * border_thickness,
+            np_tile.shape[2],
+        )
+        container = np.ones(container_size, dtype=np.uint8) * 255
+
+        # paste the tile at the center
+        container[
+            border_thickness : np_tile.shape[0] + border_thickness,
+            border_thickness : np_tile.shape[1] + border_thickness,
+            :,
+        ] = np_tile
+        tile_border = PIL.Image.fromarray(container)
+
+        # apply filters on tile with border
+        filters = FiltersComposition(Tile).tissue_mask_filters
+        mask_border = filters(tile_border)
+
+        # remove border
+        mask = mask_border[
+            border_thickness : np_tile.shape[0] + border_thickness,
+            border_thickness : np_tile.shape[1] + border_thickness,
+        ]
+        return mask
+
+    @lazyproperty
     def tissue_ratio(self) -> float:
         """Ratio of the tissue area over the total area of the tile.
 
