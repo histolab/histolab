@@ -261,8 +261,7 @@ class Tile:
             otherwise.
         """
 
-        filters = FiltersComposition(Tile).tissue_mask_filters
-        return np.mean(filters(self._image)) * 100 > tissue_percent
+        return np.mean(self.tissue_mask) * 100 > tissue_percent
 
     @lazyproperty
     def _is_almost_white(self) -> bool:
