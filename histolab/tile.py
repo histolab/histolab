@@ -222,9 +222,7 @@ class Tile:
         float
             Ratio of the tissue area over the total area of the tile
         """
-        filters = FiltersComposition(Tile).tissue_mask_filters
-        tissue_mask = filters(self._image)
-        tissue_ratio = np.count_nonzero(tissue_mask) / tissue_mask.size
+        tissue_ratio = np.count_nonzero(self.tissue_mask) / self.tissue_mask.size
         return tissue_ratio
 
     # ------- implementation helpers -------

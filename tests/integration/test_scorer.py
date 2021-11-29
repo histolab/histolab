@@ -12,32 +12,32 @@ class Describe_Scorers:
         (  # IMPORTANT: with artifacts, the NucleiScorer cannot be fully trusted
             # level 0
             (TILES.VERY_LOW_NUCLEI_SCORE_LEVEL0, 5e-05),
-            (TILES.LOW_NUCLEI_SCORE_LEVEL0, 0.01066),
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL0, 0.01673),
-            (TILES.HIGH_NUCLEI_SCORE_LEVEL0, 0.37285),
+            (TILES.LOW_NUCLEI_SCORE_LEVEL0, 0.0107),
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL0, 0.01701),
+            (TILES.HIGH_NUCLEI_SCORE_LEVEL0, 0.37366),
             # level 1
             (
                 TILES.VERY_LOW_NUCLEI_SCORE_RED_PEN_LEVEL1,
-                0.00177,
+                0.00182,
             ),  # breast - red pen
-            (TILES.LOW_NUCLEI_SCORE_LEVEL1, 0.01641),  # breast - green pen
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1, 0.00698),  # aorta
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1_2, 0.14523),  # breast - green pen
-            (TILES.MEDIUM_NUCLEI_SCORE_GREEN_PEN_LEVEL1, 0.35342),
+            (TILES.LOW_NUCLEI_SCORE_LEVEL1, 0.01679),  # breast - green pen
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1, 0.00702),  # aorta
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1_2, 0.14536),  # breast - green pen
+            (TILES.MEDIUM_NUCLEI_SCORE_GREEN_PEN_LEVEL1, 0.38982),
             # breast - green pen
             (
                 TILES.HIGH_NUCLEI_SCORE_RED_PEN_LEVEL1,
-                0.03176,
+                0.03186,
             ),  # breast - red pen + tissue fold
             # level 2
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL2, 0.03463),  # prostate
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL2, 0.03464),  # prostate
             (TILES.HIGH_NUCLEI_SCORE_LEVEL2, 0.00326),  # prostate
             # no tissue
-            (TILES.NO_TISSUE, 0.0),
-            (TILES.NO_TISSUE2, 1e-05),
+            (TILES.NO_TISSUE, 0.00013),
+            (TILES.NO_TISSUE2, 0.00014),
             (TILES.NO_TISSUE_LINE, 0.00028),
-            (TILES.NO_TISSUE_RED_PEN, 0.18849),
-            (TILES.NO_TISSUE_GREEN_PEN, 0.30601),
+            (TILES.NO_TISSUE_RED_PEN, 0.19199),
+            (TILES.NO_TISSUE_GREEN_PEN, 0.30855),
         ),
     )
     def it_knows_nuclei_score(self, tile_img, expected_score):
