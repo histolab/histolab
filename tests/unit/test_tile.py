@@ -159,30 +159,15 @@ class Describe_Tile:
 
         assert type(tile._has_only_some_tissue()) == np.bool_
 
-    def it_knows_its_tissue_ratio(
-        self,
-        request,
-        RgbToGrayscale_,
-        OtsuThreshold_,
-        BinaryDilation_,
-        BinaryFillHoles_,
-    ):
-        _tile_tissue_mask_filters = property_mock(
-            request, _TileFiltersComposition, "tissue_mask_filters"
-        )
-        filters = Compose(
-            [RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_]
-        )
-        _tile_tissue_mask_filters.return_value = filters
-        _call = method_mock(request, Compose, "__call__")
-        _call.return_value = COMPLEX_MASK
+    def it_knows_its_tissue_ratio(self, request):
+        _tile_tissue_mask_ = property_mock(request, Tile, "tissue_mask")
+        _tile_tissue_mask_.return_value = COMPLEX_MASK
         image = PILIMG.RGB_RANDOM_COLOR_10X10
         tile = Tile(image, None, 0)
 
         tissue_ratio = tile.tissue_ratio
 
-        _tile_tissue_mask_filters.assert_called_once()
-        _call.assert_called_once_with(filters, image)
+        _tile_tissue_mask_.assert_called()
         assert type(tissue_ratio) == float
         assert tissue_ratio == 0.61
 
