@@ -1,9 +1,10 @@
+import numpy as np
 import pytest
 
 from histolab.tile import Tile
-from histolab.types import CP
 
 from ..fixtures import TILES
+from ..util import load_expectation
 
 
 class Describe_Tile:
@@ -24,8 +25,7 @@ class Describe_Tile:
         ),
     )
     def it_knows_if_is_is_almost_white(self, tile_img, expected_result):
-        coords = CP(0, 512, 0, 512)
-        tile = Tile(tile_img, coords)
+        tile = Tile(tile_img, None)
 
         is_almost_white = tile._is_almost_white
 
@@ -44,6 +44,44 @@ class Describe_Tile:
         ),
     )
     def it_knows_if_it_has_only_some_tissue(self, tile_image, expected_value):
-        tile = Tile(tile_image, CP(5, 5, 5, 5))
+        tile = Tile(tile_image, None)
 
         assert tile._has_only_some_tissue() == expected_value
+
+    @pytest.mark.parametrize(
+        "tile_img, expected_array",
+        (
+            (
+                TILES.HIGH_NUCLEI_SCORE_LEVEL2,  # lot of background - big
+                "mask-arrays/tile-tissue-mask-high-nuclei-score-level2",
+            ),
+            (
+                TILES.TISSUE_LEVEL2_3000_7666_7096_11763,  # little background - big
+                "mask-arrays/tile-tissue-mask-tissue-level2-3000-7666-7096-11763",
+            ),
+            (
+                TILES.LIVER_LEVEl2_10907_7808_11707_8608,  # all tissue - very small
+                "mask-arrays/tile-tissue-mask-liver-level2-10907-7808-11707-8608",
+            ),
+            (
+                TILES.TISSUE_LEVEL0_4302_10273_4814_10785,  # all tissue - big
+                "mask-arrays/tile-tissue-mask-tissue-level0-4302-10275-4814-10785",
+            ),
+            (
+                TILES.HIGH_NUCLEI_SCORE_LEVEL0,  # all tissue - very big
+                "mask-arrays/tile-tissue-mask-high-nuclei-score-level0",
+            ),
+            (
+                TILES.VERY_LOW_NUCLEI_SCORE_RED_PEN_LEVEL1,  # all tissue - big
+                "mask-arrays/very-low-nuclei-score-red-pen-level1",
+            ),
+        ),
+    )
+    def it_knows_its_tissue_mask(self, tile_img, expected_array):
+        expected_value = load_expectation(expected_array, type_="npy")
+        tile = Tile(tile_img, None)
+
+        tissue_mask = tile.tissue_mask
+
+        np.testing.assert_array_equal(tissue_mask, expected_value)
+        assert type(tissue_mask) == np.ndarray
