@@ -141,8 +141,8 @@ class Describe_Tile:
     def it_knows_if_has_tissue_more_than_percent(
         self, request, tissue_mask, percent, expected_value
     ):
-        _compose_call = method_mock(request, Compose, "__call__")
-        _compose_call.return_value = tissue_mask
+        _tile_tissue_mask_ = property_mock(request, Tile, "tissue_mask")
+        _tile_tissue_mask_.return_value = tissue_mask
 
         tile = Tile(None, None, 0)
         has_tissue_more_than_percent = tile._has_tissue_more_than_percent(percent)

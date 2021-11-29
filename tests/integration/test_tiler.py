@@ -242,7 +242,7 @@ class DescribeRandomTiler:
 
 class DescribeGridTiler:
     @pytest.mark.parametrize(
-        "fixture_slide, binary_mask, tile_size, level,check_tissue, expectation",
+        "fixture_slide, binary_mask, tile_size, level, check_tissue, expectation",
         [
             (
                 SVS.CMU_1_SMALL_REGION,
