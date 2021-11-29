@@ -197,7 +197,4 @@ class TissueMask(BinaryMask):
         mask: np.ndarray
             Binary mask of the tissue area. The dimensions are those of the tile.
         """
-        tile_img = tile.image
-        filters = FiltersComposition(Tile).tissue_mask_filters
-        tile_mask = filters(tile_img)
-        return tile_mask
+        return tile.tissue_mask
