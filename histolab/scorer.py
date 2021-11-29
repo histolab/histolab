@@ -24,7 +24,6 @@ import numpy as np
 from .filters import image_filters as imf
 from .filters import morphological_filters as mof
 from .filters.util import mask_difference
-from .masks import TissueMask
 from .tile import Tile
 
 try:
@@ -111,7 +110,6 @@ class CellularityScorer(Scorer):
             Cellularity score
         """
 
-        tissue_mask = TissueMask()
         filters_cellularity = imf.Compose(
             [
                 imf.HematoxylinChannel(),
@@ -123,7 +121,7 @@ class CellularityScorer(Scorer):
         mask_nuclei = np.array(tile.apply_filters(filters_cellularity).image)
 
         return (
-            np.count_nonzero(mask_nuclei) / np.count_nonzero(tissue_mask(tile))
+            np.count_nonzero(mask_nuclei) / np.count_nonzero(tile.tissue_mask)
             if self.consider_tissue
             else np.count_nonzero(mask_nuclei) / mask_nuclei.size
         )

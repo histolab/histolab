@@ -58,45 +58,45 @@ class Describe_Scorers:
         (  # IMPORTANT: with artifacts, the CellularityScorer cannot be fully trusted
             # level 0
             (TILES.VERY_LOW_NUCLEI_SCORE_LEVEL0, True, 8e-05),
-            (TILES.LOW_NUCLEI_SCORE_LEVEL0, True, 0.02759),
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL0, True, 0.02709),
-            (TILES.HIGH_NUCLEI_SCORE_LEVEL0, True, 0.51171),
+            (TILES.LOW_NUCLEI_SCORE_LEVEL0, True, 0.0274),
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL0, True, 0.02636),
+            (TILES.HIGH_NUCLEI_SCORE_LEVEL0, True, 0.50969),
             # level 1
             (
                 TILES.VERY_LOW_NUCLEI_SCORE_RED_PEN_LEVEL1,
                 True,
-                0.01606,
+                0.01562,
             ),  # breast - red pen
             (
                 TILES.LOW_NUCLEI_SCORE_LEVEL1,
                 True,
-                0.158,
+                0.15413,
             ),  # breast - green pen
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1, True, 0.04082),  # aorta
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL1, True, 0.0405),  # aorta
             (
                 TILES.MEDIUM_NUCLEI_SCORE_LEVEL1_2,
                 True,
-                0.22551,
+                0.22515,
             ),  # breast - green pen
             (
                 TILES.MEDIUM_NUCLEI_SCORE_GREEN_PEN_LEVEL1,
                 True,
-                0.66435,
+                0.56836,
             ),  # breast - green pen
             (
                 TILES.HIGH_NUCLEI_SCORE_RED_PEN_LEVEL1,
                 True,
-                0.07081,
+                0.07038,
             ),  # breast - red pen
             # level 2
-            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL2, True, 0.13723),  # prostate
-            (TILES.HIGH_NUCLEI_SCORE_LEVEL2, True, 0.23546),  # prostate
+            (TILES.MEDIUM_NUCLEI_SCORE_LEVEL2, True, 0.13719),  # prostate
+            (TILES.HIGH_NUCLEI_SCORE_LEVEL2, True, 0.23542),  # prostate
             # no tissue
-            (TILES.NO_TISSUE, True, 0.06485),
-            (TILES.NO_TISSUE2, True, 0.00958),
-            (TILES.NO_TISSUE_LINE, True, 0.34281),
-            (TILES.NO_TISSUE_RED_PEN, True, 0.65595),
-            (TILES.NO_TISSUE_GREEN_PEN, True, 0.72955),
+            (TILES.NO_TISSUE, True, 0.00035),
+            (TILES.NO_TISSUE2, True, 0.00076),
+            (TILES.NO_TISSUE_LINE, True, 0.34232),
+            (TILES.NO_TISSUE_RED_PEN, True, 0.64126),
+            (TILES.NO_TISSUE_GREEN_PEN, True, 0.72136),
             (TILES.VERY_LOW_NUCLEI_SCORE_LEVEL0, False, 8e-05),
             (TILES.LOW_NUCLEI_SCORE_LEVEL0, False, 0.02284),
             (TILES.MEDIUM_NUCLEI_SCORE_LEVEL0, False, 0.02481),
