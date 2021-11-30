@@ -168,7 +168,7 @@ class Tile:
 
     @lazyproperty
     def tissue_mask(self) -> np.ndarray:
-        """Return a binary mask representing the tissue in the tile.
+        """Binary mask representing the tissue in the tile.
 
         Returns
         -------
