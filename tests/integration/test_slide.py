@@ -7,8 +7,7 @@ import numpy as np
 import PIL
 import pytest
 
-from histolab.exceptions import LevelError, SlidePropertyError
-from histolab.exceptions import HistolabException
+from histolab.exceptions import HistolabException, LevelError, SlidePropertyError
 from histolab.masks import BiggestTissueBoxMask, TissueMask
 from histolab.slide import Slide
 
@@ -37,12 +36,12 @@ class Describe_Slide:
         slide = Slide(
             SVS.CMU_1_SMALL_REGION, os.path.join(SVS.CMU_1_SMALL_REGION, "processed")
         )
-
-        resampled_array = slide.resampled_array(scale_factor=32)
-
         expected_value = load_expectation(
             "svs-images/small-region-svs-resampled-array", type_="npy"
         )
+
+        resampled_array = slide.resampled_array(scale_factor=32)
+
         np.testing.assert_almost_equal(resampled_array, expected_value)
 
     @pytest.mark.parametrize(
