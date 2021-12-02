@@ -128,10 +128,7 @@ class DescribeRandomTiler:
             seed=42,
             check_tissue=check_tissue,
         )
-        expected_img = load_expectation(
-            expectation,
-            type_="png",
-        )
+        expected_img = load_expectation(expectation, type_="png")
 
         tiles_location_img = random_tiles_extractor.locate_tiles(
             slide,
