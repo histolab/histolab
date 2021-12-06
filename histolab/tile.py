@@ -186,21 +186,18 @@ class Tile:
 
         border_thickness = 10
 
-        # create a "white" array 20px bigger than the tile
-        container_size = (
-            np_tile.shape[0] + 2 * border_thickness,
-            np_tile.shape[1] + 2 * border_thickness,
-            np_tile.shape[2],
+        np_tile_border = np.pad(
+            np_tile,
+            pad_width=(
+                (border_thickness, border_thickness),
+                (border_thickness, border_thickness),
+                (0, 0),
+            ),
+            mode="constant",
+            constant_values=255,
         )
-        container = np.ones(container_size, dtype=np.uint8) * 255
 
-        # paste the tile at the center
-        container[
-            border_thickness : np_tile.shape[0] + border_thickness,
-            border_thickness : np_tile.shape[1] + border_thickness,
-            :,
-        ] = np_tile
-        tile_border = PIL.Image.fromarray(container)
+        tile_border = PIL.Image.fromarray(np_tile_border)
 
         # apply filters on tile with border
         filters = FiltersComposition(Tile).tissue_mask_filters
