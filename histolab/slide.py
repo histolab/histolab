@@ -403,7 +403,7 @@ class Slide:
         # pad the mask to have closed contours along the edges
         padded_mask = np.pad(resized_mask, pad_width=1, mode="constant")
         contours = [
-            cont - 1 for cont in find_contours(padded_mask, 0.5)
+            cont - 1 for cont in find_contours(padded_mask, level=0.5)
         ]  # unpad countours
 
         for contour in contours:
