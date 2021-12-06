@@ -704,7 +704,9 @@ class KmeansSegmentation(ImageFilter):
     By using K-means segmentation (color/space proximity) each segment is colored based
     on the average color for that segment.
 
-    .. figure:: https://user-images.githubusercontent.com/31658006/116543486-37fde100-a8ee-11eb-8695-75fae5767de1.jpeg
+    .. figure:: https://user-images.githubusercontent.com/20052362/144853490-741deb95-cd84-47b0-8227-38e6091753d8.png
+        :figwidth: 60 %
+        :align: center
 
     Parameters
     ---------
@@ -753,7 +755,9 @@ class RagThreshold(ImageFilter):
     the segments, combine similar regions based on threshold value,
     and then output these resulting region segments.
 
-    .. figure:: https://user-images.githubusercontent.com/31658006/116553449-6a154000-a8fa-11eb-8e74-b9d711e79113.jpeg
+    .. figure:: https://user-images.githubusercontent.com/20052362/144852689-6098a415-1714-4abf-a361-485761647349.png
+        :figwidth: 60 %
+        :align: center
 
     Parameters
     ----------
@@ -782,6 +786,7 @@ class RagThreshold(ImageFilter):
     ------
     ValueError
         If ``img`` mode is RGBA.
+
 
     Example:
         >>> from PIL import Image
@@ -1055,7 +1060,7 @@ class CannyEdges(ImageFilter):
 
     Note that input image must be 2D.
 
-    .. figure:: https://user-images.githubusercontent.com/31658006/116542613-1d773800-a8ed-11eb-9005-4c0ad8d051b8.png
+    .. figure:: https://user-images.githubusercontent.com/20052362/144851746-3332560c-bd61-4b5a-baa3-6a8a528c0db0.png
 
     Parameters
     ----------
