@@ -89,12 +89,14 @@ def watershed_segmentation(np_mask: np.ndarray, region_shape: int = 6) -> np.nda
        https://scikit-image.org/docs/dev/auto_examples/segmentation/plot_watershed.html
     """
     distance = sc_ndimage.distance_transform_edt(np_mask)
-    local_maxi = sk_feature.peak_local_max(
+    peak_idx = sk_feature.peak_local_max(
         distance,
-        indices=False,
         footprint=np.ones((region_shape, region_shape)),
         labels=np_mask,
     )
-    markers = sc_ndimage.label(local_maxi)[0]
+    peak_mask = np.zeros_like(np_mask, dtype=bool)
+    peak_mask[tuple(peak_idx.T)] = True
+
+    markers = sc_ndimage.label(peak_mask)[0]
     labels = sk_segmentation.watershed(-distance, markers, mask=np_mask)
     return labels
