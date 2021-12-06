@@ -370,7 +370,7 @@ def local_equalization(img: PIL.Image.Image, disk_size: int = 50) -> PIL.Image.I
     if len(np.array(img).shape) != 2:
         raise ValueError("Input must be 2D.")
     local_equ = sk_filters.rank.equalize(
-        np.array(img), selem=sk_morphology.disk(disk_size)
+        np.array(img), footprint=sk_morphology.disk(disk_size)
     )
     return np_to_pil(local_equ)
 
