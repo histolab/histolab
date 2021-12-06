@@ -246,9 +246,9 @@ class RgbToLab(ImageFilter):
     ----------
     img : PIL.Image.Image
         Input image
-    illuminant : {“A”, “D50”, “D55”, “D65”, “D75”, “E”}, optional
+    illuminant : {"A", "B", "C", "D50", "D55", "D65", "D75", "E"}, optional
         The name of the illuminant (the function is NOT case sensitive).
-    observer : {“2”, “10”}, optional
+    observer : {"2", "10", "R"}, optional
         The aperture angle of the observer.
 
     Returns
@@ -635,10 +635,10 @@ class LabToRgb(ImageFilter):
     ----------
     img : np.array
         Input image in Lab space.
-    illuminant : {“A”, “D50”, “D55”, “D65”, “D75”, “E”}, optional
+    illuminant : {"A", "B", "C", "D50", "D55", "D65", "D75", "E"}, optional
         The name of the illuminant (the function is NOT case sensitive). Default is
         "D65".
-    observer : {“2”, “10”}, optional
+    observer : {"2", "10", "R"}, optional
         The aperture angle of the observer. Default is "2".
 
     Returns
