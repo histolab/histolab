@@ -66,7 +66,7 @@ def remove_small_objects(
 
 
 def watershed_segmentation(np_mask: np.ndarray, region_shape: int = 6) -> np.ndarray:
-    """Segment and label an binary mask with Watershed segmentation [1]_
+    """Segment and label a binary mask with Watershed segmentation [1]_
 
     The watershed algorithm treats pixels values as a local topography (elevation).
 
