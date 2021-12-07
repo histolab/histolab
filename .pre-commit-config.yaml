@@ -21,7 +21,7 @@ repos:
     rev: 1.7.0
     hooks:
       - id: bandit
-        args: ["-r", "-c", "bandit.yaml", "."]
+        args: ["-r", "-c", "bandit.yaml", "histolab"]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0

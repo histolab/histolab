@@ -1,6 +1,27 @@
 Changelog
 =========
 
+v0.4.1
+------
+**Bug Fix**
+
+- None as default `level` for `Tile`, instead of 0. (`#355 <https://github.com/histolab/histolab/pull/355>`_)
+- Fix `Tile`'s tissue mask in case of a full tissue tile. (`#360 <https://github.com/histolab/histolab/pull/360>`_)
+
+**New Features**
+
+- Use BICUBIC for upsampling and LANCZOS for downsampling. (`#361 <https://github.com/histolab/histolab/pull/361>`_)
+
+**Maintenance**
+
+- Use http instead of ftp to download TGGATES slide in CI. (`#352 <https://github.com/histolab/histolab/pull/352>`_)
+- Add cache for WSI files. (`#358 <https://github.com/histolab/histolab/pull/358>`_)
+
+**Dependencies**
+
+- Support scipy 1.7.3. (`#356 <https://github.com/histolab/histolab/pull/356>`_)
+- Only support scikit-image 0.19.0. (`#362 <https://github.com/histolab/histolab/pull/362>`_)
+
 v0.4.0
 ------
 **Bug Fix**
