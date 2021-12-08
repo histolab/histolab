@@ -135,7 +135,7 @@ class _TileFiltersComposition(FiltersComposition):
             [
                 imf.RgbToGrayscale(),
                 imf.OtsuThreshold(),
-                mof.BinaryDilation(),
-                mof.BinaryFillHoles(structure=np.ones((5, 5))),
+                mof.BinaryDilation(disk_size=2),
+                mof.BinaryFillHoles(structure=np.ones((20, 20))),
             ]
         )
