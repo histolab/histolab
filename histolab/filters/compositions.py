@@ -91,10 +91,10 @@ class FiltersComposition:
             - `image_filters.OtsuThreshold()
               <image_filters.html#histolab.filters.image_filters.OtsuThreshold>`_
 
-            - `morphological_filters.BinaryDilation()
+            - `morphological_filters.BinaryDilation(disk_size=2)
               <morphological_filters.html#histolab.filters.morphological_filters.BinaryDilation>`_
 
-            - `morphological_filters.BinaryFillHoles(structure=np.ones((5, 5)))
+            - `morphological_filters.BinaryFillHoles(structure=np.ones((20, 20)))
               <morphological_filters.html#histolab.filters.morphological_filters.BinaryFillHoles>`_
         """
         raise NotImplementedError("Must be implemented by each subclass")
