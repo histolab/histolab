@@ -22,9 +22,10 @@ def it_knows_tissue_areas_mask_tile_filters_composition(
     RgbToGrayscale_.assert_called_once()
     OtsuThreshold_.assert_called_once()
     BinaryDilation_.assert_called_once()
+    assert BinaryDilation_.call_args_list[0][1]["disk_size"] == 2
     BinaryFillHoles_.assert_called_once()
     np.testing.assert_almost_equal(
-        BinaryFillHoles_.call_args_list[0][1]["structure"], np.ones((5, 5))
+        BinaryFillHoles_.call_args_list[0][1]["structure"], np.ones((20, 20))
     )
     assert _enough_tissue_mask_filters_.filters == [
         RgbToGrayscale_(),
