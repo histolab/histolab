@@ -60,7 +60,7 @@ setuptools.setup(
     url="https://github.com/histolab/histolab",
     download_url="https://pypi.python.org/pypi/histolab",
     install_requires=install_requires,
-    tests_require=test_requires,
+    tests_require=tests_require,
     extras_require={"testing": tests_require},
     packages=setuptools.find_packages(exclude=["tests", "examples"]),
     classifiers=[
