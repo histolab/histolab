@@ -35,7 +35,7 @@ version = re.search('__version__ = "([^"]+)"', init_py).group(1)
 
 install_requires = parse_requirements("requirements.txt")
 
-test_requires = [
+tests_require = [
     "large-image >=1.8.11,<1.8.12",
     "large-image-source-openslide >=1.8.11,<1.8.12",
     "large-image-source-pil >=1.8.11,<1.8.12",
@@ -61,7 +61,7 @@ setuptools.setup(
     download_url="https://pypi.python.org/pypi/histolab",
     install_requires=install_requires,
     tests_require=test_requires,
-    extras_require={"testing": test_requires},
+    extras_require={"testing": tests_require},
     packages=setuptools.find_packages(exclude=["tests", "examples"]),
     classifiers=[
         "Programming Language :: Python :: 3",
