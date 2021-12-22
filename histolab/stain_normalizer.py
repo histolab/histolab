@@ -22,12 +22,12 @@
 # and torchstain https://github.com/EIDOSlab/torchstain
 
 
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 import PIL
 
-from .filters.image_filters import RgbToOd
+from .filters.image_filters import LabToRgb, RgbToLab, RgbToOd
 from .masks import TissueMask
 from .mixins import LinalgMixin
 from .tile import Tile
@@ -318,3 +318,104 @@ class MacenkoStainNormalizer(LinalgMixin, TransformerStainMatrixMixin):
             return np.stack([stain_matrix[..., j] for j in order], -1)
 
         return _ordered_stack(stain_matrix, _get_channel_order(stain_matrix))
+
+
+class ReinhardStainNormalizer:
+    """Stain normalizer using the method of E. Reinhard et al. [1]_
+
+    References
+    ----------
+    .. [1] Reinhard, Erik, et al. "Color transfer between images." IEEE Computer
+        graphics and applications 21.5 (2001): 34-41.
+
+    """
+
+    def __init__(self):
+        self.target_means = None
+        self.target_stds = None
+
+    def fit(self, target_rgb: PIL.Image.Image) -> None:
+        """Fit stain normalizer using ``target_img``.
+
+        Parameters
+        ----------
+        target_rgb : PIL.Image.Image
+            Target image for stain normalization. Can be either RGB or RGBA.
+        """
+        means, stds = self.mean_std(target_rgb)
+        self.target_means = means
+        self.target_stds = stds
+
+    def transform(self, img_rgb: PIL.Image.Image) -> PIL.Image.Image:
+        """Normalize staining of ``img_rgb``.
+
+        Parameters
+        ----------
+        img_rgb : PIL.Image.Image
+            Image to normalize. Can be either RGB or RGBA.
+
+        Returns
+        -------
+        PIL.Image.Image
+            Image with normalized stain.
+        """
+        means, stds = self.mean_std(img_rgb)
+        img_lab = RgbToLab()(img_rgb)
+
+        mask = self._tissue_mask(img_rgb)
+        masked_img_lab = np.ma.masked_array(img_lab, ~mask)
+
+        norm_lab = (
+            ((masked_img_lab - means) * (self.target_stds / stds)) + self.target_means
+        ).data
+
+        for i in range(3):
+            original = img_lab[:, :, i].copy()
+            new = norm_lab[:, :, i].copy()
+            original[np.not_equal(~mask[:, :, 0], True)] = 0
+            new[~mask[:, :, 0]] = 0
+            norm_lab[:, :, i] = new + original
+
+        norm_rgb = LabToRgb()(norm_lab)
+        return norm_rgb
+
+    def mean_std(self, img_rgb: PIL.Image.Image) -> Tuple[np.ndarray, np.ndarray]:
+        """Return mean and standard deviation of each channel
+
+        Parameters
+        ----------
+        img_rgb : PIL.Image.Image
+            Input image.
+
+        Returns
+        -------
+        np.ndarray
+            Mean of each channel.
+        np.ndarray
+            Stadndard deviation of each channel.
+        """
+        mask = self._tissue_mask(img_rgb)
+
+        img_lab = RgbToLab()(img_rgb)
+        mean_per_channel = img_lab.mean(axis=(0, 1), where=mask)
+        std_per_channel = img_lab.std(axis=(0, 1), where=mask)
+        return mean_per_channel, std_per_channel
+
+    @staticmethod
+    def _tissue_mask(img_rgb: PIL.Image.Image) -> np.ndarray:
+        """Return a binary mask of the tissue in ``img_rgb``.
+
+        Parameters
+        ----------
+        img_rgb : PIL.Image.Image
+            Input image. Can be either RGB or RGBA.
+
+        Returns
+        -------
+        np.ndarray
+            Binary tissue mask,
+        """
+        tile = Tile(img_rgb, None)
+        mask = tile.tissue_mask
+        mask = np.dstack((mask, mask, mask))
+        return mask
