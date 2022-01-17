@@ -356,6 +356,55 @@ class DescribeGridTiler:
         np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
 
     @pytest.mark.parametrize(
+        "fixture_slide, binary_mask, tile_size, level, check_tissue, expectation",
+        [
+            (
+                SVS.CMU_1_SMALL_REGION,
+                BiggestTissueBoxMask(),
+                (512, 512),
+                0,
+                False,
+                "tiles-location-images/cmu-1-small-region-tl-grid-BTB-false-512x512-64",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                TissueMask(),
+                (512, 550),
+                0,
+                False,
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-grid-TM-f-512x550-64",
+            ),
+        ],
+    )
+    def it_locates_tiles_with_overlap_on_the_slide(
+        self,
+        request,
+        fixture_slide,
+        binary_mask,
+        tile_size,
+        level,
+        check_tissue,
+        expectation,
+    ):
+        slide = Slide(fixture_slide, "")
+        grid_tiles_extractor = GridTiler(
+            tile_size=tile_size,
+            level=level,
+            check_tissue=check_tissue,
+            pixel_overlap=64,
+        )
+        expected_img = load_expectation(expectation, type_="png")
+
+        tiles_location_img = grid_tiles_extractor.locate_tiles(
+            slide, binary_mask, scale_factor=10
+        )
+
+        # --- Expanding test report with actual and expected images ---
+        expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
+
+        np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
+
+    @pytest.mark.parametrize(
         "mpp, fixed_tile_size, fixed_overlap",
         ((None, (512, 512), 32), (0.75, (769, 769), 48)),
     )
