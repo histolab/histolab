@@ -1,5 +1,5 @@
 numpy >=1.18.4,<1.22.2
-Pillow
+Pillow >=8.4.0,<9.0.0
 scikit-image >=0.19.0,<0.19.2
 scipy >=1.5.0,<1.7.4
 openslide-python
