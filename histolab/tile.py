@@ -170,6 +170,26 @@ class Tile:
     def tissue_mask(self) -> np.ndarray:
         """Binary mask representing the tissue in the tile.
 
+        It is calculated given a composition of suitable filters.
+        If a non-default composition is required, consider ``calculate_tissue_mask``.
+
+        Returns
+        -------
+        np.ndarray
+            Binary mask representing the tissue in the tile.
+        """
+        return self.calculate_tissue_mask(FiltersComposition(Tile))
+
+    def calculate_tissue_mask(
+        self, filter_composition: FiltersComposition
+    ) -> np.ndarray:
+        """Calculate the binary mask representing the tissue in the tile.
+
+        Parameters
+        ---------
+        filter_composition: FiltersComposition
+            FiltersComposition used to calculate the mask.
+
         Returns
         -------
         np.ndarray
@@ -200,7 +220,7 @@ class Tile:
         tile_border = PIL.Image.fromarray(np_tile_border)
 
         # apply filters on tile with border
-        filters = FiltersComposition(Tile).tissue_mask_filters
+        filters = filter_composition.tissue_mask_filters
         mask_border = filters(tile_border)
 
         # remove border

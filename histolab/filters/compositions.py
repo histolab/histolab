@@ -16,6 +16,8 @@
 # limitations under the License.
 # ------------------------------------------------------------------------
 
+from typing import Type
+
 import numpy as np
 
 from ..exceptions import FilterCompositionError
@@ -29,9 +31,10 @@ class FiltersComposition:
 
     Arguments
     ---------
-    cls_ : type, {Tile, Slide}
+    cls_ : type, {Tile, Slide, Compose}
         The class to get the appropriate filters composition for
-
+    *custom_filters : imf.ImageFilter
+        Custom filter applied if (and only if) the type Compose is used.
 
     Example:
         >>> from histolab.filters.compositions import FiltersComposition
@@ -41,12 +44,13 @@ class FiltersComposition:
         >>> filters_tile = FiltersComposition(Tile).tissue_mask_filters
     """
 
-    def __new__(cls: type, cls_):
+    def __new__(cls, cls_: type, *custom_filters: imf.ImageFilter):
         if not cls_:
             raise FilterCompositionError("cls_ parameter cannot be None")
         FiltersSubCls = {
             "Tile": _TileFiltersComposition,
             "Slide": _SlideFiltersComposition,
+            "Compose": _CustomFiltersComposition,
         }.get(cls_.__name__)
         if FiltersSubCls:
             instance = super(FiltersComposition, FiltersSubCls).__new__(FiltersSubCls)
@@ -139,3 +143,32 @@ class _TileFiltersComposition(FiltersComposition):
                 mof.BinaryFillHoles(structure=np.ones((20, 20))),
             ]
         )
+
+
+class _CustomFiltersComposition(FiltersComposition):
+    def __init__(
+        self, cls_: Type[imf.Compose], *custom_filters: imf.ImageFilter
+    ) -> None:
+        """Create a custom filter composition with at least one filter.
+
+        Generally, their is no need to call this constructor manually.
+        Please use ``FiltersComposition(Compose, *filters)`` instead.
+        """
+
+        if len(custom_filters) == 0:
+            raise FilterCompositionError(
+                "Custom filter pipeline requires at least one filter"
+            )
+
+        self._custom_filters = custom_filters
+
+    @lazyproperty
+    def tissue_mask_filters(self) -> imf.Compose:
+        """Filters composition for tissue estimation with custom filters.
+
+        Returns
+        -------
+        imf.Compose
+            Filters composition
+        """
+        return imf.Compose(self._custom_filters)

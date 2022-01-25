@@ -1,8 +1,9 @@
 import numpy as np
+import PIL
 import pytest
 
 from histolab.filters.compositions import _SlideFiltersComposition
-from histolab.filters.image_filters import Compose
+from histolab.filters.image_filters import Compose, ImageFilter
 from histolab.filters.morphological_filters import RemoveSmallObjects
 from histolab.masks import BiggestTissueBoxMask, TissueMask
 from histolab.tile import Tile
@@ -16,6 +17,11 @@ from ..unitutil import (
     method_mock,
     property_mock,
 )
+
+
+class CustomFilterForTest(ImageFilter):
+    def __call__(self, _: PIL.Image.Image) -> np.ndarray:
+        raise RuntimeError("This call needs mocking")
 
 
 class DescribeBiggestTissueBoxMask:
@@ -133,10 +139,26 @@ class DescribeTissueMask:
             ]
         )
         tissue_mask = TissueMask()
-
         binary_mask = tissue_mask(slide)
 
         assert binary_mask == expected_mask
+
+    def it_knows_its_mask_slide_and_supports_custom_filters(self, request, tmpdir):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        custom_filters = [CustomFilterForTest()]
+        custom_filter_call_ = method_mock(request, CustomFilterForTest, "__call__")
+        expected_mask = [
+            [True, True],
+            [False, True],
+        ]
+        custom_filter_call_.return_value = expected_mask
+
+        tissue_mask = TissueMask(*custom_filters)
+        binary_mask = tissue_mask(slide)
+
+        assert binary_mask == expected_mask
+        # Check the filter has been called once
+        custom_filter_call_.assert_called_once_with(custom_filters[0], slide.thumbnail)
 
     def it_knows_its_mask_tile(self, request):
         tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, None, None)
@@ -148,10 +170,29 @@ class DescribeTissueMask:
         tissue_mask_tile_.return_value = expected_mask
 
         tissue_mask = TissueMask()
-
         binary_mask = tissue_mask(tile)
 
         assert binary_mask == expected_mask
+
+    def it_knows_its_mask_tile_and_supports_custom_filters(self, request):
+        tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, None, None)
+        custom_filters = [CustomFilterForTest()]
+        custom_filter_call_ = method_mock(request, CustomFilterForTest, "__call__")
+        # We need to account for the fact padding is added before filtering
+        expected_mask = np.zeros((510, 510), dtype=np.bool)
+        custom_filter_call_.return_value = expected_mask
+
+        # Call the tissue mask with custom filters
+        tissue_mask = TissueMask(*custom_filters)
+        binary_mask = tissue_mask(tile)
+
+        # Due to the padding in 'calculate_tissue_mask', a direct
+        # check with 'assert_called_once_with' is not possible.
+        assert np.array_equal(binary_mask, expected_mask[:500, :500])
+        custom_filter_call_.assert_called_once()
+        assert len(custom_filter_call_.call_args[0]) == 2
+        assert custom_filter_call_.call_args[0][0] == custom_filters[0]
+        assert type(custom_filter_call_.call_args[0][1]) == PIL.Image.Image
 
 
 # fixture components ---------------------------------------------
