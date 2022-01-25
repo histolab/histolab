@@ -14,6 +14,10 @@ from histolab.tile import Tile
 from ..unitutil import class_mock, initializer_mock
 
 
+class NotAllowedInFiltersComposition:
+    """A class NOT allowed to be used with FiltersComposition."""
+
+
 def it_knows_tissue_areas_mask_tile_filters_composition(
     RgbToGrayscale_, OtsuThreshold_, BinaryDilation_, BinaryFillHoles_
 ):
@@ -62,6 +66,29 @@ def it_knows_tissue_areas_mask_slide_filters_composition(
     assert type(_enough_tissue_mask_filters_) == Compose
 
 
+def it_knows_tissue_areas_mask_compose_filters_composition(
+    RgbToGrayscale_,
+    OtsuThreshold_,
+    BinaryDilation_,
+    RemoveSmallHoles_,
+    RemoveSmallObjects_,
+):
+    filters = [
+        RgbToGrayscale_(),
+        OtsuThreshold_(),
+        BinaryDilation_(),
+        RemoveSmallHoles_(),
+        RemoveSmallObjects_(),
+    ]
+
+    _enough_tissue_mask_filters_ = FiltersComposition(
+        Compose, *filters
+    ).tissue_mask_filters
+
+    assert type(_enough_tissue_mask_filters_) == Compose
+    assert list(_enough_tissue_mask_filters_.filters) == filters
+
+
 @pytest.mark.parametrize(
     "_cls, subclass",
     ((Tile, _TileFiltersComposition), (Slide, _SlideFiltersComposition)),
@@ -77,7 +104,7 @@ def it_can_dispatch_subclass_according_class_type(request, _cls, subclass):
 
 def it_raises_filtercompositionerror_if_class_not_allowed(request):
     _init_ = initializer_mock(request, FiltersComposition)
-    cls_ = Compose
+    cls_ = NotAllowedInFiltersComposition
 
     with pytest.raises(FilterCompositionError) as err:
         FiltersComposition(cls_)
@@ -85,7 +112,9 @@ def it_raises_filtercompositionerror_if_class_not_allowed(request):
     _init_.assert_not_called()
     assert isinstance(err.value, FilterCompositionError)
     assert (
-        str(err.value) == "Filters composition for the class Compose is not available"
+        str(err.value)
+        == "Filters composition for the class NotAllowedInFiltersComposition \
+is not available"
     )
 
 
@@ -99,6 +128,20 @@ def it_raises_filtercompositionerror_if_class_is_none(request):
     _init_.assert_not_called()
     assert isinstance(err.value, FilterCompositionError)
     assert str(err.value) == "cls_ parameter cannot be None"
+
+
+def it_raises_filtercompositionerror_if_compose_is_specified_without_filters(
+    request,
+):
+    _init_ = initializer_mock(request, FiltersComposition)
+    cls_ = Compose
+
+    with pytest.raises(FilterCompositionError) as err:
+        FiltersComposition(cls_)
+
+    _init_.assert_not_called()
+    assert isinstance(err.value, FilterCompositionError)
+    assert str(err.value) == "Custom filter pipeline requires at least one filter"
 
 
 # fixture components ---------------------------------------------

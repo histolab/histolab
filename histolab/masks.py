@@ -24,6 +24,7 @@ import numpy as np
 import histolab
 
 from .filters.compositions import FiltersComposition
+from .filters.image_filters import Compose, ImageFilter
 from .slide import Slide
 from .tile import Tile
 from .types import Region
@@ -132,10 +133,22 @@ class BiggestTissueBoxMask(BinaryMask):
 
 
 class TissueMask(BinaryMask):
-    """Object that represent the whole tissue area mask.
+    """Object that represent the whole tissue area mask."""
 
-    The tissue within the slide or tile is automatically detected through a predefined
-    chain of filters."""
+    def __init__(self, *filters: ImageFilter) -> None:
+        """
+        Create a new tissue mask.
+
+        If custom image filters are specified, those are used instead the default ones.
+        By default, the tissue within the slide or tile is automatically detected
+        through a predefined chain of filters.
+
+        Parameters
+        ----------
+        *filters : ImageFilter
+            Custom filters to derive a TissueMask which overwrite the default pipeline.
+        """
+        self.custom_filters = filters
 
     def __call__(self, obj: Union[Slide, Tile]) -> np.ndarray:
         """Apply a predefined chain of filters to calculate the tissue area mask.
@@ -178,8 +191,14 @@ class TissueMask(BinaryMask):
             Binary mask of the tissue area. The dimensions are those of the thumbnail.
         """
         thumb = slide.thumbnail
-        filters = FiltersComposition(histolab.slide.Slide).tissue_mask_filters
-        thumb_mask = filters(thumb)
+
+        # Generate appropriate composition of filter
+        if len(self.custom_filters) == 0:
+            composition = FiltersComposition(Slide)
+        else:
+            composition = FiltersComposition(Compose, *self.custom_filters)
+
+        thumb_mask = composition.tissue_mask_filters(thumb)
         return thumb_mask
 
     @lru_cache(maxsize=100)
@@ -197,4 +216,11 @@ class TissueMask(BinaryMask):
         mask: np.ndarray
             Binary mask of the tissue area. The dimensions are those of the tile.
         """
-        return tile.tissue_mask
+
+        # Check if calculating a customized mask is required.
+        # Otherwise, fall back to the default one.
+        if len(self.custom_filters) > 0:
+            custom_filters = FiltersComposition(Compose, *self.custom_filters)
+            return tile.calculate_tissue_mask(custom_filters)
+        else:
+            return tile.tissue_mask
