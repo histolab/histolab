@@ -13,4 +13,5 @@ tasks:
       python -m pip install --upgrade pip
       python -m pip install -e .[testing]
       python -m pip install -r requirements-dev.txt
+      source ~/.bashrc
       pre-commit install
