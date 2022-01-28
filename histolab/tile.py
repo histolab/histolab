@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 import numpy as np
-import PIL
+from PIL import Image
 
 from .filters import image_filters as imf
 from .filters.compositions import FiltersComposition
@@ -34,7 +34,7 @@ class Tile:
 
     Arguments
     ---------
-    image : PIL.Image.Image
+    image : Image.Image
         Image describing the tile
     coords : CoordinatePair
         Level 0 Coordinates of the Slide from which the tile was extracted
@@ -44,7 +44,7 @@ class Tile:
 
     def __init__(
         self,
-        image: PIL.Image.Image,
+        image: Image.Image,
         coords: CoordinatePair,
         level: Optional[int] = None,
     ):
@@ -70,7 +70,7 @@ class Tile:
         """
         filtered_image = filters(self.image)
         if isinstance(filtered_image, np.ndarray):
-            filtered_image = PIL.Image.fromarray(filtered_image)
+            filtered_image = Image.fromarray(filtered_image)
         return Tile(filtered_image, self.coords, self.level)
 
     @lazyproperty
@@ -125,18 +125,18 @@ class Tile:
         return True
 
     @lazyproperty
-    def image(self) -> PIL.Image.Image:
+    def image(self) -> Image.Image:
         """Image describing the tile.
 
         Returns
         -------
-        PIL.Image.Image
+        Image.Image
             Image describing the tile.
         """
         return self._image
 
     @lazyproperty
-    def level(self) -> int:
+    def level(self) -> Optional[int]:
         """Level of tile extraction.
 
         Returns
@@ -150,7 +150,7 @@ class Tile:
         """Save tile at given path.
 
         The format to use is determined from the filename extension (to be compatible to
-        PIL.Image formats). If no extension is provided, the image will be saved in png
+        Image formats). If no extension is provided, the image will be saved in png
         format.
 
         Parameters
@@ -159,12 +159,16 @@ class Tile:
             Path to which the tile is saved.
 
         """
+
+        if isinstance(path, bytes):
+            path = path.decode("utf-8")
+
         ext = os.path.splitext(path)[1]
         if not ext:
             path = f"{path}.png"
 
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-        self._image.save(path)
+        self._image.save(str(path))
 
     @lazyproperty
     def tissue_mask(self) -> np.ndarray:
@@ -217,7 +221,7 @@ class Tile:
             constant_values=255,
         )
 
-        tile_border = PIL.Image.fromarray(np_tile_border)
+        tile_border = Image.fromarray(np_tile_border)
 
         # apply filters on tile with border
         filters = filter_composition.tissue_mask_filters

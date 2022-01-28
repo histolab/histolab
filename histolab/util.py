@@ -23,6 +23,7 @@ from typing import Any, Callable, List, Tuple
 
 import numpy as np
 import PIL
+import PIL.Image
 import PIL.ImageDraw
 from skimage.measure import label, regionprops
 from skimage.util.dtype import img_as_ubyte
@@ -192,7 +193,10 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     def convert_np_coords_to_pil_coords(
         bbox_np: Tuple[int, int, int, int]
     ) -> Tuple[int, int, int, int]:
-        return (*reversed(bbox_np[:2]), *reversed(bbox_np[2:]))
+        x_ul, y_ul = reversed(bbox_np[:2])
+        x_br, y_br = reversed(bbox_np[2:])
+
+        return (x_ul, y_ul, x_br, y_br)
 
     thumb_labeled_regions = label(binary_mask)
     regions = [
@@ -277,11 +281,11 @@ def scale_coordinates(
     coords: CoordinatesPair
         Coordinates in the scaled image
     """
-    reference_coords = np.asarray(reference_coords).ravel()
-    reference_size = np.tile(reference_size, 2)
-    target_size = np.tile(target_size, 2)
+    _reference_coords = np.asarray(reference_coords).ravel()
+    _reference_size = np.tile(reference_size, 2)
+    _target_size = np.tile(target_size, 2)
     return CoordinatePair(
-        *np.floor((reference_coords * target_size) / reference_size).astype("int64")
+        *np.floor((_reference_coords * _target_size) / _reference_size).astype("int64")
     )
 
 
@@ -386,6 +390,6 @@ def method_dispatch(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrapper(*args, **kw):
         return dispatcher.dispatch(args[1].__class__)(*args, **kw)
 
-    wrapper.register = dispatcher.register
+    setattr(wrapper, "register", dispatcher.register)
     functools.update_wrapper(wrapper, func)
     return wrapper
