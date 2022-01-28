@@ -97,6 +97,7 @@ Pipfile
 .mypy_cache/
 .dmypy.json
 dmypy.json
+report/
 
 # Pyre type checker
 .pyre/
