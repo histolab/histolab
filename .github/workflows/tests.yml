@@ -144,6 +144,11 @@ jobs:
         run: |
           flake8 . --config=setup.cfg --count --statistics
 
+      - name: mypy
+        id: black
+        run: |
+          mypy histolab .
+
       - name: Check Vulnerabilities with Bandit
         id: bandit
         run: |
