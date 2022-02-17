@@ -19,9 +19,11 @@ style.
 - Do not push integration tests without unit tests.
 - Pay attention to the CI required checks
 
-## Create your local environment
+## Create your environment
 
-Before starting contributing to Histolab, test that your local environment is up and running. Here some steps:
+If you want to avoid setting up a local environment, you can spin up a remote development environment using [gitpod](https://www.gitpod.io) at the following URL: https://gitpod.io/#https://github.com/histolab/histolab
+
+Otherwise, before starting contributing to Histolab, test that your local environment is up and running. Here some steps:
 
 - Create a python 3.7, 3.8 or 3.9 `virtualenv`
 - Activate the env and in the project root run:
