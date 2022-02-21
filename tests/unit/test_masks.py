@@ -2,7 +2,10 @@ import numpy as np
 import PIL
 import pytest
 
-from histolab.filters.compositions import _SlideFiltersComposition
+from histolab.filters.compositions import (
+    _CustomFiltersComposition,
+    _SlideFiltersComposition,
+)
 from histolab.filters.image_filters import Compose, ImageFilter
 from histolab.filters.morphological_filters import RemoveSmallObjects
 from histolab.masks import BiggestTissueBoxMask, TissueMask
@@ -177,22 +180,30 @@ class DescribeTissueMask:
     def it_knows_its_mask_tile_and_supports_custom_filters(self, request):
         tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, None, None)
         custom_filters = [CustomFilterForTest()]
-        custom_filter_call_ = method_mock(request, CustomFilterForTest, "__call__")
-        # We need to account for the fact padding is added before filtering
-        expected_mask = np.zeros((510, 510), dtype=np.bool)
-        custom_filter_call_.return_value = expected_mask
+        expected_mask = [
+            [True, True],
+            [False, True],
+        ]
+        calculate_tissue_mask_call = method_mock(request, Tile, "calculate_tissue_mask")
+        calculate_tissue_mask_call.return_value = expected_mask
 
         # Call the tissue mask with custom filters
         tissue_mask = TissueMask(*custom_filters)
         binary_mask = tissue_mask(tile)
 
-        # Due to the padding in 'calculate_tissue_mask', a direct
-        # check with 'assert_called_once_with' is not possible.
-        assert np.array_equal(binary_mask, expected_mask[:500, :500])
-        custom_filter_call_.assert_called_once()
-        assert len(custom_filter_call_.call_args[0]) == 2
-        assert custom_filter_call_.call_args[0][0] == custom_filters[0]
-        assert type(custom_filter_call_.call_args[0][1]) == PIL.Image.Image
+        # We can not use 'assert_called_once_with' here because we do not have access
+        # to the specific instance of _CustomFiltersComposition. Do it manually...
+        calculate_tissue_mask_call.assert_called_once()
+        assert len(calculate_tissue_mask_call.call_args[0]) == 2
+        assert calculate_tissue_mask_call.call_args[0][0] == tile
+        assert isinstance(
+            calculate_tissue_mask_call.call_args[0][1], _CustomFiltersComposition
+        )
+        assert calculate_tissue_mask_call.call_args[0][1]._custom_filters == tuple(
+            custom_filters
+        )
+
+        assert binary_mask == expected_mask
 
 
 # fixture components ---------------------------------------------
