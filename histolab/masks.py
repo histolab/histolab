@@ -222,5 +222,4 @@ class TissueMask(BinaryMask):
         if len(self.custom_filters) > 0:
             custom_filters = FiltersComposition(Compose, *self.custom_filters)
             return tile.calculate_tissue_mask(custom_filters)
-        else:
-            return tile.tissue_mask
+        return tile.tissue_mask
