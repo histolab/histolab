@@ -180,10 +180,13 @@ class DescribeTissueMask:
     def it_knows_its_mask_tile_and_supports_custom_filters(self, request):
         tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, None, None)
         custom_filters = [CustomFilterForTest()]
-        expected_mask = [
-            [True, True],
-            [False, True],
-        ]
+        expected_mask = np.asarray(
+            [
+                [True, True],
+                [False, True],
+            ],
+            dtype=bool,
+        )
         calculate_tissue_mask_call = method_mock(request, Tile, "calculate_tissue_mask")
         calculate_tissue_mask_call.return_value = expected_mask
 
@@ -203,7 +206,7 @@ class DescribeTissueMask:
             custom_filters
         )
 
-        assert binary_mask == expected_mask
+        np.testing.assert_array_equal(binary_mask, expected_mask)
 
 
 # fixture components ---------------------------------------------
