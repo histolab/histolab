@@ -111,6 +111,50 @@ class DescribeBiggestTissueBoxMask:
             (1000, 1000), CP(x_ul=0, y_ul=0, x_br=2, y_br=2)
         )
 
+    def it_knows_its_mask_and_supports_custom_filters(self, request, tmpdir):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        regions = [
+            Region(index=0, area=33, bbox=(0, 0, 2, 2), center=(0.5, 0.5), coords=None)
+        ]
+        custom_filter_composition_filters_ = property_mock(
+            request, _CustomFiltersComposition, "tissue_mask_filters"
+        )
+        custom_filters = [CustomFilterForTest()]
+        custom_filter_call_ = method_mock(request, CustomFilterForTest, "__call__")
+        expected_mask = np.array([[True, True], [False, True]])
+        custom_filter_composition_filters_.return_value = Compose(custom_filters)
+        custom_filter_call_.return_value = expected_mask
+        regions_from_binary_mask = function_mock(
+            request, "histolab.masks.regions_from_binary_mask"
+        )
+        regions_from_binary_mask.return_value = regions
+        biggest_regions_ = method_mock(
+            request, BiggestTissueBoxMask, "_regions", autospec=False
+        )
+        biggest_regions_.return_value = regions
+        region_coordinates_ = function_mock(
+            request, "histolab.masks.region_coordinates"
+        )
+        region_coordinates_.return_values = CP(0, 0, 2, 2)
+        rectangle_to_mask_ = function_mock(request, "histolab.util.rectangle_to_mask")
+        rectangle_to_mask_((1000, 1000), CP(0, 0, 2, 2)).return_value = [
+            [True, True],
+            [False, True],
+        ]
+        biggest_mask_tissue_box = BiggestTissueBoxMask(*custom_filters)
+
+        binary_mask = biggest_mask_tissue_box(slide)
+
+        np.testing.assert_almost_equal(binary_mask, np.zeros((500, 500)))
+        np.testing.assert_array_almost_equal(
+            regions_from_binary_mask.call_args_list[0][0][0], expected_mask
+        )
+        region_coordinates_.assert_called_once_with(regions[0])
+        biggest_regions_.assert_called_once_with(regions, n=1)
+        rectangle_to_mask_.assert_called_once_with(
+            (1000, 1000), CP(x_ul=0, y_ul=0, x_br=2, y_br=2)
+        )
+
 
 class DescribeTissueMask:
     def it_knows_its_mask_slide(
@@ -126,10 +170,7 @@ class DescribeTissueMask:
         main_tissue_areas_mask_filters_ = property_mock(
             request, _SlideFiltersComposition, "tissue_mask_filters"
         )
-        expected_mask = [
-            [True, True],
-            [False, True],
-        ]
+        expected_mask = np.array([[True, True], [False, True]])
         remove_small_objects = method_mock(request, RemoveSmallObjects, "__call__")
         remove_small_objects.return_value = expected_mask
         main_tissue_areas_mask_filters_.return_value = Compose(
@@ -144,49 +185,40 @@ class DescribeTissueMask:
         tissue_mask = TissueMask()
         binary_mask = tissue_mask(slide)
 
-        assert binary_mask == expected_mask
+        np.testing.assert_equal(binary_mask, expected_mask)
 
     def it_knows_its_mask_slide_and_supports_custom_filters(self, request, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
         custom_filters = [CustomFilterForTest()]
         custom_filter_call_ = method_mock(request, CustomFilterForTest, "__call__")
-        expected_mask = [
-            [True, True],
-            [False, True],
-        ]
+        expected_mask = np.array([[True, True], [False, True]])
+
         custom_filter_call_.return_value = expected_mask
 
         tissue_mask = TissueMask(*custom_filters)
         binary_mask = tissue_mask(slide)
 
-        assert binary_mask == expected_mask
+        np.testing.assert_equal(binary_mask, expected_mask)
         # Check the filter has been called once
         custom_filter_call_.assert_called_once_with(custom_filters[0], slide.thumbnail)
 
     def it_knows_its_mask_tile(self, request):
         tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, None, None)
         tissue_mask_tile_ = property_mock(request, Tile, "tissue_mask")
-        expected_mask = [
-            [True, True],
-            [False, True],
-        ]
+        expected_mask = np.array([[True, True], [False, True]])
+
         tissue_mask_tile_.return_value = expected_mask
 
         tissue_mask = TissueMask()
         binary_mask = tissue_mask(tile)
 
-        assert binary_mask == expected_mask
+        np.testing.assert_equal(binary_mask, expected_mask)
 
     def it_knows_its_mask_tile_and_supports_custom_filters(self, request):
         tile = Tile(PILIMG.RGBA_COLOR_500X500_155_249_240, None, None)
         custom_filters = [CustomFilterForTest()]
-        expected_mask = np.asarray(
-            [
-                [True, True],
-                [False, True],
-            ],
-            dtype=bool,
-        )
+        expected_mask = np.array([[True, True], [False, True]])
+
         calculate_tissue_mask_call = method_mock(request, Tile, "calculate_tissue_mask")
         calculate_tissue_mask_call.return_value = expected_mask
 

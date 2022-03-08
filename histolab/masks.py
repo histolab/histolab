@@ -17,14 +17,12 @@
 # ------------------------------------------------------------------------
 from abc import ABC, abstractmethod
 from functools import lru_cache
-from typing import List, Union
+from typing import Iterable, List, Union
 
 import numpy as np
 
-import histolab
-
 from .filters.compositions import FiltersComposition
-from .filters.image_filters import Compose, ImageFilter
+from .filters.image_filters import Compose, Filter
 from .slide import Slide
 from .tile import Tile
 from .types import Region
@@ -66,12 +64,25 @@ class BinaryMask(ABC):
 class BiggestTissueBoxMask(BinaryMask):
     r"""Object that represents the box containing the largest contiguous tissue area.
 
-    Internally, this class automatically detects the tissue regions via a predefined
-    sequence of filters, and then retain the largest connected component.
-
     .. figure:: https://user-images.githubusercontent.com/31658006/116549379-b14d0200-a8f5-11eb-85b1-46abc14c73bf.jpeg
 
     """  # noqa
+
+    def __init__(self, *filters: Iterable[Filter]) -> None:
+        """
+        Create a new tissue mask and then retain the largest connected component.
+
+        If custom image filters are specified, those are used instead the default ones.
+        By default, the tissue within the slide or tile is automatically detected
+        through a predefined chain of filters.
+
+        Parameters
+        ----------
+        *filters : Iterable[Filter]
+            Custom filters to derive a BiggestTissueBoxMask which overwrite the default
+            pipeline.
+        """
+        self.custom_filters = filters
 
     @lru_cache(maxsize=100)
     def _mask(self, slide) -> np.ndarray:
@@ -89,8 +100,14 @@ class BiggestTissueBoxMask(BinaryMask):
             The dimensions are those of the thumbnail.
         """
         thumb = slide.thumbnail
-        filters = FiltersComposition(histolab.slide.Slide).tissue_mask_filters
-        thumb_mask = filters(thumb)
+
+        # Generate appropriate composition of filter
+        if len(self.custom_filters) == 0:
+            composition = FiltersComposition(Slide)
+        else:
+            composition = FiltersComposition(Compose, *self.custom_filters)
+
+        thumb_mask = composition.tissue_mask_filters(thumb)
         regions = regions_from_binary_mask(thumb_mask)
         biggest_region = self._regions(regions, n=1)[0]
         biggest_region_coordinates = region_coordinates(biggest_region)
@@ -135,7 +152,7 @@ class BiggestTissueBoxMask(BinaryMask):
 class TissueMask(BinaryMask):
     """Object that represent the whole tissue area mask."""
 
-    def __init__(self, *filters: ImageFilter) -> None:
+    def __init__(self, *filters: Iterable[Filter]) -> None:
         """
         Create a new tissue mask.
 
@@ -145,7 +162,7 @@ class TissueMask(BinaryMask):
 
         Parameters
         ----------
-        *filters : ImageFilter
+        *filters : Iterable[Filter]
             Custom filters to derive a TissueMask which overwrite the default pipeline.
         """
         self.custom_filters = filters
