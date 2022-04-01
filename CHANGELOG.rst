@@ -1,6 +1,34 @@
 Changelog
 =========
 
+v0.5.0
+------
+**Bug Fix**
+
+- Fix `pixel_overlap` of adjacent tiles in `GridTiler`. (`#372 <https://github.com/histolab/histolab/pull/372>`_)
+- Fix bug of thumbnail dimensions when using large_image. (`#390 <https://github.com/histolab/histolab/pull/390>`_)
+
+
+**New Features**
+
+- Tissue mask on `Tile` is sharper. (`#364 <https://github.com/histolab/histolab/pull/364>`_)
+- Allow custom filters in `TissueMask`. (`#377 <https://github.com/histolab/histolab/pull/377>`_)
+- Allow custom filters in `BiggestTissueBoxMask`. (`#387 <https://github.com/histolab/histolab/pull/387>`_)
+
+**Maintenance**
+
+- Add Gitpod configuration file. (`#379 <https://github.com/histolab/histolab/pull/379>`_)
+- Try to fix dependabot. (`#369 <https://github.com/histolab/histolab/pull/369>`_)
+
+**Dependencies**
+
+- Support scikit-image up to 0.19.2. (`#365 <https://github.com/histolab/histolab/pull/365>`_ and `#384 <https://github.com/histolab/histolab/pull/384>`_)
+- Support NumPy up to 1.22.3 (`#366 <https://github.com/histolab/histolab/pull/366>`_, `#373 <https://github.com/histolab/histolab/pull/373>`_, `#382 <https://github.com/histolab/histolab/pull/382>`_ and `#386 <https://github.com/histolab/histolab/pull/386>`_)
+- Upgrade sphinx to 4.5.0. (`#367 <https://github.com/histolab/histolab/pull/367>`_, `#374 <https://github.com/histolab/histolab/pull/374>` and `#388 <https://github.com/histolab/histolab/pull/388>`)
+- Pin large_image to 1.8.11. (`#368 <https://github.com/histolab/histolab/pull/368>`_)
+- Support scipy up to 1.8.0. (`#383 <https://github.com/histolab/histolab/pull/383>`_)
+- Upgrade black to fix click dependency issue. (`#389 <https://github.com/histolab/histolab/pull/389>`_)
+
 v0.4.1
 ------
 **Bug Fix**
