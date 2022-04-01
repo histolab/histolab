@@ -69,8 +69,7 @@ class BiggestTissueBoxMask(BinaryMask):
     """  # noqa
 
     def __init__(self, *filters: Iterable[Filter]) -> None:
-        """
-        Create a new tissue mask and then retain the largest connected component.
+        """Create a new tissue mask and then retain the largest connected component.
 
         If custom image filters are specified, those are used instead the default ones.
         By default, the tissue within the slide or tile is automatically detected
@@ -101,7 +100,6 @@ class BiggestTissueBoxMask(BinaryMask):
         """
         thumb = slide.thumbnail
 
-        # Generate appropriate composition of filter
         if len(self.custom_filters) == 0:
             composition = FiltersComposition(Slide)
         else:
