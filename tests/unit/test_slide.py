@@ -9,7 +9,6 @@ import numpy as np
 import openslide
 import PIL
 import pytest
-from large_image.exceptions import TileSourceException
 from PIL import ImageShow
 
 from histolab.exceptions import LevelError, MayNeedLargeImageError, SlidePropertyError
@@ -252,20 +251,15 @@ class Describe_Slide:
         assert type(resampled_array) == np.ndarray
         assert resampled_array.shape == (400, 300, 3)
 
-    def it_knows_its_thumbnail_size(self, tmpdir):
-        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+    @pytest.mark.parametrize("use_largeimage", [True, False])
+    def it_knows_its_thumbnail_size(self, tmpdir, use_largeimage):
+        slide, _ = base_test_slide(
+            tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=use_largeimage
+        )
 
         thumb_size = slide._thumbnail_size
 
         assert thumb_size == (500, 500)
-
-    def it_raises_error_if_thumbnail_size_and_use_largeimage(self):
-        slide = Slide("/a/b/foo", "processed", use_largeimage=True)
-
-        with pytest.raises(TileSourceException) as err:
-            slide._thumbnail_size
-
-        assert str(err.value) == "No available tilesource for /a/b/foo"
 
     def it_creates_a_correct_slide_object(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_50X50_155_0_0)
