@@ -5,6 +5,7 @@ import math
 import os
 from pathlib import Path
 
+import large_image
 import numpy as np
 import openslide
 import PIL
@@ -292,13 +293,7 @@ class Describe_Slide:
             "use_largeimage to True when instantiating this Slide."
         )
 
-    @pytest.mark.parametrize(
-        "use_largeimage",
-        [
-            (False,),
-            (True,),
-        ],
-    )
+    @pytest.mark.parametrize("use_largeimage", [True, False])
     def it_can_resample_itself(self, tmpdir, resampled_dims_, use_largeimage):
         slide, _ = base_test_slide(
             tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=use_largeimage
@@ -346,14 +341,7 @@ class Describe_Slide:
 
         assert type(scaled_image) == PIL.Image.Image
 
-    @pytest.mark.parametrize(
-        "use_largeimage",
-        [
-            (False,),
-            (True,),
-        ],
-    )
-    def it_knows_its_thumbnail(self, tmpdir, resampled_dims_, use_largeimage):
+    def it_knows_its_thumbnail_openslide(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
         image = PILIMG.RGBA_COLOR_500X500_155_249_240
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
@@ -361,13 +349,41 @@ class Describe_Slide:
         slide = Slide(
             slide_path,
             os.path.join(tmp_path_, "processed"),
-            use_largeimage=use_largeimage,
+            use_largeimage=False,
         )
         resampled_dims_.return_value = (100, 200, 300, 400)
 
         thumb = slide.thumbnail
 
         assert type(thumb) == PIL.Image.Image
+
+    def it_knows_its_thumbnail_largeimage(self, tmpdir, request):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(
+            slide_path,
+            os.path.join(tmp_path_, "processed"),
+            use_largeimage=True,
+        )
+        largeimage_get_thumbnail_ = method_mock(
+            request, large_image.tilesource.TileSource, "getThumbnail"
+        )
+        thumb_size = (500, 500)
+        largeimage_get_thumbnail_.return_value = "just something", "to pass around"
+        _bytes2pil_ = method_mock(request, Slide, "_bytes2pil")
+        _bytes2pil_.return_value = PIL.Image.new("RGB", thumb_size)
+        _thumbnail_size_ = property_mock(request, Slide, "_thumbnail_size")
+        _thumbnail_size_.return_value = thumb_size
+
+        thumb = slide.thumbnail
+
+        assert type(thumb) == PIL.Image.Image
+        assert thumb.size == thumb_size
+        largeimage_get_thumbnail_.assert_called_once_with(
+            ANY, encoding="PNG", width=thumb_size[0], height=thumb_size[1]
+        )
 
     @pytest.mark.skipif(
         not on_ci() or is_win32(), reason="Only run on CIs; hangs on Windows CIs"
