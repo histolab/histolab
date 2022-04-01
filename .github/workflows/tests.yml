@@ -130,7 +130,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e .[testing]
           python -m pip install flake8==3.8.4
-          python -m pip install black==21.6b0
+          python -m pip install black==22.3.0
           python -m pip install pooch
           python -m pip install bandit==1.7.0
 
