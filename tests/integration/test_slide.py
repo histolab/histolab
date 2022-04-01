@@ -244,3 +244,14 @@ class Describe_Slide:
 
         assert isinstance(properties, dict)
         assert properties == load_python_expression("python-expr/slide_properties_dict")
+
+    @pytest.mark.parametrize("use_largeimage", [True, False])
+    def it_knows_its_thumbnail(self, use_largeimage):
+        slide = Slide(
+            SVS.CMU_1_SMALL_REGION, "processed", use_largeimage=use_largeimage
+        )
+
+        thumbnail = slide.thumbnail
+
+        assert isinstance(thumbnail, PIL.Image.Image)
+        assert thumbnail.size == (221, 296)

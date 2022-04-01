@@ -497,7 +497,11 @@ class Slide:
             The slide thumbnail.
         """
         if self._use_largeimage:
-            thumb_bytes, _ = self._tile_source.getThumbnail(encoding="PNG")
+            thumb_bytes, _ = self._tile_source.getThumbnail(
+                encoding="PNG",
+                width=self._thumbnail_size[0],
+                height=self._thumbnail_size[1],
+            )
             thumbnail = self._bytes2pil(thumb_bytes).convert("RGB")
             return thumbnail
 
