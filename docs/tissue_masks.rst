@@ -62,6 +62,49 @@ The `BiggestTissueBoxMask <api/masks.html#histolab.masks.BiggestTissueBoxMask>`_
    :alt: largest bbox
 
 
+Use TissueMark or BiggestTissueBoxMask with a custom set of filters
+---------------------------------------------------------------------------
+
+It is also possible to supply a custom set of filters to the ``TissueMask`` or ``BiggestTissueBoxMask`` classes, in order to provide more flexibility and address specific analysis requirements.
+For example, in order to extract the tile dataset from the WSI collection, we may want to consider only the tissue that is not covered by the pathologist annotations.
+
+.. code-block:: ipython3
+
+   from histolab.data import breast_tissue_diagnostic_green_pen
+   from histolab.filters.image_filters import (
+      ApplyMaskImage,
+      GreenPenFilter,
+      Invert,
+      OtsuThreshold,
+      RgbToGrayscale,
+   )
+   from histolab.filters.morphological_filters import RemoveSmallHoles, RemoveSmallObjects
+   from histolab.masks import TissueMask
+   from histolab.slide import Slide
+
+   _, slide_path = breast_tissue_diagnostic_green_pen()
+   breast_slide = Slide(slide_path, "")
+
+   mask = TissueMask(
+      RgbToGrayscale(),
+      OtsuThreshold(),
+      ApplyMaskImage(breast_slide.thumbnail),
+      GreenPenFilter(),
+      RgbToGrayscale(),
+      Invert(),
+      OtsuThreshold(),
+      RemoveSmallHoles(),
+      RemoveSmallObjects(),
+   )
+
+   breast_slide.locate_mask(mask, scale_factor=64)
+
+
+.. figure:: https://user-images.githubusercontent.com/20052362/161248416-1205f020-9b94-4ca7-ae45-2b9a738013ca.png
+   :alt: custom filters for TissueMask
+   :figwidth: 75 %
+
+
 Custom Mask
 ------------
 
