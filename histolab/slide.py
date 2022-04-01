@@ -135,7 +135,7 @@ class Slide:
         """
         if self._use_largeimage:
             if self._metadata.get("mm_x") is not None:
-                return self._metadata["mm_x"] * (10 ** 3)
+                return self._metadata["mm_x"] * (10**3)
             raise ValueError(
                 "Unknown scan resolution! This slide is missing metadata "
                 "needed for calculating the scanning resolution. Without "
