@@ -137,7 +137,7 @@ jobs:
       - name: Black Code Style Format Check
         id: black
         run: |
-          black . --check
+          black . --check --diff
 
       - name: Lint with flake8
         id: flake8
