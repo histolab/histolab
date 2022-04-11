@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v0.5.1
+------
+**Other**
+- Fix missing license info. (`#391 <https://github.com/histolab/histolab/pull/391>`_)
+
 v0.5.0
 ------
 **Bug Fix**
