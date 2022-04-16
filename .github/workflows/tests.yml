@@ -9,7 +9,6 @@ on:
   pull_request:
 
 jobs:
-
   wsi-artifacts:
     runs-on: ubuntu-latest
     steps:
@@ -34,6 +33,39 @@ jobs:
           name: wsi-artifact
           path: tests/fixtures/external-svs
           retention-days: 1
+
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        id: python-dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install flake8==3.8.4
+          python -m pip install black==22.3.0
+          python -m pip install bandit==1.7.0
+
+      - name: Black Code Style Format Check
+        id: black
+        run: |
+          black . --check --diff
+
+      - name: Lint with flake8
+        id: flake8
+        run: |
+          flake8 . --config=setup.cfg --count --statistics
+
+      - name: Check Vulnerabilities with Bandit
+        id: bandit
+        run: |
+          bandit -r -c bandit.yaml .
 
   build:
     needs: wsi-artifacts
@@ -60,7 +92,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -133,21 +165,6 @@ jobs:
           python -m pip install black==22.3.0
           python -m pip install pooch
           python -m pip install bandit==1.7.0
-
-      - name: Black Code Style Format Check
-        id: black
-        run: |
-          black . --check --diff
-
-      - name: Lint with flake8
-        id: flake8
-        run: |
-          flake8 . --config=setup.cfg --count --statistics
-
-      - name: Check Vulnerabilities with Bandit
-        id: bandit
-        run: |
-          bandit -r -c bandit.yaml .
 
       - name: Retrieve saved WSIs
         uses: actions/download-artifact@v2
