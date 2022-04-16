@@ -1,4 +1,4 @@
-<img width="390" alt="histolab" src="https://user-images.githubusercontent.com/4196091/84828232-048fcc00-b026-11ea-8caa-5c14bb8565bd.png">
+<img width="390" alt="histolab" src="https://user-images.githubusercontent.com/4196091/163670446-e6edf680-7dd8-408f-9816-f05571e07b7e.png">
 
 
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
