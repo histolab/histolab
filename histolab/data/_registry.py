@@ -25,7 +25,7 @@ legacy_datasets = ["cmu_small_region.svs"]
 # To generate the SHA256 hash, use the command
 # openssl sha256 filename
 registry = {
-    "histolab/broken.svs": "b1325916876afa17ad5e02d2e7298ee883e758ed25369470d85bc0990e928e11",
+    "histolab/broken.svs": "26828c763a5ff824a68c6a1b1765dbc19afd5d12f1c12d856b8462741f461d37",
     "histolab/kidney.png": "5c6dc1b9ae10a2865302d9c8eda360362ec47732cb3e9766c38ed90cb9f4c371",
     "data/cmu_small_region.svs": "ed92d5a9f2e86df67640d6f92ce3e231419ce127131697fbbce42ad5e002c8a7",
     "aperio/JP2K-33003-1.svs": "6205ccf75a8fa6c32df7c5c04b7377398971a490fb6b320d50d91f7ba6a0e6fd",
