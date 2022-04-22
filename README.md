@@ -1,4 +1,4 @@
-<img width="390" alt="histolab" src="https://user-images.githubusercontent.com/4196091/163670446-e6edf680-7dd8-408f-9816-f05571e07b7e.png">
+<img width="390" alt="histolab" src="https://user-images.githubusercontent.com/4196091/164645273-3d256916-1d5b-46fd-94fd-04358bb0db97.png">
 
 
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
@@ -58,16 +58,20 @@
 
 * [Motivation](#motivation)
 
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Quickstart](#quickstart)
-* [Versioning](#versioning)
-* [Authors](#authors)
-* [License](#license)
-* [Roadmap](#roadmap)
-* [Acknowledgements](#acknowledgements)
-* [References](#references)
-* [Contribution guidelines](#contribution-guidelines)
+- [Quickstart](#quickstart)
+  - [TCGA data](#tcga-data)
+  - [Slide initialization](#slide-initialization)
+  - [Tile extraction](#tile-extraction)
+    - [Random Extraction](#random-extraction)
+    - [Grid Extraction](#grid-extraction)
+    - [Score-based extraction](#score-based-extraction)
+  - [Versioning](#versioning)
+  - [Authors](#authors)
+  - [License](#license)
+  - [Roadmap](#roadmap)
+  - [Acknowledgements](#acknowledgements)
+  - [References](#references)
+  - [Contribution guidelines](#contribution-guidelines)
 
 
 ## Motivation
