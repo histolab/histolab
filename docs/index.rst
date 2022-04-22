@@ -1,5 +1,5 @@
 
-.. image:: https://user-images.githubusercontent.com/4196091/84828232-048fcc00-b026-11ea-8caa-5c14bb8565bd.png
+.. image:: https://user-images.githubusercontent.com/4196091/164645273-3d256916-1d5b-46fd-94fd-04358bb0db97.png
    :alt: Logo
    :align: center
    :width: 40em
