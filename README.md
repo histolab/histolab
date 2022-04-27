@@ -28,6 +28,7 @@
         <a href="https://pypi.org/project/histolab/" target="_blank"><img src="https://img.shields.io/pypi/v/histolab"></a>
         <img src="https://img.shields.io/pypi/pyversions/histolab">
         <img src="https://img.shields.io/pypi/wheel/histolab">
+        <a href="https://anaconda.org/conda-forge/histolab"> <img src="https://anaconda.org/conda-forge/histolab/badges/version.svg" /> </a>
     </td>
 </tr>
 <tr>
@@ -56,7 +57,7 @@
 
 ## Table of Contents
 
-* [Motivation](#motivation)
+- [Motivation](#motivation)
 
 - [Quickstart](#quickstart)
   - [TCGA data](#tcga-data)
@@ -65,13 +66,13 @@
     - [Random Extraction](#random-extraction)
     - [Grid Extraction](#grid-extraction)
     - [Score-based extraction](#score-based-extraction)
-  - [Versioning](#versioning)
-  - [Authors](#authors)
-  - [License](#license)
-  - [Roadmap](#roadmap)
-  - [Acknowledgements](#acknowledgements)
-  - [References](#references)
-  - [Contribution guidelines](#contribution-guidelines)
+- [Versioning](#versioning)
+- [Authors](#authors)
+- [License](#license)
+- [Roadmap](#roadmap)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Contribution guidelines](#contribution-guidelines)
 
 
 ## Motivation
@@ -120,6 +121,12 @@ it can be easily installed via the command:
 
 ```
 pip install histolab
+```
+
+alternatively, it can be installed via conda:
+
+```
+conda install -c conda-forge histolab
 ```
 
 ## TCGA data
