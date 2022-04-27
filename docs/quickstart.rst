@@ -20,6 +20,13 @@ the ``histolab`` package has been published on
 
    pip install histolab
 
+alternatively, it can be installed via conda:
+
+.. prompt:: text
+   :prompts: $
+
+   conda install -c conda-forge histolab
+
 TCGA data
 ---------
 

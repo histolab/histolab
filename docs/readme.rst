@@ -39,9 +39,14 @@ smaller regions of tissues (tiles), which in turns require a tissue detection st
 Installation
 ************
 
-The histolab package can be installed by using::
+The histolab package can be installed via pip::
 
    pip install histolab
+
+
+or via conda::
+
+   conda install -c conda-forge histolab
 
 
 Prerequisites
