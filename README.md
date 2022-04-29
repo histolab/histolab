@@ -26,10 +26,9 @@
     <td>Version Info</td>
     <td>
         <a href="https://pypi.org/project/histolab/" target="_blank"><img src="https://img.shields.io/pypi/v/histolab"></a>
-        <a href="https://anaconda.org/conda-forge/histolab"> <img src="https://anaconda.org/conda-forge/histolab/badges/version.svg" /> </a>
+        <a href="https://anaconda.org/conda-forge/histolab"><img src="https://anaconda.org/conda-forge/histolab/badges/version.svg" /></a>
         <img src="https://img.shields.io/pypi/pyversions/histolab">
         <img src="https://img.shields.io/pypi/wheel/histolab">
-
     </td>
 </tr>
 <tr>
