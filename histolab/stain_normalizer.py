@@ -380,7 +380,7 @@ class ReinhardStainNormalizer:
         return norm_rgb
 
     def mean_std(self, img_rgb: PIL.Image.Image) -> Tuple[np.ndarray, np.ndarray]:
-        """Return mean and standard deviation of each channel
+        """Return mean and standard deviation of each channel in LAB color space.
 
         Parameters
         ----------
@@ -390,9 +390,9 @@ class ReinhardStainNormalizer:
         Returns
         -------
         np.ndarray
-            Mean of each channel.
+            Mean of each channel in LAB color space.
         np.ndarray
-            Stadndard deviation of each channel.
+            Standard deviation of each channel in LAB color space.
         """
         mask = self._tissue_mask(img_rgb)
 
