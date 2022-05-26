@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-from PIL import ImageChops
 
 from histolab.stain_normalizer import MacenkoStainNormalizer
 
@@ -133,9 +132,6 @@ class Describe_MacenkoStainNormalizer:
         normalizer.fit(img_to_fit)
         img_normalized = normalizer.transform(img_to_transform)
 
-        assert (
-            np.unique(
-                np.array(ImageChops.difference(img_normalized, expected_img_normalized))
-            )[0]
-            == 0
+        np.testing.assert_array_almost_equal(
+            np.array(img_normalized), np.array(expected_img_normalized)
         )
