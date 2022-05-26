@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from histolab.stain_normalizer import MacenkoStainNormalizer
+from histolab.stain_normalizer import MacenkoStainNormalizer, ReinhardStainNormalizer
 
 from ..fixtures import TILES
 from ..util import load_expectation
@@ -133,5 +133,101 @@ class Describe_MacenkoStainNormalizer:
         img_normalized = normalizer.transform(img_to_transform)
 
         np.testing.assert_array_almost_equal(
+            np.array(img_normalized), np.array(expected_img_normalized)
+        )
+
+
+class Describe_ReinhardStainNormalizer:
+    @pytest.mark.parametrize(
+        "img, expected_mean, expected_std",
+        [
+            (
+                TILES.TISSUE_LEVEL0_7352_11762_7864_12274,
+                np.array([57.77235476, 30.6667066, -12.3231239]),
+                np.array([15.37156544, 10.19152132, 5.33366456]),
+            ),
+            (
+                TILES.MEDIUM_NUCLEI_SCORE_LEVEL1,
+                np.array([63.60525855, 34.10860319, -3.26439523]),
+                np.array([13.75089992, 13.89511025, 6.91485312]),
+            ),
+            (
+                TILES.LOW_NUCLEI_SCORE_LEVEL0,
+                np.array([82.67172754, 8.5236446, -4.30401803]),
+                np.array([12.48770309, 8.40158118, 10.3241243]),
+            ),
+        ],
+    )
+    def it_knows_its_mean_std(self, img, expected_mean, expected_std):
+        normalizer = ReinhardStainNormalizer()
+
+        mean, std = normalizer.mean_std(img)
+
+        np.testing.assert_almost_equal(mean, expected_mean)
+        np.testing.assert_almost_equal(std, expected_std)
+
+    @pytest.mark.parametrize(
+        "img, expected_mean, expected_std",
+        [
+            (
+                TILES.TISSUE_LEVEL0_7352_11762_7864_12274,
+                np.array([57.77235476, 30.6667066, -12.3231239]),
+                np.array([15.37156544, 10.19152132, 5.33366456]),
+            ),
+            (
+                TILES.MEDIUM_NUCLEI_SCORE_LEVEL1,
+                np.array([63.60525855, 34.10860319, -3.26439523]),
+                np.array([13.75089992, 13.89511025, 6.91485312]),
+            ),
+            (
+                TILES.LOW_NUCLEI_SCORE_LEVEL0,
+                np.array([82.67172754, 8.5236446, -4.30401803]),
+                np.array([12.48770309, 8.40158118, 10.3241243]),
+            ),
+        ],
+    )
+    def it_knows_how_to_fit(self, img, expected_mean, expected_std):
+        normalizer = ReinhardStainNormalizer()
+
+        assert normalizer.target_means is None
+        assert normalizer.target_stds is None
+
+        normalizer.fit(img)
+
+        target_means = normalizer.target_means
+        target_stds = normalizer.target_stds
+
+        np.testing.assert_almost_equal(target_means, expected_mean)
+        np.testing.assert_almost_equal(target_stds, expected_std)
+
+    @pytest.mark.parametrize(
+        "img_to_fit, img_to_transform, expected_img_normalized_path",
+        [
+            (
+                TILES.TISSUE_LEVEL0_7352_11762_7864_12274,
+                TILES.MEDIUM_NUCLEI_SCORE_LEVEL1,
+                "pil-images-rgb/tissue-level0-7352-11762-7864-12274"
+                "--medium-nuclei-score-level1--reinhard",
+            ),
+            (
+                TILES.TISSUE_LEVEL0_7352_11762_7864_12274,
+                TILES.LOW_NUCLEI_SCORE_LEVEL0,
+                "pil-images-rgb/tissue-level0-7352-11762-7864-12274"
+                "--low-nuclei-score-level0--reinhard",
+            ),
+        ],
+    )
+    def it_knows_how_to_fit_and_transform_Re(
+        self, img_to_fit, img_to_transform, expected_img_normalized_path
+    ):
+        expected_img_normalized = load_expectation(
+            expected_img_normalized_path, type_="png"
+        )
+        normalizer = ReinhardStainNormalizer()
+
+        normalizer.fit(img_to_fit)
+        img_normalized = normalizer.transform(img_to_transform)
+
+        np.testing.assert_almost_equal(
             np.array(img_normalized), np.array(expected_img_normalized)
         )
