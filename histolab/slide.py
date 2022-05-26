@@ -51,8 +51,8 @@ except (ModuleNotFoundError, ImportError):  # pragma: no cover
     LARGEIMAGE_IS_INSTALLED = False
 
 IMG_EXT = "png"
-IMG_UPSAMPLE_MODE = PIL.Image.BICUBIC
-IMG_DOWNSAMPLE_MODE = PIL.Image.LANCZOS
+IMG_UPSAMPLE_MODE = PIL.Image.Resampling.BICUBIC
+IMG_DOWNSAMPLE_MODE = PIL.Image.Resampling.LANCZOS
 TILE_SIZE_PIXEL_TOLERANCE = 5
 
 
@@ -390,7 +390,7 @@ class Slide:
         img = self.scaled_image(scale_factor)
         mask = binary_mask(self)
         resized_mask = np.array(
-            PIL.Image.fromarray(mask).resize(img.size, PIL.Image.ANTIALIAS)
+            PIL.Image.fromarray(mask).resize(img.size, PIL.Image.Resampling.LANCZOS)
         )
 
         if tissue_mask:
