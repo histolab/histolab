@@ -969,6 +969,9 @@ class OtsuThreshold(ImageFilter):
     ----------
     img : PIL.Image.Image
         Input image.
+    relate : operator, optional
+        Operator to be used to compute the mask from the threshold. Default is
+        operator.lt
 
     Returns
     -------
@@ -992,8 +995,11 @@ class OtsuThreshold(ImageFilter):
         Trans SystMan Cybern Syst 9.1 (1979)
     """  # noqa
 
+    def __init__(self, relate: Callable[..., Any] = operator.lt):
+        self.relate = relate
+
     def __call__(self, img: PIL.Image.Image) -> np.ndarray:
-        return F.otsu_threshold(img)
+        return F.otsu_threshold(img, self.relate)
 
 
 class FilterEntropy(ImageFilter):
