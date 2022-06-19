@@ -224,7 +224,7 @@ class DescribeImageFilters:
 
         otsu_threshold(image)
 
-        F_otsu_threshold.assert_called_once_with(image)
+        F_otsu_threshold.assert_called_once_with(image, operator.lt)
         assert type(otsu_threshold(image)) == np.ndarray
 
     def it_calls_local_otsu_threshold_functional(self, request):
