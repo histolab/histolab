@@ -177,7 +177,7 @@ class Describe_Slide:
 
         assert isinstance(err.value, HistolabException)
         assert str(err.value).replace(",", "") == (
-            "ArgumentError(\"argument 1: <class 'TypeError'>: Incorrect type\")"
+            "AttributeError(\"'NoneType' object has no attribute 'read'\")"
             ". This slide may be corrupted or have a non-standard format not "
             "handled by the openslide and PIL libraries. Consider setting "
             "use_largeimage to True when instantiating this Slide."
