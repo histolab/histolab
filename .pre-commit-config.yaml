@@ -30,3 +30,9 @@ repos:
       - id: check-merge-conflict
       - id: end-of-file-fixer
       - id: check-toml
+
+  - repo: https://github.com/floatingpurr/sync_with_poetry
+    rev: "0.2.1"
+    hooks:
+      - id: sync_with_poetry
+        args: ["--all"]
