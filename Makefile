@@ -1,45 +1,39 @@
 MAKE   = make
-PYTHON = python
+POETRY = poetry run
+PYTHON = $(POETRY) python
 SETUP  = $(PYTHON) ./setup.py
 
 .PHONY: clean cleandocs coverage dist docs opendocs unit-coverage upload help
 
 help:
 	@echo "Usage: \`make <target>' where <target> is one or more of"
-	@echo "  clean          delete intermediate work product and start fresh"
-	@echo "  cleandocs      delete cached HTML documentation and start fresh"
-	@echo "  coverage       report overall test coverage"
-	@echo "  docs           build HTML documentation using Sphinx (incremental)"
-	@echo "  opendocs       open local HTML documentation in browser"
-	@echo "  dist           generate source and wheel distribution into dist/"
-	@echo "  unit-coverage  report unit test coverage"
-	@echo "  upload         upload distribution to PyPI"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' | sort
 
-clean:
+clean: ## delete intermediate work product and start fresh
 	find . -type f -name \*.pyc -exec rm {} \;
 	find . -type f -name .DS_Store -exec rm {} \;
 	rm -rf dist .coverage
 
-cleandocs:
+cleandocs: ## delete cached HTML documentation and start fresh
 	$(MAKE) -C docs clean
 
-coverage:
-	pytest --cov-report term-missing --cov=histolab --cov=tests
+coverage: ## report overall test coverage
+	$(POETRY) pytest --cov-report term-missing --cov=histolab --cov=tests
 
-dist:
-	rm -rf dist/
-	$(SETUP) sdist bdist_wheel
+dist: ## generate source and wheel distribution into dist/
+	poetry build
 
-docs:
+docs: ## build HTML documentation using Sphinx (incremental)
 	$(MAKE) -C docs html
 
-opendocs:
+opendocs: ## open local HTML documentation in browser
 	open docs/_build/html/index.html
 
-unit-coverage:
-	pytest --cov-report term-missing --cov=histolab tests/unit
+unit-coverage: ## report unit test coverage
+	$(POETRY) pytest --cov-report term-missing --cov=histolab tests/unit
 
-upload:
-	rm -rf dist/
-	$(SETUP) sdist bdist_wheel
-	twine upload dist/*
+upload: ##  upload distribution to PyPI
+	poetry publish
+
+version: ## shows the current version of the project or bumps the version according to RULE parameter
+	poetry version $(RULE)
