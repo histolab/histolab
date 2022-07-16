@@ -1,7 +1,6 @@
 MAKE   = make
 POETRY = poetry run
 PYTHON = $(POETRY) python
-SETUP  = $(PYTHON) ./setup.py
 
 .PHONY: clean cleandocs coverage dist docs opendocs unit-coverage upload help
 
@@ -32,7 +31,7 @@ opendocs: ## open local HTML documentation in browser
 unit-coverage: ## report unit test coverage
 	$(POETRY) pytest --cov-report term-missing --cov=histolab tests/unit
 
-upload: ##  upload distribution to PyPI
+upload: ## upload distribution to PyPI
 	poetry publish
 
 version: ## shows the current version of the project or bumps the version according to RULE parameter
