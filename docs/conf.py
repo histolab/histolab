@@ -7,35 +7,20 @@
 # -- Path setup --------------------------------------------------------------
 
 import datetime
+import importlib.metadata
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
-import re
 import sys
 
 sys.path.insert(0, os.path.abspath(".."))
 
 
-def ascii_bytes_from(path, *paths):
-    """
-    Return the ASCII characters in the file specified by *path* and *paths*.
-    The file path is determined by concatenating *path* and any members of
-    *paths* with a directory separator in between.
-    """
-    file_path = os.path.join(path, *paths)
-    with open(file_path) as f:
-        ascii_bytes = f.read()
-    return ascii_bytes
-
-
 # read required text from files
-thisdir = os.path.dirname(__file__)
-init_py = ascii_bytes_from(thisdir, "..", "histolab", "__init__.py")
-version = re.search('__version__ = "([^"]+)"', init_py).group(1)
-
+version = importlib.metadata.metadata("histolab")["Version"]
 
 # -- Project information -----------------------------------------------------
 

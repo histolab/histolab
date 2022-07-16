@@ -20,6 +20,10 @@
 # https://github.com/scikit-image/scikit-image/blob/master/skimage/data/__init__.py
 # ==================================================================================
 
+try:
+    from importlib import metadata
+except ImportError:  # for Python<3.8
+    import importlib_metadata as metadata
 import os
 import shutil
 from typing import Tuple
@@ -28,7 +32,6 @@ import openslide
 import PIL
 from requests.exceptions import HTTPError
 
-from .. import __version__
 from ._registry import legacy_registry, registry, registry_urls
 
 legacy_data_dir = os.path.abspath(os.path.dirname(__file__))
@@ -89,7 +92,8 @@ def _create_image_fetcher():
         # which for now, includes a few limited data samples
         return None, legacy_data_dir
 
-    pooch_version = __version__.replace(".dev", "+")
+    version = metadata.metadata("histolab")["Version"]
+    histolab_version = version.replace(".dev", "+")
     url = "https://github.com/histolab/histolab/raw/{version}/histolab/"
 
     # Create a new friend to manage your sample data storage
@@ -102,7 +106,7 @@ def _create_image_fetcher():
         # With a version qualifier
         path=os_cache("histolab-images"),
         base_url=url,
-        version=pooch_version,
+        version=histolab_version,
         env="HISTOLAB_DATADIR",
         registry=registry,
         urls=registry_urls,
