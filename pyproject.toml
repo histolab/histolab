@@ -23,9 +23,10 @@ numpy = ">=1.18.4,<1.23.1"
 scipy = ">=1.5.0,<1.8.2"
 openslide-python = ">=1.1.2, <1.2.1"
 typing-extensions = "^4.0.0"
+importlib-metadata = "^4.3.0"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^4.0.1"
+flake8 = "*"
 pre-commit = "^2.15.0"
 pyflakes = "^2.4.0"
 pycodestyle = "^2.8.0"
