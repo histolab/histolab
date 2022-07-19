@@ -25,24 +25,21 @@ If you want to avoid setting up a local environment, you can spin up a remote de
 
 Otherwise, before starting contributing to Histolab, test that your local environment is up and running. Here some steps:
 
-- Create a python 3.7, 3.8 or 3.9 `virtualenv`
-- Activate the env and in the project root run:
+- In the project root run:
 
-  `pip install -e .[testing]`
-
-  `pip install -r requirements-dev.txt`
+  `poetry install`
 
 - Install the pre-commit hooks
 
-   `pre-commit install` <- *to be running in the project root directory*
+   `pre-commit install` <- *to be run in the project root directory*
 
 - Run the tests
 
-   `pytest` or if you wanna skip the benchmarks `pytest --ignore=tests/benchmarks`
+   `poetry run pytest` or if you wanna skip the benchmarks `poetry run pytest --ignore=tests/benchmarks`
 
 - Run tests in parallel (requires `pytest-xdist`)
 
-   `pytest --ignore=tests/benchmarks -n auto`
+   `poetry run pytest --ignore=tests/benchmarks -n auto`
 
 
 ## Contribution Workflow
