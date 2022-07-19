@@ -17,11 +17,6 @@
 # ------------------------------------------------------------------------
 
 import copy
-
-try:
-    from importlib import metadata
-except ImportError:  # for Python<3.8
-    import importlib_metadata as metadata
 import os
 import sys
 from importlib import reload
@@ -33,6 +28,7 @@ import PIL
 import pytest
 from requests.exceptions import HTTPError
 
+from histolab import __version__ as version
 from histolab.data import (
     _fetch,
     _has_hash,
@@ -80,7 +76,6 @@ def test_cmu_small_region():
 @patch.dict(registry, {"data/cmu_small_region_broken.svs": "bar"}, clear=True)
 @patch.object(_registry, "legacy_datasets", ["data/cmu_small_region_broken.svs"])
 def test_file_url_not_found():
-    version = metadata.metadata("histolab")["Version"]
     data_filename = "data/cmu_small_region_broken.svs"
     with pytest.raises(HTTPError) as err:
         _fetch(data_filename)
