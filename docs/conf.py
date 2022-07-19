@@ -7,7 +7,6 @@
 # -- Path setup --------------------------------------------------------------
 
 import datetime
-import importlib.metadata
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -16,11 +15,10 @@ import importlib.metadata
 import os
 import sys
 
+from histolab import __version__
+
 sys.path.insert(0, os.path.abspath(".."))
 
-
-# read required text from files
-version = importlib.metadata.metadata("histolab")["Version"]
 
 # -- Project information -----------------------------------------------------
 
@@ -29,7 +27,7 @@ copyright = "2021, histolab"
 author = "histolab"
 
 # The full version, including alpha/beta/rc tags
-release = version
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------

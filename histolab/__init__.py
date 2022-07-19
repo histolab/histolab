@@ -16,9 +16,11 @@
 # limitations under the License.
 # ------------------------------------------------------------------------
 
+from __future__ import annotations
+
 try:
     from importlib import metadata
-except ImportError:  # for Python<3.8
+except ImportError:
     import importlib_metadata as metadata
 
-__version__ = metadata.metadata("histolab")["Version"]
+__version__ = metadata.version("histolab")
