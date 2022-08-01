@@ -553,17 +553,18 @@ girder = ["girder-large-image"]
 
 [[package]]
 name = "large-image-source-pil"
-version = "1.8.11"
+version = "1.13.0"
 description = "A Pillow tilesource for large_image."
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-large-image = ">=1.0.0"
+importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
+large-image = "*"
 
 [package.extras]
-girder = ["girder-large-image (>=1.0.0)"]
+girder = ["girder-large-image"]
 
 [[package]]
 name = "markupsafe"
@@ -1486,7 +1487,7 @@ docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-katex", "sphinxemoji", "sph
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.11"
-content-hash = "5c27c75fd75a872a193ebfe3aad60ede26d740478d1b10159e3a1fae16d62864"
+content-hash = "173e6d68fbdf3574d3355f9f78c10e71a969e80ce973e35a820ee924f54b1fc2"
 
 [metadata.files]
 alabaster = [
@@ -1798,8 +1799,8 @@ large-image-source-openslide = [
     {file = "large_image_source_openslide-1.13.0-py3-none-any.whl", hash = "sha256:5814dd9a9112ea4d6a4d323f53c1e3902c39a970f89357b00f518b122ce7e733"},
 ]
 large-image-source-pil = [
-    {file = "large-image-source-pil-1.8.11.tar.gz", hash = "sha256:bff46539cbcc83602120de790a8cfaba7d60f9d6ab8bc61eb89c3d78e1b7f473"},
-    {file = "large_image_source_pil-1.8.11-py3-none-any.whl", hash = "sha256:47c7d9425c0a94ce6ff76eb441c860b0bd56f0e719b9dca53195151483f9306b"},
+    {file = "large-image-source-pil-1.13.0.tar.gz", hash = "sha256:4b38f8e7370a83c370f50e262371e4710b824d8dcbe163ffb82544f070f1e29f"},
+    {file = "large_image_source_pil-1.13.0-py3-none-any.whl", hash = "sha256:2ded6a1d5c2650a98e03cfddf243558fb8807f6831014d08ad4b7bc860a0bff2"},
 ]
 markupsafe = [
     {file = "MarkupSafe-2.1.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:86b1f75c4e7c2ac2ccdaec2b9022845dbb81880ca318bb7a0a01fbf7813e3812"},
