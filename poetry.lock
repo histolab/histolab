@@ -536,19 +536,20 @@ tiff = ["large-image-source-tiff"]
 
 [[package]]
 name = "large-image-source-openslide"
-version = "1.8.11"
+version = "1.13.0"
 description = "An Openslide tilesource for large_image."
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-large-image = ">=1.0.0"
+importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
+large-image = "*"
 openslide-python = ">=1.1.0"
 tifftools = ">=1.2.0"
 
 [package.extras]
-girder = ["girder-large-image (>=1.0.0)"]
+girder = ["girder-large-image"]
 
 [[package]]
 name = "large-image-source-pil"
@@ -1485,7 +1486,7 @@ docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-katex", "sphinxemoji", "sph
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.11"
-content-hash = "6af7df26a8f3ec2011a034beea107e756f47825e98d7c7e4be6635d03466afd1"
+content-hash = "5c27c75fd75a872a193ebfe3aad60ede26d740478d1b10159e3a1fae16d62864"
 
 [metadata.files]
 alabaster = [
@@ -1793,8 +1794,8 @@ large-image = [
     {file = "large_image-1.8.11-py3-none-any.whl", hash = "sha256:3064acc6ad6048831ffc33505541c0d6f641f3d61c1e844e847e544db065c6ac"},
 ]
 large-image-source-openslide = [
-    {file = "large-image-source-openslide-1.8.11.tar.gz", hash = "sha256:50b8e8dc4b1c65ed6ad321ec283f3747ae749d1f3c93d57568074fa1e5fdb052"},
-    {file = "large_image_source_openslide-1.8.11-py3-none-any.whl", hash = "sha256:f9f1afa490193464392e14f5fe1665e28cf6ecd7c3a8c13d2fb94c4675ccfcb0"},
+    {file = "large-image-source-openslide-1.13.0.tar.gz", hash = "sha256:e468e5c8a852c6bb0b499efdf8f4a3ae1449881f2828724a71b103c01e2be4b4"},
+    {file = "large_image_source_openslide-1.13.0-py3-none-any.whl", hash = "sha256:5814dd9a9112ea4d6a4d323f53c1e3902c39a970f89357b00f518b122ce7e733"},
 ]
 large-image-source-pil = [
     {file = "large-image-source-pil-1.8.11.tar.gz", hash = "sha256:bff46539cbcc83602120de790a8cfaba7d60f9d6ab8bc61eb89c3d78e1b7f473"},
