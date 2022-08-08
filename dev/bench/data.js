@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1659366597645,
+  "lastUpdate": 1659950108026,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -12537,6 +12537,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.6877566200721788e-7",
             "extra": "mean: 35.13710615200421 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "88ec942ba7b7f82f083c26dcc462286d24d41561",
+          "message": "Bump pycodestyle from 2.9.0 to 2.9.1\n\nBumps [pycodestyle](https://github.com/PyCQA/pycodestyle) from 2.9.0 to 2.9.1.\n- [Release notes](https://github.com/PyCQA/pycodestyle/releases)\n- [Changelog](https://github.com/PyCQA/pycodestyle/blob/main/CHANGES.txt)\n- [Commits](https://github.com/PyCQA/pycodestyle/compare/2.9.0...2.9.1)\n\n---\nupdated-dependencies:\n- dependency-name: pycodestyle\n  dependency-type: direct:development\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2022-08-08T11:13:26+02:00",
+          "tree_id": "10229ee8e9f93821ac4db8451aa2975cfaa216a0",
+          "url": "https://github.com/histolab/histolab/commit/88ec942ba7b7f82f083c26dcc462286d24d41561"
+        },
+        "date": 1659950106747,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.626982356679704,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0012877692757627005",
+            "extra": "mean: 131.1134539500017 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 372.8827709275225,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00008201109188642479",
+            "extra": "mean: 2.681808004999971 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1198.5980259705284,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000006104489233128017",
+            "extra": "mean: 834.3080651999912 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 31646.39478197192,
+            "unit": "iter/sec",
+            "range": "stddev: 1.7888006465917847e-7",
+            "extra": "mean: 31.59917604799875 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 24524.934098778096,
+            "unit": "iter/sec",
+            "range": "stddev: 1.4780535932578075e-7",
+            "extra": "mean: 40.77482924000287 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 28778.818254159596,
+            "unit": "iter/sec",
+            "range": "stddev: 1.745386063703934e-7",
+            "extra": "mean: 34.74777842399635 usec\nrounds: 250"
           }
         ]
       }
