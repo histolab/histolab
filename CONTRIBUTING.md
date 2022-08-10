@@ -25,6 +25,8 @@ If you want to avoid setting up a local environment, you can spin up a remote de
 
 Otherwise, before starting contributing to Histolab, test that your local environment is up and running. Here some steps:
 
+Histolab uses [poetry](https://python-poetry.org) to create an isolated environment and manage package dependencies. To prepare your system, ensure you have an official distribution of Python version 3.7+ and install Poetry using one of the commands provided in [poetry documentation](https://python-poetry.org/docs/#installation).
+
 - In the project root run:
 
   `poetry install`
