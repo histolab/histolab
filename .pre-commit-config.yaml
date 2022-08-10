@@ -6,10 +6,9 @@ repos:
         language_version: python3.8
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
+    rev: 5.0.4
     hooks:
       - id: flake8
-        additional_dependencies: ["flake8-eradicate==1.2.0"]
 
   - repo: https://github.com/pycqa/isort
     rev: 5.10.1
