@@ -124,7 +124,7 @@ def train_test_df_patient_wise(
         Training dataset
     pd.DataFrame
         Test dataset
-    """
+    """  # noqa
 
     patient_with_labels = (
         dataset_df.groupby(patient_col)[label_col].unique().apply(list)
@@ -173,7 +173,7 @@ def split_tiles_patient_wise(
         Ratio of test set samples over the entire dataset, by default 0.2
     seed : int, optional
         Seed for RandomState, by default 1234
-    """
+    """  # noqa
     tiles_filenames = [
         f for f in os.listdir(tiles_dir) if os.path.splitext(f)[1] == ".png"
     ]
