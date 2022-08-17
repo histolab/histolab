@@ -504,7 +504,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 
 [[package]]
 name = "large-image"
-version = "1.8.11"
+version = "1.16.0"
 description = "Python modules to work with large, multiresolution images."
 category = "dev"
 optional = false
@@ -512,27 +512,35 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 cachetools = ">=3.0.0"
+importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 numpy = ">=1.10.4"
-Pillow = "<8.3.0 || >8.3.0,<8.3.1 || >8.3.1"
+palettable = "*"
+Pillow = "*"
 psutil = ">=4.2.0"
 
 [package.extras]
-all = ["large-image-source-test", "large-image-source-tiff", "large-image-source-ometiff", "large-image-source-openslide", "large-image-source-deepzoom", "large-image-source-dummy", "large-image-converter", "large-image-source-nd2", "large-image-source-gdal", "large-image-source-mapnik", "pylibmc (>=1.5.1)", "large-image-source-openjpeg", "large-image-source-pil", "large-image-source-bioformats"]
-bioformats = ["large-image-source-bioformats"]
-converter = ["large-image-converter"]
-deepzoom = ["large-image-source-deepzoom"]
-dummy = ["large-image-source-dummy"]
-gdal = ["large-image-source-gdal"]
-mapnik = ["large-image-source-mapnik"]
+all = ["large-image-source-pil (>=1.16.0)", "large-image-source-openslide (>=1.16.0)", "large-image-source-test (>=1.16.0)", "large-image-source-mapnik (>=1.16.0)", "pyvips", "simplejpeg", "large-image-source-dummy (>=1.16.0)", "large-image-converter (>=1.16.0)", "large-image-source-multi (>=1.16.0)", "large-image-source-vips (>=1.16.0)", "large-image-source-tifffile (>=1.16.0)", "large-image-source-nd2 (>=1.16.0)", "large-image-source-ometiff (>=1.16.0)", "large-image-source-openjpeg (>=1.16.0)", "large-image-source-gdal (>=1.16.0)", "matplotlib", "large-image-source-deepzoom (>=1.16.0)", "large-image-source-bioformats (>=1.16.0)", "large-image-source-tiff (>=1.16.0)", "pylibmc (>=1.5.1)"]
+bioformats = ["large-image-source-bioformats (>=1.16.0)"]
+colormaps = ["matplotlib"]
+converter = ["large-image-converter (>=1.16.0)"]
+deepzoom = ["large-image-source-deepzoom (>=1.16.0)"]
+dummy = ["large-image-source-dummy (>=1.16.0)"]
+gdal = ["large-image-source-gdal (>=1.16.0)"]
+mapnik = ["large-image-source-mapnik (>=1.16.0)"]
 memcached = ["pylibmc (>=1.5.1)"]
-nd2 = ["large-image-source-nd2"]
-ometiff = ["large-image-source-ometiff"]
-openjpeg = ["large-image-source-openjpeg"]
-openslide = ["large-image-source-openslide"]
-pil = ["large-image-source-pil"]
-sources = ["large-image-source-test", "large-image-source-tiff", "large-image-source-ometiff", "large-image-source-openslide", "large-image-source-deepzoom", "large-image-source-dummy", "large-image-source-nd2", "large-image-source-gdal", "large-image-source-mapnik", "large-image-source-openjpeg", "large-image-source-pil", "large-image-source-bioformats"]
-test = ["large-image-source-test"]
-tiff = ["large-image-source-tiff"]
+multi = ["large-image-source-multi (>=1.16.0)"]
+nd2 = ["large-image-source-nd2 (>=1.16.0)"]
+ometiff = ["large-image-source-ometiff (>=1.16.0)"]
+openjpeg = ["large-image-source-openjpeg (>=1.16.0)"]
+openslide = ["large-image-source-openslide (>=1.16.0)"]
+performance = ["simplejpeg"]
+pil = ["large-image-source-pil (>=1.16.0)"]
+sources = ["large-image-source-mapnik (>=1.16.0)", "large-image-source-deepzoom (>=1.16.0)", "large-image-source-vips (>=1.16.0)", "large-image-source-dummy (>=1.16.0)", "large-image-source-tifffile (>=1.16.0)", "large-image-source-nd2 (>=1.16.0)", "large-image-source-ometiff (>=1.16.0)", "large-image-source-openjpeg (>=1.16.0)", "large-image-source-pil (>=1.16.0)", "large-image-source-gdal (>=1.16.0)", "large-image-source-bioformats (>=1.16.0)", "large-image-source-openslide (>=1.16.0)", "large-image-source-tiff (>=1.16.0)", "large-image-source-test (>=1.16.0)", "large-image-source-multi (>=1.16.0)"]
+test = ["large-image-source-test (>=1.16.0)"]
+tiff = ["large-image-source-tiff (>=1.16.0)"]
+tifffile = ["large-image-source-tifffile (>=1.16.0)"]
+tiledoutput = ["pyvips"]
+vips = ["large-image-source-vips (>=1.16.0)"]
 
 [[package]]
 name = "large-image-source-openslide"
@@ -653,6 +661,14 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
+
+[[package]]
+name = "palettable"
+version = "3.3.0"
+description = "Color palettes for Python"
+category = "dev"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "parso"
@@ -1487,7 +1503,7 @@ docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-katex", "sphinxemoji", "sph
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.11"
-content-hash = "a90489d5ecebc0b4d8eada47dc761c094e2247448bf8eb7259885ca4a1628186"
+content-hash = "50e7b44c74278b2d1afee4e2de16a54f1a697a021dd4d954beedfc1654a94d00"
 
 [metadata.files]
 alabaster = [
@@ -1800,8 +1816,8 @@ keyring = [
     {file = "keyring-23.7.0.tar.gz", hash = "sha256:782e1cd1132e91bf459fcd243bcf25b326015c1ac0b198e4408f91fa6791062b"},
 ]
 large-image = [
-    {file = "large-image-1.8.11.tar.gz", hash = "sha256:9829d2804d912c14ed25739ebef2b712b1217b1c350af347dabff171f4d689a0"},
-    {file = "large_image-1.8.11-py3-none-any.whl", hash = "sha256:3064acc6ad6048831ffc33505541c0d6f641f3d61c1e844e847e544db065c6ac"},
+    {file = "large-image-1.16.0.tar.gz", hash = "sha256:538c1ad34322f21e6f9c19155354b61d26a1fd6780967caa6e75ca9022861771"},
+    {file = "large_image-1.16.0-py3-none-any.whl", hash = "sha256:6027c83ead8c6ca8e13d48eb208c8edfd2113c31f31e5ed134e129ffc78c267c"},
 ]
 large-image-source-openslide = [
     {file = "large-image-source-openslide-1.13.0.tar.gz", hash = "sha256:e468e5c8a852c6bb0b499efdf8f4a3ae1449881f2828724a71b103c01e2be4b4"},
@@ -1920,6 +1936,10 @@ openslide-python = [
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
     {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
+]
+palettable = [
+    {file = "palettable-3.3.0-py2.py3-none-any.whl", hash = "sha256:c3bf3f548fc228e86bd3d16928bbf8d621c1d1098791ceab446d0e3a5e1298d1"},
+    {file = "palettable-3.3.0.tar.gz", hash = "sha256:72feca71cf7d79830cd6d9181b02edf227b867d503bec953cf9fa91bf44896bd"},
 ]
 parso = [
     {file = "parso-0.8.3-py2.py3-none-any.whl", hash = "sha256:c001d4636cd3aecdaf33cbb40aebb59b094be2a74c556778ef5576c175e19e75"},
