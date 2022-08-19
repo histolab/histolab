@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1660723191112,
+  "lastUpdate": 1660900107275,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -12801,6 +12801,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.0916742871569095e-7",
             "extra": "mean: 39.56291945599867 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "pamaron",
+            "username": "ernestoarbitrio"
+          },
+          "distinct": true,
+          "id": "d535f89857accd7ef3709e62c999b7e0e0af4614",
+          "message": "Bump twine from 3.8.0 to 4.0.1\n\nBumps [twine](https://github.com/pypa/twine) from 3.8.0 to 4.0.1.\n- [Release notes](https://github.com/pypa/twine/releases)\n- [Changelog](https://github.com/pypa/twine/blob/main/docs/changelog.rst)\n- [Commits](https://github.com/pypa/twine/compare/3.8.0...4.0.1)\n\n---\nupdated-dependencies:\n- dependency-name: twine\n  dependency-type: direct:development\n  update-type: version-update:semver-major\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2022-08-19T11:06:40+02:00",
+          "tree_id": "fd2ad21ab6d744631261e9f8efa698faf50c5544",
+          "url": "https://github.com/histolab/histolab/commit/d535f89857accd7ef3709e62c999b7e0e0af4614"
+        },
+        "date": 1660900106659,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.792154311313302,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0012406406983490267",
+            "extra": "mean: 128.3342141399993 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 232.6944753037253,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00005399508400322459",
+            "extra": "mean: 4.297480628599999 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1188.58651987651,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000005769072933474032",
+            "extra": "mean: 841.3354714000093 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 27943.094895879098,
+            "unit": "iter/sec",
+            "range": "stddev: 8.564151943174153e-8",
+            "extra": "mean: 35.78701656799922 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 22421.948573238955,
+            "unit": "iter/sec",
+            "range": "stddev: 9.509521002889682e-8",
+            "extra": "mean: 44.599156791997984 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 25759.28149847955,
+            "unit": "iter/sec",
+            "range": "stddev: 1.120639456891173e-7",
+            "extra": "mean: 38.820958576000066 usec\nrounds: 250"
           }
         ]
       }
