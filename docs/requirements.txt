@@ -1,4 +1,4 @@
-histolab
+.
 sphinx==4.5.0
 sphinx-rtd-theme
 sphinxcontrib-katex
