@@ -8,6 +8,7 @@ on:
       - v*
   pull_request:
     paths:
+      - "docs/**"
       - "histolab/**"
       - "tests/**"
       - "pyproject.toml"
@@ -47,7 +48,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macOS-latest, ubuntu-latest]
-        python-version: ['3.7','3.8','3.9','3.10']
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
         include:
           - os: ubuntu-latest
             cache-path: ~/.cache/pypoetry/virtualenvs
@@ -57,11 +58,11 @@ jobs:
             cache-path: ~/Library/Caches/pypoetry/cache
         exclude:
           - os: windows-latest
-            python-version: '3.8'
+            python-version: "3.8"
           - os: windows-latest
-            python-version: '3.9'
+            python-version: "3.9"
           - os: windows-latest
-            python-version: '3.10'
+            python-version: "3.10"
 
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
