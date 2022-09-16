@@ -136,7 +136,7 @@ jobs:
       - name: Install dependencies
         id: python-dependencies
         run: poetry install
-        if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
 
       - name: Retrieve saved WSIs
         uses: actions/download-artifact@v2
