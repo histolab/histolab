@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1668189583145,
+  "lastUpdate": 1668192101978,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -13659,6 +13659,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.1893941875230016e-7",
             "extra": "mean: 38.42584053600376 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "pamaron",
+            "username": "ernestoarbitrio"
+          },
+          "distinct": true,
+          "id": "b251d9b213ad1bf8e6e424dce6bd80163a51e1dd",
+          "message": "Bump typing-extensions from 4.3.0 to 4.4.0\n\nBumps [typing-extensions](https://github.com/python/typing_extensions) from 4.3.0 to 4.4.0.\n- [Release notes](https://github.com/python/typing_extensions/releases)\n- [Changelog](https://github.com/python/typing_extensions/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/python/typing_extensions/compare/4.3.0...4.4.0)\n\n---\nupdated-dependencies:\n- dependency-name: typing-extensions\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2022-11-11T19:39:50+01:00",
+          "tree_id": "49a1ea2d6f856e193df7ac803960a5a8404886fe",
+          "url": "https://github.com/histolab/histolab/commit/b251d9b213ad1bf8e6e424dce6bd80163a51e1dd"
+        },
+        "date": 1668192101322,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 6.953807632939943,
+            "unit": "iter/sec",
+            "range": "stddev: 0.005946948588515592",
+            "extra": "mean: 143.80610634999954 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 212.09517008130965,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00014627709271070882",
+            "extra": "mean: 4.714864556400016 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1098.2388620741265,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000015244259062275189",
+            "extra": "mean: 910.5487289999985 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 26058.11335891711,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000001837302488700323",
+            "extra": "mean: 38.3757636720004 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 20247.830634953047,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000019487096138288036",
+            "extra": "mean: 49.38800694400015 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 24189.384345324735,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000018855670623193824",
+            "extra": "mean: 41.34044859199889 usec\nrounds: 250"
           }
         ]
       }
