@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1668200269211,
+  "lastUpdate": 1668201658394,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -13791,6 +13791,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.1966800462049634e-7",
             "extra": "mean: 38.8932461520036 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "pamaron",
+            "username": "ernestoarbitrio"
+          },
+          "distinct": true,
+          "id": "c9e17f4170740f75055baa403fe6f0245e7d418d",
+          "message": "Bump cryptography from 37.0.4 to 38.0.3\n\nBumps [cryptography](https://github.com/pyca/cryptography) from 37.0.4 to 38.0.3.\n- [Release notes](https://github.com/pyca/cryptography/releases)\n- [Changelog](https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst)\n- [Commits](https://github.com/pyca/cryptography/compare/37.0.4...38.0.3)\n\n---\nupdated-dependencies:\n- dependency-name: cryptography\n  dependency-type: indirect\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2022-11-11T22:19:24+01:00",
+          "tree_id": "39741c71053d20b06f210e7a7c790448e75119cb",
+          "url": "https://github.com/histolab/histolab/commit/c9e17f4170740f75055baa403fe6f0245e7d418d"
+        },
+        "date": 1668201657197,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.7068596340886115,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001071683803740499",
+            "extra": "mean: 129.75453653999978 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 382.8700185640826,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000046142713804526595",
+            "extra": "mean: 2.6118524604000184 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1276.589150853432,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000005894189126062847",
+            "extra": "mean: 783.337379400001 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 32344.243285855388,
+            "unit": "iter/sec",
+            "range": "stddev: 1.561976335641551e-7",
+            "extra": "mean: 30.917402863999424 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 24262.35548807234,
+            "unit": "iter/sec",
+            "range": "stddev: 1.6004703772764112e-7",
+            "extra": "mean: 41.21611360000111 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 28770.10630439885,
+            "unit": "iter/sec",
+            "range": "stddev: 1.665970583822568e-7",
+            "extra": "mean: 34.75830048800003 usec\nrounds: 250"
           }
         ]
       }
