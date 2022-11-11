@@ -73,7 +73,8 @@ jobs:
       - name: Install poetry
         run: pipx install poetry
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        id: setup-python
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
@@ -123,9 +124,10 @@ jobs:
           cp /mingw64/bin/libpixman-1-0.dll .
         shell: msys2 {0}
 
-      - name: Install dependencies
-        id: python-dependencies
-        run: poetry install
+      - run: poetry env use ${{ matrix.python-version }}
+      - run: poetry run python --version
+      - run: poetry install
+        if: steps.setup-python.outputs.cache-hit != 'true'
 
       - name: Retrieve saved WSIs
         uses: actions/download-artifact@v2
