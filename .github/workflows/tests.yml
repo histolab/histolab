@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache WSI files
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-wsis
         with:
           path: tests/fixtures/external-svs
@@ -36,7 +36,7 @@ jobs:
           wget http://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-3.svs -O tests/fixtures/external-svs/cmu-3.svs
 
       - name: Temporarly save WSI artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wsi-artifact
           path: tests/fixtures/external-svs
@@ -72,10 +72,11 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
+          cache: "poetry"
 
       - name: Install poetry
         run: |
@@ -125,18 +126,9 @@ jobs:
           cp /mingw64/bin/libpixman-1-0.dll .
         shell: msys2 {0}
 
-      - name: "Dependencies cache"
-        id: cache-dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ matrix.cache-path }}
-          key: ${{ runner.os }}-py-${{ steps.setup-python.outputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: ${{ runner.os }}-py-${{ steps.setup-python.outputs.python-version }}-poetry-
-
       - name: Install dependencies
         id: python-dependencies
         run: poetry install
-        if: steps.cache-dependencies.outputs.cache-hit != 'true'
 
       - name: Retrieve saved WSIs
         uses: actions/download-artifact@v2
