@@ -124,7 +124,6 @@ jobs:
           cp /mingw64/bin/libpixman-1-0.dll .
         shell: msys2 {0}
 
-      - run: poetry env use ${{ matrix.python-version }}
       - run: poetry run python --version
       - run: poetry install
         if: steps.setup-python.outputs.cache-hit != 'true'
