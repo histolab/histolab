@@ -205,7 +205,8 @@ class DescribeRandomTiler:
         random_tiles_extractor.extract(slide, binary_mask)
 
         for tile in os.listdir(processed_path):
-            assert Image.open(os.path.join(processed_path, tile)).size == tile_size
+            size = Image.open(os.path.join(processed_path, tile)).size
+            assert size == tile_size
 
     @pytest.mark.parametrize(
         "fixture_slide, tile_size",
