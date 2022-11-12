@@ -697,8 +697,9 @@ class Describe_Slideset:
         slideset = instance_mock(request, SlideSet)
         slideset.__iter__.side_effect = iter([Slide_])
 
-        slideset[0]
+        first_slide = slideset[0]
 
+        assert first_slide.call_count == 0
         slideset.__getitem__.assert_called_once_with(0)
 
     def and_it_is_exaclty_what_expected(self, tmpdir):

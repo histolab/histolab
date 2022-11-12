@@ -102,7 +102,6 @@ def test_load_svs(request):
     ((SVS.CMU_1_SMALL_REGION, "1234abcd", True), ("/fake/file", "1234abcd", False)),
 )
 def it_knows_its_hash(request, file, hash, expected_value):
-    file = file
     file_hash_ = function_mock(request, "histolab.data.file_hash")
     file_hash_.return_value = hash
 
