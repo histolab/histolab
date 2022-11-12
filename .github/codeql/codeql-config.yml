@@ -1,0 +1,7 @@
+paths:
+  - histolab
+  - tests
+paths-ignore:
+  - tests/unitutil.py
+  - tests/fixtures
+  - tests/expectations
