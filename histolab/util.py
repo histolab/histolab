@@ -17,6 +17,7 @@
 # ------------------------------------------------------------------------
 
 import functools
+import math
 import warnings
 from typing import Any, Callable, List, Tuple
 
@@ -88,6 +89,40 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
     }
     image_array = types_factory.get(str(np_img.dtype), np_img.astype(np.uint8))
     return PIL.Image.fromarray(image_array)
+
+
+def preserve_aspect_ratio(
+    thumbnail_size: Tuple[int, int], original_size: Tuple[int, int]
+) -> Tuple[int, int]:
+    """Return thumbnail dimensions preserving the original image aspect ratio.
+
+    Parameters
+    ----------
+    thumbnail_size: tuple
+       The width and height of the thumbnail.
+    original_size: tuple
+       The width and height of the original image.
+
+    Returns
+    -------
+       The news width and height with aspect ration preserved.
+    """
+
+    def round_aspect(number, key):
+        return max(min(math.floor(number), math.ceil(number), key=key), 1)
+
+    x, y = tuple(map(math.floor, thumbnail_size))
+    original_x, original_y = original_size
+
+    if x >= original_x and y >= original_y:
+        return thumbnail_size
+
+    aspect = original_x / original_y
+    if x / y >= aspect:
+        x = round_aspect(y * aspect, key=lambda n: abs(aspect - n / y))
+    else:
+        y = round_aspect(x / aspect, key=lambda n: 0 if n == 0 else abs(aspect - x / n))
+    return x, y
 
 
 def random_choice_true_mask2d(binary_mask: np.ndarray) -> Tuple[int, int]:
