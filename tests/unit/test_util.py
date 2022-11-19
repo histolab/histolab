@@ -30,6 +30,7 @@ from histolab.util import (
     lazyproperty,
     method_dispatch,
     np_to_pil,
+    preserve_aspect_ratio,
     random_choice_true_mask2d,
     rectangle_to_mask,
     region_coordinates,
@@ -323,6 +324,22 @@ def test_regions_from_binary_mask(
     np.testing.assert_array_equal(
         regions_from_binary_mask_[0].coords, region_props[0].coords
     )
+
+
+@pytest.mark.parametrize(
+    "thumbnail_size, original_size, expected_value",
+    (
+        ((1, 1), (2222, 4000), (1, 1)),
+        ((222, 400), (2222, 4000), (222, 400)),
+        ((222, 296), (2220, 2967), (221, 296)),
+        ((500, 500), (2000, 2000), (500, 500)),
+        ((3222, 3296), (2220, 2967), (3222, 3296)),
+    ),
+)
+def test_preserve_aspect_ratio(thumbnail_size, original_size, expected_value):
+    new_aspect_ratio = preserve_aspect_ratio(thumbnail_size, original_size)
+
+    assert new_aspect_ratio == expected_value
 
 
 class DescribeLazyPropertyDecorator:
