@@ -711,7 +711,6 @@ class Slide:
                 "This property uses the large_image module. Please set "
                 "use_largeimage to True when instantiating this Slide."
             )
-
         source = large_image.getTileSource(self._path)
         return source
 
