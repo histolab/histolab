@@ -16,13 +16,14 @@ classifiers = [
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
         "Intended Audience :: Science/Research",
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<3.11"
+python = ">=3.7,<3.12"
 Pillow = ">=9.1.0,<10.0.0"
 scikit-image = ">=0.19.0,<0.19.4"
 numpy = ">=1.18.4,<1.23.1"

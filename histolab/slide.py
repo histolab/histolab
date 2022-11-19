@@ -36,7 +36,7 @@ from .exceptions import (
 from .filters.compositions import FiltersComposition
 from .tile import Tile
 from .types import CoordinatePair
-from .util import lazyproperty, preserve_aspect_ratio
+from .util import lazyproperty, refine_thumbnail_size_preserving_aspect_ratio
 
 if TYPE_CHECKING:
     from .masks import BinaryMask
@@ -498,7 +498,9 @@ class Slide:
         """
         if self._use_largeimage:
             # large-image does not preserve the aspect ratio for the thumbnail.
-            width, height = preserve_aspect_ratio(self._thumbnail_size, self.dimensions)
+            width, height = refine_thumbnail_size_preserving_aspect_ratio(
+                self._thumbnail_size, self.dimensions
+            )
             thumb_bytes, _ = self._tile_source.getThumbnail(
                 encoding="PNG",
                 width=width,
