@@ -1529,7 +1529,7 @@ docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-katex", "sphinxemoji", "sph
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.12"
-content-hash = "59369e733e1fea40a33b9732edece5f2826b1ca7f368d181534b0a57291b41a0"
+content-hash = "cfd9c5c85488d6a071e3dd35ce4ea40daa9ccbf2b5b8e8f458f69c1e6e239675"
 
 [metadata.files]
 alabaster = [
