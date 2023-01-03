@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1672762239972,
+  "lastUpdate": 1672764119433,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -14715,6 +14715,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 9.285665610781825e-7",
             "extra": "mean: 37.67043326400085 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "a930704d1263cf9b6e05bbece2c7b35005c7c959",
+          "message": "Bump ipdb from 0.13.9 to 0.13.11\n\nBumps [ipdb](https://github.com/gotcha/ipdb) from 0.13.9 to 0.13.11.\n- [Release notes](https://github.com/gotcha/ipdb/releases)\n- [Changelog](https://github.com/gotcha/ipdb/blob/master/HISTORY.txt)\n- [Commits](https://github.com/gotcha/ipdb/compare/0.13.9...0.13.11)\n\n---\nupdated-dependencies:\n- dependency-name: ipdb\n  dependency-type: direct:development\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2023-01-03T17:40:26+01:00",
+          "tree_id": "c94eac94afeae553087274a4335d468776b95b7b",
+          "url": "https://github.com/histolab/histolab/commit/a930704d1263cf9b6e05bbece2c7b35005c7c959"
+        },
+        "date": 1672764118581,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.781893024992031,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001235785515253216",
+            "extra": "mean: 128.50343699000206 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 345.21321376967876,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0004134641136611376",
+            "extra": "mean: 2.896760495000012 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1218.8448011925152,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000067084617270374295",
+            "extra": "mean: 820.4490014000157 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 32691.104776331333,
+            "unit": "iter/sec",
+            "range": "stddev: 2.3886362657428043e-7",
+            "extra": "mean: 30.58936083200251 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 25371.611694176634,
+            "unit": "iter/sec",
+            "range": "stddev: 1.6772709635280236e-7",
+            "extra": "mean: 39.414129935999426 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 29970.676591721804,
+            "unit": "iter/sec",
+            "range": "stddev: 5.312505573610534e-7",
+            "extra": "mean: 33.36594677599669 usec\nrounds: 250"
           }
         ]
       }
