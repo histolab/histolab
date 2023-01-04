@@ -821,7 +821,7 @@ xxhash = ["xxhash (>=1.4.3)"]
 
 [[package]]
 name = "pre-commit"
-version = "2.20.0"
+version = "2.21.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
 category = "dev"
 optional = false
@@ -833,8 +833,7 @@ identify = ">=1.0.0"
 importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 nodeenv = ">=0.11.1"
 pyyaml = ">=5.1"
-toml = "*"
-virtualenv = ">=20.0.8"
+virtualenv = ">=20.10.0"
 
 [[package]]
 name = "prompt-toolkit"
@@ -1530,7 +1529,7 @@ docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-katex", "sphinxemoji", "sph
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.11"
-content-hash = "03754fea66df57f97505555335f6cabb40ea0b37b348c9433fe6b43cd5a26b2a"
+content-hash = "de9799e7de7e931fe3d0e4dcf121e3a21a1d7ce8cfb753b5764d262d47f0eb9f"
 
 [metadata.files]
 alabaster = [
@@ -2089,8 +2088,8 @@ pooch = [
     {file = "pooch-1.6.0.tar.gz", hash = "sha256:57d20ec4b10dd694d2b05bb64bc6b109c6e85a6c1405794ce87ed8b341ab3f44"},
 ]
 pre-commit = [
-    {file = "pre_commit-2.20.0-py2.py3-none-any.whl", hash = "sha256:51a5ba7c480ae8072ecdb6933df22d2f812dc897d5fe848778116129a681aac7"},
-    {file = "pre_commit-2.20.0.tar.gz", hash = "sha256:a978dac7bc9ec0bcee55c18a277d553b0f419d259dadb4b9418ff2d00eb43959"},
+    {file = "pre_commit-2.21.0-py2.py3-none-any.whl", hash = "sha256:e2f91727039fc39a92f58a588a25b87f936de6567eed4f0e673e0507edc75bad"},
+    {file = "pre_commit-2.21.0.tar.gz", hash = "sha256:31ef31af7e474a8d8995027fefdfcf509b5c913ff31f2015b4ec4beb26a6f658"},
 ]
 prompt-toolkit = [
     {file = "prompt_toolkit-3.0.32-py3-none-any.whl", hash = "sha256:24becda58d49ceac4dc26232eb179ef2b21f133fecda7eed6018d341766ed76e"},
