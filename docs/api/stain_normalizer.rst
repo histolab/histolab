@@ -8,6 +8,5 @@ Stain Normalizer
 .. automodule:: src.histolab.stain_normalizer
     :members:
     :inherited-members:
-    :exclude-members: normalize_columns, two_principal_components
 
 .. toctree::

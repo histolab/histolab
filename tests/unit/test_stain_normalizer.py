@@ -156,7 +156,7 @@ class Describe_MacenkoStainNormalizer:
         _tissue_mask_call = method_mock(request, TissueMask, "__call__")
         _tissue_mask_call.return_value = NpArrayMock.ONES_500X500_BOOL
         _two_principal_components = method_mock(
-            request, LinalgMixin, "two_principal_components", autospec=False
+            request, LinalgMixin, "principal_components", autospec=False
         )
         _two_principal_components.return_value = np.array(
             [
