@@ -373,7 +373,10 @@ class Describe_ReinhardStainNormalizer:
         rgb_to_lab_.return_value = np.array(PILIMG.RGB_RANDOM_COLOR_500X500)
         reinhard_stain_normalizer = ReinhardStainNormalizer()
 
-        mean_per_channel, std_per_channel = reinhard_stain_normalizer._summary_statistics(img)
+        (
+            mean_per_channel,
+            std_per_channel,
+        ) = reinhard_stain_normalizer._summary_statistics(img)
 
         assert isinstance(mean_per_channel, np.ndarray)
         assert isinstance(std_per_channel, np.ndarray)
@@ -388,8 +391,13 @@ class Describe_ReinhardStainNormalizer:
 
     def it_knows_how_to_fit(self, request):
         img = PILIMG.RGB_RANDOM_COLOR_500X500
-        _summary_statistics_ = method_mock(request, ReinhardStainNormalizer, "_summary_statistics")
-        _summary_statistics_.return_value = (np.array([1.0, 1.0, 1.0]), np.array([2.0, 2.0, 2.0]))
+        _summary_statistics_ = method_mock(
+            request, ReinhardStainNormalizer, "_summary_statistics"
+        )
+        _summary_statistics_.return_value = (
+            np.array([1.0, 1.0, 1.0]),
+            np.array([2.0, 2.0, 2.0]),
+        )
         reinhard_stain_normalizer = ReinhardStainNormalizer()
 
         reinhard_stain_normalizer.fit(img)
@@ -404,8 +412,13 @@ class Describe_ReinhardStainNormalizer:
 
     def it_knows_how_to_transform(self, request):
         img = PILIMG.RGB_RANDOM_COLOR_500X500
-        _summary_statistics_ = method_mock(request, ReinhardStainNormalizer, "_summary_statistics")
-        _summary_statistics_.return_value = (np.array([1.0, 1.0, 1.0]), np.array([2.0, 2.0, 2.0]))
+        _summary_statistics_ = method_mock(
+            request, ReinhardStainNormalizer, "_summary_statistics"
+        )
+        _summary_statistics_.return_value = (
+            np.array([1.0, 1.0, 1.0]),
+            np.array([2.0, 2.0, 2.0]),
+        )
         rgb_to_lab_ = method_mock(request, RgbToLab, "__call__")
         rgb_to_lab_.return_value = np.array(PILIMG.RGB_RANDOM_COLOR_500X500)
         tissue_mask_ = method_mock(request, ReinhardStainNormalizer, "_tissue_mask")
