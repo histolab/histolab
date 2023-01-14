@@ -98,14 +98,14 @@ def refine_thumbnail_size_preserving_aspect_ratio(
 
     Parameters
     ----------
-    thumbnail_size: tuple
+    thumbnail_size : Tuple[int, int]
        The width and height of the thumbnail.
-    original_size: tuple
+    original_size : Tuple[int, int]
        The width and height of the original image.
 
     Returns
     -------
-       The news width and height with aspect ration preserved.
+       The new width and height with preserved aspect ratio.
     """
 
     def round_aspect(number, key):
