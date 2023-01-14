@@ -342,7 +342,7 @@ class ReinhardStainNormalizer:
         target_rgb : PIL.Image.Image
             Target image for stain normalization. Can be either RGB or RGBA.
         """
-        means, stds = self.mean_std(target_rgb)
+        means, stds = self._summary_statistics(target_rgb)
         self.target_means = means
         self.target_stds = stds
 
@@ -359,7 +359,7 @@ class ReinhardStainNormalizer:
         PIL.Image.Image
             Image with normalized stain.
         """
-        means, stds = self.mean_std(img_rgb)
+        means, stds = self._summary_statistics(img_rgb)
         img_lab = RgbToLab()(img_rgb)
 
         mask = self._tissue_mask(img_rgb)
@@ -379,7 +379,7 @@ class ReinhardStainNormalizer:
         norm_rgb = LabToRgb()(norm_lab)
         return norm_rgb
 
-    def mean_std(self, img_rgb: PIL.Image.Image) -> Tuple[np.ndarray, np.ndarray]:
+    def _summary_statistics(self, img_rgb: PIL.Image.Image) -> Tuple[np.ndarray, np.ndarray]:
         """Return mean and standard deviation of each channel in LAB color space.
 
         Parameters

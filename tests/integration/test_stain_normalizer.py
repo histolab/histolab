@@ -158,10 +158,10 @@ class Describe_ReinhardStainNormalizer:
             ),
         ],
     )
-    def it_knows_its_mean_std(self, img, expected_mean, expected_std):
+    def it_knows_its_summary_statistics(self, img, expected_mean, expected_std):
         normalizer = ReinhardStainNormalizer()
 
-        mean, std = normalizer.mean_std(img)
+        mean, std = normalizer._summary_statistics(img)
 
         np.testing.assert_almost_equal(mean, expected_mean)
         np.testing.assert_almost_equal(std, expected_std)

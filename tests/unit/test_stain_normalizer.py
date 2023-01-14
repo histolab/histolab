@@ -363,7 +363,7 @@ class Describe_ReinhardStainNormalizer:
         np.testing.assert_allclose(tissue_mask, np.dstack((mask_, mask_, mask_)))
         tile_tissue_mask_.assert_called_once_with()
 
-    def it_knows_how_to_calculate_mean_std(self, request):
+    def it_knows_how_to_calculate_summary_statistics(self, request):
         np.random.seed(0)
         img = PILIMG.RGB_RANDOM_COLOR_500X500
         tissue_mask_ = method_mock(request, ReinhardStainNormalizer, "_tissue_mask")
@@ -373,7 +373,7 @@ class Describe_ReinhardStainNormalizer:
         rgb_to_lab_.return_value = np.array(PILIMG.RGB_RANDOM_COLOR_500X500)
         reinhard_stain_normalizer = ReinhardStainNormalizer()
 
-        mean_per_channel, std_per_channel = reinhard_stain_normalizer.mean_std(img)
+        mean_per_channel, std_per_channel = reinhard_stain_normalizer._summary_statistics(img)
 
         assert isinstance(mean_per_channel, np.ndarray)
         assert isinstance(std_per_channel, np.ndarray)
@@ -388,8 +388,8 @@ class Describe_ReinhardStainNormalizer:
 
     def it_knows_how_to_fit(self, request):
         img = PILIMG.RGB_RANDOM_COLOR_500X500
-        mean_std_ = method_mock(request, ReinhardStainNormalizer, "mean_std")
-        mean_std_.return_value = (np.array([1.0, 1.0, 1.0]), np.array([2.0, 2.0, 2.0]))
+        _summary_statistics_ = method_mock(request, ReinhardStainNormalizer, "_summary_statistics")
+        _summary_statistics_.return_value = (np.array([1.0, 1.0, 1.0]), np.array([2.0, 2.0, 2.0]))
         reinhard_stain_normalizer = ReinhardStainNormalizer()
 
         reinhard_stain_normalizer.fit(img)
@@ -400,12 +400,12 @@ class Describe_ReinhardStainNormalizer:
         np.testing.assert_allclose(
             reinhard_stain_normalizer.target_stds, np.array([2.0, 2.0, 2.0])
         )
-        mean_std_.assert_called_once_with(reinhard_stain_normalizer, img)
+        _summary_statistics_.assert_called_once_with(reinhard_stain_normalizer, img)
 
     def it_knows_how_to_transform(self, request):
         img = PILIMG.RGB_RANDOM_COLOR_500X500
-        mean_std_ = method_mock(request, ReinhardStainNormalizer, "mean_std")
-        mean_std_.return_value = (np.array([1.0, 1.0, 1.0]), np.array([2.0, 2.0, 2.0]))
+        _summary_statistics_ = method_mock(request, ReinhardStainNormalizer, "_summary_statistics")
+        _summary_statistics_.return_value = (np.array([1.0, 1.0, 1.0]), np.array([2.0, 2.0, 2.0]))
         rgb_to_lab_ = method_mock(request, RgbToLab, "__call__")
         rgb_to_lab_.return_value = np.array(PILIMG.RGB_RANDOM_COLOR_500X500)
         tissue_mask_ = method_mock(request, ReinhardStainNormalizer, "_tissue_mask")
@@ -423,7 +423,7 @@ class Describe_ReinhardStainNormalizer:
         np.testing.assert_allclose(
             np.array(transformed), np.array(PILIMG.RGB_RANDOM_COLOR_500X500)
         )
-        mean_std_.assert_called_once_with(reinhard_stain_normalizer, img)
+        _summary_statistics_.assert_called_once_with(reinhard_stain_normalizer, img)
         rgb_to_lab_.assert_called_once_with(ANY, img)
         tissue_mask_.assert_called_once_with(img)
         np.testing.assert_allclose(lab_to_rgb_.call_args_list[0][0][1], np.array(img))
