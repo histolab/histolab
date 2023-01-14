@@ -347,7 +347,7 @@ class ReinhardStainNormalizer:
         self.target_stds = stds
 
     def transform(self, img_rgb: PIL.Image.Image) -> PIL.Image.Image:
-        """Normalize staining of ``img_rgb``.
+        """Normalize ``img_rgb`` staining.
 
         Parameters
         ----------
@@ -384,6 +384,8 @@ class ReinhardStainNormalizer:
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Return mean and standard deviation of each channel in LAB color space.
 
+        The statistics are calculated after tissue masking.
+
         Parameters
         ----------
         img_rgb : PIL.Image.Image
@@ -415,7 +417,7 @@ class ReinhardStainNormalizer:
         Returns
         -------
         np.ndarray
-            Binary tissue mask,
+            binary tissue mask.
         """
         tile = Tile(img_rgb, None)
         mask = tile.tissue_mask
