@@ -650,14 +650,14 @@ files = [
 
 [[package]]
 name = "importlib-metadata"
-version = "6.0.0"
+version = "4.13.0"
 description = "Read metadata from Python packages"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "importlib_metadata-6.0.0-py3-none-any.whl", hash = "sha256:7efb448ec9a5e313a57655d35aa54cd3e01b7e1fbcf72dce1bf06119420f5bad"},
-    {file = "importlib_metadata-6.0.0.tar.gz", hash = "sha256:e354bedeb60efa6affdcc8ae121b73544a7aa74156d047311948f6d711cd378d"},
+    {file = "importlib_metadata-4.13.0-py3-none-any.whl", hash = "sha256:8a8a81bcf996e74fee46f0d16bd3eaa382a7eb20fd82445c3ad11f4090334116"},
+    {file = "importlib_metadata-4.13.0.tar.gz", hash = "sha256:dd0173e8f150d6815e098fd354f6414b0f079af4644ddfe90c71e2fc6174346d"},
 ]
 
 [package.dependencies]
@@ -665,7 +665,7 @@ typing-extensions = {version = ">=3.6.4", markers = "python_version < \"3.8\""}
 zipp = ">=0.5"
 
 [package.extras]
-docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)"]
 perf = ["ipython"]
 testing = ["flake8 (<5)", "flufl.flake8", "importlib-resources (>=1.3)", "packaging", "pyfakefs", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)", "pytest-perf (>=0.9.2)"]
 
@@ -850,79 +850,87 @@ testing = ["flake8 (<5)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-chec
 
 [[package]]
 name = "large-image"
-version = "1.8.11"
+version = "1.17.3"
 description = "Python modules to work with large, multiresolution images."
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "large-image-1.8.11.tar.gz", hash = "sha256:9829d2804d912c14ed25739ebef2b712b1217b1c350af347dabff171f4d689a0"},
-    {file = "large_image-1.8.11-py3-none-any.whl", hash = "sha256:3064acc6ad6048831ffc33505541c0d6f641f3d61c1e844e847e544db065c6ac"},
+    {file = "large-image-1.17.3.tar.gz", hash = "sha256:df8959a43003461a21009f09e73e60a6937dbe4d642d606ff3423e373adf14f9"},
+    {file = "large_image-1.17.3-py3-none-any.whl", hash = "sha256:25455b536d94ce9682f69870d0efaae2c062cc8d8f9ccd2ed53d81498dca4e32"},
 ]
 
 [package.dependencies]
 cachetools = ">=3.0.0"
+importlib-metadata = {version = "<5", markers = "python_version < \"3.8\""}
 numpy = ">=1.10.4"
-Pillow = "<8.3.0 || >8.3.0,<8.3.1 || >8.3.1"
+palettable = "*"
+Pillow = "*"
 psutil = ">=4.2.0"
 
 [package.extras]
-all = ["large-image-converter", "large-image-source-bioformats", "large-image-source-deepzoom", "large-image-source-dummy", "large-image-source-gdal", "large-image-source-mapnik", "large-image-source-nd2", "large-image-source-ometiff", "large-image-source-openjpeg", "large-image-source-openslide", "large-image-source-pil", "large-image-source-test", "large-image-source-tiff", "pylibmc (>=1.5.1)"]
-bioformats = ["large-image-source-bioformats"]
-converter = ["large-image-converter"]
-deepzoom = ["large-image-source-deepzoom"]
-dummy = ["large-image-source-dummy"]
-gdal = ["large-image-source-gdal"]
-mapnik = ["large-image-source-mapnik"]
+all = ["large-image-converter (>=1.17.3)", "large-image-source-bioformats (>=1.17.3)", "large-image-source-deepzoom (>=1.17.3)", "large-image-source-dummy (>=1.17.3)", "large-image-source-gdal (>=1.17.3)", "large-image-source-mapnik (>=1.17.3)", "large-image-source-multi (>=1.17.3)", "large-image-source-nd2 (>=1.17.3)", "large-image-source-ometiff (>=1.17.3)", "large-image-source-openjpeg (>=1.17.3)", "large-image-source-openslide (>=1.17.3)", "large-image-source-pil (>=1.17.3)", "large-image-source-test (>=1.17.3)", "large-image-source-tiff (>=1.17.3)", "large-image-source-tifffile (>=1.17.3)", "large-image-source-vips (>=1.17.3)", "matplotlib", "pylibmc (>=1.5.1)", "pyvips", "simplejpeg"]
+bioformats = ["large-image-source-bioformats (>=1.17.3)"]
+colormaps = ["matplotlib"]
+converter = ["large-image-converter (>=1.17.3)"]
+deepzoom = ["large-image-source-deepzoom (>=1.17.3)"]
+dummy = ["large-image-source-dummy (>=1.17.3)"]
+gdal = ["large-image-source-gdal (>=1.17.3)"]
+mapnik = ["large-image-source-mapnik (>=1.17.3)"]
 memcached = ["pylibmc (>=1.5.1)"]
-nd2 = ["large-image-source-nd2"]
-ometiff = ["large-image-source-ometiff"]
-openjpeg = ["large-image-source-openjpeg"]
-openslide = ["large-image-source-openslide"]
-pil = ["large-image-source-pil"]
-sources = ["large-image-source-bioformats", "large-image-source-deepzoom", "large-image-source-dummy", "large-image-source-gdal", "large-image-source-mapnik", "large-image-source-nd2", "large-image-source-ometiff", "large-image-source-openjpeg", "large-image-source-openslide", "large-image-source-pil", "large-image-source-test", "large-image-source-tiff"]
-test = ["large-image-source-test"]
-tiff = ["large-image-source-tiff"]
+multi = ["large-image-source-multi (>=1.17.3)"]
+nd2 = ["large-image-source-nd2 (>=1.17.3)"]
+ometiff = ["large-image-source-ometiff (>=1.17.3)"]
+openjpeg = ["large-image-source-openjpeg (>=1.17.3)"]
+openslide = ["large-image-source-openslide (>=1.17.3)"]
+performance = ["simplejpeg"]
+pil = ["large-image-source-pil (>=1.17.3)"]
+sources = ["large-image-source-bioformats (>=1.17.3)", "large-image-source-deepzoom (>=1.17.3)", "large-image-source-dummy (>=1.17.3)", "large-image-source-gdal (>=1.17.3)", "large-image-source-mapnik (>=1.17.3)", "large-image-source-multi (>=1.17.3)", "large-image-source-nd2 (>=1.17.3)", "large-image-source-ometiff (>=1.17.3)", "large-image-source-openjpeg (>=1.17.3)", "large-image-source-openslide (>=1.17.3)", "large-image-source-pil (>=1.17.3)", "large-image-source-test (>=1.17.3)", "large-image-source-tiff (>=1.17.3)", "large-image-source-tifffile (>=1.17.3)", "large-image-source-vips (>=1.17.3)"]
+test = ["large-image-source-test (>=1.17.3)"]
+tiff = ["large-image-source-tiff (>=1.17.3)"]
+tifffile = ["large-image-source-tifffile (>=1.17.3)"]
+tiledoutput = ["pyvips"]
+vips = ["large-image-source-vips (>=1.17.3)"]
 
 [[package]]
 name = "large-image-source-openslide"
-version = "1.13.0"
+version = "1.17.3"
 description = "An Openslide tilesource for large_image."
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "large-image-source-openslide-1.13.0.tar.gz", hash = "sha256:e468e5c8a852c6bb0b499efdf8f4a3ae1449881f2828724a71b103c01e2be4b4"},
-    {file = "large_image_source_openslide-1.13.0-py3-none-any.whl", hash = "sha256:5814dd9a9112ea4d6a4d323f53c1e3902c39a970f89357b00f518b122ce7e733"},
+    {file = "large-image-source-openslide-1.17.3.tar.gz", hash = "sha256:ef1b51e21139785a4a0ecbd71a67563ce013766cb8c5a8bc135b5a9bf10c677a"},
+    {file = "large_image_source_openslide-1.17.3-py3-none-any.whl", hash = "sha256:a4ceb7bf28a2e84289e5b8c22ab7a9c7f978eaf61086fa6e9a29c1aa5cfabeef"},
 ]
 
 [package.dependencies]
-importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
-large-image = "*"
+importlib-metadata = {version = "<5", markers = "python_version < \"3.8\""}
+large-image = ">=1.17.3"
 openslide-python = ">=1.1.0"
 tifftools = ">=1.2.0"
 
 [package.extras]
-girder = ["girder-large-image"]
+girder = ["girder-large-image (>=1.17.3)"]
 
 [[package]]
 name = "large-image-source-pil"
-version = "1.13.0"
+version = "1.17.3"
 description = "A Pillow tilesource for large_image."
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "large-image-source-pil-1.13.0.tar.gz", hash = "sha256:4b38f8e7370a83c370f50e262371e4710b824d8dcbe163ffb82544f070f1e29f"},
-    {file = "large_image_source_pil-1.13.0-py3-none-any.whl", hash = "sha256:2ded6a1d5c2650a98e03cfddf243558fb8807f6831014d08ad4b7bc860a0bff2"},
+    {file = "large-image-source-pil-1.17.3.tar.gz", hash = "sha256:ed84fe66b79c4d929697e7827b95b85ca5c4bfd6d9569177e8100e0cfb445c3d"},
+    {file = "large_image_source_pil-1.17.3-py3-none-any.whl", hash = "sha256:2b3cb0e764ccc2037409655bacdb1a9f2af927533ad07ef41278dd96c31d4db0"},
 ]
 
 [package.dependencies]
-importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
-large-image = "*"
+importlib-metadata = {version = "<5", markers = "python_version < \"3.8\""}
+large-image = ">=1.17.3"
 
 [package.extras]
-girder = ["girder-large-image"]
+girder = ["girder-large-image (>=1.17.3)"]
 
 [[package]]
 name = "markupsafe"
@@ -1138,6 +1146,18 @@ files = [
 
 [package.dependencies]
 pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
+
+[[package]]
+name = "palettable"
+version = "3.3.0"
+description = "Color palettes for Python"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "palettable-3.3.0-py2.py3-none-any.whl", hash = "sha256:c3bf3f548fc228e86bd3d16928bbf8d621c1d1098791ceab446d0e3a5e1298d1"},
+    {file = "palettable-3.3.0.tar.gz", hash = "sha256:72feca71cf7d79830cd6d9181b02edf227b867d503bec953cf9fa91bf44896bd"},
+]
 
 [[package]]
 name = "parso"
@@ -2459,4 +2479,4 @@ docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-katex", "sphinxemoji", "sph
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<3.11"
-content-hash = "4a6b47f96f90a8858295ee8f811bde55bc279cb5f0e62e6f2432d6c17ce42889"
+content-hash = "fd145cd8ce4bfe6a0bc2342e648fe6821fa72d60e0b3744872c538159fa6a3bf"
