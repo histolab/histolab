@@ -379,7 +379,9 @@ class ReinhardStainNormalizer:
         norm_rgb = LabToRgb()(norm_lab)
         return norm_rgb
 
-    def _summary_statistics(self, img_rgb: PIL.Image.Image) -> Tuple[np.ndarray, np.ndarray]:
+    def _summary_statistics(
+        self, img_rgb: PIL.Image.Image
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """Return mean and standard deviation of each channel in LAB color space.
 
         Parameters
