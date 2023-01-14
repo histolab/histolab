@@ -681,7 +681,7 @@ class Slide:
 
         .. math::
 
-            \big(\frac{v}{10^{w-2}},\frac{v}{10^{n-2}}\big)
+            \big(\frac{v}{10^{w-2}},\frac{m}{10^{n-2}}\big)
 
         Returns
         -------
