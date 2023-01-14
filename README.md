@@ -56,6 +56,7 @@
 
 ## Table of Contents
 
+- [Motivation](#motivation)
 - [Quickstart](#quickstart)
   - [TCGA data](#tcga-data)
   - [Slide initialization](#slide-initialization)
