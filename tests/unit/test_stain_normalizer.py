@@ -360,7 +360,7 @@ class Describe_ReinhardStainNormalizer:
         tissue_mask = reinhard_stain_normalizer._tissue_mask(img)
 
         assert isinstance(tissue_mask, np.ndarray)
-        np.testing.assert_allclose(tissue_mask, np.dstack((mask_, mask_, mask_)))
+        np.testing.assert_allclose(tissue_mask, mask_)
         tile_tissue_mask_.assert_called_once_with()
 
     def it_knows_how_to_calculate_summary_statistics(self, request):
@@ -368,7 +368,7 @@ class Describe_ReinhardStainNormalizer:
         img = PILIMG.RGB_RANDOM_COLOR_500X500
         tissue_mask_ = method_mock(request, ReinhardStainNormalizer, "_tissue_mask")
         mask_ = NpArrayMock.ONES_500X500_BOOL
-        tissue_mask_.return_value = np.dstack((mask_, mask_, mask_))
+        tissue_mask_.return_value = mask_
         rgb_to_lab_ = method_mock(request, RgbToLab, "__call__")
         rgb_to_lab_.return_value = np.array(PILIMG.RGB_RANDOM_COLOR_500X500)
         reinhard_stain_normalizer = ReinhardStainNormalizer()
@@ -423,7 +423,7 @@ class Describe_ReinhardStainNormalizer:
         rgb_to_lab_.return_value = np.array(PILIMG.RGB_RANDOM_COLOR_500X500)
         tissue_mask_ = method_mock(request, ReinhardStainNormalizer, "_tissue_mask")
         mask_ = NpArrayMock.ONES_500X500_BOOL
-        tissue_mask_.return_value = np.dstack((mask_, mask_, mask_))
+        tissue_mask_.return_value = mask_
         lab_to_rgb_ = method_mock(request, LabToRgb, "__call__")
         lab_to_rgb_.return_value = PILIMG.RGB_RANDOM_COLOR_500X500
         reinhard_stain_normalizer = ReinhardStainNormalizer()

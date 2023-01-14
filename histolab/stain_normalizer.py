@@ -363,6 +363,8 @@ class ReinhardStainNormalizer:
         img_lab = RgbToLab()(img_rgb)
 
         mask = self._tissue_mask(img_rgb)
+        mask = np.dstack((mask, mask, mask))
+
         masked_img_lab = np.ma.masked_array(img_lab, ~mask)
 
         norm_lab = (
@@ -399,6 +401,7 @@ class ReinhardStainNormalizer:
             Standard deviation of each channel in LAB color space.
         """
         mask = self._tissue_mask(img_rgb)
+        mask = np.dstack((mask, mask, mask))
 
         img_lab = RgbToLab()(img_rgb)
         mean_per_channel = img_lab.mean(axis=(0, 1), where=mask)
@@ -421,5 +424,4 @@ class ReinhardStainNormalizer:
         """
         tile = Tile(img_rgb, None)
         mask = tile.tissue_mask
-        mask = np.dstack((mask, mask, mask))
         return mask
