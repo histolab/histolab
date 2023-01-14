@@ -91,7 +91,7 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
     return PIL.Image.fromarray(image_array)
 
 
-def preserve_aspect_ratio(
+def refine_thumbnail_size_preserving_aspect_ratio(
     thumbnail_size: Tuple[int, int], original_size: Tuple[int, int]
 ) -> Tuple[int, int]:
     """Return thumbnail dimensions preserving the original image aspect ratio.

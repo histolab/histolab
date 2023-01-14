@@ -175,7 +175,7 @@ class Describe_Slide:
             tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240, use_largeimage=True
         )
 
-        assert slide._tile_source.name == "pilfile"
+        assert slide._tile_source.name == "pil"
 
     def it_raises_error_if_tilesource_and_not_use_largeimage(self):
         slide = Slide("/a/b/foo", "processed")
