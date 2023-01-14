@@ -209,7 +209,7 @@ class MacenkoStainNormalizer(LinalgMixin, TransformerStainMatrixMixin):
         od_hat = od[~np.any(od < beta, axis=1)]
 
         # Calculate principal components and project input
-        V = self.two_principal_components(od_hat)
+        V = self.principal_components(od_hat, n_components=2)
         proj = np.dot(od_hat, V)
 
         # Angular coordinates with repect to the principle, orthogonal eigenvectors

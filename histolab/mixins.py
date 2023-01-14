@@ -26,19 +26,21 @@ class LinalgMixin:
         return arr / np.linalg.norm(arr, axis=0)
 
     @staticmethod
-    def two_principal_components(arr: np.ndarray) -> np.ndarray:
+    def principal_components(arr: np.ndarray, n_components: int) -> np.ndarray:
         """
-        Return the first two principal components of the covariance matrix of ``arr``.
+        Return the first principal components of the covariance matrix of ``arr``.
 
         Parameters
         ----------
         arr : np.ndarray
             Input array
+        n_components : int
+            Number of principal components to return
 
         Returns
         -------
         np.ndarray
-            Two principal components.
+            ``n_components`` principal components.
         """
         _, V = np.linalg.eigh(np.cov(arr, rowvar=False))
-        return V[:, 1:3]
+        return V[:, -n_components:]
