@@ -16,8 +16,7 @@
 <tr>
     <td>Code Quality</td>
     <td>
-        <a href="https://lgtm.com/projects/g/histolab/histolab/alerts/" target="_blank"><img src="https://img.shields.io/lgtm/alerts/g/histolab/histolab.svg?logo=lgtm&logoWidth=18"></a>
-        <a href="https://lgtm.com/projects/g/histolab/histolab/context:python" target="_blank"><img src="https://img.shields.io/lgtm/grade/python/g/histolab/histolab.svg?logo=lgtm&logoWidth=18"></a>
+        <img src="https://github.com/histolab/histolab/actions/workflows/codeql.yml/badge.svg?branch=master&event=push">
         <a href="https://www.codefactor.io/repository/github/histolab/histolab" target="_blank"><img src="https://www.codefactor.io/repository/github/histolab/histolab/badge"></a>
         <a href="https://github.com/psf/black" target="_blank"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
         <a href="https://github.com/PyCQA/bandit" target="_blank"><img src="https://img.shields.io/badge/security-bandit-yellow.svg"></a>
@@ -58,7 +57,6 @@
 ## Table of Contents
 
 - [Motivation](#motivation)
-
 - [Quickstart](#quickstart)
   - [TCGA data](#tcga-data)
   - [Slide initialization](#slide-initialization)
