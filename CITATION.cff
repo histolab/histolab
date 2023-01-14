@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Marcolini"
+    given-names: "Alessia"
+    orcid: "https://orcid.org/0000-0001-8892-3843"
+  - family-names: "Bussola"
+    given-names: "Nicole"
+    orcid: "https://orcid.org/0000-0002-2609-4354"
+  - family-names: "Arbitrio"
+    given-names: "Ernesto"
+  - family-names: "Amgad"
+    given-names: "Mohamed"
+    orcid: "https://orcid.org/0000-0001-7599-6162"
+title: "histolab"
+version: 0.5.1
+date-released: 2022-04-11
+url: "https://github.com/histolab/histolab/"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Marcolini"
+    given-names: "Alessia"
+    orcid: "https://orcid.org/0000-0001-8892-3843"
+  - family-names: "Bussola"
+    given-names: "Nicole"
+    orcid: "https://orcid.org/0000-0002-2609-4354"
+  - family-names: "Arbitrio"
+    given-names: "Ernesto"
+  - family-names: "Amgad"
+    given-names: "Mohamed"
+    orcid: "https://orcid.org/0000-0001-7599-6162"
+  - family-names: "Jurman"
+    given-names: "Giuseppe"
+    orcid: "https://orcid.org/0000-0002-2705-5728"
+  - family-names: "Furlanello"
+    given-names: "Cesare"
+    orcid: "https://orcid.org/0000-0002-5384-3605"
+  doi: "https://doi.org/10.1016/j.softx.2022.101237"
+  journal: "SoftwareX"
+  month: 12
+  title: "histolab: A Python library for reproducible Digital Pathology preprocessing with automated testing"
+  issue: 101237
+  volume: 20
+  year: 2022
