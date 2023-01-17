@@ -2,7 +2,7 @@ Stain Normalizer
 ================
 
 Digital pathology images can present strong color differences due to diverse acquisition techniques (e.g., scanners, laboratory equipment and procedures)
-The ``stain_normalizer`` module collects methods for to transfer the staining style of an image (target) to another image (source).
+The ``stain_normalizer`` module collects methods to transfer the staining style of an image (target) to another image (source).
 Stain normalization is often adopted as data standardization procedure in deep learning model training.
 The `MacenkoStainNormalizer <stain_normalizer.html#histolab.stain_normalizer.MacenkoStainNormalizer>`_ implements the stain normalization method proposed by Macenko et al. [1]_. 
 The `ReinhardStainNormalizer <stain_normalizer.html#histolab.stain_normalizer.ReinhardStainNormalizer>`_ implements the Reinhard's stain normalization described in [2]_. 
