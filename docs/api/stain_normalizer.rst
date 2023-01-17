@@ -58,7 +58,7 @@ The stain normalization methods can be used to tranfser the staining's appearanc
 
 
 
-The chosen stain normalization method must be then fit on the target image and then applied to the source image:
+The chosen stain normalization method must be first fit on the target image and then applied to the source image:
 
 .. code-block:: ipython3
 
