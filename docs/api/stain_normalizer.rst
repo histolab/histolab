@@ -32,7 +32,7 @@ The `ReinhardStainNormalizer <stain_normalizer.html#histolab.stain_normalizer.Re
 Usage
 ----------
 
-The stain normalization methods can be used to tranfser the staining's appearance of any histology image. First, we need to establish the image to be used as a style reference, and the image to be transformed accordingly:
+The stain normalization methods can be used to transfer the staining's appearance of any histology image. First, we need to establish the image to be used as a style reference, and the image to be transformed accordingly:
 
 .. code-block:: ipython3
 
