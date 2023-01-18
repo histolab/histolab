@@ -39,4 +39,4 @@ jobs:
       - name: Publish to PyPI
         env:
           PYPI_APIKEY: ${{ secrets.PYPI_APIKEY }}
-        run: poetry publish --username __token__ --password $(PYPI_APIKEY)
+        run: poetry publish --username __token__ --password ${PYPI_APIKEY}
