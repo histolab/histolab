@@ -1,6 +1,36 @@
 Changelog
 =========
 
+v0.6.0
+------
+**Bug Fix**
+
+- Fix missing `relate` parameter in `OtsuThreshold`. (`#415 <https://github.com/histolab/histolab/pull/415>`_)
+
+**New Features**
+
+- Stain Normalization with Macenko's method. (`#394 <https://github.com/histolab/histolab/pull/394>`_)
+- Stain normalization with Reinhard's method. (`#409 <https://github.com/histolab/histolab/pull/409>`_)
+- Use non-deprecated resampling constants after upgrading to Pillow 9.1.0 (`#408 <https://github.com/histolab/histolab/pull/408>`_)
+
+**Maintenance**
+
+- Poetry migration. (`#353 <https://github.com/histolab/histolab/pull/353>`_)
+
+**Dependencies**
+- Support large-image up to 1.19.1 (`#496 <https://github.com/histolab/histolab/pull/496>`_) and (`#494 <https://github.com/histolab/histolab/pull/494>`_)
+- Support openslide-pyrthon up to 1.2.0 (`#416 <https://github.com/histolab/histolab/pull/416>`_)
+- Support numpy up to 1.23.0 (`#418 <https://github.com/histolab/histolab/pull/418>`_)
+- Support scipy up to 1.8.1 (`#405 <https://github.com/histolab/histolab/pull/405>`_)
+
+**Documentation**
+
+- Fix typo in documention for `Slide._thumbnail_size()`. (`#495 <https://github.com/histolab/histolab/pull/495>`_)
+- Add citation guidelines using citation file. (`#497 <https://github.com/histolab/histolab/pull/497>`_)
+- Add conda installation info. (`#399 <https://github.com/histolab/histolab/pull/399>`_)
+- Update Contributing guidelines after poetry migration. (`#425 <https://github.com/histolab/histolab/pull/425>`_)
+
+
 v0.5.1
 ------
 **Other**
