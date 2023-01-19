@@ -850,14 +850,14 @@ testing = ["flake8 (<5)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-chec
 
 [[package]]
 name = "large-image"
-version = "1.19.1"
+version = "1.19.2"
 description = "Python modules to work with large, multiresolution images."
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "large-image-1.19.1.tar.gz", hash = "sha256:400812c4e514920c119a9beae4c20c25223b03bfe96a08e244a24435d6433d0d"},
-    {file = "large_image-1.19.1-py3-none-any.whl", hash = "sha256:dc56e8614ec39c63c035a871b55cad20bf84be82bfb5da80f85b7d1ea389703d"},
+    {file = "large-image-1.19.2.tar.gz", hash = "sha256:1551843a00e2c80b256f4be9fceada230e1bc722fb99cd7903d5448e8c03b0e1"},
+    {file = "large_image-1.19.2-py3-none-any.whl", hash = "sha256:283e7f633920936dc123be4259239fcd06bff5aa22b711bd22de24b23f3ed072"},
 ]
 
 [package.dependencies]
@@ -869,28 +869,28 @@ Pillow = "*"
 psutil = ">=4.2.0"
 
 [package.extras]
-all = ["large-image-converter (>=1.19.1)", "large-image-source-bioformats (>=1.19.1)", "large-image-source-deepzoom (>=1.19.1)", "large-image-source-dummy (>=1.19.1)", "large-image-source-gdal (>=1.19.1)", "large-image-source-mapnik (>=1.19.1)", "large-image-source-multi (>=1.19.1)", "large-image-source-nd2 (>=1.19.1)", "large-image-source-ometiff (>=1.19.1)", "large-image-source-openjpeg (>=1.19.1)", "large-image-source-openslide (>=1.19.1)", "large-image-source-pil (>=1.19.1)", "large-image-source-test (>=1.19.1)", "large-image-source-tiff (>=1.19.1)", "large-image-source-tifffile (>=1.19.1)", "large-image-source-vips (>=1.19.1)", "matplotlib", "pylibmc (>=1.5.1)", "pyvips", "simplejpeg"]
-bioformats = ["large-image-source-bioformats (>=1.19.1)"]
+all = ["large-image-converter (>=1.19.2)", "large-image-source-bioformats (>=1.19.2)", "large-image-source-deepzoom (>=1.19.2)", "large-image-source-dummy (>=1.19.2)", "large-image-source-gdal (>=1.19.2)", "large-image-source-mapnik (>=1.19.2)", "large-image-source-multi (>=1.19.2)", "large-image-source-nd2 (>=1.19.2)", "large-image-source-ometiff (>=1.19.2)", "large-image-source-openjpeg (>=1.19.2)", "large-image-source-openslide (>=1.19.2)", "large-image-source-pil (>=1.19.2)", "large-image-source-test (>=1.19.2)", "large-image-source-tiff (>=1.19.2)", "large-image-source-tifffile (>=1.19.2)", "large-image-source-vips (>=1.19.2)", "matplotlib", "pylibmc (>=1.5.1)", "pyvips", "simplejpeg"]
+bioformats = ["large-image-source-bioformats (>=1.19.2)"]
 colormaps = ["matplotlib"]
-converter = ["large-image-converter (>=1.19.1)"]
-deepzoom = ["large-image-source-deepzoom (>=1.19.1)"]
-dummy = ["large-image-source-dummy (>=1.19.1)"]
-gdal = ["large-image-source-gdal (>=1.19.1)"]
-mapnik = ["large-image-source-mapnik (>=1.19.1)"]
+converter = ["large-image-converter (>=1.19.2)"]
+deepzoom = ["large-image-source-deepzoom (>=1.19.2)"]
+dummy = ["large-image-source-dummy (>=1.19.2)"]
+gdal = ["large-image-source-gdal (>=1.19.2)"]
+mapnik = ["large-image-source-mapnik (>=1.19.2)"]
 memcached = ["pylibmc (>=1.5.1)"]
-multi = ["large-image-source-multi (>=1.19.1)"]
-nd2 = ["large-image-source-nd2 (>=1.19.1)"]
-ometiff = ["large-image-source-ometiff (>=1.19.1)"]
-openjpeg = ["large-image-source-openjpeg (>=1.19.1)"]
-openslide = ["large-image-source-openslide (>=1.19.1)"]
+multi = ["large-image-source-multi (>=1.19.2)"]
+nd2 = ["large-image-source-nd2 (>=1.19.2)"]
+ometiff = ["large-image-source-ometiff (>=1.19.2)"]
+openjpeg = ["large-image-source-openjpeg (>=1.19.2)"]
+openslide = ["large-image-source-openslide (>=1.19.2)"]
 performance = ["simplejpeg"]
-pil = ["large-image-source-pil (>=1.19.1)"]
-sources = ["large-image-source-bioformats (>=1.19.1)", "large-image-source-deepzoom (>=1.19.1)", "large-image-source-dummy (>=1.19.1)", "large-image-source-gdal (>=1.19.1)", "large-image-source-mapnik (>=1.19.1)", "large-image-source-multi (>=1.19.1)", "large-image-source-nd2 (>=1.19.1)", "large-image-source-ometiff (>=1.19.1)", "large-image-source-openjpeg (>=1.19.1)", "large-image-source-openslide (>=1.19.1)", "large-image-source-pil (>=1.19.1)", "large-image-source-test (>=1.19.1)", "large-image-source-tiff (>=1.19.1)", "large-image-source-tifffile (>=1.19.1)", "large-image-source-vips (>=1.19.1)"]
-test = ["large-image-source-test (>=1.19.1)"]
-tiff = ["large-image-source-tiff (>=1.19.1)"]
-tifffile = ["large-image-source-tifffile (>=1.19.1)"]
+pil = ["large-image-source-pil (>=1.19.2)"]
+sources = ["large-image-source-bioformats (>=1.19.2)", "large-image-source-deepzoom (>=1.19.2)", "large-image-source-dummy (>=1.19.2)", "large-image-source-gdal (>=1.19.2)", "large-image-source-mapnik (>=1.19.2)", "large-image-source-multi (>=1.19.2)", "large-image-source-nd2 (>=1.19.2)", "large-image-source-ometiff (>=1.19.2)", "large-image-source-openjpeg (>=1.19.2)", "large-image-source-openslide (>=1.19.2)", "large-image-source-pil (>=1.19.2)", "large-image-source-test (>=1.19.2)", "large-image-source-tiff (>=1.19.2)", "large-image-source-tifffile (>=1.19.2)", "large-image-source-vips (>=1.19.2)"]
+test = ["large-image-source-test (>=1.19.2)"]
+tiff = ["large-image-source-tiff (>=1.19.2)"]
+tifffile = ["large-image-source-tifffile (>=1.19.2)"]
 tiledoutput = ["pyvips"]
-vips = ["large-image-source-vips (>=1.19.1)"]
+vips = ["large-image-source-vips (>=1.19.2)"]
 
 [[package]]
 name = "large-image-source-openslide"
@@ -1253,6 +1253,13 @@ files = [
     {file = "Pillow-9.4.0-1-cp39-cp39-macosx_10_10_x86_64.whl", hash = "sha256:b8c2f6eb0df979ee99433d8b3f6d193d9590f735cf12274c108bd954e30ca858"},
     {file = "Pillow-9.4.0-1-pp38-pypy38_pp73-macosx_10_10_x86_64.whl", hash = "sha256:b70756ec9417c34e097f987b4d8c510975216ad26ba6e57ccb53bc758f490dab"},
     {file = "Pillow-9.4.0-1-pp39-pypy39_pp73-macosx_10_10_x86_64.whl", hash = "sha256:43521ce2c4b865d385e78579a082b6ad1166ebed2b1a2293c3be1d68dd7ca3b9"},
+    {file = "Pillow-9.4.0-2-cp310-cp310-macosx_10_10_x86_64.whl", hash = "sha256:9d9a62576b68cd90f7075876f4e8444487db5eeea0e4df3ba298ee38a8d067b0"},
+    {file = "Pillow-9.4.0-2-cp311-cp311-macosx_10_10_x86_64.whl", hash = "sha256:87708d78a14d56a990fbf4f9cb350b7d89ee8988705e58e39bdf4d82c149210f"},
+    {file = "Pillow-9.4.0-2-cp37-cp37m-macosx_10_10_x86_64.whl", hash = "sha256:8a2b5874d17e72dfb80d917213abd55d7e1ed2479f38f001f264f7ce7bae757c"},
+    {file = "Pillow-9.4.0-2-cp38-cp38-macosx_10_10_x86_64.whl", hash = "sha256:83125753a60cfc8c412de5896d10a0a405e0bd88d0470ad82e0869ddf0cb3848"},
+    {file = "Pillow-9.4.0-2-cp39-cp39-macosx_10_10_x86_64.whl", hash = "sha256:9e5f94742033898bfe84c93c831a6f552bb629448d4072dd312306bab3bd96f1"},
+    {file = "Pillow-9.4.0-2-pp38-pypy38_pp73-macosx_10_10_x86_64.whl", hash = "sha256:013016af6b3a12a2f40b704677f8b51f72cb007dac785a9933d5c86a72a7fe33"},
+    {file = "Pillow-9.4.0-2-pp39-pypy39_pp73-macosx_10_10_x86_64.whl", hash = "sha256:99d92d148dd03fd19d16175b6d355cc1b01faf80dae93c6c3eb4163709edc0a9"},
     {file = "Pillow-9.4.0-cp310-cp310-macosx_10_10_x86_64.whl", hash = "sha256:2968c58feca624bb6c8502f9564dd187d0e1389964898f5e9e1fbc8533169157"},
     {file = "Pillow-9.4.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:c5c1362c14aee73f50143d74389b2c158707b4abce2cb055b7ad37ce60738d47"},
     {file = "Pillow-9.4.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:bd752c5ff1b4a870b7661234694f24b1d2b9076b8bf337321a814c612665f343"},
@@ -2479,4 +2486,4 @@ docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-katex", "sphinxemoji", "sph
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<3.11"
-content-hash = "36ed6b371d65d0b4393397ebcbf7f4bdde6c7161a93e1425052c28cd1ac6c561"
+content-hash = "8fc69e8149a820781ceb46311ff34d8a62c380837de943bcd84f9569eddaac6e"
