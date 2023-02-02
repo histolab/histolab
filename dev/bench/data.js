@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1675332989629,
+  "lastUpdate": 1675334624269,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -16497,6 +16497,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.9131623240955595e-7",
             "extra": "mean: 34.24048993599672 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "2bb30a203128d322bca8828bb3c47072ddc4f045",
+          "message": "Bump coverage from 7.0.5 to 7.1.0\n\nBumps [coverage](https://github.com/nedbat/coveragepy) from 7.0.5 to 7.1.0.\n- [Release notes](https://github.com/nedbat/coveragepy/releases)\n- [Changelog](https://github.com/nedbat/coveragepy/blob/master/CHANGES.rst)\n- [Commits](https://github.com/nedbat/coveragepy/compare/7.0.5...7.1.0)\n\n---\nupdated-dependencies:\n- dependency-name: coverage\n  dependency-type: direct:development\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2023-02-02T11:41:18+01:00",
+          "tree_id": "ef7d5575fbf76ef56cd354d21e7d49ccd1f5e005",
+          "url": "https://github.com/histolab/histolab/commit/2bb30a203128d322bca8828bb3c47072ddc4f045"
+        },
+        "date": 1675334623012,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.075992677920412,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0033746601572765596",
+            "extra": "mean: 141.32292747000037 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 205.80754111912125,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000672369082064588",
+            "extra": "mean: 4.85890844700001 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1084.6148140695975,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000008504898611457416",
+            "extra": "mean: 921.9863006000139 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 25882.660708789666,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000012117765291324587",
+            "extra": "mean: 38.63590421599906 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 20603.44740884101,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000013670614693888613",
+            "extra": "mean: 48.535566895998954 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 23737.231158713,
+            "unit": "iter/sec",
+            "range": "stddev: 9.697780490077388e-7",
+            "extra": "mean: 42.12791261599773 usec\nrounds: 250"
           }
         ]
       }
