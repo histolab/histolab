@@ -69,7 +69,6 @@ class Describe_RandomTiler:
     def it_knows_when_mpp_supercedes_level(
         self, level, mpp, expected_level, expected_mpp
     ):
-
         random_tiler = RandomTiler((512, 512), 10, level=level, mpp=mpp)
 
         assert random_tiler.level == expected_level
@@ -462,7 +461,6 @@ class Describe_GridTiler:
     def it_knows_when_mpp_supercedes_level(
         self, level, mpp, expected_level, expected_mpp
     ):
-
         tiler = GridTiler((512, 512), level=level, mpp=mpp)
 
         assert tiler.level == expected_level
