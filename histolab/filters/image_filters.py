@@ -914,6 +914,7 @@ class LocalOtsuThreshold(ImageFilter):
 
 # ----------- Branching functions (grayscale/invert input)-------------------
 
+
 # invert --> grayscale ..> hysteresis
 class HysteresisThresholdMask(ImageFilter):
     """Mask an image using hysteresis threshold

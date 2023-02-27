@@ -305,9 +305,9 @@ def breast_tissue() -> Tuple[openslide.OpenSlide, str]:  # pragma: no cover
     )
 
 
-def breast_tissue_diagnostic_green_pen() -> Tuple[
-    openslide.OpenSlide, str
-]:  # pragma: no cover
+def breast_tissue_diagnostic_green_pen() -> (
+    Tuple[openslide.OpenSlide, str]
+):  # pragma: no cover
     """breast_tissue_diagnostic_green_pen() -> Tuple[openslide.OpenSlide, str]
 
     Breast tissue, TCGA-BRCA dataset. Diagnostic slide with green pen marks.
@@ -334,9 +334,9 @@ def breast_tissue_diagnostic_green_pen() -> Tuple[
     )
 
 
-def breast_tissue_diagnostic_red_pen() -> Tuple[
-    openslide.OpenSlide, str
-]:  # pragma: no cover
+def breast_tissue_diagnostic_red_pen() -> (
+    Tuple[openslide.OpenSlide, str]
+):  # pragma: no cover
     """breast_tissue_diagnostic_red_pen() -> Tuple[openslide.OpenSlide, str]
 
     Breast tissue, TCGA-BRCA dataset. Diagnostic slide with red pen marks.
@@ -363,9 +363,9 @@ def breast_tissue_diagnostic_red_pen() -> Tuple[
     )
 
 
-def breast_tissue_diagnostic_black_pen() -> Tuple[
-    openslide.OpenSlide, str
-]:  # pragma: no cover
+def breast_tissue_diagnostic_black_pen() -> (
+    Tuple[openslide.OpenSlide, str]
+):  # pragma: no cover
     """breast_tissue_diagnostic_black_pen() -> Tuple[openslide.OpenSlide, str]
 
     Breast tissue, TCGA-BRCA dataset. Diagnostic slide with black pen marks.
