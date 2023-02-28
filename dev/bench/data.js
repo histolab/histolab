@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1677075944849,
+  "lastUpdate": 1677600849468,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -17091,6 +17091,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.0722923304685938e-7",
             "extra": "mean: 38.701010888000496 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "pamaron",
+            "username": "ernestoarbitrio"
+          },
+          "distinct": true,
+          "id": "f0e889c6ee0ec091c57e2ef1750cb543303b22f7",
+          "message": "Bump pooch from 1.6.0 to 1.7.0\n\nBumps [pooch](https://github.com/fatiando/pooch) from 1.6.0 to 1.7.0.\n- [Release notes](https://github.com/fatiando/pooch/releases)\n- [Changelog](https://github.com/fatiando/pooch/blob/main/doc/changes.rst)\n- [Commits](https://github.com/fatiando/pooch/compare/v1.6.0...v1.7.0)\n\n---\nupdated-dependencies:\n- dependency-name: pooch\n  dependency-type: direct:development\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2023-02-28T17:12:27+01:00",
+          "tree_id": "7ed28dee04410c6822be502d060b762b7e753c59",
+          "url": "https://github.com/histolab/histolab/commit/f0e889c6ee0ec091c57e2ef1750cb543303b22f7"
+        },
+        "date": 1677600848011,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.764621965168809,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0012343031667718175",
+            "extra": "mean: 128.7892706800001 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 327.2330141004029,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00019960001430913862",
+            "extra": "mean: 3.05592637940002 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1219.8734508259213,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000006198849962917008",
+            "extra": "mean: 819.7571635999992 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 31609.919992497515,
+            "unit": "iter/sec",
+            "range": "stddev: 1.518355339188132e-7",
+            "extra": "mean: 31.63563844000066 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 24835.05484410211,
+            "unit": "iter/sec",
+            "range": "stddev: 1.8452247131400443e-7",
+            "extra": "mean: 40.26566505599976 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 29894.28935890857,
+            "unit": "iter/sec",
+            "range": "stddev: 1.767233758177496e-7",
+            "extra": "mean: 33.45120494399703 usec\nrounds: 250"
           }
         ]
       }
