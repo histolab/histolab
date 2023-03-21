@@ -1370,7 +1370,7 @@ class Describe_ThresholdTiler:
         ):
             assert round(score, 5) == round(expected_score, 5)
             assert coords_ == expected_coords
-    
+
     @pytest.mark.parametrize(
         "threshold, expected_value",
         (
@@ -1382,14 +1382,14 @@ class Describe_ThresholdTiler:
                         (0.5, CP(0, 0, 10, 10)),
                         (0.2, CP(0, 0, 10, 10)),
                         (0.8, CP(0, 0, 10, 10)),
-                        (0.1, CP(0, 0, 10, 10))
+                        (0.1, CP(0, 0, 10, 10)),
                     ],
                     [
                         (0.857142857142857, CP(0, 0, 10, 10)),
                         (0.5714285714285714, CP(0, 0, 10, 10)),
                         (0.14285714285714285, CP(0, 0, 10, 10)),
                         (1.0, CP(0, 0, 10, 10)),
-                        (0.0, CP(0, 0, 10, 10))
+                        (0.0, CP(0, 0, 10, 10)),
                     ],
                 ),
             ),
@@ -1399,29 +1399,24 @@ class Describe_ThresholdTiler:
                     [
                         (0.7, CP(0, 0, 10, 10)),
                         (0.5, CP(0, 0, 10, 10)),
-                        (0.8, CP(0, 0, 10, 10))
+                        (0.8, CP(0, 0, 10, 10)),
                     ],
                     [
                         (0.857142857142857, CP(0, 0, 10, 10)),
                         (0.5714285714285714, CP(0, 0, 10, 10)),
-                        (1.0, CP(0, 0, 10, 10))
+                        (1.0, CP(0, 0, 10, 10)),
                     ],
                 ),
             ),
             (
                 0.75,
                 (
-                    [
-                        (0.8, CP(0, 0, 10, 10))
-                    ],
-                    [
-                        (1.0, CP(0, 0, 10, 10))
-                    ],
+                    [(0.8, CP(0, 0, 10, 10))],
+                    [(1.0, CP(0, 0, 10, 10))],
                 ),
             ),
         ),
     )
-
     def it_can_calculate_filtered_tiles(self, request, threshold, expected_value):
         slide = instance_mock(request, Slide)
         _scores = method_mock(request, ThresholdTiler, "_scores")
@@ -1493,7 +1488,9 @@ class Describe_ThresholdTiler:
         ]
         _save_report = method_mock(request, ThresholdTiler, "_save_report")
         random_scorer = RandomScorer()
-        _has_valid_tile_size = method_mock(request, ThresholdTiler, "_has_valid_tile_size")
+        _has_valid_tile_size = method_mock(
+            request, ThresholdTiler, "_has_valid_tile_size"
+        )
         _has_valid_tile_size.return_value = True
         threshold_tiler = ThresholdTiler(random_scorer, (10, 10), 0.1, 0)
         binary_mask = BiggestTissueBoxMask()
@@ -1525,7 +1522,6 @@ class Describe_ThresholdTiler:
             (PILIMG.RGBA_COLOR_49X51_155_0_0, (49, 51)),
         ],
     )
-  
     def but_it_raises_tilesizeerror_if_tilesize_larger_than_slidesize(
         self, request, tmpdir, image, size
     ):
@@ -1533,7 +1529,9 @@ class Describe_ThresholdTiler:
         image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
         slide_path = os.path.join(tmp_path_, "mywsi.png")
         slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
-        _has_valid_tile_size = method_mock(request, ThresholdTiler, "_has_valid_tile_size")
+        _has_valid_tile_size = method_mock(
+            request, ThresholdTiler, "_has_valid_tile_size"
+        )
         _has_valid_tile_size.return_value = False
         threshold_tiler = ThresholdTiler(None, (50, 52), 2, 0)
         binary_mask = BiggestTissueBoxMask()
@@ -1598,7 +1596,9 @@ class Describe_ThresholdTiler:
         _tile_filename.side_effect = [
             f"tile_{i}_level2_0-0-10-10.png" for i in range(2)
         ]
-        _save_report = method_mock(request, ThresholdTiler, "_save_report", autospec=False)
+        _save_report = method_mock(
+            request, ThresholdTiler, "_save_report", autospec=False
+        )
         random_scorer = RandomScorer()
         threshold_tiler = ThresholdTiler(random_scorer, (10, 10), 0.1, 0)
         binary_mask = BiggestTissueBoxMask()

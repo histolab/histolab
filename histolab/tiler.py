@@ -1249,7 +1249,10 @@ class ThresholdTiler(GridTiler):
 
         if report_path:
             self._save_report(
-                report_path, filtered_tiles_scores, filtered_tiles_scaled_scores, filenames
+                report_path,
+                filtered_tiles_scores,
+                filtered_tiles_scaled_scores,
+                filenames,
             )
 
         logger.info(f"{tiles_counter+1} Grid Tiles have been saved.")
@@ -1299,7 +1302,7 @@ class ThresholdTiler(GridTiler):
         filtered_tiles_scaled_scores = []
 
         for i in range(len(all_scores)):
-            if(all_scores[i][0] > self.threshold):
+            if all_scores[i][0] > self.threshold:
                 filtered_tiles_scores.append(all_scores[i])
                 filtered_tiles_scaled_scores.append(scaled_scores[i])
 
