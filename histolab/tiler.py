@@ -1121,3 +1121,285 @@ class ScoreTiler(GridTiler):
             scores.append((score, tile_wsi_coords))
 
         return scores
+
+
+class ThresholdTiler(GridTiler):
+    """Extractor of tiles whose score is above a given threshold.
+
+    The extraction procedure is the same as the ``GridTiler`` extractor, but only the
+    tiles with a score above a given threshold are saved.
+
+    Arguments
+    ---------
+    scorer : Scorer
+        Scoring function used to score the tiles.
+    tile_size : Tuple[int, int]
+        (width, height) of the extracted tiles.
+    threshold : float, optional
+        The threshold used to filter the tiles. Default is 0, which means that all the tiles
+        will be saved (same exact behaviour of a GridTiler). Cannot be negative.
+    level : int, optional
+        Level from which extract the tiles. Default is 0.
+        Superceded by mpp if the mpp argument is provided.
+    check_tissue : bool, optional
+        Whether to check if the tile has enough tissue to be saved. Default is True.
+    tissue_percent : float, optional
+        Number between 0.0 and 100.0 representing the minimum required percentage of
+        tissue over the total area of the image, default is 80.0. This is considered
+        only if ``check_tissue`` equals to True.
+    pixel_overlap : int, optional
+       Number of overlapping pixels (for both height and width) between two adjacent
+       tiles. If negative, two adjacent tiles will be strided by the absolute value of
+       ``pixel_overlap``. Default is 0.
+    prefix : str, optional
+        Prefix to be added to the tile filename. Default is an empty string.
+    suffix : str, optional
+        Suffix to be added to the tile filename. Default is '.png'
+    mpp : float, optional.
+        Micron per pixel resolution. If provided, takes precedence over level.
+        Default is None.
+    """
+
+    def __init__(
+        self,
+        scorer: Scorer,
+        tile_size: Tuple[int, int],
+        threshold: float = 0.0,
+        level: int = 0,
+        check_tissue: bool = True,
+        tissue_percent: float = 80.0,
+        pixel_overlap: int = 0,
+        prefix: str = "",
+        suffix: str = ".png",
+        mpp: float = None,
+    ):
+        self.scorer = scorer
+        self.threshold = threshold
+
+        super().__init__(
+            tile_size,
+            level,
+            check_tissue,
+            tissue_percent,
+            pixel_overlap,
+            prefix,
+            suffix,
+            mpp=mpp,
+        )
+
+    def extract(
+        self,
+        slide: Slide,
+        extraction_mask: BinaryMask = BiggestTissueBoxMask(),
+        report_path: str = None,
+        log_level: str = "INFO",
+    ) -> None:
+        """Extract grid tiles and save them to disk, according to a scoring function and
+        following this filename pattern:
+        `{prefix}tile_{tiles_counter}_level{level}_{x_ul_wsi}-{y_ul_wsi}-{x_br_wsi}-{y_br_wsi}{suffix}`
+
+        Save a CSV report file with the saved tiles and the associated score.
+
+        Parameters
+        ----------
+        slide : Slide
+            Slide from which to extract the tiles
+        extraction_mask : BinaryMask, optional
+            BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
+        report_path : str, optional
+            Path to the CSV report. If None, no report will be saved
+        log_level: str, {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+            Threshold level for the log messages. Default "INFO"
+
+        Raises
+        ------
+        TileSizeError
+            If the tile size is larger than the slide size
+        LevelError
+            If the level is not available for the slide
+        """
+        level = logging.getLevelName(log_level)
+        logger.setLevel(level)
+        self._validate_level(slide)
+        self.tile_size = self._tile_size(slide)
+        self.pixel_overlap = int(self._scale_factor(slide) * self.pixel_overlap)
+        self._validate_tile_size(slide)
+
+        filtered_tiles_scores, filtered_tiles_scaled_scores = self._tiles_generator(
+            slide, extraction_mask
+        )
+
+        tiles_counter = 0
+        filenames = []
+
+        for tiles_counter, (score, tile_wsi_coords) in enumerate(filtered_tiles_scores):
+            tile = slide.extract_tile(
+                tile_wsi_coords,
+                tile_size=self.final_tile_size,
+                mpp=self.mpp,
+                level=self.level if self.mpp is None else None,
+            )
+            tile_filename = self._tile_filename(tile_wsi_coords, tiles_counter)
+            tile.save(os.path.join(slide.processed_path, tile_filename))
+            filenames.append(tile_filename)
+            logger.info(
+                f"\t Tile {tiles_counter} - score: {score} saved: {tile_filename}"
+            )
+
+        if report_path:
+            self._save_report(
+                report_path, filtered_tiles_scores, filtered_tiles_scaled_scores, filenames
+            )
+
+        logger.info(f"{tiles_counter+1} Grid Tiles have been saved.")
+
+    # ------- implementation helpers -------
+
+    def _tiles_generator(
+        self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
+    ) -> Tuple[List[Tuple[float, CoordinatePair]], List[Tuple[float, CoordinatePair]]]:
+        r"""Calculate the tiles with scores above the threshold and their extraction coordinates
+
+        Parameters
+        ----------
+        slide : Slide
+            The slide to extract the tiles from.
+        extraction_mask : BinaryMask, optional
+            BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
+
+        Returns
+        -------
+        Tuple[List[Tuple[float, CoordinatePair]], List[Tuple[float, CoordinatePair]]]
+            List of tuples containing the scores and the extraction coordinates
+            for the filtered tiles. If scaled=True, each score `s_i` of
+            the i-th tile is normalized as
+
+            .. math::
+
+                s_{\hat{i}}=\frac{s_i-\min_{j\in T}{s_j}}{\max_{j\in T}{s_j}-\min_{j\in T}{s_j}}
+
+            where `T` is the set of all the retrieved tiles. Notice that the normalized
+            scores range between 0 and 1. This could be useful to have a more intuitive
+            comparison between the scores. Each tuple represents a tile.
+
+        Raises
+        ------
+        ValueError
+            If ``threshold`` is negative.
+        """  # noqa
+        all_scores = self._scores(slide, extraction_mask)
+        scaled_scores = self._scale_scores(all_scores)
+
+        if self.threshold < 0:
+            raise ValueError(f"'threshold' cannot be negative ({self.threshold})")
+
+        filtered_tiles_scores = []
+        filtered_tiles_scaled_scores = []
+
+        for i in range(len(all_scores)):
+            if(all_scores[i][0] > self.threshold):
+                filtered_tiles_scores.append(all_scores[i])
+                filtered_tiles_scaled_scores.append(scaled_scores[i])
+
+        return filtered_tiles_scores, filtered_tiles_scaled_scores
+
+    @staticmethod
+    def _save_report(
+        report_path: str,
+        filtered_tiles_scores: List[Tuple[float, CoordinatePair]],
+        filtered_tiles_scaled_scores: List[Tuple[float, CoordinatePair]],
+        filenames: List[str],
+    ) -> None:
+        """Save to ``filename`` the report of the saved tiles with the associated score.
+
+        The CSV file
+
+        Parameters
+        ----------
+        report_path : str
+            Path to the report
+        highest_score_tiles : List[Tuple[float, CoordinatePair]]
+            List of tuples containing the score and the extraction coordinates for the
+            tiles with the highest score. Each tuple represents a tile.
+        highest_scaled_score_tiles : List[Tuple[float, CoordinatePair]]
+            List of tuples containing the scaled score between 0 and 1 and the
+            extraction coordinates for the tiles with the highest score. Each tuple
+            represents a tile.
+        filenames : List[str]
+            List of the tiles' filename
+        """
+        header = ["filename", "score", "scaled_score"]
+        rows = [
+            dict(zip(header, values))
+            for values in zip(
+                filenames,
+                np.array(filtered_tiles_scores, dtype=object)[:, 0],
+                np.array(filtered_tiles_scaled_scores, dtype=object)[:, 0],
+            )
+        ]
+
+        with open(report_path, "w+", newline="") as filename:
+            writer = csv.DictWriter(
+                filename, fieldnames=header, lineterminator=os.linesep
+            )
+            writer.writeheader()
+            writer.writerows(rows)
+
+    @staticmethod
+    def _scale_scores(
+        scores: List[Tuple[float, CoordinatePair]]
+    ) -> List[Tuple[float, CoordinatePair]]:
+        """Scale scores between 0 and 1.
+
+        Parameters
+        ----------
+        scores : List[Tuple[float, CoordinatePair]]
+            Scores to be scaled
+
+        Returns
+        -------
+        List[Tuple[float, CoordinatePair]])
+            Scaled scores
+        """
+        scores_ = np.array(scores, dtype=object)[:, 0]
+        coords = np.array(scores, dtype=object)[:, 1]
+        scores_scaled = (scores_ - np.min(scores_)) / (
+            np.max(scores_) - np.min(scores_)
+        )
+
+        return list(zip(scores_scaled, coords))
+
+    def _scores(
+        self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
+    ) -> List[Tuple[float, CoordinatePair]]:
+        """Calculate the scores for all the tiles extracted from the ``slide``.
+
+        Parameters
+        ----------
+        slide : Slide
+            The slide to extract the tiles from.
+        extraction_mask : BinaryMask, optional
+            BinaryMask object defining how to compute a binary mask from a Slide.
+            Default `BiggestTissueBoxMask`.
+
+        Returns
+        -------
+        List[Tuple[float, CoordinatePair]]
+            List of tuples containing the score and the extraction coordinates for each
+            tile. Each tuple represents a tile.
+        """
+        if next(super()._tiles_generator(slide, extraction_mask), None) is None:
+            raise RuntimeError(
+                "No tiles have been generated. This could happen if `check_tissue=True`"
+            )
+
+        grid_tiles = super()._tiles_generator(slide, extraction_mask)
+        scores = []
+
+        for tile, tile_wsi_coords in grid_tiles:
+            score = self.scorer(tile)
+            scores.append((score, tile_wsi_coords))
+
+        return scores
