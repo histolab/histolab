@@ -527,7 +527,7 @@ class DescribeThresholdTiler:
                 (512, 512),
                 0,
                 False,
-                "tiles-location-images/cmu-1-small-region-tl-threshold-01-false-512x512",
+                "tiles-location-images/cmu-1-small-region-tl-th-01-false-512x512",
             ),
             (
                 SVS.CMU_1_SMALL_REGION,
@@ -535,7 +535,7 @@ class DescribeThresholdTiler:
                 (512, 512),
                 0,
                 False,
-                "tiles-location-images/cmu-1-small-region-tl-threshold-015-false-512x512",
+                "tiles-location-images/cmu-1-small-region-tl-th-015-false-512x512",
             ),
             (
                 SVS.CMU_1_SMALL_REGION,
@@ -543,7 +543,7 @@ class DescribeThresholdTiler:
                 (512, 512),
                 0,
                 False,
-                "tiles-location-images/cmu-1-small-region-tl-threshold-2-false-512x512",
+                "tiles-location-images/cmu-1-small-region-tl-th-2-false-512x512",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
@@ -551,7 +551,7 @@ class DescribeThresholdTiler:
                 (150, 300),
                 0,
                 True,
-                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-threshold-01-true-150x300",
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-th-01-true-150x300",
             ),
             (
                 SVS.TCGA_CR_7395_01A_01_TS1,
@@ -559,7 +559,7 @@ class DescribeThresholdTiler:
                 (128, 128),
                 0,
                 True,
-                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-threshold-005-true-128x128",
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-th-005-true-128x128",
             ),
         ],
     )
