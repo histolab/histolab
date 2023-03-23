@@ -560,7 +560,7 @@ class DescribeThresholdTiler:
                 0,
                 True,
                 "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-threshold-005-true-128x128",
-            )
+            ),
         ],
     )
     def it_locates_tiles_on_the_slide(
