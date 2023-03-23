@@ -125,7 +125,7 @@ class Tiler(Protocol):
         if tiles is None:
             tiles = (
                 self._tiles_generator(slide, extraction_mask)[0]
-                if isinstance(self, ScoreTiler)
+                if isinstance(self, ScoreTiler) or isinstance(self,ThresholdTiler)
                 else self._tiles_generator(slide, extraction_mask)
             )
         tiles_coords = (tile[1] for tile in tiles)
@@ -1136,8 +1136,9 @@ class ThresholdTiler(GridTiler):
     tile_size : Tuple[int, int]
         (width, height) of the extracted tiles.
     threshold : float, optional
-        The threshold used to filter the tiles. Default is 0, which means that all the tiles
-        will be saved (same exact behaviour of a GridTiler). Cannot be negative.
+        The threshold used to filter the tiles. Default is 0, which means that all 
+        the tiles will be saved (same exact behaviour of a GridTiler). 
+        Cannot be negative.
     level : int, optional
         Level from which extract the tiles. Default is 0.
         Superceded by mpp if the mpp argument is provided.
@@ -1255,7 +1256,10 @@ class ThresholdTiler(GridTiler):
                 filenames,
             )
 
-        logger.info(f"{tiles_counter+1} Grid Tiles have been saved.")
+        if tiles_counter > 0:
+            tiles_counter += 1
+
+        logger.info(f"{tiles_counter} Grid Tiles have been saved.")
 
     # ------- implementation helpers -------
 
