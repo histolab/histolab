@@ -36,9 +36,7 @@ from ..util import apply_mask_image, np_to_pil, threshold_to_mask, warn
 from .util import mask_percent
 
 
-def adaptive_equalization(
-    img: PIL.Image.Image, nbins: int = 256, clip_limit: float = 0.01
-) -> PIL.Image.Image:
+def adaptive_equalization(img: PIL.Image.Image, nbins: int = 256, clip_limit: float = 0.01) -> PIL.Image.Image:
     """Increase image contrast using adaptive equalization.
 
     Contrast in local region of input image (gray or RGB) is increased using
@@ -236,9 +234,7 @@ def histogram_equalization(img: PIL.Image.Image, nbins: int = 256) -> PIL.Image.
     return np_to_pil(hist_equ)
 
 
-def hysteresis_threshold(
-    img: PIL.Image.Image, low: int = 50, high: int = 100
-) -> PIL.Image.Image:
+def hysteresis_threshold(img: PIL.Image.Image, low: int = 50, high: int = 100) -> PIL.Image.Image:
     """Apply two-level (hysteresis) threshold to an image.
 
     Parameters
@@ -287,9 +283,7 @@ def invert(img: PIL.Image.Image) -> PIL.Image.Image:
     return inverted_img
 
 
-def kmeans_segmentation(
-    img: PIL.Image.Image, n_segments: int = 800, compactness: float = 10.0
-) -> PIL.Image.Image:
+def kmeans_segmentation(img: PIL.Image.Image, n_segments: int = 800, compactness: float = 10.0) -> PIL.Image.Image:
     """Segment an image with K-means segmentation
 
     By using K-means segmentation (color/space proximity) each segment is
@@ -322,9 +316,7 @@ def kmeans_segmentation(
     return np_to_pil(sk_color.label2rgb(labels, img_arr, kind="avg", bg_label=-1))
 
 
-def lab_to_rgb(
-    img: PIL.Image.Image, illuminant: str = "D65", observer: int = "2"
-) -> PIL.Image.Image:
+def lab_to_rgb(img: PIL.Image.Image, illuminant: str = "D65", observer: int = "2") -> PIL.Image.Image:
     """Lab to RGB color space conversion.
 
     Parameters
@@ -375,15 +367,12 @@ def local_equalization(img: PIL.Image.Image, disk_size: int = 50) -> PIL.Image.I
     return np_to_pil(local_equ)
 
 
-def local_otsu_threshold(
-    img: PIL.Image.Image, disk_size: float = 3.0
-) -> PIL.Image.Image:
-    """Mask image based on local Otsu threshold.
+def local_otsu_threshold(img: PIL.Image.Image, disk_size: float = 3.0) -> PIL.Image.Image:
+    """Apply local Otsu thresholding to a 2D image.
 
-    Compute local Otsu threshold for each pixel and return boolean mask
-    based on pixels being less than the local Otsu threshold.
-
-    Note that the input image must be 2D.
+    Compute the local Otsu threshold for each pixel in the input image,
+    and apply this threshold to the pixel values. The resulting image
+    is a binary image where each pixel is either 0 or 255.
 
     Parameters
     ----------
@@ -396,8 +385,8 @@ def local_otsu_threshold(
     Returns
     -------
     PIL.Image.Image
-        Resulting image where local Otsu threshold values have been
-        applied to original image.
+        Resulting binary image where each pixel is either 0 or 255,
+        based on the local Otsu threshold for that pixel.
     """
     if np.array(img).ndim != 2:
         raise ValueError("Input must be 2D.")
@@ -414,8 +403,7 @@ def rag_threshold(
     compactness: float = 10.0,
     threshold: int = 9,
     mask: np.ndarray = None,
-    return_labels: bool = False,
-) -> Union[PIL.Image.Image, np.ndarray]:
+    return_labels: bool = False) -> Union[PIL.Image.Image, np.ndarray]:
     """Combine similar K-means segmented regions based on threshold value.
 
     Segment an image with K-means, build region adjacency graph based on
@@ -561,9 +549,7 @@ def rgb_to_hsv(img: PIL.Image.Image) -> np.ndarray:
     return sk_color.rgb2hsv(img_arr)
 
 
-def rgb_to_lab(
-    img: PIL.Image.Image, illuminant: str = "D65", observer: int = "2"
-) -> np.ndarray:
+def rgb_to_lab(img: PIL.Image.Image, illuminant: str = "D65", observer: int = "2") -> np.ndarray:
     """Convert from the sRGB color space to the CIE Lab colorspace.
 
     sRGB color space reference: IEC 61966-2-1:1999
@@ -630,9 +616,7 @@ def rgb_to_od(img: PIL.Image.Image, background_intensity: int = 240) -> np.ndarr
     return od_arr
 
 
-def stretch_contrast(
-    img: PIL.Image.Image, low: int = 40, high: int = 60
-) -> PIL.Image.Image:
+def stretch_contrast(img: PIL.Image.Image, low: int = 40, high: int = 60) -> PIL.Image.Image:
     """Increase image contrast.
 
     Th contrast in image is increased based on intensities in a specified range
@@ -661,9 +645,7 @@ def stretch_contrast(
 # -------- Branching function --------
 
 
-def blue_filter(
-    img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
-) -> np.ndarray:
+def blue_filter(img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int) -> np.ndarray:
     """Filter out blueish colors in an RGB image.
 
     Create a mask to filter out blueish colors, where the mask is based on a pixel
@@ -703,8 +685,7 @@ def canny_edges(
     img: PIL.Image.Image,
     sigma: float = 1.0,
     low_threshold: float = 0.0,
-    high_threshold: float = 25.0,
-) -> np.ndarray:
+    high_threshold: float = 25.0) -> np.ndarray:
     """Filter image based on Canny edge algorithm.
 
     Note that input image must be 2D grayscale image
@@ -735,8 +716,7 @@ def filter_entropy(
     img: PIL.Image.Image,
     neighborhood: int = 9,
     threshold: float = 5.0,
-    relate: Callable[..., Any] = operator.gt,
-) -> np.ndarray:
+    relate: Callable[..., Any] = operator.gt) -> np.ndarray:
     """Filter image based on entropy (complexity).
 
     The area of the image included in the local neighborhood is defined by a square
@@ -803,8 +783,7 @@ def green_channel_filter(
     img: PIL.Image.Image,
     green_thresh: int = 200,
     avoid_overmask: bool = True,
-    overmask_thresh: float = 90.0,
-) -> np.ndarray:
+    overmask_thresh: float = 90.0) -> np.ndarray:
     """Mask pixels in an RGB image with G-channel greater than a specified threshold.
 
     Create a mask to filter out pixels with a green channel value greater than
@@ -843,9 +822,7 @@ def green_channel_filter(
     return g_mask
 
 
-def green_filter(
-    img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
-) -> np.ndarray:
+def green_filter(img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int) -> np.ndarray:
     """Filter out greenish colors in an RGB image.
     The mask is based on a pixel being above a red channel threshold value, below a
     green channel threshold value, and below a blue channel threshold value.
@@ -900,9 +877,7 @@ def hed_to_rgb(img_arr: np.ndarray) -> PIL.Image.Image:
     return np_to_pil(rgb)
 
 
-def hysteresis_threshold_mask(
-    img: PIL.Image.Image, low: int = 50, high: int = 100
-) -> np.ndarray:
+def hysteresis_threshold_mask(img: PIL.Image.Image, low: int = 50, high: int = 100) -> np.ndarray:
     """Mask an image using hysteresis threshold
 
     Compute the Hysteresis threshold on the complement of a grayscale image,
@@ -930,9 +905,7 @@ def hysteresis_threshold_mask(
     return hyst_mask
 
 
-def otsu_threshold(
-    img: PIL.Image.Image, relate: Callable[..., Any] = operator.lt
-) -> np.ndarray:
+def otsu_threshold(img: PIL.Image.Image, relate: Callable[..., Any] = operator.lt) -> np.ndarray:
     """Mask image based on pixel above Otsu threshold.
 
     Compute Otsu threshold on image and return boolean mask based on pixels above this
@@ -967,9 +940,7 @@ def otsu_threshold(
     return threshold_to_mask(image, otsu_thresh, relate)
 
 
-def red_filter(
-    img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int
-) -> np.ndarray:
+def red_filter(img: PIL.Image.Image, red_thresh: int, green_thresh: int, blue_thresh: int) -> np.ndarray:
     """Mask reddish colors in an RGB image.
 
     Create a mask to filter out reddish colors, where the mask is based on a pixel
@@ -1006,9 +977,7 @@ def red_filter(
     return red | green | blue
 
 
-def yen_threshold(
-    img: PIL.Image.Image, relate: Callable[..., Any] = operator.lt
-) -> np.ndarray:
+def yen_threshold(img: PIL.Image.Image, relate: Callable[..., Any] = operator.lt) -> np.ndarray:
     """Mask image based on pixel below Yen's threshold.
 
     Compute Yen threshold on image and return boolean mask based on pixels below this
