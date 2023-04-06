@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1680785057000,
+  "lastUpdate": 1680786665188,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -18147,6 +18147,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 9.458255805433283e-8",
             "extra": "mean: 37.68660977600348 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "ec9f1fe4ea64e298dcf78152956bbddda555f974",
+          "message": "Bump large-image-source-openslide from 1.20.2 to 1.20.3\n\nBumps [large-image-source-openslide](https://github.com/girder/large_image) from 1.20.2 to 1.20.3.\n- [Release notes](https://github.com/girder/large_image/releases)\n- [Changelog](https://github.com/girder/large_image/blob/master/CHANGELOG.md)\n- [Commits](https://github.com/girder/large_image/compare/v1.20.2...v1.20.3)\n\n---\nupdated-dependencies:\n- dependency-name: large-image-source-openslide\n  dependency-type: direct:development\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2023-04-06T15:08:47+02:00",
+          "tree_id": "21304e10a5b2f3838a8554856c80df36645dbed6",
+          "url": "https://github.com/histolab/histolab/commit/ec9f1fe4ea64e298dcf78152956bbddda555f974"
+        },
+        "date": 1680786663654,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.636799236393032,
+            "unit": "iter/sec",
+            "range": "stddev: 0.005371173077899824",
+            "extra": "mean: 130.94491147999776 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 239.2521973742924,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00012137004937432751",
+            "extra": "mean: 4.179689929599994 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1075.7803104869672,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000020320049887455798",
+            "extra": "mean: 929.5578197999703 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 15914.611542577972,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00000294349296092696",
+            "extra": "mean: 62.83533828800024 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 12787.56176446944,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00000420338132178142",
+            "extra": "mean: 78.20099080799946 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 14627.629688197625,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000003019483470520557",
+            "extra": "mean: 68.36377604000018 usec\nrounds: 250"
           }
         ]
       }
