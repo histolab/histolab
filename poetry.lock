@@ -834,14 +834,14 @@ testing = ["flake8 (<5)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-chec
 
 [[package]]
 name = "large-image"
-version = "1.20.3"
+version = "1.20.5"
 description = "Python modules to work with large, multiresolution images."
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "large-image-1.20.3.tar.gz", hash = "sha256:da68ca353054814e73c4df3e65560c482aedf9a699bff695b387bada4c036ec6"},
-    {file = "large_image-1.20.3-py3-none-any.whl", hash = "sha256:c00c8b3e52e8c22053a69d76fa565342b14c67c68a00b8ca112d11edf8a6703a"},
+    {file = "large-image-1.20.5.tar.gz", hash = "sha256:2e3676a4a376563cb1972ec1fe19e5e0e53d4eb76bc505dc2a055aecc8a46538"},
+    {file = "large_image-1.20.5-py3-none-any.whl", hash = "sha256:d5c6d033d0a8d0627fc15595cb635472cd929a51359a0dd0473ab364247b7709"},
 ]
 
 [package.dependencies]
@@ -850,32 +850,31 @@ importlib-metadata = {version = "<5", markers = "python_version < \"3.8\""}
 numpy = ">=1.10.4"
 palettable = "*"
 Pillow = "*"
-psutil = ">=4.2.0"
 
 [package.extras]
-all = ["large-image-converter (>=1.20.3)", "large-image-source-bioformats (>=1.20.3)", "large-image-source-deepzoom (>=1.20.3)", "large-image-source-dicom (>=1.20.3)", "large-image-source-dummy (>=1.20.3)", "large-image-source-gdal (>=1.20.3)", "large-image-source-mapnik (>=1.20.3)", "large-image-source-multi (>=1.20.3)", "large-image-source-nd2 (>=1.20.3)", "large-image-source-ometiff (>=1.20.3)", "large-image-source-openjpeg (>=1.20.3)", "large-image-source-openslide (>=1.20.3)", "large-image-source-pil (>=1.20.3)", "large-image-source-test (>=1.20.3)", "large-image-source-tiff (>=1.20.3)", "large-image-source-tifffile (>=1.20.3)", "large-image-source-vips (>=1.20.3)", "matplotlib", "pylibmc (>=1.5.1)", "pyvips", "simplejpeg"]
-bioformats = ["large-image-source-bioformats (>=1.20.3)"]
+all = ["large-image-converter (>=1.20.5)", "large-image-source-bioformats (>=1.20.5)", "large-image-source-deepzoom (>=1.20.5)", "large-image-source-dicom (>=1.20.5)", "large-image-source-dummy (>=1.20.5)", "large-image-source-gdal (>=1.20.5)", "large-image-source-mapnik (>=1.20.5)", "large-image-source-multi (>=1.20.5)", "large-image-source-nd2 (>=1.20.5)", "large-image-source-ometiff (>=1.20.5)", "large-image-source-openjpeg (>=1.20.5)", "large-image-source-openslide (>=1.20.5)", "large-image-source-pil (>=1.20.5)", "large-image-source-test (>=1.20.5)", "large-image-source-tiff (>=1.20.5)", "large-image-source-tifffile (>=1.20.5)", "large-image-source-vips (>=1.20.5)", "matplotlib", "psutil (>=4.2.0)", "pylibmc (>=1.5.1)", "pyvips", "simplejpeg", "simplejpeg (<1.6.6)"]
+bioformats = ["large-image-source-bioformats (>=1.20.5)"]
 colormaps = ["matplotlib"]
-converter = ["large-image-converter (>=1.20.3)"]
-deepzoom = ["large-image-source-deepzoom (>=1.20.3)"]
-dicom = ["large-image-source-dicom (>=1.20.3)"]
-dummy = ["large-image-source-dummy (>=1.20.3)"]
-gdal = ["large-image-source-gdal (>=1.20.3)"]
-mapnik = ["large-image-source-mapnik (>=1.20.3)"]
+converter = ["large-image-converter (>=1.20.5)"]
+deepzoom = ["large-image-source-deepzoom (>=1.20.5)"]
+dicom = ["large-image-source-dicom (>=1.20.5)"]
+dummy = ["large-image-source-dummy (>=1.20.5)"]
+gdal = ["large-image-source-gdal (>=1.20.5)"]
+mapnik = ["large-image-source-mapnik (>=1.20.5)"]
 memcached = ["pylibmc (>=1.5.1)"]
-multi = ["large-image-source-multi (>=1.20.3)"]
-nd2 = ["large-image-source-nd2 (>=1.20.3)"]
-ometiff = ["large-image-source-ometiff (>=1.20.3)"]
-openjpeg = ["large-image-source-openjpeg (>=1.20.3)"]
-openslide = ["large-image-source-openslide (>=1.20.3)"]
-performance = ["simplejpeg"]
-pil = ["large-image-source-pil (>=1.20.3)"]
-sources = ["large-image-source-bioformats (>=1.20.3)", "large-image-source-deepzoom (>=1.20.3)", "large-image-source-dicom (>=1.20.3)", "large-image-source-dummy (>=1.20.3)", "large-image-source-gdal (>=1.20.3)", "large-image-source-mapnik (>=1.20.3)", "large-image-source-multi (>=1.20.3)", "large-image-source-nd2 (>=1.20.3)", "large-image-source-ometiff (>=1.20.3)", "large-image-source-openjpeg (>=1.20.3)", "large-image-source-openslide (>=1.20.3)", "large-image-source-pil (>=1.20.3)", "large-image-source-test (>=1.20.3)", "large-image-source-tiff (>=1.20.3)", "large-image-source-tifffile (>=1.20.3)", "large-image-source-vips (>=1.20.3)"]
-test = ["large-image-source-test (>=1.20.3)"]
-tiff = ["large-image-source-tiff (>=1.20.3)"]
-tifffile = ["large-image-source-tifffile (>=1.20.3)"]
+multi = ["large-image-source-multi (>=1.20.5)"]
+nd2 = ["large-image-source-nd2 (>=1.20.5)"]
+ometiff = ["large-image-source-ometiff (>=1.20.5)"]
+openjpeg = ["large-image-source-openjpeg (>=1.20.5)"]
+openslide = ["large-image-source-openslide (>=1.20.5)"]
+performance = ["psutil (>=4.2.0)", "simplejpeg", "simplejpeg (<1.6.6)"]
+pil = ["large-image-source-pil (>=1.20.5)"]
+sources = ["large-image-source-bioformats (>=1.20.5)", "large-image-source-deepzoom (>=1.20.5)", "large-image-source-dicom (>=1.20.5)", "large-image-source-dummy (>=1.20.5)", "large-image-source-gdal (>=1.20.5)", "large-image-source-mapnik (>=1.20.5)", "large-image-source-multi (>=1.20.5)", "large-image-source-nd2 (>=1.20.5)", "large-image-source-ometiff (>=1.20.5)", "large-image-source-openjpeg (>=1.20.5)", "large-image-source-openslide (>=1.20.5)", "large-image-source-pil (>=1.20.5)", "large-image-source-test (>=1.20.5)", "large-image-source-tiff (>=1.20.5)", "large-image-source-tifffile (>=1.20.5)", "large-image-source-vips (>=1.20.5)"]
+test = ["large-image-source-test (>=1.20.5)"]
+tiff = ["large-image-source-tiff (>=1.20.5)"]
+tifffile = ["large-image-source-tifffile (>=1.20.5)"]
 tiledoutput = ["pyvips"]
-vips = ["large-image-source-vips (>=1.20.3)"]
+vips = ["large-image-source-vips (>=1.20.5)"]
 
 [[package]]
 name = "large-image-source-openslide"
@@ -1407,33 +1406,6 @@ files = [
 
 [package.dependencies]
 wcwidth = "*"
-
-[[package]]
-name = "psutil"
-version = "5.9.4"
-description = "Cross-platform lib for process and system monitoring in Python."
-category = "dev"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-files = [
-    {file = "psutil-5.9.4-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:c1ca331af862803a42677c120aff8a814a804e09832f166f226bfd22b56feee8"},
-    {file = "psutil-5.9.4-cp27-cp27m-manylinux2010_i686.whl", hash = "sha256:68908971daf802203f3d37e78d3f8831b6d1014864d7a85937941bb35f09aefe"},
-    {file = "psutil-5.9.4-cp27-cp27m-manylinux2010_x86_64.whl", hash = "sha256:3ff89f9b835100a825b14c2808a106b6fdcc4b15483141482a12c725e7f78549"},
-    {file = "psutil-5.9.4-cp27-cp27m-win32.whl", hash = "sha256:852dd5d9f8a47169fe62fd4a971aa07859476c2ba22c2254d4a1baa4e10b95ad"},
-    {file = "psutil-5.9.4-cp27-cp27m-win_amd64.whl", hash = "sha256:9120cd39dca5c5e1c54b59a41d205023d436799b1c8c4d3ff71af18535728e94"},
-    {file = "psutil-5.9.4-cp27-cp27mu-manylinux2010_i686.whl", hash = "sha256:6b92c532979bafc2df23ddc785ed116fced1f492ad90a6830cf24f4d1ea27d24"},
-    {file = "psutil-5.9.4-cp27-cp27mu-manylinux2010_x86_64.whl", hash = "sha256:efeae04f9516907be44904cc7ce08defb6b665128992a56957abc9b61dca94b7"},
-    {file = "psutil-5.9.4-cp36-abi3-macosx_10_9_x86_64.whl", hash = "sha256:54d5b184728298f2ca8567bf83c422b706200bcbbfafdc06718264f9393cfeb7"},
-    {file = "psutil-5.9.4-cp36-abi3-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:16653106f3b59386ffe10e0bad3bb6299e169d5327d3f187614b1cb8f24cf2e1"},
-    {file = "psutil-5.9.4-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:54c0d3d8e0078b7666984e11b12b88af2db11d11249a8ac8920dd5ef68a66e08"},
-    {file = "psutil-5.9.4-cp36-abi3-win32.whl", hash = "sha256:149555f59a69b33f056ba1c4eb22bb7bf24332ce631c44a319cec09f876aaeff"},
-    {file = "psutil-5.9.4-cp36-abi3-win_amd64.whl", hash = "sha256:fd8522436a6ada7b4aad6638662966de0d61d241cb821239b2ae7013d41a43d4"},
-    {file = "psutil-5.9.4-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:6001c809253a29599bc0dfd5179d9f8a5779f9dffea1da0f13c53ee568115e1e"},
-    {file = "psutil-5.9.4.tar.gz", hash = "sha256:3d7f9739eb435d4b1338944abe23f49584bde5395f27487d2ee25ad9a8774a62"},
-]
-
-[package.extras]
-test = ["enum34", "ipaddress", "mock", "pywin32", "wmi"]
 
 [[package]]
 name = "ptyprocess"
@@ -2442,4 +2414,4 @@ docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-katex", "sphinxemoji", "sph
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<3.11"
-content-hash = "54620939604507143b31c210ef2f0691ddcd70648345b8f925e188dd7328b632"
+content-hash = "d67cbf45b9cad07eeedcd15c3f5f34c3d12ae7f135317c4db8cc40e160b5cbee"
