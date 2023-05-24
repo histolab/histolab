@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1684164783953,
+  "lastUpdate": 1684921458086,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -18807,6 +18807,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 2.005879070700864e-7",
             "extra": "mean: 33.682981680000694 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "4c8e5b172e22dabec78f687423a6d251474ada3a",
+          "message": "Bump pytest-xdist from 3.3.0 to 3.3.1\n\nBumps [pytest-xdist](https://github.com/pytest-dev/pytest-xdist) from 3.3.0 to 3.3.1.\n- [Changelog](https://github.com/pytest-dev/pytest-xdist/blob/master/CHANGELOG.rst)\n- [Commits](https://github.com/pytest-dev/pytest-xdist/compare/v3.3.0...v3.3.1)\n\n---\nupdated-dependencies:\n- dependency-name: pytest-xdist\n  dependency-type: direct:development\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2023-05-24T11:42:33+02:00",
+          "tree_id": "a9fd3dab900673bd861078a049b65d53036fd668",
+          "url": "https://github.com/histolab/histolab/commit/4c8e5b172e22dabec78f687423a6d251474ada3a"
+        },
+        "date": 1684921457289,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 8.012386782678092,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0013389902730344782",
+            "extra": "mean: 124.80675573000184 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 225.1274596607858,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00004581065463027289",
+            "extra": "mean: 4.44192814819998 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1221.210373034722,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000007757747209958308",
+            "extra": "mean: 818.8597329999652 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 29083.67823279656,
+            "unit": "iter/sec",
+            "range": "stddev: 1.0459896291304948e-7",
+            "extra": "mean: 34.38354639999898 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 23083.275236298825,
+            "unit": "iter/sec",
+            "range": "stddev: 1.2062497078442168e-7",
+            "extra": "mean: 43.32140867200178 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 26767.920283938714,
+            "unit": "iter/sec",
+            "range": "stddev: 1.0616504263222618e-7",
+            "extra": "mean: 37.35815070399849 usec\nrounds: 250"
           }
         ]
       }
