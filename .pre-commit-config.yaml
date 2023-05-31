@@ -33,4 +33,3 @@ repos:
     rev: "0.4.0"
     hooks:
       - id: sync_with_poetry
-        args: ["--all"]
