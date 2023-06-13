@@ -799,13 +799,13 @@ testing = ["flake8 (<5)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-chec
 
 [[package]]
 name = "large-image"
-version = "1.22.2"
+version = "1.22.4"
 description = "Python modules to work with large, multiresolution images."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "large-image-1.22.2.tar.gz", hash = "sha256:bc20681dbf232187e786282932c2ff538c3c1959db06758f9760fb6158351feb"},
-    {file = "large_image-1.22.2-py3-none-any.whl", hash = "sha256:eff1642a94b5aa166ea083ad433ec691812c29fb79d6d12060183afc7f46f7de"},
+    {file = "large-image-1.22.4.tar.gz", hash = "sha256:38fe5c7ee96e90956493d70678914ef4aef8e9ce926c37aa6ab99a3b17b219aa"},
+    {file = "large_image-1.22.4-py3-none-any.whl", hash = "sha256:49a928b42821384bf1d93cea7ea3630b2b65df853833df1a0f8fb9bc625921b6"},
 ]
 
 [package.dependencies]
@@ -816,30 +816,30 @@ palettable = "*"
 Pillow = "*"
 
 [package.extras]
-all = ["large-image-converter (>=1.22.2)", "large-image-source-bioformats (>=1.22.2)", "large-image-source-deepzoom (>=1.22.2)", "large-image-source-dicom (>=1.22.2)", "large-image-source-dummy (>=1.22.2)", "large-image-source-gdal (>=1.22.2)", "large-image-source-mapnik (>=1.22.2)", "large-image-source-multi (>=1.22.2)", "large-image-source-nd2 (>=1.22.2)", "large-image-source-ometiff (>=1.22.2)", "large-image-source-openjpeg (>=1.22.2)", "large-image-source-openslide (>=1.22.2)", "large-image-source-pil (>=1.22.2)", "large-image-source-pil[all] (>=1.22.2)", "large-image-source-rasterio (>=1.22.2)", "large-image-source-rasterio[all] (>=1.22.2)", "large-image-source-test (>=1.22.2)", "large-image-source-tiff (>=1.22.2)", "large-image-source-tifffile (>=1.22.2)", "large-image-source-vips (>=1.22.2)", "matplotlib", "psutil (>=4.2.0)", "pylibmc (>=1.5.1)", "pyvips", "simplejpeg", "simplejpeg (<1.6.6)"]
-bioformats = ["large-image-source-bioformats (>=1.22.2)"]
+all = ["large-image-converter (>=1.22.4)", "large-image-source-bioformats (>=1.22.4)", "large-image-source-deepzoom (>=1.22.4)", "large-image-source-dicom (>=1.22.4)", "large-image-source-dummy (>=1.22.4)", "large-image-source-gdal (>=1.22.4)", "large-image-source-mapnik (>=1.22.4)", "large-image-source-multi (>=1.22.4)", "large-image-source-nd2 (>=1.22.4)", "large-image-source-ometiff (>=1.22.4)", "large-image-source-openjpeg (>=1.22.4)", "large-image-source-openslide (>=1.22.4)", "large-image-source-pil (>=1.22.4)", "large-image-source-pil[all] (>=1.22.4)", "large-image-source-rasterio (>=1.22.4)", "large-image-source-rasterio[all] (>=1.22.4)", "large-image-source-test (>=1.22.4)", "large-image-source-tiff (>=1.22.4)", "large-image-source-tifffile (>=1.22.4)", "large-image-source-vips (>=1.22.4)", "matplotlib", "psutil (>=4.2.0)", "pylibmc (>=1.5.1)", "pyvips", "simplejpeg", "simplejpeg (<1.6.6)"]
+bioformats = ["large-image-source-bioformats (>=1.22.4)"]
 colormaps = ["matplotlib"]
-converter = ["large-image-converter (>=1.22.2)"]
-deepzoom = ["large-image-source-deepzoom (>=1.22.2)"]
-dicom = ["large-image-source-dicom (>=1.22.2)"]
-dummy = ["large-image-source-dummy (>=1.22.2)"]
-gdal = ["large-image-source-gdal (>=1.22.2)"]
-mapnik = ["large-image-source-mapnik (>=1.22.2)"]
+converter = ["large-image-converter (>=1.22.4)"]
+deepzoom = ["large-image-source-deepzoom (>=1.22.4)"]
+dicom = ["large-image-source-dicom (>=1.22.4)"]
+dummy = ["large-image-source-dummy (>=1.22.4)"]
+gdal = ["large-image-source-gdal (>=1.22.4)"]
+mapnik = ["large-image-source-mapnik (>=1.22.4)"]
 memcached = ["pylibmc (>=1.5.1)"]
-multi = ["large-image-source-multi (>=1.22.2)"]
-nd2 = ["large-image-source-nd2 (>=1.22.2)"]
-ometiff = ["large-image-source-ometiff (>=1.22.2)"]
-openjpeg = ["large-image-source-openjpeg (>=1.22.2)"]
-openslide = ["large-image-source-openslide (>=1.22.2)"]
+multi = ["large-image-source-multi (>=1.22.4)"]
+nd2 = ["large-image-source-nd2 (>=1.22.4)"]
+ometiff = ["large-image-source-ometiff (>=1.22.4)"]
+openjpeg = ["large-image-source-openjpeg (>=1.22.4)"]
+openslide = ["large-image-source-openslide (>=1.22.4)"]
 performance = ["psutil (>=4.2.0)", "simplejpeg", "simplejpeg (<1.6.6)"]
-pil = ["large-image-source-pil (>=1.22.2)"]
-rasterio = ["large-image-source-rasterio (>=1.22.2)"]
-sources = ["large-image-source-bioformats (>=1.22.2)", "large-image-source-deepzoom (>=1.22.2)", "large-image-source-dicom (>=1.22.2)", "large-image-source-dummy (>=1.22.2)", "large-image-source-gdal (>=1.22.2)", "large-image-source-mapnik (>=1.22.2)", "large-image-source-multi (>=1.22.2)", "large-image-source-nd2 (>=1.22.2)", "large-image-source-ometiff (>=1.22.2)", "large-image-source-openjpeg (>=1.22.2)", "large-image-source-openslide (>=1.22.2)", "large-image-source-pil (>=1.22.2)", "large-image-source-rasterio (>=1.22.2)", "large-image-source-test (>=1.22.2)", "large-image-source-tiff (>=1.22.2)", "large-image-source-tifffile (>=1.22.2)", "large-image-source-vips (>=1.22.2)"]
-test = ["large-image-source-test (>=1.22.2)"]
-tiff = ["large-image-source-tiff (>=1.22.2)"]
-tifffile = ["large-image-source-tifffile (>=1.22.2)"]
+pil = ["large-image-source-pil (>=1.22.4)"]
+rasterio = ["large-image-source-rasterio (>=1.22.4)"]
+sources = ["large-image-source-bioformats (>=1.22.4)", "large-image-source-deepzoom (>=1.22.4)", "large-image-source-dicom (>=1.22.4)", "large-image-source-dummy (>=1.22.4)", "large-image-source-gdal (>=1.22.4)", "large-image-source-mapnik (>=1.22.4)", "large-image-source-multi (>=1.22.4)", "large-image-source-nd2 (>=1.22.4)", "large-image-source-ometiff (>=1.22.4)", "large-image-source-openjpeg (>=1.22.4)", "large-image-source-openslide (>=1.22.4)", "large-image-source-pil (>=1.22.4)", "large-image-source-rasterio (>=1.22.4)", "large-image-source-test (>=1.22.4)", "large-image-source-tiff (>=1.22.4)", "large-image-source-tifffile (>=1.22.4)", "large-image-source-vips (>=1.22.4)"]
+test = ["large-image-source-test (>=1.22.4)"]
+tiff = ["large-image-source-tiff (>=1.22.4)"]
+tifffile = ["large-image-source-tifffile (>=1.22.4)"]
 tiledoutput = ["pyvips"]
-vips = ["large-image-source-vips (>=1.22.2)"]
+vips = ["large-image-source-vips (>=1.22.4)"]
 
 [[package]]
 name = "large-image-source-openslide"
@@ -2299,4 +2299,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<3.11"
-content-hash = "56d8d1aa65f0097b0a09cb2609470698e9f6b7137c2cd78c39cb8878b7363edd"
+content-hash = "e48cd85797f3f43667ae4ebbd33465cd27bbaed4ba887b0efe62e8fb0571038a"
