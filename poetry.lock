@@ -2016,13 +2016,13 @@ test = ["flake8", "mypy", "pytest"]
 
 [[package]]
 name = "sphinxcontrib-katex"
-version = "0.9.6"
+version = "0.9.7"
 description = "A Sphinx extension for rendering math in HTML pages"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "sphinxcontrib-katex-0.9.6.tar.gz", hash = "sha256:055c17a8e07cd2d3e42fb653f7592ad94acc436590ab2264b305c3861f5786a7"},
-    {file = "sphinxcontrib_katex-0.9.6-py3-none-any.whl", hash = "sha256:f4f7235f45752c0c46f62a7144f82ea0769625052649f5e7b678b5031a0a4510"},
+    {file = "sphinxcontrib-katex-0.9.7.tar.gz", hash = "sha256:3a6754b1cfc90e141e3f73e0835eafc8262da5fafe7a4c674fa708fab79cebd7"},
+    {file = "sphinxcontrib_katex-0.9.7-py3-none-any.whl", hash = "sha256:30a5d772ebdc120431b41f36ed6a989b04329efc499b4ec9301f469e7cc69e9a"},
 ]
 
 [package.dependencies]
