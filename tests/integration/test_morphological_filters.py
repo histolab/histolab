@@ -55,7 +55,7 @@ def test_remove_small_objects_filter(
     )
 
     np.testing.assert_array_equal(mask_no_small_object, expected_value)
-    assert type(mask_no_small_object) == np.ndarray
+    assert isinstance(mask_no_small_object, np.ndarray) is True
 
 
 @pytest.mark.parametrize(
@@ -73,4 +73,4 @@ def test_watershed_segmentation_filter(mask_array, region_shape, expected_array)
     mask_watershed = mof.watershed_segmentation(mask_array, region_shape)
 
     np.testing.assert_array_equal(mask_watershed, expected_value)
-    assert type(mask_watershed) == np.ndarray
+    assert isinstance(mask_watershed, np.ndarray) is True

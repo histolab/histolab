@@ -102,4 +102,4 @@ class Describe_Tile:
         tissue_mask = tile.tissue_mask
 
         np.testing.assert_array_equal(tissue_mask, expected_value)
-        assert type(tissue_mask) == np.ndarray
+        assert isinstance(tissue_mask, np.ndarray) is True

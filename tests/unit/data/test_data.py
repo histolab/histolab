@@ -93,7 +93,7 @@ def test_load_svs(request):
 
     svs, path = _load_svs(file)
 
-    assert type(svs) == openslide.OpenSlide
+    assert isinstance(svs, openslide.OpenSlide) is True
     assert path == file
 
 

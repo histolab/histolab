@@ -71,7 +71,7 @@ class Describe_MacenkoStainNormalizer:
 
         stain_index = MacenkoStainNormalizer._find_stain_index(reference, stain_vector)
 
-        assert type(stain_index) == np.int64
+        assert isinstance(stain_index, np.int64) is True
         assert stain_index == expected_stain_index
 
     @pytest.mark.parametrize(
@@ -92,7 +92,7 @@ class Describe_MacenkoStainNormalizer:
 
         stain_index = MacenkoStainNormalizer._find_stain_index(reference, stain_vector)
 
-        assert type(stain_index) == np.int64
+        assert isinstance(stain_index, np.int64) is True
         assert stain_index == expected_stain_index
 
     @pytest.mark.parametrize(

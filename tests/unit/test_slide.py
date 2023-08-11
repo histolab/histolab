@@ -101,7 +101,7 @@ class Describe_Slide:
 
         wsi = slide._wsi
 
-        assert type(wsi) == openslide.ImageSlide
+        assert isinstance(wsi, openslide.ImageSlide) is True
 
     @pytest.mark.parametrize(
         "slide_path, expected_value",
@@ -265,7 +265,7 @@ class Describe_Slide:
 
         resampled_array = slide.resampled_array(scale_factor=32)
 
-        assert type(resampled_array) == np.ndarray
+        assert isinstance(resampled_array, np.ndarray) is True
         assert resampled_array.shape == (400, 300, 3)
 
     @pytest.mark.parametrize("use_largeimage", [True, False])
@@ -319,7 +319,7 @@ class Describe_Slide:
         _resample = slide._resample(32)
 
         # image array assertions
-        assert type(_resample[1]) == np.ndarray
+        assert isinstance(_resample[1], np.ndarray) is True
         # ---The np array shape should be (new_h X new_w X channels),---
         # ---in this case (look at resampled_dims mock) the new_h is 400---
         # ---the new_w is 300 and the color channels of the image are 3---
@@ -331,7 +331,7 @@ class Describe_Slide:
         np.testing.assert_almost_equal(_resample[1][:, :, 1], np.full((400, 300), 249))
         np.testing.assert_almost_equal(_resample[1][:, :, 2], np.full((400, 300), 240))
         # PIL image assertions
-        assert type(_resample[0]) == PIL.Image.Image
+        assert isinstance(_resample[0], PIL.Image.Image) is True
         assert _resample[0].size == (300, 400)
         assert _resample[0].width == 300
         assert _resample[0].height == 400
@@ -355,7 +355,7 @@ class Describe_Slide:
 
         scaled_image = slide.scaled_image(32)
 
-        assert type(scaled_image) == PIL.Image.Image
+        assert isinstance(scaled_image, PIL.Image.Image) is True
 
     def it_knows_its_thumbnail_openslide(self, tmpdir, resampled_dims_):
         tmp_path_ = tmpdir.mkdir("myslide")
@@ -371,7 +371,7 @@ class Describe_Slide:
 
         thumb = slide.thumbnail
 
-        assert type(thumb) == PIL.Image.Image
+        assert isinstance(thumb, PIL.Image.Image) is True
 
     def it_knows_its_thumbnail_largeimage(self, tmpdir, request):
         tmp_path_ = tmpdir.mkdir("myslide")
@@ -395,7 +395,7 @@ class Describe_Slide:
 
         thumb = slide.thumbnail
 
-        assert type(thumb) == PIL.Image.Image
+        assert isinstance(thumb, PIL.Image.Image) is True
         assert thumb.size == thumb_size
         largeimage_get_thumbnail_.assert_called_once_with(
             ANY, encoding="PNG", width=thumb_size[0], height=thumb_size[1]
@@ -561,7 +561,7 @@ class Describe_Slide:
 
         _are_valid = slide._has_valid_coords(coords)
 
-        assert type(_are_valid) == bool
+        assert isinstance(_are_valid, bool) is True
         assert _are_valid == expected_result
 
     def it_knows_its_levels(self, tmpdir):
@@ -569,7 +569,7 @@ class Describe_Slide:
 
         levels = slide.levels
 
-        assert type(levels) == list
+        assert isinstance(levels, list) is True
         assert levels == [0]
 
     def it_can_access_to_its_properties(self, request):

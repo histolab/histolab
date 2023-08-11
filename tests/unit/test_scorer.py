@@ -34,7 +34,7 @@ class DescribeScorers:
         score = random_scorer(tile)
 
         assert isinstance(random_scorer, scorer.RandomScorer)
-        assert type(score) == float
+        assert isinstance(score, float) is True
 
     def it_can_construct_nuclei_scorer(self, request):
         image = PILIMG.RGB_RANDOM_COLOR_10X10
@@ -61,7 +61,7 @@ class DescribeScorers:
             mask_difference_.call_args_list[0][0][1], COMPLEX_MASK
         )
         assert isinstance(nuclei_scorer, scorer.NucleiScorer)
-        assert type(score) == np.float64
+        assert isinstance(score, np.float64) is True
         assert score == 0  # to avoid float representation issues
 
     def it_can_construct_cellurarity_scorer_considering_tissue(self, request):
@@ -81,7 +81,7 @@ class DescribeScorers:
 
         assert apply_filters_.call_args_list[0][0][0] == tile
         assert isinstance(cellularity_scorer, scorer.CellularityScorer)
-        assert type(score) == float
+        assert isinstance(score, float) is True
         assert score == 1  # to avoid float representation issues
 
     def it_can_construct_cellurarity_scorer_without_considering_tissue(self, request):
@@ -100,5 +100,5 @@ class DescribeScorers:
         assert apply_filters_.call_args_list[0][0][0] == tile
 
         assert isinstance(cellularity_scorer, scorer.CellularityScorer)
-        assert type(score) == float
+        assert isinstance(score, float) is True
         assert score == 0.61  # to avoid float representation issues

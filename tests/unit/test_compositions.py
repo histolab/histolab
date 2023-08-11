@@ -55,7 +55,7 @@ def it_knows_tissue_areas_mask_tile_filters_composition(
         BinaryDilation_(),
         BinaryFillHoles_(),
     ]
-    assert type(_enough_tissue_mask_filters_) == Compose
+    assert isinstance(_enough_tissue_mask_filters_, Compose) is True
 
 
 def it_knows_tissue_areas_mask_slide_filters_composition(
@@ -81,7 +81,7 @@ def it_knows_tissue_areas_mask_slide_filters_composition(
         RemoveSmallObjects_(),
     ]
 
-    assert type(_enough_tissue_mask_filters_) == Compose
+    assert isinstance(_enough_tissue_mask_filters_, Compose) is True
 
 
 def it_knows_tissue_areas_mask_compose_filters_composition(
@@ -103,7 +103,7 @@ def it_knows_tissue_areas_mask_compose_filters_composition(
         Compose, *filters
     ).tissue_mask_filters
 
-    assert type(_enough_tissue_mask_filters_) == Compose
+    assert isinstance(_enough_tissue_mask_filters_, Compose) is True
     assert list(_enough_tissue_mask_filters_.filters) == filters
 
 

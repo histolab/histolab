@@ -120,7 +120,7 @@ class Describe_RandomTiler:
 
         tile_size_ = random_tiler.tile_size
 
-        assert type(tile_size_) == tuple
+        assert isinstance(tile_size_, tuple) is True
         assert tile_size_ == tile_size
 
     @pytest.mark.parametrize("max_iter", (1000, 10, 3000))
@@ -129,7 +129,7 @@ class Describe_RandomTiler:
 
         max_iter_ = random_tiler.max_iter
 
-        assert type(max_iter_) == int
+        assert isinstance(max_iter_, int) is True
         assert max_iter_ == max_iter
 
     @pytest.mark.parametrize(
@@ -153,7 +153,7 @@ class Describe_RandomTiler:
 
         _filename = random_tiler._tile_filename(tile_coords, tiles_counter)
 
-        assert type(_filename) == str
+        assert isinstance(_filename, str) is True
         assert _filename == expected_filename
 
     @pytest.mark.parametrize(
@@ -165,7 +165,7 @@ class Describe_RandomTiler:
 
         result = random_tiler._has_valid_tile_size(slide)
 
-        assert type(result) == bool
+        assert isinstance(result, bool) is True
         assert result == expected_result
 
     def it_can_generate_random_coordinates(self, request, tmpdir):
@@ -490,7 +490,7 @@ class Describe_GridTiler:
 
         tile_size_ = grid_tiler.tile_size
 
-        assert type(tile_size_) == tuple
+        assert isinstance(tile_size_, tuple) is True
         assert tile_size_ == tile_size
 
     @pytest.mark.parametrize(
@@ -522,7 +522,7 @@ class Describe_GridTiler:
 
         _filename = grid_tiler._tile_filename(tile_coords, tiles_counter)
 
-        assert type(_filename) == str
+        assert isinstance(_filename, str) is True
         assert _filename == expected_filename
 
     @pytest.mark.parametrize(
@@ -534,7 +534,7 @@ class Describe_GridTiler:
 
         result = grid_tiler._has_valid_tile_size(slide)
 
-        assert type(result) == bool
+        assert isinstance(result, bool) is True
         assert result == expected_result
 
     @pytest.mark.parametrize(
@@ -553,7 +553,7 @@ class Describe_GridTiler:
 
         n_tiles_row = grid_tiler._n_tiles_row(bbox_coordinates)
 
-        assert type(n_tiles_row) == int
+        assert isinstance(n_tiles_row, int) is True
         assert n_tiles_row == expected_n_tiles_row
 
     @pytest.mark.parametrize(
@@ -572,7 +572,7 @@ class Describe_GridTiler:
 
         n_tiles_column = grid_tiler._n_tiles_column(bbox_coordinates)
 
-        assert type(n_tiles_column) == int
+        assert isinstance(n_tiles_column, int) is True
         assert n_tiles_column == expected_n_tiles_column
 
     @pytest.mark.parametrize(
@@ -823,7 +823,7 @@ class Describe_GridTiler:
             grid_tiler._are_coordinates_within_extraction_mask(tile_coords, mask)
         )
 
-        assert type(coords_within_extraction_mask) == bool
+        assert isinstance(coords_within_extraction_mask, bool) is True
         assert coords_within_extraction_mask == expected_result
 
     @pytest.mark.parametrize(
@@ -919,7 +919,7 @@ class Describe_ScoreTiler:
 
         n_tiles_ = score_tiler.n_tiles
 
-        assert type(n_tiles_) == int
+        assert isinstance(n_tiles_, int) is True
         assert n_tiles_ == n_tiles
 
     @pytest.mark.parametrize(
@@ -931,7 +931,7 @@ class Describe_ScoreTiler:
 
         result = score_tiler._has_valid_tile_size(slide)
 
-        assert type(result) == bool
+        assert isinstance(result, bool) is True
         assert result == expected_result
 
     def it_can_calculate_scores(self, request):
@@ -954,10 +954,10 @@ class Describe_ScoreTiler:
             call(score_tiler, slide, binary_mask),
         ]
         assert _scorer.call_args_list == [call(tile), call(tile)]
-        assert type(scores) == list
-        assert type(scores[0]) == tuple
-        assert type(scores[0][0]) == float
-        assert type(scores[0][1]) == CP
+        assert isinstance(scores, list) is True
+        assert isinstance(scores[0], tuple) is True
+        assert isinstance(scores[0][0], float) is True
+        assert isinstance(scores[0][1], CP) is True
         assert scores == [(0.5, coords), (0.7, coords)]
 
     def but_it_raises_runtimeerror_if_no_tiles_are_extracted(self, request):
