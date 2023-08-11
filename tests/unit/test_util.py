@@ -228,7 +228,7 @@ def test_regions_to_binary_mask():
 
     binary_mask_regions = regions_to_binary_mask(regions, dims=(10, 10))
 
-    assert type(binary_mask_regions) == np.ndarray
+    assert isinstance(binary_mask_regions, np.ndarray) is True
     assert binary_mask_regions.dtype == bool
     np.testing.assert_array_almost_equal(
         binary_mask_regions,
@@ -314,9 +314,9 @@ def test_regions_from_binary_mask(
     regions_from_binary_mask_ = regions_from_binary_mask(mask)
 
     regionprops.assert_called_once_with(label(mask))
-    assert type(regions_from_binary_mask_) == list
+    assert isinstance(regions_from_binary_mask_, list)
     assert len(regions_from_binary_mask_) == 1
-    assert type(regions_from_binary_mask_[0]) == Region
+    assert isinstance(regions_from_binary_mask_[0], Region) is True
     assert regions_from_binary_mask_[0].index == 0
     assert regions_from_binary_mask_[0].area == region_props[0].area
     assert regions_from_binary_mask_[0].bbox == expected_bbox

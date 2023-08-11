@@ -186,7 +186,7 @@ class Describe_Tile:
         tissue_ratio = tile.tissue_ratio
 
         _tile_tissue_mask_.assert_called()
-        assert type(tissue_ratio) == float
+        assert isinstance(tissue_ratio, float) is True
         assert tissue_ratio == 0.61
 
     def it_knows_how_to_apply_filters_PIL(self, RgbToGrayscale_):
@@ -246,7 +246,7 @@ class Describe_Tile:
 
         _tile_tissue_mask_filters.assert_called_once()
         assert _call.call_args_list[0][0][1].size == (30, 30)  # image with border
-        assert type(tissue_mask) == np.ndarray
+        assert isinstance(tissue_mask, np.ndarray) is True
         np.testing.assert_allclose(tissue_mask, COMPLEX_MASK)
 
     # fixture components ---------------------------------------------
