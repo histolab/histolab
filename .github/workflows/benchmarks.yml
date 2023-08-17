@@ -2,7 +2,7 @@ name: Python Benchmarks
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   benchmark:
     runs-on: ubuntu-latest

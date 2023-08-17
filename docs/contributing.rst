@@ -35,19 +35,19 @@ Before working on your next contribution, make sure your local repository is up 
    ``$ git remote add upstream git@github.com:histolab/project-repo-name``
 
 #.
-   Switch to the local master branch.
+   Switch to the local main branch.
 
-   ``$ git checkout master``
+   ``$ git checkout main``
 
 #.
    Pull down the changes from upstream.
 
-   ``$ git pull upstream master``
+   ``$ git pull upstream main``
 
 #.
    Push the changes to your GitHub account.
 
-   ``$ git push origin master``
+   ``$ git push origin main``
 
 #.
    Create a new branch if you are starting new work.
