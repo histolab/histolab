@@ -78,7 +78,7 @@ html_context = {
     "display_github": True,
     "github_user": "histolab",
     "github_repo": "histolab",
-    "github_version": "master/docs/",
+    "github_version": "main/docs/",
     "author": "HistoLab Authors",
     "date": datetime.date.today().strftime("%d/%m/%y"),
 }

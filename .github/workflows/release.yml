@@ -2,8 +2,7 @@ name: Publish histolab to PyPI
 
 on:
   release:
-    branches:
-      - master
+    types: [released]
 
 jobs:
   deploy:
