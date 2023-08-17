@@ -20,12 +20,10 @@ from abc import abstractmethod
 import numpy as np
 import scipy.ndimage.morphology
 import skimage.morphology
+from typing_extensions import Protocol, runtime_checkable
 
 from . import morphological_filters_functional as F
 from .image_filters import Filter
-
-
-from typing_extensions import Protocol, runtime_checkable
 
 
 @runtime_checkable
