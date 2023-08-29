@@ -843,23 +843,23 @@ vips = ["large-image-source-vips (>=1.23.4)"]
 
 [[package]]
 name = "large-image-source-openslide"
-version = "1.23.3"
+version = "1.23.4"
 description = "An Openslide tilesource for large_image."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "large-image-source-openslide-1.23.3.tar.gz", hash = "sha256:e2518d3df1d26040fe9a7e3112ba9cf0b76a83e3f55d280129cf21050047ab2c"},
-    {file = "large_image_source_openslide-1.23.3-py3-none-any.whl", hash = "sha256:4b5dec6aa85c4d53b51c871f847a7e791f7e39da448d83ff3956819a4d313ecd"},
+    {file = "large-image-source-openslide-1.23.4.tar.gz", hash = "sha256:5f8c03476e5f0f5ce21960a1e100cb7cc9fbd90dc0296bb83fd222eb7541e5e9"},
+    {file = "large_image_source_openslide-1.23.4-py3-none-any.whl", hash = "sha256:fe1e0d321516d443ebfa1605bc566b906e98feecbb8b8925bb242556a2740e56"},
 ]
 
 [package.dependencies]
 importlib-metadata = {version = "<5", markers = "python_version < \"3.8\""}
-large-image = ">=1.23.3"
+large-image = ">=1.23.4"
 openslide-python = ">=1.1.0"
 tifftools = ">=1.2.0"
 
 [package.extras]
-girder = ["girder-large-image (>=1.23.3)"]
+girder = ["girder-large-image (>=1.23.4)"]
 
 [[package]]
 name = "large-image-source-pil"
@@ -2299,4 +2299,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<3.11"
-content-hash = "998b3f14e6e439b1d752778535301414995500b691e793ac1c136ba190405c0a"
+content-hash = "98b3cc22d47c720be43f7260a5789d446d13ef323da35337f10af4afcea9003c"
