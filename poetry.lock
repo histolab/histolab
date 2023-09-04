@@ -863,22 +863,22 @@ girder = ["girder-large-image (>=1.23.4)"]
 
 [[package]]
 name = "large-image-source-pil"
-version = "1.23.2"
+version = "1.23.5"
 description = "A Pillow tilesource for large_image."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "large-image-source-pil-1.23.2.tar.gz", hash = "sha256:49bc3ea663abd02d976221c95186ff2175b6dbcb54092a0d9b673915df329c60"},
-    {file = "large_image_source_pil-1.23.2-py3-none-any.whl", hash = "sha256:d2c2c61be6f774f272f464af5f2d99fdffb08e7af78f4656ca983cbae6164e5c"},
+    {file = "large-image-source-pil-1.23.5.tar.gz", hash = "sha256:53be3a219fdd255dab27388f4718672bc5df835083c5ed17869ef79666656a3e"},
+    {file = "large_image_source_pil-1.23.5-py3-none-any.whl", hash = "sha256:a2eaa6d6eaea1b116dbd77fcc58d907cfa5c6c4a66be0525140f3a3b3085f356"},
 ]
 
 [package.dependencies]
 importlib-metadata = {version = "<5", markers = "python_version < \"3.8\""}
-large-image = ">=1.23.2"
+large-image = ">=1.23.5"
 
 [package.extras]
 all = ["pillow-heif", "rawpy"]
-girder = ["girder-large-image (>=1.23.2)"]
+girder = ["girder-large-image (>=1.23.5)"]
 
 [[package]]
 name = "markupsafe"
@@ -2299,4 +2299,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<3.11"
-content-hash = "0ebf0069d3482615e277c931db9e2f38bbe368dce5133ba0b339e3af22957616"
+content-hash = "23e6f3df20542484dd183ec372a46edd1082a7f8ccf28568f11f793f3ff51436"
