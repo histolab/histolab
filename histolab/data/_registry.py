@@ -45,7 +45,7 @@ TCGA_REPO_URL = "https://api.gdc.cancer.gov/data"
 IDR_REPO_URL = "https://idr.openmicroscopy.org/webclient/render_image_download"
 
 registry_urls = {
-    "histolab/broken.svs": "https://raw.githubusercontent.com/histolab/histolab/master/tests/fixtures/svs-images/broken.svs",
+    "histolab/broken.svs": "https://raw.githubusercontent.com/histolab/histolab/main/tests/fixtures/svs-images/broken.svs",
     "histolab/kidney.png": "https://user-images.githubusercontent.com/4196091/100275351-132cc880-2f60-11eb-8cc8-7a3bf3723260.png",
     "aperio/JP2K-33003-1.svs": f"{APERIO_REPO_URL}/JP2K-33003-1.svs",
     "aperio/JP2K-33003-2.svs": f"{APERIO_REPO_URL}/JP2K-33003-2.svs",

@@ -7,16 +7,16 @@
 <tr>
     <td>Test Status</td>
     <td>
-        <img src="https://github.com/histolab/histolab/workflows/CI/badge.svg?branch=master">
+        <img src="https://github.com/histolab/histolab/workflows/CI/badge.svg?branch=main">
         <a href="https://codecov.io/gh/histolab/histolab">
-            <img src="https://codecov.io/gh/histolab/histolab/branch/master/graph/badge.svg?token=PL3VIM1PGL"/>
+            <img src="https://codecov.io/gh/histolab/histolab/branch/main/graph/badge.svg?token=PL3VIM1PGL"/>
         </a>
     </td>
 </tr>
 <tr>
     <td>Code Quality</td>
     <td>
-        <img src="https://github.com/histolab/histolab/actions/workflows/codeql.yml/badge.svg?branch=master&event=push">
+        <img src="https://github.com/histolab/histolab/actions/workflows/codeql.yml/badge.svg?branch=main&event=push">
         <a href="https://www.codefactor.io/repository/github/histolab/histolab" target="_blank"><img src="https://www.codefactor.io/repository/github/histolab/histolab/badge"></a>
         <a href="https://github.com/psf/black" target="_blank"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
         <a href="https://github.com/PyCQA/bandit" target="_blank"><img src="https://img.shields.io/badge/security-bandit-yellow.svg"></a>
@@ -33,7 +33,7 @@
 <tr>
     <td>License</td>
     <td>
-        <a href=https://github.com/histolab/histolab/blob/master/LICENSE.txt" target="_blank"><img src="https://img.shields.io/github/license/histolab/histolab"></a>
+        <a href=https://github.com/histolab/histolab/blob/main/LICENSE.txt" target="_blank"><img src="https://img.shields.io/github/license/histolab/histolab"></a>
     </td>
 </tr>
 <tr>
@@ -89,7 +89,7 @@ The aim of this project is to provide a tool for WSI processing in a reproducibl
 
 ### Prerequisites
 
-Please see [installation instructions](https://github.com/histolab/histolab/blob/master/docs/installation.rst).
+Please see [installation instructions](https://github.com/histolab/histolab/blob/main/docs/installation.rst).
 
 ### Documentation
 
@@ -461,7 +461,7 @@ We use [PEP 440](https://www.python.org/dev/peps/pep-0440/) for versioning.
 
 ## License
 
-This project is licensed under `Apache License  Version 2.0` - see the [LICENSE.txt](https://github.com/histolab/histolab/blob/master/LICENSE.txt) file for details
+This project is licensed under `Apache License  Version 2.0` - see the [LICENSE.txt](https://github.com/histolab/histolab/blob/main/LICENSE.txt) file for details
 
 ## Roadmap
 
