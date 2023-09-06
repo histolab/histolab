@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1694003677279,
+  "lastUpdate": 1694007288435,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -21315,6 +21315,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 8.409507940881391e-8",
             "extra": "mean: 39.393954400001235 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "pamaron",
+            "username": "ernestoarbitrio"
+          },
+          "distinct": true,
+          "id": "ba65b97c2213ed7b7fd65a9e95c702dd99d579ba",
+          "message": "Bump pygments from 2.13.0 to 2.15.0\n\nBumps [pygments](https://github.com/pygments/pygments) from 2.13.0 to 2.15.0.\n- [Release notes](https://github.com/pygments/pygments/releases)\n- [Changelog](https://github.com/pygments/pygments/blob/master/CHANGES)\n- [Commits](https://github.com/pygments/pygments/compare/2.13.0...2.15.0)\n\n---\nupdated-dependencies:\n- dependency-name: pygments\n  dependency-type: indirect\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2023-09-06T15:32:59+02:00",
+          "tree_id": "d79df739576495134dfa0917980e993884d8cc15",
+          "url": "https://github.com/histolab/histolab/commit/ba65b97c2213ed7b7fd65a9e95c702dd99d579ba"
+        },
+        "date": 1694007287037,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 7.883716305868186,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001213708056550058",
+            "extra": "mean: 126.84373222000103 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 247.99357751986327,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000040449789935702474",
+            "extra": "mean: 4.0323624910000095 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1234.708152190883,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00000630160508334838",
+            "extra": "mean: 809.9079917999944 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 27433.74231088168,
+            "unit": "iter/sec",
+            "range": "stddev: 1.0101718037344695e-7",
+            "extra": "mean: 36.45146144 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 22146.23108977902,
+            "unit": "iter/sec",
+            "range": "stddev: 9.471748346548435e-8",
+            "extra": "mean: 45.15441006400056 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 25580.76403556951,
+            "unit": "iter/sec",
+            "range": "stddev: 9.996375968710646e-8",
+            "extra": "mean: 39.091873824000004 usec\nrounds: 250"
           }
         ]
       }
