@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1697014025189,
+  "lastUpdate": 1697186885838,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -22305,6 +22305,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 9.575794667856605e-8",
             "extra": "mean: 39.55745843999921 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "77d9fd12ddc2b1898c20e669309053cd2d11ee3d",
+          "message": "Bump sphinxcontrib-katex from 0.9.7 to 0.9.8\n\nBumps [sphinxcontrib-katex](https://github.com/hagenw/sphinxcontrib-katex) from 0.9.7 to 0.9.8.\n- [Release notes](https://github.com/hagenw/sphinxcontrib-katex/releases)\n- [Changelog](https://github.com/hagenw/sphinxcontrib-katex/blob/main/CHANGELOG.rst)\n- [Commits](https://github.com/hagenw/sphinxcontrib-katex/compare/v0.9.7...v0.9.8)\n\n---\nupdated-dependencies:\n- dependency-name: sphinxcontrib-katex\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2023-10-13T10:45:58+02:00",
+          "tree_id": "4b7d9b2109aa6c82c25ca23c77ed020e59483316",
+          "url": "https://github.com/histolab/histolab/commit/77d9fd12ddc2b1898c20e669309053cd2d11ee3d"
+        },
+        "date": 1697186884179,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 6.631294889241419,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0016885776219963385",
+            "extra": "mean: 150.80011019000153 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 206.64675278836066,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000012629322754031337",
+            "extra": "mean: 4.839175968199993 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1043.2354088745717,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000012205304751741808",
+            "extra": "mean: 958.556421200069 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 23629.986444706785,
+            "unit": "iter/sec",
+            "range": "stddev: 2.7468922322282596e-7",
+            "extra": "mean: 42.31911018400115 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 18830.41862631211,
+            "unit": "iter/sec",
+            "range": "stddev: 1.561524772842036e-7",
+            "extra": "mean: 53.10556392000126 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 21793.689625349103,
+            "unit": "iter/sec",
+            "range": "stddev: 1.259420209801917e-7",
+            "extra": "mean: 45.88484176799784 usec\nrounds: 250"
           }
         ]
       }
