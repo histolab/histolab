@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 import numpy as np
-import PIL
+import PIL.Image
 
 from .filters import image_filters as imf
 from .filters.compositions import FiltersComposition
@@ -136,7 +136,7 @@ class Tile:
         return self._image
 
     @lazyproperty
-    def level(self) -> int:
+    def level(self) -> Optional[int]:
         """Level of tile extraction.
 
         Returns
@@ -150,7 +150,7 @@ class Tile:
         """Save tile at given path.
 
         The format to use is determined from the filename extension (to be compatible to
-        PIL.Image formats). If no extension is provided, the image will be saved in png
+        Image formats). If no extension is provided, the image will be saved in png
         format.
 
         Parameters
@@ -159,12 +159,16 @@ class Tile:
             Path to which the tile is saved.
 
         """
+
+        if isinstance(path, bytes):
+            path = path.decode("utf-8")
+
         ext = os.path.splitext(path)[1]
         if not ext:
             path = f"{path}.png"
 
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-        self._image.save(path)
+        self._image.save(str(path))
 
     @lazyproperty
     def tissue_mask(self) -> np.ndarray:

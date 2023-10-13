@@ -19,32 +19,31 @@
 object. Additionally, some of the image filters in histolab leverage functions and
 utilities by scikit-image. Image filters are divided into sub-categories, depending on
 their behaviour and output type.
- """
+"""
 
 import operator
 from abc import abstractmethod
 from typing import Any, Callable, List, Union
 
 import numpy as np
-import PIL
+import PIL.Image
+from PIL import ImageOps
+from typing_extensions import Protocol, runtime_checkable
 
 from .. import util
 from . import image_filters_functional as F
 
-try:
-    from typing import Protocol, runtime_checkable
-except ImportError:
-    from typing_extensions import Protocol, runtime_checkable
+ImageOrNPArray = Union[PIL.Image.Image, np.ndarray]
 
 
+# TODO: should we remove this and only keep ImageFilter?
+# TODO: does it make sense to pass an np.ndarray as input?
 @runtime_checkable
 class Filter(Protocol):
     """Filter protocol"""
 
     @abstractmethod
-    def __call__(
-        self, img: Union[PIL.Image.Image, np.ndarray]
-    ) -> Union[PIL.Image.Image, np.ndarray]:
+    def __call__(self, img: ImageOrNPArray) -> ImageOrNPArray:
         pass  # pragma: no cover
 
     def __repr__(self) -> str:
@@ -56,7 +55,7 @@ class ImageFilter(Filter, Protocol):
     """Image filter protocol"""
 
     @abstractmethod
-    def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
+    def __call__(self, img: ImageOrNPArray) -> ImageOrNPArray:
         pass  # pragma: no cover
 
 
@@ -72,7 +71,7 @@ class Compose(ImageFilter):
     def __init__(self, filters: List[Filter]) -> None:
         self.filters = filters
 
-    def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
+    def __call__(self, img: ImageOrNPArray) -> ImageOrNPArray:
         for filter_ in self.filters:
             img = filter_(img)
         return img
@@ -99,7 +98,9 @@ class Lambda(ImageFilter):
         assert callable(lambd), repr(type(lambd).__name__) + " object is not callable"
         self.lambd = lambd
 
-    def __call__(self, img: PIL.Image.Image) -> Union[PIL.Image.Image, np.ndarray]:
+    def __call__(self, img: ImageOrNPArray) -> ImageOrNPArray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
+
         return self.lambd(img)
 
 
@@ -117,7 +118,9 @@ class ToPILImage(Filter):
         The image represented as PIL Image
     """
 
-    def __call__(self, np_img: np.ndarray) -> PIL.Image.Image:
+    def __call__(self, np_img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(np_img, np.ndarray), "Input must be a numpy array"
+
         return util.np_to_pil(np_img)
 
 
@@ -137,10 +140,12 @@ class ApplyMaskImage(Filter):
         Image with the mask applied
     """
 
-    def __init__(self, img: PIL.Image.Image) -> None:
+    def __init__(self, img: ImageOrNPArray) -> None:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         self.img = img
 
-    def __call__(self, mask: np.ndarray) -> PIL.Image.Image:
+    def __call__(self, mask: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(mask, np.ndarray), "Mask must be a numpy array"
         return util.apply_mask_image(self.img, mask)
 
 
@@ -178,7 +183,8 @@ class Invert(ImageFilter):
         >>> image_inv_gray = invert(image_gray)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.invert(img)
 
 
@@ -204,8 +210,9 @@ class RgbToGrayscale(ImageFilter):
         >>> image_gray = rgb_to_grayscale(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
-        return PIL.ImageOps.grayscale(img)
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
+        return ImageOps.grayscale(img)
 
 
 class RgbToHed(ImageFilter):
@@ -232,7 +239,8 @@ class RgbToHed(ImageFilter):
         >>> image_hed = rgb_to_hed(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         hed = F.rgb_to_hed(img)
         return hed
 
@@ -270,11 +278,12 @@ class RgbToLab(ImageFilter):
         >>> image_lab = rgb_to_lab(image_rgb)
     """  # noqa
 
-    def __init__(self, illuminant: str = "D65", observer: int = "2") -> None:
+    def __init__(self, illuminant: str = "D65", observer: int = 2) -> None:
         self.illuminant = illuminant
         self.observer = observer
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         lab = F.rgb_to_lab(img, self.illuminant, self.observer)
         return lab
 
@@ -306,7 +315,8 @@ class RgbToOd(ImageFilter):
     def __init__(self, background_intensity: int = 240) -> None:
         self.background_intensity = background_intensity
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         od = F.rgb_to_od(img, self.background_intensity)
         return od
 
@@ -333,7 +343,8 @@ class HedToRgb(ImageFilter):
         >>> rgb = hed_to_rgb(hed_arr)
     """  # noqa
 
-    def __call__(self, img_arr: np.array) -> PIL.Image.Image:
+    def __call__(self, img_arr: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img_arr, np.ndarray), "Input must be an ndarray"
         rgb = F.hed_to_rgb(img_arr)
         return rgb
 
@@ -363,7 +374,8 @@ class HematoxylinChannel(ImageFilter):
         >>> image_h = hematoxylin_channel(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         hematoxylin = F.hematoxylin_channel(img)
         return hematoxylin
 
@@ -393,7 +405,8 @@ class EosinChannel(ImageFilter):
         >>> image_e = eosin_channel(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         eosin = F.eosin_channel(img)
         return eosin
 
@@ -423,7 +436,8 @@ class DABChannel(ImageFilter):
         >>> image_d = dab_channel(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         dab = F.dab_channel(img)
         return dab
 
@@ -452,7 +466,8 @@ class RgbToHsv(ImageFilter):
         >>> image_hsv = rgb_to_hsv(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         hsv = F.rgb_to_hsv(img)
         return hsv
 
@@ -505,7 +520,8 @@ class StretchContrast(ImageFilter):
         self.low = low
         self.high = high
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         stretch_contrast = F.stretch_contrast(img, self.low, self.high)
         return stretch_contrast
 
@@ -574,7 +590,8 @@ class HistogramEqualization(ImageFilter):
     def __init__(self, n_bins: int = 256) -> None:
         self.n_bins = n_bins
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         hist_equ = F.histogram_equalization(img, self.n_bins)
         return hist_equ
 
@@ -628,7 +645,8 @@ class AdaptiveEqualization(ImageFilter):
         self.n_bins = n_bins
         self.clip_limit = clip_limit
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         adaptive_equ = F.adaptive_equalization(img, self.n_bins, self.clip_limit)
         return adaptive_equ
 
@@ -659,12 +677,12 @@ class LabToRgb(ImageFilter):
         >>> image_rgb = lab_to_rgb(arr_lab)
     """
 
-    def __init__(self, illuminant: str = "D65", observer: int = "2") -> None:
+    def __init__(self, illuminant: str = "D65", observer: int = 2) -> None:
         self.illuminant = illuminant
         self.observer = observer
 
-    def __call__(self, np_arr: np.ndarray) -> PIL.Image.Image:
-        lab = F.lab_to_rgb(np_arr, self.illuminant, self.observer)
+    def __call__(self, np_arr: ImageOrNPArray) -> PIL.Image.Image:
+        lab = F.lab_to_rgb(np_arr, self.illuminant, self.observer)  # type: ignore # excuse: np_arr should be an image # noqa
         return lab
 
 
@@ -698,7 +716,8 @@ class LocalEqualization(ImageFilter):
     def __init__(self, disk_size: int = 50) -> None:
         self.disk_size = disk_size
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         local_equ = F.local_equalization(img, self.disk_size)
         return local_equ
 
@@ -746,7 +765,8 @@ class KmeansSegmentation(ImageFilter):
         self.n_segments = n_segments
         self.compactness = compactness
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         kmeans_segmentation = F.kmeans_segmentation(
             img, self.n_segments, self.compactness
         )
@@ -815,9 +835,10 @@ class RagThreshold(ImageFilter):
 
     def __call__(
         self,
-        img: PIL.Image.Image,
+        img: ImageOrNPArray,
         mask: np.ndarray = None,
-    ) -> Union[PIL.Image.Image, np.ndarray]:
+    ) -> ImageOrNPArray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.rag_threshold(
             img,
             n_segments=self.n_segments,
@@ -870,7 +891,8 @@ class HysteresisThreshold(ImageFilter):
         self.low = low
         self.high = high
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.hysteresis_threshold(img, self.low, self.high)
 
 
@@ -908,7 +930,8 @@ class LocalOtsuThreshold(ImageFilter):
     def __init__(self, disk_size: float = 3.0) -> None:
         self.disk_size = disk_size
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.local_otsu_threshold(img, self.disk_size)
 
 
@@ -951,7 +974,8 @@ class HysteresisThresholdMask(ImageFilter):
         self.low = low
         self.high = high
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         hysteresis_threshold_mask = F.hysteresis_threshold_mask(
             img, self.low, self.high
         )
@@ -1004,7 +1028,8 @@ class OtsuThreshold(ImageFilter):
     def __init__(self, relate: Callable[..., Any] = operator.lt):
         self.relate = relate
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.otsu_threshold(img, self.relate)
 
 
@@ -1053,7 +1078,8 @@ class FilterEntropy(ImageFilter):
         self.neighborhood = neighborhood
         self.threshold = threshold
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.filter_entropy(img, self.neighborhood, self.threshold)
 
 
@@ -1119,7 +1145,8 @@ class CannyEdges(ImageFilter):
         self.low_threshold = low_threshold
         self.high_threshold = high_threshold
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.canny_edges(img, self.sigma, self.low_threshold, self.high_threshold)
 
 
@@ -1154,7 +1181,8 @@ class Grays(ImageFilter):
     def __init__(self, tolerance: int = 15) -> None:
         self.tolerance = tolerance
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.grays(img, self.tolerance)
 
 
@@ -1210,7 +1238,8 @@ class GreenChannelFilter(ImageFilter):
         self.avoid_overmask = avoid_overmask
         self.overmask_thresh = overmask_thresh
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.green_channel_filter(
             img, self.green_thresh, self.avoid_overmask, self.overmask_thresh
         )
@@ -1225,7 +1254,7 @@ class RedFilter(ImageFilter):
 
     Parameters
     ----------
-    img : PIl.Image.Image
+    img : PIL.Image.Image
         Input RGB image
     red_lower_thresh : int
         Red channel lower threshold value.
@@ -1253,7 +1282,8 @@ class RedFilter(ImageFilter):
         self.green_thresh = green_thresh
         self.blue_thresh = blue_thresh
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.red_filter(img, self.red_thresh, self.green_thresh, self.blue_thresh)
 
 
@@ -1282,7 +1312,8 @@ class RedPenFilter(ImageFilter):
         >>> image_no_red = red_pen_filter(image_rgb)
     """
 
-    def __call__(self, img: PIL.Image.Image):
+    def __call__(self, img: ImageOrNPArray):
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.red_pen_filter(img)
 
 
@@ -1296,7 +1327,7 @@ class GreenFilter(ImageFilter):
 
     Parameters
     ----------
-    img : PIL.image.Image
+    img : PIL.Image.Image
         RGB input image.
     red_thresh : int
         Red channel upper threshold value.
@@ -1355,7 +1386,8 @@ class GreenPenFilter(ImageFilter):
         >>> image_no_green = green_pen_filter(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.green_pen_filter(img)
 
 
@@ -1368,7 +1400,7 @@ class BlueFilter(ImageFilter):
 
     Parameters
     ----------
-    img : PIl.Image.Image
+    img : PIL.Image.Image
         Input RGB image
     red_thresh : int
         Red channel lower threshold value.
@@ -1396,7 +1428,8 @@ class BlueFilter(ImageFilter):
         self.green_thresh = green_thresh
         self.blue_thresh = blue_thresh
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.blue_filter(img, self.red_thresh, self.green_thresh, self.blue_thresh)
 
 
@@ -1425,7 +1458,8 @@ class BluePenFilter(ImageFilter):
         >>> image_no_blue = blue_pen_filter(image_rgb)
     """  # noqa
 
-    def __call__(self, img: PIL.Image.Image) -> PIL.Image.Image:
+    def __call__(self, img: ImageOrNPArray) -> PIL.Image.Image:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.blue_pen_filter(img)
 
 
@@ -1483,5 +1517,6 @@ class YenThreshold(ImageFilter):
     def __init__(self, relate: Callable[..., Any] = operator.lt):
         self.relate = relate
 
-    def __call__(self, img: PIL.Image.Image) -> np.ndarray:
+    def __call__(self, img: ImageOrNPArray) -> np.ndarray:
+        assert isinstance(img, PIL.Image.Image), "Input must be an image"
         return F.yen_threshold(img, self.relate)

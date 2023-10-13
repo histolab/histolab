@@ -139,6 +139,11 @@ jobs:
         run: |
           poetry run python -m pytest --ignore=tests/benchmarks --cov=histolab --cov-report=xml
 
+      - name: mypy
+        id: mypy
+        run: |
+          mypy histolab .
+
       - name: DocTests
         id: doctests
         run: |

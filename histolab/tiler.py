@@ -21,10 +21,13 @@ import logging
 import os
 from abc import abstractmethod
 from itertools import zip_longest
-from typing import Iterable, List, Optional, Tuple, Union
+from typing import Generator, Iterable, List, Optional, Tuple, Union
 
 import numpy as np
 import PIL
+import PIL.Image
+import PIL.ImageDraw
+from typing_extensions import Protocol, runtime_checkable
 
 from .exceptions import LevelError, TileSizeOrCoordinatesError
 from .masks import BiggestTissueBoxMask, BinaryMask
@@ -41,12 +44,6 @@ from .util import (
     scale_coordinates,
 )
 
-try:
-    from typing import Protocol, runtime_checkable
-except ImportError:
-    from typing_extensions import Protocol, runtime_checkable
-
-
 logger = logging.getLogger("tiler")
 
 COORDS_WITHIN_EXTRACTION_MASK_THRESHOLD = 0.8
@@ -57,14 +54,20 @@ class Tiler(Protocol):
     """General tiler object"""
 
     level: int
-    mpp: float  # if provided, always takes precedence over level
-    tile_size: Tuple[int, int]
+    mpp: Optional[float]  # if provided, always takes precedence over level
+    prefix: str
+
+    @property
+    @abstractmethod
+    def tile_size(self) -> Tuple[int, int]:
+        ...
 
     @abstractmethod
     def extract(
         self,
         slide: Slide,
         extraction_mask: BinaryMask = BiggestTissueBoxMask(),
+        report_path: str = None,
         log_level: str = "INFO",
     ) -> None:
         pass  # pragma: no cover
@@ -122,13 +125,16 @@ class Tiler(Protocol):
         img.putalpha(alpha)
         draw = PIL.ImageDraw.Draw(img)
 
+        # TODO: refactor this to fix incongruity between the types in `ScoreTiler`
+        # TODO: and the base class `Tiler`
+
         if tiles is None:
             tiles = (
-                self._tiles_generator(slide, extraction_mask)[0]
+                self._tiles_generator(slide, extraction_mask)[0]  # type: ignore # see above
                 if isinstance(self, ScoreTiler)
                 else self._tiles_generator(slide, extraction_mask)
             )
-        tiles_coords = (tile[1] for tile in tiles)
+        tiles_coords = (tile[1] for tile in tiles)  # type: ignore # see above
 
         for coords, one_outline in self._tile_coords_and_outline_generator(
             tiles_coords, outline
@@ -179,7 +185,7 @@ class Tiler(Protocol):
     def _tile_coords_and_outline_generator(
         tiles_coords: Iterable[CoordinatePair],
         outlines: Union[str, List[str], List[Tuple[int]]],
-    ) -> Union[str, Tuple[int]]:
+    ) -> Generator[Tuple[CoordinatePair, str], None, None]:
         """Zip tile coordinates and outlines from tile and outline iterators.
 
         Parameters
@@ -241,9 +247,10 @@ class Tiler(Protocol):
 
         return tile_filename
 
+    @abstractmethod
     def _tiles_generator(
         self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
-    ) -> Tuple[Tile, CoordinatePair]:
+    ) -> Generator[Tuple[Tile, CoordinatePair], None, None]:
         pass  # pragma: no cover
 
     def _tile_size(self, slide: Slide) -> Tuple[int, int]:
@@ -356,6 +363,7 @@ class GridTiler(Tiler):
         self,
         slide: Slide,
         extraction_mask: BinaryMask = BiggestTissueBoxMask(),
+        report_path: str = None,
         log_level: str = "INFO",
     ) -> None:
         """Extract tiles arranged in a grid and save them to disk, following this
@@ -451,7 +459,7 @@ class GridTiler(Tiler):
         bbox_coordinates_lvl: CoordinatePair,
         slide: Slide,
         binary_mask_region: np.ndarray,
-    ) -> CoordinatePair:
+    ) -> Generator[CoordinatePair, None, None]:
         """Generate Coordinates at level 0 of grid tiles within a tissue box.
 
         Parameters
@@ -513,7 +521,7 @@ class GridTiler(Tiler):
 
     def _grid_coordinates_generator(
         self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
-    ) -> CoordinatePair:
+    ) -> Generator[CoordinatePair, None, None]:
         """Generate Coordinates at level 0 of grid tiles within the tissue.
 
         Parameters
@@ -583,7 +591,7 @@ class GridTiler(Tiler):
 
     def _tiles_generator(
         self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
-    ) -> Tuple[Tile, CoordinatePair]:
+    ) -> Generator[Tuple[Tile, CoordinatePair], None, None]:
         """Generator of tiles arranged in a grid.
 
         Parameters
@@ -681,6 +689,7 @@ class RandomTiler(Tiler):
         self,
         slide: Slide,
         extraction_mask: BinaryMask = BiggestTissueBoxMask(),
+        report_path: str = None,
         log_level: str = "INFO",
     ) -> None:
         """Extract random tiles and save them to disk, following this filename pattern:
@@ -788,7 +797,7 @@ class RandomTiler(Tiler):
 
     def _tiles_generator(
         self, slide: Slide, extraction_mask: BinaryMask = BiggestTissueBoxMask()
-    ) -> Tuple[Tile, CoordinatePair]:
+    ) -> Generator[Tuple[Tile, CoordinatePair], None, None]:
         """Generate Random Tiles within a slide box.
 
         Stops if:
