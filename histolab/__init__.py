@@ -18,9 +18,6 @@
 
 from __future__ import annotations
 
-try:
-    from importlib import metadata
-except ImportError:
-    import importlib_metadata as metadata
+from importlib import metadata
 
 __version__ = metadata.version("histolab")
