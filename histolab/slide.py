@@ -260,9 +260,11 @@ class Slide:
                     )
                 image = image.resize(
                     tile_size,
-                    IMG_UPSAMPLE_MODE
-                    if tile_size[0] >= image.size[0]
-                    else IMG_DOWNSAMPLE_MODE,
+                    (
+                        IMG_UPSAMPLE_MODE
+                        if tile_size[0] >= image.size[0]
+                        else IMG_DOWNSAMPLE_MODE
+                    ),
                 )
 
         return Tile(image, coords, level)
