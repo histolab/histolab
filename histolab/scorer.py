@@ -18,6 +18,7 @@
 
 import operator
 from abc import abstractmethod
+from typing import Protocol, runtime_checkable
 
 import numpy as np
 
@@ -25,11 +26,6 @@ from .filters import image_filters as imf
 from .filters import morphological_filters as mof
 from .filters.util import mask_difference
 from .tile import Tile
-
-try:
-    from typing import Protocol, runtime_checkable
-except ImportError:
-    from typing_extensions import Protocol, runtime_checkable
 
 
 @runtime_checkable

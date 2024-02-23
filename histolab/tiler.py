@@ -21,7 +21,7 @@ import logging
 import os
 from abc import abstractmethod
 from itertools import zip_longest
-from typing import Iterable, List, Optional, Tuple, Union
+from typing import Iterable, List, Optional, Protocol, Tuple, Union, runtime_checkable
 
 import numpy as np
 import PIL
@@ -40,12 +40,6 @@ from .util import (
     regions_to_binary_mask,
     scale_coordinates,
 )
-
-try:
-    from typing import Protocol, runtime_checkable
-except ImportError:
-    from typing_extensions import Protocol, runtime_checkable
-
 
 logger = logging.getLogger("tiler")
 

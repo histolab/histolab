@@ -23,18 +23,13 @@ their behaviour and output type.
 
 import operator
 from abc import abstractmethod
-from typing import Any, Callable, List, Union
+from typing import Any, Callable, List, Protocol, Union, runtime_checkable
 
 import numpy as np
 import PIL
 
 from .. import util
 from . import image_filters_functional as F
-
-try:
-    from typing import Protocol, runtime_checkable
-except ImportError:
-    from typing_extensions import Protocol, runtime_checkable
 
 
 @runtime_checkable
