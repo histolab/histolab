@@ -46,6 +46,7 @@ jobs:
   build:
     needs: wsi-artifacts
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
         os: [macOS-latest, ubuntu-latest]
@@ -53,7 +54,7 @@ jobs:
         include:
           - os: ubuntu-latest
             cache-path: ~/.cache/pypoetry/virtualenvs
-          - os: macOs-latest
+          - os: macOS-latest
             cache-path: ~/Library/Caches/pypoetry/cache
 
     env:

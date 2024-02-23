@@ -15,9 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------
-
 import ntpath
 import os
+import sys
 
 import numpy as np
 import PIL
@@ -253,6 +253,10 @@ class Describe_Slide:
             np.asarray(mask_location_img), expected_img
         )
 
+    @pytest.mark.skipif(
+        sys.platform == "darwin",
+        reason="macOS installs openslide 4.0.0 which is not supported",
+    )
     def it_knows_its_properties(self):
         slide = Slide(SVS.CMU_1_SMALL_REGION, "processed")
 
