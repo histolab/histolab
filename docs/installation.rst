@@ -51,24 +51,6 @@ Install Pixman 0.40 on macOS
 If ``OpenSlide`` is installed via ``brew``, pixman 0.40 will be automatically installed |:heavy_check_mark:|
 
 
-Install Pixman 0.40 on Windows
-******************************
-
-``OpenSlide`` builds are the same for all Windows versions and they include pixman 0.34.
-
-Pixman 0.40 can be retrieved using ``pacman`` (the package manager of Arch Linux, see `<https://www.msys2.org/>`_ for more info):
-
-.. prompt:: text
-    :prompts: $
-
-    pacman -S mingw-w64-x86_64-pixman
-
-Once pixman 0.40 is installed you have to link the current version of the ``dll`` to the ``OpenSlide`` installation.
-The only thing to do is overwrite ``libpixman-1-0.dll`` in the ``bin`` directory of ``OpenSlide`` with the one installed with pixman 0.40 that should be placed in ``/mingw64/bin/libpixman-1-0.dll``.
-
-For example if ``OpenSlide`` is installed in ``C:\`` you should replace ``C:\OpenSlide\bin\libpixman-1-0.dll`` with ``/mingw64/bin/libpixman-1-0.dll``.
-
-
 Verify Correct Pixman installation
 **********************************
 
@@ -88,12 +70,3 @@ macOS
     :prompts: $
 
     brew list --versions pixman
-
-
-Windows (PowerShell)
---------------------
-
-.. prompt:: text
-    :prompts: $
-
-    (Get-Item "C:\OpenSlide\bin\libpixman-1-0.dll").VersionInfo | format-list

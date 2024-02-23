@@ -42,7 +42,6 @@ from ..unitutil import (
     dict_list_eq,
     initializer_mock,
     instance_mock,
-    is_win32,
     method_mock,
     on_ci,
     property_mock,
@@ -401,9 +400,7 @@ class Describe_Slide:
             ANY, encoding="PNG", width=thumb_size[0], height=thumb_size[1]
         )
 
-    @pytest.mark.skipif(
-        not on_ci() or is_win32(), reason="Only run on CIs; hangs on Windows CIs"
-    )
+    @pytest.mark.skipif(not on_ci(), reason="Only run on CIs")
     def it_can_show_its_thumbnail(self, tmpdir):
         slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
 

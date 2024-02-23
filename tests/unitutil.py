@@ -19,7 +19,6 @@
 """Functions that make mocking with pytest easier and more readable."""
 
 import os
-import sys
 
 import numpy as np
 import pytest
@@ -123,10 +122,6 @@ def fetch(data_filename):
 def on_ci():
     # GitHub Actions, Travis and AppVeyor have "CI"
     return "CI" in os.environ
-
-
-def is_win32():
-    return sys.platform.startswith("win32")
 
 
 class PILImageMock:
