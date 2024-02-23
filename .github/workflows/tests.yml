@@ -89,6 +89,8 @@ jobs:
         id: install-openslide
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo add-apt-repository ppa:openslide/openslide
+            sudo apt update
             sudo apt install openslide-tools
           elif [ "$RUNNER_OS" == "macOS" ]; then
             brew install openslide
