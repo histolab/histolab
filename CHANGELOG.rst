@@ -1,6 +1,16 @@
 Changelog
 =========
 
+v0.7.0
+------
+**Bug Fix**
+- Fix tissue mask calculation to accommodate slides with large dimensions. (`#500 <https://github.com/histolab/histolab/pull/500>`_)
+
+**Maintenance**
+- Support python 3.11. (`#688 <https://github.com/histolab/histolab/pull/688>`_)
+- Remove support for python 3.7 and Windows (`#683 <https://github.com/histolab/histolab/pull/683>`_)
+- Update Openslide to 4.0.0 (`#682 <https://github.com/histolab/histolab/pull/682>`_)
+
 v0.6.0
 ------
 **Bug Fix**
