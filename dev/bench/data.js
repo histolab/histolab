@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1708808130833,
+  "lastUpdate": 1708818911062,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -23427,6 +23427,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 7.73137966364204e-7",
             "extra": "mean: 33.64316835200009 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "98marcolini@gmail.com",
+            "name": "alessiamarcolini",
+            "username": "alessiamarcolini"
+          },
+          "committer": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "pamaron",
+            "username": "ernestoarbitrio"
+          },
+          "distinct": true,
+          "id": "95bae1cfa649c047ccb368217899a26bcfaa7f00",
+          "message": "Add integration tests for GridTiler.locate_tiles with new colon-1 svs",
+          "timestamp": "2024-02-25T00:53:39+01:00",
+          "tree_id": "47be04d7be406a05941f81ef6613800c09578256",
+          "url": "https://github.com/histolab/histolab/commit/95bae1cfa649c047ccb368217899a26bcfaa7f00"
+        },
+        "date": 1708818909715,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 11.928645881189398,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0009178753338699278",
+            "extra": "mean: 83.83181208999815 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 515.5208743978347,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00002462721626097558",
+            "extra": "mean: 1.939785660800004 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1604.0118672240687,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000070640202444601775",
+            "extra": "mean: 623.4367839999948 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 37058.16872482539,
+            "unit": "iter/sec",
+            "range": "stddev: 4.02811758840239e-7",
+            "extra": "mean: 26.98460378399909 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 27556.893100619414,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000002776409802971675",
+            "extra": "mean: 36.28856113599841 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 30644.539642309563,
+            "unit": "iter/sec",
+            "range": "stddev: 9.685907060175659e-7",
+            "extra": "mean: 32.63224090399922 usec\nrounds: 250"
           }
         ]
       }
