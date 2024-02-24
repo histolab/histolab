@@ -48,8 +48,8 @@
 
 | Operating System  | Python version  |
 |-------------------|-----------------|
-|  Linux            | <img src=https://img.shields.io/badge/-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue>|
-|  MacOs            | <img src=https://img.shields.io/badge/-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue>|
+|  Linux            | <img src=https://img.shields.io/badge/%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue>|
+|  MacOs            | <img src=https://img.shields.io/badge/%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue>|
 
 ---
 
@@ -63,16 +63,16 @@
     - [Random Extraction](#random-extraction)
     - [Grid Extraction](#grid-extraction)
     - [Score-based extraction](#score-based-extraction)
-  - [Versioning](#versioning)
-  - [Authors](#authors)
-  - [License](#license)
-  - [Roadmap](#roadmap)
-  - [Acknowledgements](#acknowledgements)
-  - [References](#references)
-  - [Contribution guidelines](#contribution-guidelines)
-
+- [Versioning](#versioning)
+- [Authors](#authors)
+- [License](#license)
+- [Roadmap](#roadmap)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Contribution guidelines](#contribution-guidelines)
 
 ## Motivation
+
 The histo-pathological analysis of tissue sections is the gold standard to assess the presence of many complex diseases, such as tumors, and understand their nature.
 In daily practice, pathologists usually perform microscopy examination of tissue slides considering a limited number of regions and the clinical evaluation relies on several factors such as nuclei morphology, cell distribution, and color (staining): this process is time consuming, could lead to information loss, and suffers from inter-observer variability.
 
@@ -102,8 +102,8 @@ Join our user group on <img src=https://user-images.githubusercontent.com/419609
 
 <a href="https://youtu.be/AdR4JK-Eq60" target="_blank"><img src=https://user-images.githubusercontent.com/4196091/105097293-a68a0200-5aa8-11eb-8327-6039940fbdca.png></a>
 
-
 # Quickstart
+
 Here we present a step-by-step tutorial on the use of `histolab` to
 extract a tile dataset from example WSIs. The corresponding Jupyter
 Notebook is available at <https://github.com/histolab/histolab-box>:
@@ -116,13 +116,13 @@ Thus, the user can decide either to use `histolab` through
 the `histolab` package has been published on ([PyPi](http://www.pypi.org)),
 it can be easily installed via the command:
 
-```
+```shell
 pip install histolab
 ```
 
 alternatively, it can be installed via conda:
 
-```
+```shell
 conda install -c conda-forge histolab
 ```
 
@@ -195,7 +195,7 @@ print(f"Dimensions at level 1: {prostate_slide.level_dimensions(level=1)}")
 print(f"Dimensions at level 2: {prostate_slide.level_dimensions(level=2)}")
 ```
 
-```
+```shell
 Slide name: 6b725022-f1d5-4672-8c6c-de8140345210
 Levels: [0, 1, 2]
 Dimensions at level 0: (16000, 15316)
@@ -211,7 +211,7 @@ print(f"Dimensions at level 1: {ovarian_slide.level_dimensions(level=1)}")
 print(f"Dimensions at level 2: {ovarian_slide.level_dimensions(level=2)}")
 ```
 
-```
+```shell
 Slide name: b777ec99-2811-4aa4-9568-13f68e380c86
 Levels: [0, 1, 2]
 Dimensions at level 0: (30001, 33987)
@@ -234,10 +234,12 @@ Dimensions at level 2: (1875, 2124)
         prostate_slide.level_magnification_factor(level=1),
     )
 ```
-```
+
+```shell
     Native magnification factor: 20X
     Magnification factor corresponding to level 1: 5.0X
 ```
+
 Moreover, we can retrieve or show the slide thumbnail in a separate window:
 
 ```python
@@ -245,14 +247,14 @@ prostate_slide.thumbnail
 prostate_slide.show()
 ```
 
-![](https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png)
+![example-image](https://user-images.githubusercontent.com/4196091/92748324-5033e680-f385-11ea-812b-6a9a225ceca4.png)
 
 ```python
 ovarian_slide.thumbnail
 ovarian_slide.show()
 ```
 
-![](https://user-images.githubusercontent.com/4196091/92748248-3db9ad00-f385-11ea-846b-a5ce8cf3ca09.png)
+![example-image](https://user-images.githubusercontent.com/4196091/92748248-3db9ad00-f385-11ea-846b-a5ce8cf3ca09.png)
 
 ## Tile extraction
 
@@ -264,18 +266,18 @@ strategies for the tiles extraction and provides an intuitive interface
 to easily retrieve a tile dataset suitable for our task. In particular,
 each extraction method is customizable with several common parameters:
 
--   `tile_size`: the tile size;
--   `level`: the extraction level (from 0 to the number of available
-    levels);
--   `check_tissue`: if a minimum percentage of tissue is required to
-    save the tiles;
--  `tissue_percent`: number between 0.0 and 100.0 representing the
-    minimum required percentage of tissue over the total area of the image
-    (default is 80.0);
--   `prefix`: a prefix to be added at the beginning of the tiles’
-    filename (default is the empty string);
--   `suffix`: a suffix to be added to the end of the tiles’ filename
-    (default is `.png`).
+- `tile_size`: the tile size;
+- `level`: the extraction level (from 0 to the number of available
+  levels);
+- `check_tissue`: if a minimum percentage of tissue is required to
+  save the tiles;
+- `tissue_percent`: number between 0.0 and 100.0 representing the
+  minimum required percentage of tissue over the total area of the image
+  (default is 80.0);
+- `prefix`: a prefix to be added at the beginning of the tiles’
+  filename (default is the empty string);
+- `suffix`: a suffix to be added to the end of the tiles’ filename
+  (default is `.png`).
 
 ### Random Extraction
 
@@ -321,7 +323,7 @@ random_tiles_extractor.locate_tiles(
 )
 ```
 
-![](https://user-images.githubusercontent.com/31658006/104055082-6bf1b100-51ee-11eb-8353-1f5958d521d8.png)
+![example-image](https://user-images.githubusercontent.com/31658006/104055082-6bf1b100-51ee-11eb-8353-1f5958d521d8.png)
 
 Starting the extraction is then as simple as calling the `extract` method on the extractor, passing the
 slide as parameter:
@@ -330,7 +332,7 @@ slide as parameter:
 random_tiles_extractor.extract(prostate_slide)
 ```
 
-![](https://user-images.githubusercontent.com/31658006/104056327-9ba1b880-51f0-11eb-9a06-7f04ba2bb1dc.jpeg)
+![example-image](https://user-images.githubusercontent.com/31658006/104056327-9ba1b880-51f0-11eb-9a06-7f04ba2bb1dc.jpeg)
 
 Random tiles extracted from the prostate slide at level 2.
 
@@ -372,7 +374,7 @@ grid_tiles_extractor.locate_tiles(
 )
 ```
 
-![](https://user-images.githubusercontent.com/31658006/104107093-37e3c200-52ba-11eb-8750-67a62bf62ca5.png)
+![example-image](https://user-images.githubusercontent.com/31658006/104107093-37e3c200-52ba-11eb-8750-67a62bf62ca5.png)
 
 ```python
 grid_tiles_extractor.extract(ovarian_slide)
@@ -381,7 +383,7 @@ grid_tiles_extractor.extract(ovarian_slide)
 and the extraction process starts when the extract method is called
 on our extractor:
 
-![](https://user-images.githubusercontent.com/4196091/92751173-0993bb80-f388-11ea-9d30-a6cd17769d76.png)
+![example-image](https://user-images.githubusercontent.com/4196091/92751173-0993bb80-f388-11ea-9d30-a6cd17769d76.png)
 
 Examples of non-overlapping grid tiles extracted from the ovarian slide
 at level 0.
@@ -430,7 +432,7 @@ Notice that also the ``ScoreTiler`` implements the ``locate_tiles`` method, whic
 grid_tiles_extractor.locate_tiles(slide=ovarian_slide)
 ```
 
-![](https://user-images.githubusercontent.com/31658006/104172715-fc094380-5404-11eb-942a-4130b5cdb037.png)
+![example-image](https://user-images.githubusercontent.com/31658006/104172715-fc094380-5404-11eb-942a-4130b5cdb037.png)
 
 Finally, when we extract our cropped images, we can also write a report
 of the saved tiles and their scores in a CSV file:
@@ -453,10 +455,9 @@ We use [PEP 440](https://www.python.org/dev/peps/pep-0440/) for versioning.
 
 ## Authors
 
-* **[Alessia Marcolini](https://github.com/alessiamarcolini)**
-* **[Ernesto Arbitrio](https://github.com/ernestoarbitrio)**
-* **[Nicole Bussola](https://gitlab.fbk.eu/bussola)**
-
+- **[Alessia Marcolini](https://github.com/alessiamarcolini)**
+- **[Ernesto Arbitrio](https://github.com/ernestoarbitrio)**
+- **[Nicole Bussola](https://gitlab.fbk.eu/bussola)**
 
 ## License
 
@@ -468,10 +469,12 @@ This project is licensed under `Apache License  Version 2.0` - see the [LICENSE.
 
 ## Acknowledgements
 
-* [https://github.com/deroneriksson](https://github.com/deroneriksson)
+- [https://github.com/deroneriksson](https://github.com/deroneriksson)
 
 ## References
+
 [1] Colling, Richard, et al. "Artificial intelligence in digital pathology: A roadmap to routine use in clinical practice." The Journal of pathology 249.2 (2019)
 
 ## Contribution guidelines
+
 If you want to contribute to histolab, be sure to review the [contribution guidelines](CONTRIBUTING.md)
