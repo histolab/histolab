@@ -626,7 +626,7 @@ def rgb_to_od(img: PIL.Image.Image, background_intensity: int = 240) -> np.ndarr
 
     img_arr = np.array(img)
 
-    od_arr = -np.log((img_arr.astype(np.float) + 1) / background_intensity)
+    od_arr = -np.log((img_arr.astype(np.float64) + 1) / background_intensity)
     return od_arr
 
 
