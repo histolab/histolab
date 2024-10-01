@@ -711,7 +711,7 @@ class RandomTiler(Tiler):
             full_tile_path = os.path.join(slide.processed_path, tile_filename)
             tile.save(full_tile_path)
             logger.info(f"\t Tile {tiles_counter} saved: {tile_filename}")
-        logger.info(f"{tiles_counter+1} Random Tiles have been saved.")
+        logger.info(f"{tiles_counter + 1} Random Tiles have been saved.")
 
     @property
     def max_iter(self) -> int:
@@ -961,7 +961,7 @@ class ScoreTiler(GridTiler):
                 report_path, highest_score_tiles, highest_scaled_score_tiles, filenames
             )
 
-        logger.info(f"{tiles_counter+1} Grid Tiles have been saved.")
+        logger.info(f"{tiles_counter + 1} Grid Tiles have been saved.")
 
     # ------- implementation helpers -------
 
