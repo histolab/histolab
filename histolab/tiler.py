@@ -1061,7 +1061,7 @@ class ScoreTiler(GridTiler):
 
     @staticmethod
     def _scale_scores(
-        scores: List[Tuple[float, CoordinatePair]]
+        scores: List[Tuple[float, CoordinatePair]],
     ) -> List[Tuple[float, CoordinatePair]]:
         """Scale scores between 0 and 1.
 

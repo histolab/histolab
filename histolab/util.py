@@ -190,7 +190,7 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     """
 
     def convert_np_coords_to_pil_coords(
-        bbox_np: Tuple[int, int, int, int]
+        bbox_np: Tuple[int, int, int, int],
     ) -> Tuple[int, int, int, int]:
         return (*reversed(bbox_np[:2]), *reversed(bbox_np[2:]))
 
