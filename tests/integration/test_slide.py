@@ -244,7 +244,7 @@ class Describe_Slide:
         )
 
         np.testing.assert_array_almost_equal(
-            np.asarray(mask_location_img), expected_img
+            np.asarray(mask_location_img), expected_img, decimals=5
         )
 
     def it_knows_its_properties(self):

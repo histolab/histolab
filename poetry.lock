@@ -2652,4 +2652,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<3.12"
-content-hash = "b9c4078969ceff2c861249d4bf1ca4d9b12941d52791f0bfddeba5652f6cc681"
+content-hash = "e0133bd08a95d6940eb6784d8700b94cfc9aa21f6061117bdb8659c2d4aacf2c"
