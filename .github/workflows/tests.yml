@@ -122,7 +122,7 @@ jobs:
           poetry run python -m pytest histolab/ --doctest-modules
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           name: codecov-umbrella
