@@ -74,33 +74,6 @@ jobs:
           architecture: x64
           cache: "poetry"
 
-      - name: Install Pixman 0.40 on Ubuntu
-        id: pixman-ubuntu
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          wget https://www.cairographics.org/releases/pixman-0.40.0.tar.gz
-          tar -xvf pixman-0.40.0.tar.gz
-          cd pixman-0.40.0
-          ./configure
-          make
-          sudo make install
-          cd ..
-
-      - name: Install openslide
-        id: install-openslide
-        run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo add-apt-repository ppa:openslide/openslide
-            sudo apt update
-            sudo apt install openslide-tools
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            brew install openslide
-          else
-            echo "$RUNNER_OS not supported"
-            exit 1
-          fi
-        shell: bash
-
       - run: poetry run python --version
       - run: poetry install
         if: steps.setup-python.outputs.cache-hit != 'true'
