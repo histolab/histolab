@@ -28,7 +28,7 @@ import skimage.color as sk_color
 import skimage.exposure as sk_exposure
 import skimage.feature as sk_feature
 import skimage.filters as sk_filters
-import skimage.future as sk_future
+import skimage.graph as sk_graph
 import skimage.morphology as sk_morphology
 import skimage.segmentation as sk_segmentation
 
@@ -317,9 +317,18 @@ def kmeans_segmentation(
     """
     if img.mode == "RGBA":
         raise ValueError("Input image cannot be RGBA")
+
+    elif img.mode == "L":
+        channel_axis = None
+    else:
+        channel_axis = -1
+
     img_arr = np.array(img)
-    labels = sk_segmentation.slic(img_arr, n_segments, compactness, start_label=0)
-    return np_to_pil(sk_color.label2rgb(labels, img_arr, kind="avg", bg_label=-1))
+    labels = sk_segmentation.slic(
+        img_arr, n_segments, compactness, start_label=0, channel_axis=channel_axis
+    )
+    labels_rgb = sk_color.label2rgb(labels, img_arr, kind="avg", bg_label=-1)
+    return np_to_pil(labels_rgb)
 
 
 def lab_to_rgb(
@@ -457,6 +466,11 @@ def rag_threshold(
     """
     if img.mode == "RGBA":
         raise ValueError("Input image cannot be RGBA")
+    elif img.mode == "L":
+        channel_axis = None
+    else:
+        channel_axis = -1
+
     img_arr = np.array(img)
     labels = sk_segmentation.slic(
         img_arr,
@@ -464,9 +478,10 @@ def rag_threshold(
         compactness,
         mask=mask,
         start_label=0 if mask is None else 1,
+        channel_axis=channel_axis,
     )
-    green = sk_future.graph.rag_mean_color(img_arr, labels)
-    labels2 = sk_future.graph.cut_threshold(labels, green, threshold)
+    green = sk_graph.rag_mean_color(img_arr, labels)
+    labels2 = sk_graph.cut_threshold(labels, green, threshold)
     if return_labels:
         return labels2
     rag = sk_color.label2rgb(labels2, img_arr, kind="avg", bg_label=-1)
