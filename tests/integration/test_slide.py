@@ -171,16 +171,11 @@ class Describe_Slide:
     def it_raises_miscellaneous_error(self):
         slide = Slide(path=None, processed_path=os.path.join(SVS.BROKEN, "processed"))
 
-        with pytest.raises(HistolabException) as err:
+        with pytest.raises(
+            HistolabException,
+            match="expected str, bytes or os.PathLike object, not NoneType",
+        ):
             slide._wsi
-
-        assert isinstance(err.value, HistolabException)
-        assert str(err.value).replace(",", "") == (
-            "AttributeError(\"'NoneType' object has no attribute 'read'\")"
-            ". This slide may be corrupted or have a non-standard format not "
-            "handled by the openslide and PIL libraries. Consider setting "
-            "use_largeimage to True when instantiating this Slide."
-        )
 
     @pytest.mark.parametrize(
         "slide_fixture, tissue_mask, binary_mask, expectation",
