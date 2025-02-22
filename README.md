@@ -43,14 +43,6 @@
 </tr>
 </table>
 
-
-**Compatibility Details**
-
-| Operating System  | Python version  |
-|-------------------|-----------------|
-|  Linux            | <img src=https://img.shields.io/badge/%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue>|
-|  MacOs            | <img src=https://img.shields.io/badge/%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue>|
-
 ---
 
 ## Table of Contents
