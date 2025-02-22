@@ -2617,4 +2617,4 @@ docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-katex", "sphinxemoji", "sph
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "bfa7ae7bb703d3550dbb2ea14eb189b1f19bd1d7e745f23c1eeb028432640aef"
+content-hash = "73901204c1a69bb5a13fa98d2287a5c3a9d5e73cfdbde76490f2191b0c4a0a22"
