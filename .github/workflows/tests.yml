@@ -50,7 +50,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-13]
+        os: [ubuntu-latest, macOS-13, macos-14-large]
         python-version: ["3.9", "3.10", "3.11"]
         include:
           - os: ubuntu-latest
