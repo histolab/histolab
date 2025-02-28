@@ -1534,13 +1534,13 @@ xxhash = ["xxhash (>=1.4.3)"]
 
 [[package]]
 name = "pre-commit"
-version = "3.8.0"
+version = "4.1.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "pre_commit-3.8.0-py2.py3-none-any.whl", hash = "sha256:9a90a53bf82fdd8778d58085faf8d83df56e40dfe18f45b19446e26bf1b3a63f"},
-    {file = "pre_commit-3.8.0.tar.gz", hash = "sha256:8bb6494d4a20423842e198980c9ecf9f96607a07ea29549e180eef9ae80fe7af"},
+    {file = "pre_commit-4.1.0-py2.py3-none-any.whl", hash = "sha256:d29e7cb346295bcc1cc75fc3e92e343495e3ea0196c9ec6ba53f49f10ab6ae7b"},
+    {file = "pre_commit-4.1.0.tar.gz", hash = "sha256:ae3f018575a588e30dfddfab9a05448bfbd6b73d78709617b5a2b853549716d4"},
 ]
 
 [package.dependencies]
@@ -2510,4 +2510,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "4baa574ff34ae45979c832ad13d2ed606b469fc50f2aa02c06075a65a85ad035"
+content-hash = "3b38d430b7abbde2585d99c8e836e94c8c00a476e240e1886a2f2e6ed5639dc2"
