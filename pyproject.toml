@@ -34,7 +34,7 @@ sphinxemoji = {version = ">=0.2,<0.4", optional = true}
 sphinx-prompt = {version = "1.8.0", optional = true}
 certifi = ">=2023.7.22"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 flake8 = "*"
 pre-commit = "^4.1.0"
 pyflakes = "^3.0.1"
@@ -51,9 +51,9 @@ black = "^25.1.0"
 sphinxemoji = "^0.3.1"
 sphinx-prompt = "^1.7.0"
 bandit = "^1.7.5"
-large-image = ">=1.8.11,<1.25.1"
-large-image-source-openslide = ">=1.8.11,<1.25.1"
-large-image-source-pil = ">=1.8.11,<1.25.1"
+large-image = "^1.31.1"
+large-image-source-openslide = "^1.31.1"
+large-image-source-pil = "^1.31.1"
 pytest = "^8.0.1"
 pytest-xdist = "^3.5.0"
 pooch = "^1.8.0"
