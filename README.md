@@ -7,7 +7,7 @@
 <tr>
     <td>Test Status</td>
     <td>
-        <img src="https://github.com/histolab/histolab/workflows/CI/badge.svg?branch=main">
+        <img src="https://github.com/histolab/histolab/workflows/CI/badge.svg">
         <a href="https://codecov.io/gh/histolab/histolab">
             <img src="https://codecov.io/gh/histolab/histolab/branch/main/graph/badge.svg?token=PL3VIM1PGL"/>
         </a>
@@ -17,7 +17,6 @@
     <td>Code Quality</td>
     <td>
         <img src="https://github.com/histolab/histolab/actions/workflows/codeql.yml/badge.svg?branch=main&event=push">
-        <a href="https://www.codefactor.io/repository/github/histolab/histolab" target="_blank"><img src="https://www.codefactor.io/repository/github/histolab/histolab/badge"></a>
         <a href="https://github.com/psf/black" target="_blank"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
         <a href="https://github.com/PyCQA/bandit" target="_blank"><img src="https://img.shields.io/badge/security-bandit-yellow.svg"></a>
 </tr>
