@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1741097647141,
+  "lastUpdate": 1741422870748,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -25407,6 +25407,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 5.141420992568363e-7",
             "extra": "mean: 32.19684749599878 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "ernesto.arbitrio@gmail.com",
+            "name": "pamaron",
+            "username": "ernestoarbitrio"
+          },
+          "distinct": true,
+          "id": "ef37f0cddd20adfdabc1cb3563c6ca123542b4c0",
+          "message": "Bump jinja2 from 3.1.5 to 3.1.6\n\nBumps [jinja2](https://github.com/pallets/jinja) from 3.1.5 to 3.1.6.\n- [Release notes](https://github.com/pallets/jinja/releases)\n- [Changelog](https://github.com/pallets/jinja/blob/main/CHANGES.rst)\n- [Commits](https://github.com/pallets/jinja/compare/3.1.5...3.1.6)\n\n---\nupdated-dependencies:\n- dependency-name: jinja2\n  dependency-type: indirect\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2025-03-08T09:33:16+01:00",
+          "tree_id": "44936235c2f84264832966064bd619d6eba76f68",
+          "url": "https://github.com/histolab/histolab/commit/ef37f0cddd20adfdabc1cb3563c6ca123542b4c0"
+        },
+        "date": 1741422870007,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 12.106715046074923,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0009213621879525064",
+            "extra": "mean: 82.59878887000042 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 499.82681110956753,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00003766450838442856",
+            "extra": "mean: 2.000692995600008 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 2330.821688518329,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00001002476985631762",
+            "extra": "mean: 429.0332481999883 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 38235.81184043552,
+            "unit": "iter/sec",
+            "range": "stddev: 9.715667914178027e-7",
+            "extra": "mean: 26.153492024000116 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 29044.848832591717,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000013711197587721402",
+            "extra": "mean: 34.42951298399885 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 30917.432280319215,
+            "unit": "iter/sec",
+            "range": "stddev: 5.792140928270478e-7",
+            "extra": "mean: 32.34421251199956 usec\nrounds: 250"
           }
         ]
       }
