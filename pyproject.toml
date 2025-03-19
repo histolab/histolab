@@ -36,7 +36,7 @@ certifi = ">=2023.7.22"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"
-pre-commit = "^4.1.0"
+pre-commit = "^4.2.0"
 pyflakes = "^3.0.1"
 pycodestyle = "^2.10.0"
 toml = "^0.10.2"
