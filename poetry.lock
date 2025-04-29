@@ -1365,29 +1365,25 @@ files = [
 
 [[package]]
 name = "openslide-python"
-version = "1.4.1"
+version = "1.4.2"
 description = "Python interface to OpenSlide"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["main", "dev"]
 files = [
-    {file = "openslide_python-1.4.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:692fda595e69a18b32f7ec1433c69a15202f1439ede5312787a82d2498fbd144"},
-    {file = "openslide_python-1.4.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:538083fd22d442d7d4f2866b2ee53f4fc1c82a8e42bca9a466326505bc5b0a98"},
-    {file = "openslide_python-1.4.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:63ea970f6d03ba10ee9488ef2089b1010c4ffb371e5c0efbd0f5e93874305665"},
-    {file = "openslide_python-1.4.1-cp310-cp310-win_amd64.whl", hash = "sha256:0f288718a8791552efdbf916d967ef88174dd753b839a3e812eef42650faaedd"},
-    {file = "openslide_python-1.4.1-cp311-abi3-macosx_10_9_universal2.whl", hash = "sha256:3715fbed151ce448998a83d4a1c3defb1992c5e7e73d66fa05294bfecec0740c"},
-    {file = "openslide_python-1.4.1-cp311-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a63a4c01dfc15ceebaf4cd1d14c97e3f4e6658ef1f83b003d7e4e85a1a1aad39"},
-    {file = "openslide_python-1.4.1-cp311-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:f3015d4f591471d5c39fd7f853e8d3308eb29eff0e4be3938a8c9d97d0b72256"},
-    {file = "openslide_python-1.4.1-cp311-abi3-win_amd64.whl", hash = "sha256:57ec66edf3e8f22dd8712071227f2e256fa04a542c99d72bb211d00285ccf0a2"},
-    {file = "openslide_python-1.4.1-cp38-cp38-macosx_11_0_universal2.whl", hash = "sha256:2b8f97d99f591c7d8b8b87fb1d7ae67fdc5292fd76f9960d253b3f3a96bceced"},
-    {file = "openslide_python-1.4.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9949161a298bf4d57ab215dac1acde42f65238ab37ee010c9b78bb2e4e37de29"},
-    {file = "openslide_python-1.4.1-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:225ff16048ae530e7fcebcbaef55d1dd0eadef95c2d52fc7b3a553ed9fac2503"},
-    {file = "openslide_python-1.4.1-cp38-cp38-win_amd64.whl", hash = "sha256:3be691572c05ea0ac023ebd76fbf228c6581f9675184dfe76e77a621a2c928a6"},
-    {file = "openslide_python-1.4.1-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:65d42408352e46cfeb61f06079253acb2e02745c07793bcadeffb8b8e255c297"},
-    {file = "openslide_python-1.4.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7367403b85563acbf2a4c56cfd2f05172f3df430556330d8702fd9567f5a6975"},
-    {file = "openslide_python-1.4.1-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:2bec4d4a7824e85e420244268a4f6a49d7cec2062b470cdbe298fbca3f6ce93b"},
-    {file = "openslide_python-1.4.1-cp39-cp39-win_amd64.whl", hash = "sha256:ada6a9f3fa15a08218a18f25caeab6be4393a5c528ea91ed1fd2664a04b3ba50"},
-    {file = "openslide_python-1.4.1.tar.gz", hash = "sha256:95da570994abd8a02db18b8dac68da0b3d3f7eba733bdeeb2a8b52e40e1de1c8"},
+    {file = "openslide_python-1.4.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:b40ace8cb584a2d15bc563eb177a2b01d526f679f08d4d3d296f89edb650e8f4"},
+    {file = "openslide_python-1.4.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f03407e215d10b2282e9354dbeb724b3db119266dca87489d320d6285e18f259"},
+    {file = "openslide_python-1.4.2-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:9667942664fe3406c11b053a29c8327b6cc29de3b60840b8afe8cd490070b9e0"},
+    {file = "openslide_python-1.4.2-cp310-cp310-win_amd64.whl", hash = "sha256:281b7eb916605c1914f6bdea47696615a764ab236709acfc847e03bf5a807225"},
+    {file = "openslide_python-1.4.2-cp311-abi3-macosx_10_9_universal2.whl", hash = "sha256:0f459f0e071048a5e3cafbf814fdac92da55df9b07730a832b54b99191f8a612"},
+    {file = "openslide_python-1.4.2-cp311-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b24566c2167d5909b4f54d5ee53c1caada5ec1aa14921a19de67a694ed988765"},
+    {file = "openslide_python-1.4.2-cp311-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:69cc23d608120bc528399d006c47501ac5e390770d4d5090800defd51be1b595"},
+    {file = "openslide_python-1.4.2-cp311-abi3-win_amd64.whl", hash = "sha256:e53cfb967c0987c76a9b890bb9551e238b12a99d947362434a08d4aa40ba1739"},
+    {file = "openslide_python-1.4.2-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:2f246074995148e010eea8a7ad6028d0467f56095ad62696db548f103ccea630"},
+    {file = "openslide_python-1.4.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9a0f5efcf6fb494710ede6083d78510b273b4f63e8cc4536c20bf7242aa3c4d4"},
+    {file = "openslide_python-1.4.2-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:26c72a652c8f64209f215e9453393a65725400b9779994e4fa0bb1d12a212a2e"},
+    {file = "openslide_python-1.4.2-cp39-cp39-win_amd64.whl", hash = "sha256:c9b7e306fcbaaa1f8aa336ffb615f4349e2f5bbe1b6caa03a74980d7fbb7f0ad"},
+    {file = "openslide_python-1.4.2.tar.gz", hash = "sha256:610d7a71552afe7be33038c10d8a2b20b9824ca2836710870e81f193257411bc"},
 ]
 
 [package.dependencies]
@@ -2668,4 +2664,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<3.12"
-content-hash = "02e4084b85d4f66c73f992508116e0d380bad5debad65d2d092d232ce71868b7"
+content-hash = "8fb7a7603727ed93c50105f87459dbf1ef554c8ceda26c92287fb413cd73d006"
