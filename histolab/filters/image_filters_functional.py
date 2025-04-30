@@ -387,12 +387,11 @@ def local_equalization(img: PIL.Image.Image, disk_size: int = 50) -> PIL.Image.I
 def local_otsu_threshold(
     img: PIL.Image.Image, disk_size: float = 3.0
 ) -> PIL.Image.Image:
-    """Mask image based on local Otsu threshold.
+    """Apply local Otsu thresholding to a 2D image.
 
-    Compute local Otsu threshold for each pixel and return boolean mask
-    based on pixels being less than the local Otsu threshold.
-
-    Note that the input image must be 2D.
+    Compute the local Otsu threshold for each pixel in the input image,
+    and apply this threshold to the pixel values. The resulting image
+    is a binary image where each pixel is either 0 or 255.
 
     Parameters
     ----------
@@ -405,8 +404,8 @@ def local_otsu_threshold(
     Returns
     -------
     PIL.Image.Image
-        Resulting image where local Otsu threshold values have been
-        applied to original image.
+        Resulting binary image where each pixel is either 0 or 255,
+        based on the local Otsu threshold for that pixel.
     """
     if np.array(img).ndim != 2:
         raise ValueError("Input must be 2D.")
