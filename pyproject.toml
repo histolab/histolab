@@ -58,7 +58,7 @@ pytest = "^8.4.0"
 pytest-xdist = "^3.7.0"
 pooch = "^1.8.0"
 coverage = "^7.9.0"
-pytest-cov = "^6.2.0"
+pytest-cov = "^6.2.1"
 pytest-benchmark = "^5.1.0"
 
 [tool.poetry.extras]
