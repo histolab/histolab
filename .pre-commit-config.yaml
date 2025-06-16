@@ -16,7 +16,7 @@ repos:
         args: ["--profile", "black"]
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.3
+    rev: 1.8.4
     hooks:
       - id: bandit
         args: ["-r", "-c", "bandit.yaml", "histolab"]
