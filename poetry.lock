@@ -62,14 +62,14 @@ testing = ["jaraco.test", "pytest (!=8.0.*)", "pytest (>=6,!=8.1.*)", "pytest-ch
 
 [[package]]
 name = "bandit"
-version = "1.8.3"
+version = "1.8.5"
 description = "Security oriented static analyser for python code."
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "bandit-1.8.3-py3-none-any.whl", hash = "sha256:28f04dc0d258e1dd0f99dee8eefa13d1cb5e3fde1a5ab0c523971f97b289bcd8"},
-    {file = "bandit-1.8.3.tar.gz", hash = "sha256:f5847beb654d309422985c36644649924e0ea4425c76dec2e89110b87506193a"},
+    {file = "bandit-1.8.5-py3-none-any.whl", hash = "sha256:cb2e57524e99e33ced48833c6cc9c12ac78ae970bb6a450a83c4b506ecc1e2f9"},
+    {file = "bandit-1.8.5.tar.gz", hash = "sha256:db812e9c39b8868c0fed5278b77fffbbaba828b4891bc80e34b9c50373201cfd"},
 ]
 
 [package.dependencies]
@@ -2670,4 +2670,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<3.12"
-content-hash = "f9cc625a505621897e46261993cc78a4541c9470a2bab11727712451ccd29630"
+content-hash = "cc9bac47d93b1398682d0d1ad82de1bb74b83cd583b247bac7ecea9a2f9a7a4f"
