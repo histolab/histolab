@@ -57,7 +57,7 @@ large-image-source-pil = ">=1.8.11,<1.32.10"
 pytest = "^8.4.1"
 pytest-xdist = "^3.8.0"
 pooch = "^1.8.0"
-coverage = "^7.9.1"
+coverage = "^7.9.2"
 pytest-cov = "^6.2.1"
 pytest-benchmark = "^5.1.0"
 
