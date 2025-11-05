@@ -1846,14 +1846,14 @@ dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "requests
 
 [[package]]
 name = "pytest-benchmark"
-version = "5.2.0"
+version = "5.2.1"
 description = "A ``pytest`` fixture for benchmarking code. It will group the tests into rounds that are calibrated to the chosen timer."
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "pytest_benchmark-5.2.0-py3-none-any.whl", hash = "sha256:0631cdf19f6032fc46d6bf9e8d15931d78473228b579a3fd84ca5e2f0e8ee06c"},
-    {file = "pytest_benchmark-5.2.0.tar.gz", hash = "sha256:75731991edf6c807d0699130afbb4ba77d8ce8e3b8314662c340ee8e1db19f43"},
+    {file = "pytest_benchmark-5.2.1-py3-none-any.whl", hash = "sha256:a6e18fe0df2155e9d993db6ba03bdf85324794035ad986553787024ca59e8db9"},
+    {file = "pytest_benchmark-5.2.1.tar.gz", hash = "sha256:56dc1455bda7ccb540aa671c496dafc8187d2769f278e5f137689476805b6f9d"},
 ]
 
 [package.dependencies]
@@ -2748,4 +2748,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<3.12"
-content-hash = "3cb1a00810c3a9ebaf7c0793d3be480abe7927b7510a16cb6a37ae8931c3d273"
+content-hash = "48da133cf076a0c230a9e9a4867d61b78825d0358257aa04d04f479b5accdb5f"
