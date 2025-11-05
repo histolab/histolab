@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1761908027640,
+  "lastUpdate": 1762335237103,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -28905,6 +28905,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.000001676890937370858",
             "extra": "mean: 31.885388888003266 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "be6395406905b699afc3e08284d2bbf5d6b20e93",
+          "message": "Bump pytest-benchmark from 5.2.0 to 5.2.1\n\nBumps [pytest-benchmark](https://github.com/ionelmc/pytest-benchmark) from 5.2.0 to 5.2.1.\n- [Changelog](https://github.com/ionelmc/pytest-benchmark/blob/master/CHANGELOG.rst)\n- [Commits](https://github.com/ionelmc/pytest-benchmark/compare/v5.2.0...v5.2.1)\n\n---\nupdated-dependencies:\n- dependency-name: pytest-benchmark\n  dependency-version: 5.2.1\n  dependency-type: direct:development\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2025-11-05T10:31:03+01:00",
+          "tree_id": "76c262bc9cd2fa944f8effcf5da34c9d812e2326",
+          "url": "https://github.com/histolab/histolab/commit/be6395406905b699afc3e08284d2bbf5d6b20e93"
+        },
+        "date": 1762335235574,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 12.128506146003556,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001276261580745154",
+            "extra": "mean: 82.45038489999928 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 485.70671228935385,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00015760535919803192",
+            "extra": "mean: 2.058855631800003 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 2332.4328474074473,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000008899280702184631",
+            "extra": "mean: 428.7368878000166 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 37747.4397598156,
+            "unit": "iter/sec",
+            "range": "stddev: 6.477962857961752e-7",
+            "extra": "mean: 26.491862928000728 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 28421.658701733075,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000013453527248452005",
+            "extra": "mean: 35.184434887996986 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 31210.404109355415,
+            "unit": "iter/sec",
+            "range": "stddev: 4.2543734008122095e-7",
+            "extra": "mean: 32.040597632000754 usec\nrounds: 250"
           }
         ]
       }
