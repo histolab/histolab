@@ -24,7 +24,7 @@ from typing import Any, Callable, List, Tuple
 import numpy as np
 import PIL
 import PIL.ImageDraw
-from skimage.measure import label, regionprops
+from scipy import ndimage
 from skimage.util.dtype import img_as_ubyte
 
 from .types import CoordinatePair, Region
@@ -38,25 +38,24 @@ def apply_mask_image(img: PIL.Image.Image, mask: np.ndarray) -> PIL.Image.Image:
     Parameters
     ----------
     img : PIL.Image.Image
-        Input image
+                    Input image
     mask : np.ndarray
-        Binary mask
+                    Binary mask
 
     Returns
     -------
     PIL.Image.Image
-        Image with the mask applied
+                    Image with the mask applied
     """
-    img_arr = np.array(img)
+    img_arr = np.array(img, dtype=np.uint8)
 
     if mask.ndim == 2 and img_arr.ndim != 2:
-        masked_image = np.zeros(img_arr.shape, "uint8")
-        n_channels = img_arr.shape[2]
-        for channel_i in range(n_channels):
-            masked_image[:, :, channel_i] = img_arr[:, :, channel_i] * mask
+        # Use Numpy boolean indexing instead of loops
+        masked_image = img_arr * mask[:, :, np.newaxis]
     else:
         masked_image = img_arr * mask
-    return np_to_pil(masked_image)
+
+    return np_to_pil(masked_image.astype(img_arr.dtype))
 
 
 def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
@@ -65,12 +64,12 @@ def np_to_pil(np_img: np.ndarray) -> PIL.Image.Image:
     Parameters
     ----------
     np_img : np.ndarray
-        The image represented as a NumPy array.
+                    The image represented as a NumPy array.
 
     Returns
     -------
     PIL.Image.Image
-        The image represented as PIL Image
+                    The image represented as PIL Image
     """
 
     def _transform_bool(img_array: np.ndarray) -> np.ndarray:
@@ -99,13 +98,13 @@ def refine_thumbnail_size_preserving_aspect_ratio(
     Parameters
     ----------
     thumbnail_size : Tuple[int, int]
-       The width and height of the thumbnail.
+    The width and height of the thumbnail.
     original_size : Tuple[int, int]
-       The width and height of the original image.
+    The width and height of the original image.
 
     Returns
     -------
-       The new width and height with preserved aspect ratio.
+    The new width and height with preserved aspect ratio.
     """
 
     def round_aspect(number, key):
@@ -131,12 +130,12 @@ def random_choice_true_mask2d(binary_mask: np.ndarray) -> Tuple[int, int]:
     Parameters
     ----------
     binary_mask : np.ndarray
-        Binary array.
+                    Binary array.
 
     Returns
     -------
     Tuple[int, int]
-        Random pair of indices (column, row) where the ``binary_mask`` is True.
+                    Random pair of indices (column, row) where the ``binary_mask`` is True.
     """
     y, x = np.where(binary_mask)
     loc = np.random.randint(len(y) - 1)
@@ -153,15 +152,15 @@ def rectangle_to_mask(dims: Tuple[int, int], vertices: CoordinatePair) -> np.nda
     Parameters
     ----------
     dims : Tuple[int, int]
-        (rows, columns) of the binary mask
+                    (rows, columns) of the binary mask
     vertices : CoordinatePair
-        CoordinatePair representing the upper left and bottom right vertices of the
-        rectangle
+                    CoordinatePair representing the upper left and bottom right vertices of the
+                    rectangle
 
     Returns
     -------
     np.ndarray
-        Binary mask with True inside of the rectangle, False outside.
+                    Binary mask with True inside of the rectangle, False outside.
     """
     rectangle_vertices = [
         (vertices.x_ul, vertices.y_ul),
@@ -181,12 +180,12 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     Parameters
     ----------
     binary_mask : np.ndarray
-        Binary mask from which to extract the regions
+                    Binary mask from which to extract the regions
 
     Returns
     -------
     List[Region]
-        Properties for all the regions present in the binary mask
+                    Properties for all the regions present in the binary mask
     """
 
     def convert_np_coords_to_pil_coords(
@@ -194,17 +193,32 @@ def regions_from_binary_mask(binary_mask: np.ndarray) -> List[Region]:
     ) -> Tuple[int, int, int, int]:
         return (*reversed(bbox_np[:2]), *reversed(bbox_np[2:]))
 
-    thumb_labeled_regions = label(binary_mask)
-    regions = [
-        Region(
-            index=i,
-            area=rp.area,
-            bbox=convert_np_coords_to_pil_coords(rp.bbox),
-            center=rp.centroid,
-            coords=rp.coords,
+    # Use integer data type for the binary mask
+    labeled_regions, num_regions = ndimage.label(binary_mask.astype(int))
+
+    regions = []
+    for i in range(1, num_regions + 1):
+        # Use boolean indexing to extract the coordinates of each region
+        coords = np.argwhere(labeled_regions == i)
+        area = coords.shape[0]
+        bbox = (
+            coords[:, 1].min(),
+            coords[:, 0].min(),
+            coords[:, 1].max(),
+            coords[:, 0].max(),
         )
-        for i, rp in enumerate(regionprops(thumb_labeled_regions))
-    ]
+        center = np.mean(coords, axis=0)
+        # Reverse the y-axis of the coordinates to match the PIL format
+        coords = np.flip(coords, axis=1)
+        region = Region(
+            index=i,
+            area=area,
+            bbox=convert_np_coords_to_pil_coords(bbox),
+            center=center[::-1],
+            coords=coords,
+        )
+        regions.append(region)
+
     return regions
 
 
@@ -217,24 +231,22 @@ def regions_to_binary_mask(regions: List[Region], dims: Tuple[int, int]) -> np.n
     Parameters
     ----------
     regions : List[Region]
-        The regions to create the binary mask.
+                    The regions to create the binary mask.
     dims : Tuple[int, int]
-        Dimensions of the resulting binary mask.
+                    Dimensions of the resulting binary mask.
 
     Returns
     -------
     np.ndarray
-        Binary mask from the ``regions`` coordinates.
+                    Binary mask from the ``regions`` coordinates.
     """
-    img = PIL.Image.new("L", dims[::-1], 0)
+    binary_mask_regions = np.zeros(dims, dtype=bool)
 
     for region in regions:
         coords = region.coords
         coords = np.vstack([coords[:, 1], coords[:, 0]]).T
 
-        PIL.ImageDraw.Draw(img).point(coords.ravel().tolist(), fill=1)
-
-    binary_mask_regions = np.array(img).astype(bool)
+        binary_mask_regions[coords[:, 0], coords[:, 1]] = True
 
     return binary_mask_regions
 
@@ -245,12 +257,12 @@ def region_coordinates(region: Region) -> CoordinatePair:
     Parameters
     ----------
     region : Region
-        Region from which to extract the coordinates of the bbox
+                    Region from which to extract the coordinates of the bbox
 
     Returns
     -------
     CoordinatePair
-        Coordinates of the bbox
+                    Coordinates of the bbox
     """
     return CoordinatePair(*region.bbox)
 
@@ -265,17 +277,17 @@ def scale_coordinates(
     Parameters
     ----------
     reference_coords: CoordinatePair
-        Coordinates referring to the upper left and lower right corners
-        respectively.
+                    Coordinates referring to the upper left and lower right corners
+                    respectively.
     reference_size: tuple of int
-        Reference (width, height) size to which input coordinates refer to
+                    Reference (width, height) size to which input coordinates refer to
     target_size: tuple of int
-        Target (width, height) size of the resulting scaled image
+                    Target (width, height) size of the resulting scaled image
 
     Returns
     -------
     coords: CoordinatesPair
-        Coordinates in the scaled image
+                    Coordinates in the scaled image
     """
     reference_coords = np.asarray(reference_coords).ravel()
     reference_size = np.tile(reference_size, 2)
@@ -293,18 +305,18 @@ def threshold_to_mask(
     Parameters
     ----------
     img: PIL.Image.Image
-        Input image
+                    Input image
     threshold: float
-        The threshold value to exceed.
+                    The threshold value to exceed.
     relate: callable operator
-        Comparison operator between img pixel values and threshold
+                    Comparison operator between img pixel values and threshold
 
     Returns
     -------
     np.ndarray
-        Boolean NumPy array representing a mask where a pixel has a value True
-        if the corresponding input array pixel exceeds the threshold value.
-        if the corresponding input array pixel exceeds the threshold value.
+                    Boolean NumPy array representing a mask where a pixel has a value True
+                    if the corresponding input array pixel exceeds the threshold value.
+                    if the corresponding input array pixel exceeds the threshold value.
     """
     img_arr = np.array(img)
     return relate(img_arr, threshold)
@@ -345,13 +357,13 @@ def lazyproperty(f: Callable[..., Any]):
     The parameter names in the methods below correspond to this usage
     example::
 
-        class Obj(object):
+                    class Obj(object):
 
-            @lazyproperty
-            def fget(self):
-                return 'some result'
+                                    @lazyproperty
+                                    def fget(self):
+                                                    return 'some result'
 
-        obj = Obj()
+                    obj = Obj()
 
     Not suitable for wrapping a function (as opposed to a method) because it
     is not callable.
@@ -374,12 +386,12 @@ def method_dispatch(func: Callable[..., Any]) -> Callable[..., Any]:
     Parameters
     ----------
     func : Callable[..., Any]
-        Method to dispatch
+                    Method to dispatch
 
     Returns
     -------
     Callable[..., Any]
-        Selected method
+                    Selected method
     """
     dispatcher = functools.singledispatch(func)
 
