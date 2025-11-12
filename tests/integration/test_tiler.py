@@ -25,7 +25,7 @@ from PIL import Image
 from histolab.masks import BiggestTissueBoxMask, TissueMask
 from histolab.scorer import NucleiScorer
 from histolab.slide import TILE_SIZE_PIXEL_TOLERANCE, Slide
-from histolab.tiler import GridTiler, RandomTiler, ScoreTiler
+from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, ThresholdTiler
 
 from ..fixtures import EXTERNAL_SVS, SVS, TIFF
 from ..unitutil import on_ci
@@ -577,6 +577,92 @@ class DescribeScoreTiler:
             scorer=NucleiScorer(),
             tile_size=tile_size,
             n_tiles=2,
+            level=level,
+            check_tissue=check_tissue,
+        )
+        expected_img = load_expectation(
+            expectation,
+            type_="png",
+        )
+        expected_warning_regex = (
+            r"Input image must be RGB. NOTE: the image will be converted to RGB before"
+            r" HED conversion."
+        )
+
+        with pytest.warns(UserWarning, match=expected_warning_regex):
+            # no binary mask object passed to locate_tiles
+            # default value = BiggestTissueBoxMask
+            tiles_location_img = scored_tiles_extractor.locate_tiles(
+                slide, scale_factor=8
+            )
+
+        # --- Expanding test report with actual and expected images ---
+        expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
+
+        np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
+
+
+class DescribeThresholdTiler:
+    @pytest.mark.parametrize(
+        "fixture_slide, threshold, tile_size, level,check_tissue, expectation",
+        [
+            (
+                SVS.CMU_1_SMALL_REGION,
+                0.1,
+                (512, 512),
+                0,
+                False,
+                "tiles-location-images/cmu-1-small-region-tl-th-01-false-512x512",
+            ),
+            (
+                SVS.CMU_1_SMALL_REGION,
+                0.15,
+                (512, 512),
+                0,
+                False,
+                "tiles-location-images/cmu-1-small-region-tl-th-015-false-512x512",
+            ),
+            (
+                SVS.CMU_1_SMALL_REGION,
+                2,
+                (512, 512),
+                0,
+                False,
+                "tiles-location-images/cmu-1-small-region-tl-th-2-false-512x512",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                0.1,
+                (150, 300),
+                0,
+                True,
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-th-01-true-150x300",
+            ),
+            (
+                SVS.TCGA_CR_7395_01A_01_TS1,
+                0.05,
+                (128, 128),
+                0,
+                True,
+                "tiles-location-images/tcga-cr-7395-01a-01-ts1-tl-th-005-true-128x128",
+            ),
+        ],
+    )
+    def it_locates_tiles_on_the_slide(
+        self,
+        request,
+        fixture_slide,
+        threshold,
+        tile_size,
+        level,
+        check_tissue,
+        expectation,
+    ):
+        slide = Slide(fixture_slide, "")
+        scored_tiles_extractor = ThresholdTiler(
+            scorer=NucleiScorer(),
+            tile_size=tile_size,
+            threshold=threshold,
             level=level,
             check_tissue=check_tissue,
         )

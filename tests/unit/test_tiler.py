@@ -30,7 +30,7 @@ from histolab.masks import BiggestTissueBoxMask
 from histolab.scorer import RandomScorer
 from histolab.slide import Slide
 from histolab.tile import Tile
-from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, Tiler
+from histolab.tiler import GridTiler, RandomTiler, ScoreTiler, ThresholdTiler, Tiler
 from histolab.types import CP
 
 from ..base import COMPLEX_MASK4
@@ -1240,6 +1240,379 @@ class Describe_ScoreTiler:
         assert _tile_filename.call_args_list == [
             call(score_tiler, coords, 0),
             call(score_tiler, coords, 1),
+        ]
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_0_level2_0-0-10-10.png")
+        )
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_1_level2_0-0-10-10.png")
+        )
+        _save_report.assert_called_once_with(
+            "report.csv",
+            [(0.8, coords), (0.7, coords)],
+            [(0.8, coords), (0.7, coords)],
+            [f"tile_{i}_level2_0-0-10-10.png" for i in range(2)],
+        )
+
+
+class Describe_ThresholdTiler:
+    def it_constructs_from_args(self, request):
+        _init = initializer_mock(request, ThresholdTiler)
+        rs = RandomScorer()
+        threshold_tiler = ThresholdTiler(
+            rs, (512, 512), 0.1, 2, True, 80, 0, "", ".png", mpp=None
+        )
+
+        _init.assert_called_once_with(
+            ANY, rs, (512, 512), 0.1, 2, True, 80, 0, "", ".png", mpp=None
+        )
+
+        assert isinstance(threshold_tiler, ThresholdTiler)
+        assert isinstance(threshold_tiler, GridTiler)
+        assert isinstance(threshold_tiler, Tiler)
+
+    def it_knows_its_scorer(self):
+        random_scorer = RandomScorer()
+        threshold_tiler = ThresholdTiler(random_scorer, (512, 512), 0.1, 0)
+
+        scorer_ = threshold_tiler.scorer
+
+        assert callable(scorer_)
+        assert isinstance(scorer_, RandomScorer)
+
+    def it_knows_its_threshold(self):
+        threshold = 0.1
+        threshold_tiler = ThresholdTiler(RandomScorer(), (512, 512), threshold, 0)
+
+        threshold_ = threshold_tiler.threshold
+
+        assert type(threshold_) == float
+        assert threshold_ == threshold
+
+    @pytest.mark.parametrize(
+        "tile_size, expected_result", [((512, 512), False), ((200, 200), True)]
+    )
+    def it_knows_if_it_has_valid_tile_size(self, tmpdir, tile_size, expected_result):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGBA_COLOR_500X500_155_249_240)
+        threshold_tiler = ThresholdTiler(RandomScorer(), tile_size, 0.2, 0)
+
+        result = threshold_tiler._has_valid_tile_size(slide)
+
+        assert type(result) == bool
+        assert result == expected_result
+
+    def it_can_calculate_scores(self, request):
+        slide = instance_mock(request, Slide)
+        coords = CP(0, 0, 10, 10)
+        image = PILIMG.RGB_RANDOM_COLOR_500X500
+        tile = Tile(image, coords)
+        _tiles_generator = method_mock(request, GridTiler, "_tiles_generator")
+        # it needs to be a generator
+        _tiles_generator.return_value = ((tile, coords) for i in range(3))
+        _scorer = instance_mock(request, RandomScorer)
+        _scorer.side_effect = [0.5, 0.7]
+        threshold_tiler = ThresholdTiler(_scorer, (10, 10), 0.1, 0)
+        binary_mask = BiggestTissueBoxMask()
+
+        scores = threshold_tiler._scores(slide, binary_mask)
+
+        assert _tiles_generator.call_args_list == [
+            call(threshold_tiler, slide, binary_mask),
+            call(threshold_tiler, slide, binary_mask),
+        ]
+        assert _scorer.call_args_list == [call(tile), call(tile)]
+        assert type(scores) == list
+        assert type(scores[0]) == tuple
+        assert type(scores[0][0]) == float
+        assert type(scores[0][1]) == CP
+        assert scores == [(0.5, coords), (0.7, coords)]
+
+    def but_it_raises_runtimeerror_if_no_tiles_are_extracted(self, request):
+        slide = instance_mock(request, Slide)
+        _tiles_generator = method_mock(request, GridTiler, "_tiles_generator")
+        # it needs to be an empty generator
+        _tiles_generator.return_value = (n for n in [])
+        threshold_tiler = ThresholdTiler(None, (10, 10), 0.1, 0)
+        binary_mask = BiggestTissueBoxMask()
+
+        with pytest.raises(RuntimeError) as err:
+            threshold_tiler._scores(slide, binary_mask)
+
+        _tiles_generator.assert_called_once_with(threshold_tiler, slide, binary_mask)
+        assert isinstance(err.value, RuntimeError)
+        assert (
+            str(err.value)
+            == "No tiles have been generated. This could happen if `check_tissue=True`"
+        )
+
+    def or_it_raises_levelerror_if_has_not_available_level_value(self, tmpdir):
+        slide, _ = base_test_slide(tmpdir, PILIMG.RGB_RANDOM_COLOR_500X500)
+        threshold_tiler = ThresholdTiler(None, (10, 10), 0.1, 3)
+        binary_mask = BiggestTissueBoxMask()
+
+        with pytest.raises(LevelError) as err:
+            threshold_tiler.extract(slide, binary_mask)
+
+        assert isinstance(err.value, LevelError)
+        assert str(err.value) == "Level 3 not available. Number of available levels: 1"
+
+    def it_can_scale_scores(self):
+        coords = [CP(0, 0, 10 * i, 10) for i in range(3)]
+        scores = [0.3, 0.4, 0.7]
+        scores_ = list(zip(scores, coords))
+        threshold_tiler = ThresholdTiler(None, (10, 10), 0.1, 0)
+        expected_scaled_coords = list(zip([0.0, 0.2500000000000001, 1.0], coords))
+
+        scaled_scores = threshold_tiler._scale_scores(scores_)
+
+        for (score, coords_), (expected_score, expected_coords) in zip(
+            scaled_scores, expected_scaled_coords
+        ):
+            assert round(score, 5) == round(expected_score, 5)
+            assert coords_ == expected_coords
+
+    @pytest.mark.parametrize(
+        "threshold, expected_value",
+        (
+            (
+                0,
+                (
+                    [
+                        (0.7, CP(0, 0, 10, 10)),
+                        (0.5, CP(0, 0, 10, 10)),
+                        (0.2, CP(0, 0, 10, 10)),
+                        (0.8, CP(0, 0, 10, 10)),
+                        (0.1, CP(0, 0, 10, 10)),
+                    ],
+                    [
+                        (0.857142857142857, CP(0, 0, 10, 10)),
+                        (0.5714285714285714, CP(0, 0, 10, 10)),
+                        (0.14285714285714285, CP(0, 0, 10, 10)),
+                        (1.0, CP(0, 0, 10, 10)),
+                        (0.0, CP(0, 0, 10, 10)),
+                    ],
+                ),
+            ),
+            (
+                0.25,
+                (
+                    [
+                        (0.7, CP(0, 0, 10, 10)),
+                        (0.5, CP(0, 0, 10, 10)),
+                        (0.8, CP(0, 0, 10, 10)),
+                    ],
+                    [
+                        (0.857142857142857, CP(0, 0, 10, 10)),
+                        (0.5714285714285714, CP(0, 0, 10, 10)),
+                        (1.0, CP(0, 0, 10, 10)),
+                    ],
+                ),
+            ),
+            (
+                0.75,
+                (
+                    [(0.8, CP(0, 0, 10, 10))],
+                    [(1.0, CP(0, 0, 10, 10))],
+                ),
+            ),
+        ),
+    )
+    def it_can_calculate_filtered_tiles(self, request, threshold, expected_value):
+        slide = instance_mock(request, Slide)
+        _scores = method_mock(request, ThresholdTiler, "_scores")
+        coords = CP(0, 0, 10, 10)
+        _scores.return_value = [
+            (0.7, coords),
+            (0.5, coords),
+            (0.2, coords),
+            (0.8, coords),
+            (0.1, coords),
+        ]
+        _scorer = instance_mock(request, RandomScorer)
+        threshold_tiler = ThresholdTiler(_scorer, (10, 10), threshold, 0)
+        binary_mask = BiggestTissueBoxMask()
+
+        filtered_tiles = threshold_tiler._tiles_generator(slide, binary_mask)
+
+        _scores.assert_called_once_with(threshold_tiler, slide, binary_mask)
+        assert filtered_tiles == expected_value
+
+    def but_it_raises_error_with_negative_threshold_value(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        _scores = method_mock(request, ThresholdTiler, "_scores")
+        coords = CP(0, 0, 10, 10)
+        _scores.return_value = [
+            (0.7, coords),
+            (0.5, coords),
+            (0.2, coords),
+            (0.8, coords),
+            (0.1, coords),
+        ]
+        _scorer = instance_mock(request, RandomScorer)
+        threshold_tiler = ThresholdTiler(_scorer, (10, 10), -1, 0)
+        binary_mask = BiggestTissueBoxMask()
+
+        with pytest.raises(ValueError) as err:
+            threshold_tiler.extract(slide, binary_mask)
+
+        assert isinstance(err.value, ValueError)
+        assert str(err.value) == "'threshold' cannot be negative (-1)"
+        _scores.assert_called_once_with(threshold_tiler, slide, binary_mask)
+
+    def it_can_extract_score_tiles(self, request, tmpdir):
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        coords = CP(0, 0, 10, 10)
+        _tiles_generator = method_mock(
+            request,
+            ThresholdTiler,
+            "_tiles_generator",
+        )
+        tile = Tile(image, coords)
+        _extract_tile.return_value = tile
+        _tiles_generator.return_value = (
+            [(0.8, coords), (0.7, coords)],
+            [(0.8, coords), (0.7, coords)],
+        )
+        _tile_filename = method_mock(request, GridTiler, "_tile_filename")
+        _tile_filename.side_effect = [
+            f"tile_{i}_level2_0-0-10-10.png" for i in range(2)
+        ]
+        _save_report = method_mock(request, ThresholdTiler, "_save_report")
+        random_scorer = RandomScorer()
+        _has_valid_tile_size = method_mock(
+            request, ThresholdTiler, "_has_valid_tile_size"
+        )
+        _has_valid_tile_size.return_value = True
+        threshold_tiler = ThresholdTiler(random_scorer, (10, 10), 0.1, 0)
+        binary_mask = BiggestTissueBoxMask()
+
+        threshold_tiler.extract(slide, binary_mask)
+
+        assert _extract_tile.call_args_list == [
+            call(slide, coords, tile_size=(10, 10), level=0, mpp=None),
+            call(slide, coords, tile_size=(10, 10), level=0, mpp=None),
+        ]
+        _tiles_generator.assert_called_with(threshold_tiler, slide, binary_mask)
+        assert _tile_filename.call_args_list == [
+            call(threshold_tiler, coords, 0),
+            call(threshold_tiler, coords, 1),
+        ]
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_0_level2_0-0-10-10.png")
+        )
+        assert os.path.exists(
+            os.path.join(tmp_path_, "processed", "tile_1_level2_0-0-10-10.png")
+        )
+        _save_report.assert_not_called()
+        _has_valid_tile_size.assert_called_once_with(threshold_tiler, slide)
+
+    @pytest.mark.parametrize(
+        "image, size",
+        [
+            (PILIMG.RGBA_COLOR_50X50_155_0_0, (50, 50)),
+            (PILIMG.RGBA_COLOR_49X51_155_0_0, (49, 51)),
+        ],
+    )
+    def but_it_raises_tilesizeerror_if_tilesize_larger_than_slidesize(
+        self, request, tmpdir, image, size
+    ):
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        _has_valid_tile_size = method_mock(
+            request, ThresholdTiler, "_has_valid_tile_size"
+        )
+        _has_valid_tile_size.return_value = False
+        threshold_tiler = ThresholdTiler(None, (50, 52), 2, 0)
+        binary_mask = BiggestTissueBoxMask()
+
+        with pytest.raises(TileSizeOrCoordinatesError) as err:
+            threshold_tiler.extract(slide, binary_mask)
+
+        assert isinstance(err.value, TileSizeOrCoordinatesError)
+        assert (
+            str(err.value)
+            == f"Tile size (50, 52) is larger than slide size {size} at level 0"
+        )
+        _has_valid_tile_size.assert_called_once_with(threshold_tiler, slide)
+
+    def it_can_save_report(self, request, tmpdir):
+        tmp_path_ = tmpdir.mkdir("path")
+        coords = CP(0, 0, 10, 10)
+        highest_score_tiles = [(0.8, coords), (0.7, coords)]
+        highest_scaled_score_tiles = [(0.1, coords), (0.0, coords)]
+        filenames = ["tile0.png", "tile1.png"]
+        random_scorer_ = instance_mock(request, RandomScorer)
+        threshold_tiler = ThresholdTiler(random_scorer_, (10, 10), 0.1, 2)
+        report_ = [
+            "filename,score,scaled_score",
+            "tile0.png,0.8,0.1",
+            "tile1.png,0.7,0.0",
+        ]
+
+        threshold_tiler._save_report(
+            os.path.join(tmp_path_, "report.csv"),
+            highest_score_tiles,
+            highest_scaled_score_tiles,
+            filenames,
+        )
+
+        assert os.path.exists(os.path.join(tmp_path_, "report.csv"))
+        with open(os.path.join(tmp_path_, "report.csv"), newline="") as f:
+            reader = csv.reader(f)
+            report = [",".join(row) for row in reader]
+            assert report == report_
+
+    def it_can_extract_score_tiles_and_save_report(self, request, tmpdir):
+        _extract_tile = method_mock(request, Slide, "extract_tile")
+        tmp_path_ = tmpdir.mkdir("myslide")
+        image = PILIMG.RGBA_COLOR_500X500_155_249_240
+        image.save(os.path.join(tmp_path_, "mywsi.png"), "PNG")
+        slide_path = os.path.join(tmp_path_, "mywsi.png")
+        slide = Slide(slide_path, os.path.join(tmp_path_, "processed"))
+        coords = CP(0, 0, 10, 10)
+        _tiles_generator = method_mock(
+            request,
+            ThresholdTiler,
+            "_tiles_generator",
+        )
+        tile = Tile(image, coords)
+        _extract_tile.return_value = tile
+        _tiles_generator.return_value = (
+            [(0.8, coords), (0.7, coords)],
+            [(0.8, coords), (0.7, coords)],
+        )
+        _tile_filename = method_mock(request, GridTiler, "_tile_filename")
+        _tile_filename.side_effect = [
+            f"tile_{i}_level2_0-0-10-10.png" for i in range(2)
+        ]
+        _save_report = method_mock(
+            request, ThresholdTiler, "_save_report", autospec=False
+        )
+        random_scorer = RandomScorer()
+        threshold_tiler = ThresholdTiler(random_scorer, (10, 10), 0.1, 0)
+        binary_mask = BiggestTissueBoxMask()
+
+        threshold_tiler.extract(slide, binary_mask, "report.csv")
+
+        assert _extract_tile.call_args_list == [
+            call(slide, coords, tile_size=(10, 10), level=0, mpp=None),
+            call(slide, coords, tile_size=(10, 10), level=0, mpp=None),
+        ]
+        _tiles_generator.assert_called_with(threshold_tiler, slide, binary_mask)
+        assert _tile_filename.call_args_list == [
+            call(threshold_tiler, coords, 0),
+            call(threshold_tiler, coords, 1),
         ]
         assert os.path.exists(
             os.path.join(tmp_path_, "processed", "tile_0_level2_0-0-10-10.png")
