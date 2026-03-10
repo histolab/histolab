@@ -72,17 +72,17 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Pixman 0.40 on Ubuntu
-        id: pixman-ubuntu
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          wget https://www.cairographics.org/releases/pixman-0.40.0.tar.gz
-          tar -xvf pixman-0.40.0.tar.gz
-          cd pixman-0.40.0
-          ./configure
-          make
-          sudo make install
-          cd ..
+      # - name: Install Pixman 0.40 on Ubuntu
+      #   id: pixman-ubuntu
+      #   if: ${{ runner.os == 'Linux' }}
+      #   run: |
+      #     wget https://www.cairographics.org/releases/pixman-0.40.0.tar.gz
+      #     tar -xvf pixman-0.40.0.tar.gz
+      #     cd pixman-0.40.0
+      #     ./configure
+      #     make
+      #     sudo make install
+      #     cd ..
 
       # - name: Install openslide
       #   id: install-openslide
