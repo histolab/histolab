@@ -84,20 +84,20 @@ jobs:
           sudo make install
           cd ..
 
-      - name: Install openslide
-        id: install-openslide
-        run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo add-apt-repository ppa:openslide/openslide
-            sudo apt update
-            sudo apt install openslide-tools
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            brew install openslide
-          else
-            echo "$RUNNER_OS not supported"
-            exit 1
-          fi
-        shell: bash
+      # - name: Install openslide
+      #   id: install-openslide
+      #   run: |
+      #     if [ "$RUNNER_OS" == "Linux" ]; then
+      #       sudo add-apt-repository ppa:openslide/openslide
+      #       sudo apt update
+      #       sudo apt install openslide-tools
+      #     elif [ "$RUNNER_OS" == "macOS" ]; then
+      #       brew install openslide
+      #     else
+      #       echo "$RUNNER_OS not supported"
+      #       exit 1
+      #     fi
+      #   shell: bash
 
       - run: poetry run python --version
       - run: poetry install
