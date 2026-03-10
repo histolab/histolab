@@ -55,7 +55,7 @@ jobs:
         include:
           - os: ubuntu-latest
             cache-path: ~/.cache/pypoetry/virtualenvs
-          - os: macOS-13
+          - os: macOS-15
             cache-path: ~/Library/Caches/pypoetry/cache
 
     env:
@@ -63,16 +63,14 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install poetry
         run: pipx install poetry
       - name: Set up Python ${{ matrix.python-version }}
         id: setup-python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-          architecture: x64
-          cache: "poetry"
 
       - name: Install Pixman 0.40 on Ubuntu
         id: pixman-ubuntu
