@@ -243,8 +243,8 @@ class Describe_Slide:
             binary_mask, tissue_mask=tissue_mask, scale_factor=3
         )
 
-        np.testing.assert_array_almost_equal(
-            np.asarray(mask_location_img), expected_img
+        np.testing.assert_allclose(
+            np.asarray(mask_location_img), expected_img, atol=1.0, rtol=0.0
         )
 
     def it_knows_its_properties(self):

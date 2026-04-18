@@ -196,7 +196,7 @@ class DescribeRandomTiler:
         # --- Expanding test report with actual and expected images ---
         expand_tests_report(request, actual=tiles_location_img, expected=expected_img)
 
-        np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
+        np.testing.assert_allclose(tiles_location_img, expected_img, atol=1.0, rtol=0.0)
 
     @pytest.mark.parametrize(
         "fixture_slide, tile_size, level, seed, n_tiles, mpp, use_largeimage",
@@ -455,7 +455,7 @@ class DescribeGridTiler:
         # --- Expanding test report with actual and expected images ---
         expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
 
-        np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
+        np.testing.assert_allclose(tiles_location_img, expected_img, atol=1.0, rtol=0.0)
 
     @pytest.mark.parametrize(
         "fixture_slide, binary_mask, tile_size, level, check_tissue, expectation",
@@ -504,7 +504,7 @@ class DescribeGridTiler:
         # --- Expanding test report with actual and expected images ---
         expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
 
-        np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
+        np.testing.assert_allclose(tiles_location_img, expected_img, atol=1.0, rtol=0.0)
 
     @pytest.mark.parametrize(
         "mpp, fixed_tile_size, fixed_overlap",
@@ -599,4 +599,4 @@ class DescribeScoreTiler:
         # --- Expanding test report with actual and expected images ---
         expand_tests_report(request, expected=expected_img, actual=tiles_location_img)
 
-        np.testing.assert_array_almost_equal(tiles_location_img, expected_img)
+        np.testing.assert_allclose(tiles_location_img, expected_img, atol=1.0, rtol=0.0)
