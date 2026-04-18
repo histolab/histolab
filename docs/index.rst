@@ -42,11 +42,6 @@ The histolab package can be installed by using::
    pip install histolab
 
 
-Prerequisites
-*************
-Please see `installation instructions <installation.html>`_.
-
-
 Authors
 *******
 * `Alessia Marcolini <https://github.com/alessiamarcolini>`_

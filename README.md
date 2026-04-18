@@ -77,10 +77,6 @@ The aim of this project is to provide a tool for WSI processing in a reproducibl
 
 ## Getting Started
 
-### Prerequisites
-
-Please see [installation instructions](https://github.com/histolab/histolab/blob/main/docs/installation.rst).
-
 ### Documentation
 
 Read the full documentation here https://histolab.readthedocs.io/en/latest/.

@@ -49,11 +49,6 @@ or via conda::
    conda install -c conda-forge histolab
 
 
-Prerequisites
-*************
-Please see `installation instructions <installation.html>`_.
-
-
 Authors
 *******
 * `Alessia Marcolini <https://github.com/alessiamarcolini>`_
