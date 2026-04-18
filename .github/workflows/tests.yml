@@ -50,12 +50,12 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-13]
+        os: [ubuntu-latest, macOS-15]
         python-version: ["3.9", "3.10", "3.11"]
         include:
           - os: ubuntu-latest
             cache-path: ~/.cache/pypoetry/virtualenvs
-          - os: macOS-13
+          - os: macOS-15
             cache-path: ~/Library/Caches/pypoetry/cache
 
     env:
@@ -71,7 +71,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          architecture: x64
           cache: "poetry"
 
       - run: poetry run python --version
