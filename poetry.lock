@@ -2498,14 +2498,14 @@ test = ["pytest"]
 
 [[package]]
 name = "sphinxemoji"
-version = "0.3.1"
+version = "0.3.2"
 description = "An extension to use emoji codes in your Sphinx documentation"
 optional = false
 python-versions = ">=3.9"
 groups = ["main", "dev"]
 files = [
-    {file = "sphinxemoji-0.3.1-py3-none-any.whl", hash = "sha256:dae483695f8d1e90a28a6e9bbccc08d256202afcc1d0fbd33b51b3b4352d439e"},
-    {file = "sphinxemoji-0.3.1.tar.gz", hash = "sha256:23ecff1f1e765393e49083b45386b7da81ced97c9a18a1dfd191460a97da3b11"},
+    {file = "sphinxemoji-0.3.2-py3-none-any.whl", hash = "sha256:0fb07a95bca5960a3b312bc05b65b0c3040456414a076c363f4ecaf546c6e09e"},
+    {file = "sphinxemoji-0.3.2.tar.gz", hash = "sha256:814da89a9a7603b7e4d85c487c7381656fa83632f20065e5ed782ab1dbbb5083"},
 ]
 
 [package.dependencies]
@@ -2770,4 +2770,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<3.12"
-content-hash = "76936c40a05cd357b630708422f078ba96405f441bacf2f316088b79386ebe1d"
+content-hash = "a9c23ebc36f650163e3235d62e3f9e9ca6596b5dbcdcfc36054806891015a489"
