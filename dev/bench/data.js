@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776543769344,
+  "lastUpdate": 1776545134118,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -29499,6 +29499,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0000018349276675075916",
             "extra": "mean: 31.697844847999473 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "9da71f2810585467238cbf0e1958f7fb2c6a6cf7",
+          "message": "Bump sphinxemoji from 0.3.1 to 0.3.2\n\nBumps [sphinxemoji](https://github.com/sphinx-contrib/emojicodes) from 0.3.1 to 0.3.2.\n- [Commits](https://github.com/sphinx-contrib/emojicodes/compare/v0.3.1...v0.3.2)\n\n---\nupdated-dependencies:\n- dependency-name: sphinxemoji\n  dependency-version: 0.3.2\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-04-18T22:44:13+02:00",
+          "tree_id": "4d04e6bded772eadab5f730a3f162c9b31cf0677",
+          "url": "https://github.com/histolab/histolab/commit/9da71f2810585467238cbf0e1958f7fb2c6a6cf7"
+        },
+        "date": 1776545132509,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 14.086296495921383,
+            "unit": "iter/sec",
+            "range": "stddev: 0.002226557721258851",
+            "extra": "mean: 70.99098050999743 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 838.4139837364709,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000006254438741593858",
+            "extra": "mean: 1.1927281979999975 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 3391.6863472659793,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000006344833645054754",
+            "extra": "mean: 294.8385839999901 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 65990.07423654672,
+            "unit": "iter/sec",
+            "range": "stddev: 1.1802585734099054e-7",
+            "extra": "mean: 15.153794136000215 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 53999.99791948869,
+            "unit": "iter/sec",
+            "range": "stddev: 9.220373807665986e-8",
+            "extra": "mean: 18.51851923199979 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 59240.533198574994,
+            "unit": "iter/sec",
+            "range": "stddev: 1.8793366813630513e-7",
+            "extra": "mean: 16.880334224001444 usec\nrounds: 250"
           }
         ]
       }
