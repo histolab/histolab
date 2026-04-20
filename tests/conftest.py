@@ -66,14 +66,10 @@ def pytest_runtest_makereport(item):
         extra_args = getattr(item, "extra_args", None)
         html = HTMLRenderer(extra_args)
         if extra_args:
-            extra.append(
-                pytest_html.extras.html(
-                    f"""
+            extra.append(pytest_html.extras.html(f"""
                     <table width=100%>
                         <thead><tr>{html.head}</tr></thead>
                         <tbody><tr>{html.body}</tr><tbody>
                     </table>
-                    """
-                )
-            )
+                    """))
         report.extra = extra
