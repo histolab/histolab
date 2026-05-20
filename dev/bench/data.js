@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1779267883400,
+  "lastUpdate": 1779271084076,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -30225,6 +30225,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0000021003396822734813",
             "extra": "mean: 32.60707999999977 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "a4b9c0f64e48a835b400700c427e26f46d0e4140",
+          "message": "build(deps): bump idna from 3.10 to 3.15\n\nBumps [idna](https://github.com/kjd/idna) from 3.10 to 3.15.\n- [Release notes](https://github.com/kjd/idna/releases)\n- [Changelog](https://github.com/kjd/idna/blob/master/HISTORY.md)\n- [Commits](https://github.com/kjd/idna/compare/v3.10...v3.15)\n\n---\nupdated-dependencies:\n- dependency-name: idna\n  dependency-version: '3.15'\n  dependency-type: indirect\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-05-20T11:56:37+02:00",
+          "tree_id": "4d41c73666497cc1cde87fcbbb77e861cb806337",
+          "url": "https://github.com/histolab/histolab/commit/a4b9c0f64e48a835b400700c427e26f46d0e4140"
+        },
+        "date": 1779271082510,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 12.202319791630288,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0008285643044918943",
+            "extra": "mean: 81.95163027000092 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 513.5147910328358,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00013982969880285416",
+            "extra": "mean: 1.9473635763999964 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 2313.331997920839,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000009502685937277815",
+            "extra": "mean: 432.2769065999921 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 36272.164959518326,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000001582139915697787",
+            "extra": "mean: 27.569349696001154 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 27957.59161953677,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000024656791167138277",
+            "extra": "mean: 35.76846008799987 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 30820.708407843544,
+            "unit": "iter/sec",
+            "range": "stddev: 5.348571313016043e-7",
+            "extra": "mean: 32.44571755999971 usec\nrounds: 250"
           }
         ]
       }
