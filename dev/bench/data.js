@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1779181220418,
+  "lastUpdate": 1779266624049,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -30093,6 +30093,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 2.1427890326991187e-7",
             "extra": "mean: 22.144995855998786 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "8887772a1e61a57fd8c075562f6a8cab031c3c67",
+          "message": "build(deps): bump certifi from 2026.2.25 to 2026.4.22\n\nBumps [certifi](https://github.com/certifi/python-certifi) from 2026.2.25 to 2026.4.22.\n- [Commits](https://github.com/certifi/python-certifi/compare/2026.02.25...2026.04.22)\n\n---\nupdated-dependencies:\n- dependency-name: certifi\n  dependency-version: 2026.4.22\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-05-20T10:42:16+02:00",
+          "tree_id": "fa33927e4101e46b5cb7f1f2ed0a6eab168c304a",
+          "url": "https://github.com/histolab/histolab/commit/8887772a1e61a57fd8c075562f6a8cab031c3c67"
+        },
+        "date": 1779266622364,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 10.41003778449413,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001279399355164625",
+            "extra": "mean: 96.06113067999729 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 351.5915437029074,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000122607661315949",
+            "extra": "mean: 2.844209475199989 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1401.8760618734227,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000006342989743840954",
+            "extra": "mean: 713.3298208000156 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 42013.18623106182,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000001393536979258052",
+            "extra": "mean: 23.80205096800455 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 34430.610455005124,
+            "unit": "iter/sec",
+            "range": "stddev: 1.8921295647799918e-7",
+            "extra": "mean: 29.043923032001658 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 35719.715264090126,
+            "unit": "iter/sec",
+            "range": "stddev: 3.722566237066625e-7",
+            "extra": "mean: 27.99574388000019 usec\nrounds: 250"
           }
         ]
       }
