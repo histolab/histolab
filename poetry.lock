@@ -1428,17 +1428,17 @@ files = [
 
 [[package]]
 name = "openslide-bin"
-version = "4.0.1.1"
+version = "4.0.1.2"
 description = "Binary build of OpenSlide"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "openslide_bin-4.0.1.1-py3-none-macosx_11_0_universal2.whl", hash = "sha256:8a42565aeb0bba68389e23701854e224599744033f6b051d9ee282045e3609ab"},
-    {file = "openslide_bin-4.0.1.1-py3-none-manylinux_2_28_aarch64.whl", hash = "sha256:5003c09928d01ded6bb3bd623d75a44b33458e86bbbcdf5f55c5c234e5096510"},
-    {file = "openslide_bin-4.0.1.1-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:8648c76a1db8deb862d7abd512518f548c697d24ba32066d18268cd2953b8c0c"},
-    {file = "openslide_bin-4.0.1.1-py3-none-win_amd64.whl", hash = "sha256:74bfc279aa68475b45d89eaf9b7e8455ae57ff8872137fbdb29c354d8ea0d891"},
-    {file = "openslide_bin-4.0.1.1.tar.gz", hash = "sha256:3e88501b328650fda3aa5914584d968575e0e1045afc8d250c32e25a8437b3e1"},
+    {file = "openslide_bin-4.0.1.2-py3-none-macosx_11_0_universal2.whl", hash = "sha256:230cdb1e2cfa88b9f28ca8f51a7b47065b20a855ad3e7ba141cd663e5a713e8c"},
+    {file = "openslide_bin-4.0.1.2-py3-none-manylinux_2_28_aarch64.whl", hash = "sha256:0dff14807e1b7ccfd476ca5b6945edf46908b76ec61777d35acb2a514e205c30"},
+    {file = "openslide_bin-4.0.1.2-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:8ac4aa3a2277ed5e218ca0019db65bdd6e853f865eb4edd3da00e2f4acf0c923"},
+    {file = "openslide_bin-4.0.1.2-py3-none-win_amd64.whl", hash = "sha256:0c882f0693e4b43e187a51469bff8057de381e865765ac5508a7e1feba319116"},
+    {file = "openslide_bin-4.0.1.2.tar.gz", hash = "sha256:83c9a4a598f3a5fe1dea83e123745e48b94ce7eab99833f04902bdf4fa0af1db"},
 ]
 
 [[package]]
