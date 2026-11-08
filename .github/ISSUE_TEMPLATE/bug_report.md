@@ -25,7 +25,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Software (please complete the following information):**
  - OS: [e.g. iOS]
- - Python Version: [e.g. 3.7]
+ - Python Version: [e.g. 3.10]
  - histolab version:
 
 **Additional context**
