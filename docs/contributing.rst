@@ -111,7 +111,7 @@ Create your local environment
 Before starting contributing to Histolab, test that your local environment is up and running. Here some steps:
 
 
-* Create a Python 3.9, 3.10, 3.11 ``virtualenv``
+* Create a Python 3.10 or 3.11 ``virtualenv``
 *
   Activate the env and in the project root run:
 
