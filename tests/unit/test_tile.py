@@ -233,10 +233,11 @@ class Describe_Tile:
         )
         _tile_tissue_mask_filters.return_value = filters
         _call = method_mock(request, Compose, "__call__")
-        mask_with_border = np.ones((30, 30), dtype=np.uint8) * 255
+        border_thickness = 50
+        mask_with_border = np.ones((110, 110), dtype=np.uint8) * 255
         mask_with_border[
-            10:20,
-            10:20,
+            border_thickness : 110 - border_thickness,
+            border_thickness : 110 - border_thickness,
         ] = COMPLEX_MASK
         _call.return_value = mask_with_border
         image = PILIMG.RGB_RANDOM_COLOR_10X10
@@ -245,7 +246,7 @@ class Describe_Tile:
         tissue_mask = tile.tissue_mask
 
         _tile_tissue_mask_filters.assert_called_once()
-        assert _call.call_args_list[0][0][1].size == (30, 30)  # image with border
+        assert _call.call_args_list[0][0][1].size == (110, 110)  # image with border
         assert isinstance(tissue_mask, np.ndarray) is True
         np.testing.assert_allclose(tissue_mask, COMPLEX_MASK)
 
