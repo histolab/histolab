@@ -2294,21 +2294,26 @@ test = ["cython (>=3.0)", "defusedxml (>=0.7.1)", "pytest (>=8.0)", "setuptools 
 
 [[package]]
 name = "sphinx-prompt"
-version = "1.8.0"
+version = "1.10.2"
 description = "Sphinx directive to add unselectable prompt"
 optional = false
-python-versions = ">=3.9,<4.0"
+python-versions = ">=3.11"
 groups = ["main", "dev"]
 files = [
-    {file = "sphinx_prompt-1.8.0-py3-none-any.whl", hash = "sha256:369ecc633f0711886f9b3a078c83264245be1adf46abeeb9b88b5519e4b51007"},
-    {file = "sphinx_prompt-1.8.0.tar.gz", hash = "sha256:47482f86fcec29662fdfd23e7c04ef03582714195d01f5d565403320084372ed"},
+    {file = "sphinx_prompt-1.10.2-py3-none-any.whl", hash = "sha256:6594337962c4b1498602e6984634bed4a0dc7955852e3cfc255eb0af766ed859"},
+    {file = "sphinx_prompt-1.10.2.tar.gz", hash = "sha256:47b592ba75caebd044b0eddf7a5a1b6e0aef6df587b034377cd101a999b686ba"},
 ]
 markers = {main = "extra == \"docs\""}
 
 [package.dependencies]
+certifi = "*"
 docutils = "*"
+idna = "*"
+jinja2 = "*"
 pygments = "*"
-Sphinx = ">=7.0.0,<8.0.0"
+requests = ">=2.32.4"
+Sphinx = "*"
+urllib3 = "*"
 
 [[package]]
 name = "sphinx-rtd-theme"
@@ -2686,4 +2691,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "3cd0959abc4eee17cdd2c60825c74105795d7bc48e886fd453ae3e32f6e91db4"
+content-hash = "e1aa15c034411c2afcd53199b32a64ff732ddc662f392663d7122a4f31a80cf4"
