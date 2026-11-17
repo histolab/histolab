@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794306931161,
+  "lastUpdate": 1794912963763,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -30621,6 +30621,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 6.274105154878495e-7",
             "extra": "mean: 13.340633343999684 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "4e176fde7e4dfeb84b6f730e6e8c2cd9506d34a2",
+          "message": "build(deps-dev): bump filelock from 3.29.0 to 4.2.1\n\nBumps [filelock](https://github.com/tox-dev/filelock) from 3.29.0 to 4.2.1.\n- [Release notes](https://github.com/tox-dev/filelock/releases)\n- [Changelog](https://github.com/tox-dev/filelock/blob/main/docs/changelog.rst)\n- [Commits](https://github.com/tox-dev/filelock/compare/3.29.0...4.2.1)\n\n---\nupdated-dependencies:\n- dependency-name: filelock\n  dependency-version: 4.2.1\n  dependency-type: indirect\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-11-17T11:54:51+01:00",
+          "tree_id": "2111581989869a17360bb52691482a01c6a185ba",
+          "url": "https://github.com/histolab/histolab/commit/4e176fde7e4dfeb84b6f730e6e8c2cd9506d34a2"
+        },
+        "date": 1794912962789,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 11.925422305651432,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005975254563240303",
+            "extra": "mean: 83.85447277000011 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 488.37071393477777,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00003293541983279203",
+            "extra": "mean: 2.0476248297999917 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 2708.7259032223837,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000010635998641138353",
+            "extra": "mean: 369.17725740000833 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 49640.992608451634,
+            "unit": "iter/sec",
+            "range": "stddev: 8.827983890672105e-7",
+            "extra": "mean: 20.14464150400056 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 38909.752810224745,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000018112476983180125",
+            "extra": "mean: 25.70049737600027 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 40898.672378312505,
+            "unit": "iter/sec",
+            "range": "stddev: 4.0671961520926866e-7",
+            "extra": "mean: 24.45067142400137 usec\nrounds: 250"
           }
         ]
       }
