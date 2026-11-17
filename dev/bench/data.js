@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794928428454,
+  "lastUpdate": 1794929524231,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -31215,6 +31215,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0000021587560533596406",
             "extra": "mean: 25.64851477600132 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "dbe8704834d03472f91035146fd7099fc28990e9",
+          "message": "build(deps-dev): bump black from 25.11.0 to 26.10.1\n\nBumps [black](https://github.com/psf/black) from 25.11.0 to 26.10.1.\n- [Release notes](https://github.com/psf/black/releases)\n- [Changelog](https://github.com/psf/black/blob/main/CHANGES.md)\n- [Commits](https://github.com/psf/black/compare/25.11.0...26.10.1)\n\n---\nupdated-dependencies:\n- dependency-name: black\n  dependency-version: 26.10.1\n  dependency-type: direct:development\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-11-17T16:30:46+01:00",
+          "tree_id": "4214adcdf8ab81ae14a28e6a0d2474ce9b42009b",
+          "url": "https://github.com/histolab/histolab/commit/dbe8704834d03472f91035146fd7099fc28990e9"
+        },
+        "date": 1794929522834,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 11.972376076816333,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0012991028773272266",
+            "extra": "mean: 83.52560874999824 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 491.17358769138195,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00005120469344264569",
+            "extra": "mean: 2.0359400933999896 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 2727.9413700058444,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000011364515275435989",
+            "extra": "mean: 366.57679340002005 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 48757.54873388924,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000012420468634267875",
+            "extra": "mean: 20.50964468000302 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 38241.66544095327,
+            "unit": "iter/sec",
+            "range": "stddev: 3.2579765414596964e-7",
+            "extra": "mean: 26.149488743999427 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 40593.04711598745,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000012194378249821941",
+            "extra": "mean: 24.63476065599798 usec\nrounds: 250"
           }
         ]
       }
