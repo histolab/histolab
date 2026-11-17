@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794922529134,
+  "lastUpdate": 1794923888159,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -31017,6 +31017,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.3722954467540867e-7",
             "extra": "mean: 13.51534948800122 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "65de997794548abf80687fb436d09b0d05c8dc06",
+          "message": "build(deps-dev): bump virtualenv from 21.14.5 to 21.14.13\n\nBumps [virtualenv](https://github.com/pypa/virtualenv) from 21.14.5 to 21.14.13.\n- [Release notes](https://github.com/pypa/virtualenv/releases)\n- [Changelog](https://github.com/pypa/virtualenv/blob/main/docs/changelog.rst)\n- [Commits](https://github.com/pypa/virtualenv/compare/21.14.5...21.14.13)\n\n---\nupdated-dependencies:\n- dependency-name: virtualenv\n  dependency-version: 21.14.13\n  dependency-type: indirect\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-11-17T14:57:09+01:00",
+          "tree_id": "5924e0650d1659176bfdebf4f8380f9218f97a92",
+          "url": "https://github.com/histolab/histolab/commit/65de997794548abf80687fb436d09b0d05c8dc06"
+        },
+        "date": 1794923887037,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 14.531852957254975,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0012662536356988438",
+            "extra": "mean: 68.81434893000026 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 694.4710139408908,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00004909610791901008",
+            "extra": "mean: 1.4399449076000082 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 4453.0522895185195,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000067415017054057825",
+            "extra": "mean: 224.5650702000006 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 115329.10287423799,
+            "unit": "iter/sec",
+            "range": "stddev: 2.9454767622742823e-7",
+            "extra": "mean: 8.670838279999998 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 91449.09769798102,
+            "unit": "iter/sec",
+            "range": "stddev: 2.1054985708933622e-7",
+            "extra": "mean: 10.935045015999947 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 104672.45233011026,
+            "unit": "iter/sec",
+            "range": "stddev: 9.556366405324969e-8",
+            "extra": "mean: 9.55361203200107 usec\nrounds: 250"
           }
         ]
       }
