@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794929524231,
+  "lastUpdate": 1794996283466,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -31281,6 +31281,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0000012194378249821941",
             "extra": "mean: 24.63476065599798 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "f3ccea7b69342994cc5f05f80700422c1cd8a8dd",
+          "message": "build(deps): bump openslide-bin from 4.0.1.1 to 4.0.1.2\n\nBumps [openslide-bin](https://github.com/openslide/openslide-bin) from 4.0.1.1 to 4.0.1.2.\n- [Release notes](https://github.com/openslide/openslide-bin/releases)\n- [Changelog](https://github.com/openslide/openslide-bin/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/openslide/openslide-bin/compare/v4.0.1.1...v4.0.1.2)\n\n---\nupdated-dependencies:\n- dependency-name: openslide-bin\n  dependency-version: 4.0.1.2\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-11-18T11:03:01+01:00",
+          "tree_id": "405cc747366fa7f0bbe81721addd5fbe6a0eae4a",
+          "url": "https://github.com/histolab/histolab/commit/f3ccea7b69342994cc5f05f80700422c1cd8a8dd"
+        },
+        "date": 1794996282322,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 13.281211129941372,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0007331941201959158",
+            "extra": "mean: 75.29433801000152 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 722.0394797500348,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000070482837026797205",
+            "extra": "mean: 1.3849658198000383 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 1799.711234532742,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000005039150027337902",
+            "extra": "mean: 555.6446949999895 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 91558.68271641163,
+            "unit": "iter/sec",
+            "range": "stddev: 7.962358506513508e-8",
+            "extra": "mean: 10.92195704799883 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 74394.58220181975,
+            "unit": "iter/sec",
+            "range": "stddev: 2.7421235124446167e-7",
+            "extra": "mean: 13.44183904799911 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 84344.73062242349,
+            "unit": "iter/sec",
+            "range": "stddev: 7.923533577081967e-8",
+            "extra": "mean: 11.856105208001509 usec\nrounds: 250"
           }
         ]
       }
