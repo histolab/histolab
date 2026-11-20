@@ -19,7 +19,7 @@ version = "3.0.0"
 description = "Annotate AST trees with source code positions"
 optional = false
 python-versions = ">=3.8"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "asttokens-3.0.0-py3-none-any.whl", hash = "sha256:e3078351a059199dd5138cb1c706e6430c05eff2ff136af5eb4790f9d28932e2"},
     {file = "asttokens-3.0.0.tar.gz", hash = "sha256:0dcd8baa8d62b0c1d118b399b2ddba3c4aff271d0d7a9e0d4c1681c79035bbc7"},
@@ -417,7 +417,7 @@ files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
 ]
-markers = {main = "sys_platform == \"win32\"", dev = "sys_platform == \"win32\" or platform_system == \"Windows\""}
+markers = {main = "extra == \"docs\" and sys_platform == \"win32\"", dev = "sys_platform == \"win32\" or platform_system == \"Windows\""}
 
 [[package]]
 name = "coverage"
@@ -669,7 +669,7 @@ version = "2.2.0"
 description = "Get the currently executing AST node of a frame, and other information"
 optional = false
 python-versions = ">=3.8"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "executing-2.2.0-py2.py3-none-any.whl", hash = "sha256:11387150cad388d62750327a53d3339fad4888b39a6fe233c3afbb54ecffd3aa"},
     {file = "executing-2.2.0.tar.gz", hash = "sha256:5d108c028108fe2551d1a7b2e8b713341e2cb4fc0aa7dcf966fa4327a5226755"},
@@ -864,7 +864,7 @@ version = "9.18.1"
 description = "IPython: Productive Interactive Computing"
 optional = false
 python-versions = ">=3.11"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "ipython-9.18.1-py3-none-any.whl", hash = "sha256:997ce9140d374531a61069c70c0f9ef299d6dd3559ea0f94b8af589726e3c1d5"},
     {file = "ipython-9.18.1.tar.gz", hash = "sha256:6319c0f5372c196397899479e6db1783dd7937abae06815d1317e8d5d51aaaaf"},
@@ -897,7 +897,7 @@ version = "1.1.1"
 description = "Defines a variety of Pygments lexers for highlighting IPython code."
 optional = false
 python-versions = ">=3.8"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "ipython_pygments_lexers-1.1.1-py3-none-any.whl", hash = "sha256:a9462224a505ade19a605f71f8fa63c2048833ce50abc86768a0d81d876dc81c"},
     {file = "ipython_pygments_lexers-1.1.1.tar.gz", hash = "sha256:09c0138009e56b6854f9535736f4171d855c8c08a563a0dcd8022f78355c7e81"},
@@ -992,7 +992,7 @@ version = "0.19.2"
 description = "An autocompletion tool for Python that can be used for text editors."
 optional = false
 python-versions = ">=3.6"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "jedi-0.19.2-py2.py3-none-any.whl", hash = "sha256:a8ef22bde8490f57fe5c7681a3c83cb58874daf72b4784de3cce5b6ef6edb5b9"},
     {file = "jedi-0.19.2.tar.gz", hash = "sha256:4770dc3de41bde3966b02eb84fbcf557fb33cce26ad23da12c742fb50ecb11f0"},
@@ -1280,7 +1280,7 @@ version = "0.1.7"
 description = "Inline Matplotlib backend for Jupyter"
 optional = false
 python-versions = ">=3.8"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "matplotlib_inline-0.1.7-py3-none-any.whl", hash = "sha256:df192d39a4ff8f21b1895d72e6a13f5fcc5099f00fa84384e0ea28c2cc0653ca"},
     {file = "matplotlib_inline-0.1.7.tar.gz", hash = "sha256:8423b23ec666be3d16e16b60bdd8ac4e86e840ebd1dd11a30b9f117f2fa0ab90"},
@@ -1475,25 +1475,33 @@ files = [
 
 [[package]]
 name = "openslide-python"
-version = "1.4.2"
+version = "1.4.7"
 description = "Python interface to OpenSlide"
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["main", "dev"]
 files = [
-    {file = "openslide_python-1.4.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:b40ace8cb584a2d15bc563eb177a2b01d526f679f08d4d3d296f89edb650e8f4"},
-    {file = "openslide_python-1.4.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f03407e215d10b2282e9354dbeb724b3db119266dca87489d320d6285e18f259"},
-    {file = "openslide_python-1.4.2-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:9667942664fe3406c11b053a29c8327b6cc29de3b60840b8afe8cd490070b9e0"},
-    {file = "openslide_python-1.4.2-cp310-cp310-win_amd64.whl", hash = "sha256:281b7eb916605c1914f6bdea47696615a764ab236709acfc847e03bf5a807225"},
-    {file = "openslide_python-1.4.2-cp311-abi3-macosx_10_9_universal2.whl", hash = "sha256:0f459f0e071048a5e3cafbf814fdac92da55df9b07730a832b54b99191f8a612"},
-    {file = "openslide_python-1.4.2-cp311-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b24566c2167d5909b4f54d5ee53c1caada5ec1aa14921a19de67a694ed988765"},
-    {file = "openslide_python-1.4.2-cp311-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:69cc23d608120bc528399d006c47501ac5e390770d4d5090800defd51be1b595"},
-    {file = "openslide_python-1.4.2-cp311-abi3-win_amd64.whl", hash = "sha256:e53cfb967c0987c76a9b890bb9551e238b12a99d947362434a08d4aa40ba1739"},
-    {file = "openslide_python-1.4.2-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:2f246074995148e010eea8a7ad6028d0467f56095ad62696db548f103ccea630"},
-    {file = "openslide_python-1.4.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9a0f5efcf6fb494710ede6083d78510b273b4f63e8cc4536c20bf7242aa3c4d4"},
-    {file = "openslide_python-1.4.2-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:26c72a652c8f64209f215e9453393a65725400b9779994e4fa0bb1d12a212a2e"},
-    {file = "openslide_python-1.4.2-cp39-cp39-win_amd64.whl", hash = "sha256:c9b7e306fcbaaa1f8aa336ffb615f4349e2f5bbe1b6caa03a74980d7fbb7f0ad"},
-    {file = "openslide_python-1.4.2.tar.gz", hash = "sha256:610d7a71552afe7be33038c10d8a2b20b9824ca2836710870e81f193257411bc"},
+    {file = "openslide_python-1.4.7-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:37b30b5005bbf3315e7e6e9619c44c0d912552907e55dc338226537ab565f15c"},
+    {file = "openslide_python-1.4.7-cp310-cp310-manylinux1_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:c6865e59752d1f281b532543cc4370ad53bea74e7d6c286c07aaef45b43175ee"},
+    {file = "openslide_python-1.4.7-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:a1a939e2bc528052889307e11848975dfea5220b102487cc5586ce75f8bff6d8"},
+    {file = "openslide_python-1.4.7-cp310-cp310-win_amd64.whl", hash = "sha256:59140ab7f386e69639fadc05ba034d52830a1c34eebbfe17558731f7b10baad8"},
+    {file = "openslide_python-1.4.7-cp311-abi3-macosx_10_9_universal2.whl", hash = "sha256:0cc6f1b2e42e8c1b17144f8c00183b560d2330ecb0a118f50ec9e059fd896c30"},
+    {file = "openslide_python-1.4.7-cp311-abi3-manylinux1_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:bb66b14d7f2b44f3a51c8f8f1f2024ec50748d2b57958468e07814c1f0099fcd"},
+    {file = "openslide_python-1.4.7-cp311-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:88d44ff85ac0a45ff170268c11db3c1a019dd47540b442be58f111b60e22a1a7"},
+    {file = "openslide_python-1.4.7-cp311-abi3-win_amd64.whl", hash = "sha256:d801cac467fed7af86cddd5b5e932ac9e37dd31a14e596d4328345c59b47ee90"},
+    {file = "openslide_python-1.4.7-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:e8498316f56e9f3724b1ef0f3884536bff96ccd35df6ba7946ebe486f2e4e49a"},
+    {file = "openslide_python-1.4.7-cp313-cp313t-manylinux1_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:c73cee6ac540475dc21e0f244a2d9c2ca2a39cf9d818c327fa63777d86dfd766"},
+    {file = "openslide_python-1.4.7-cp313-cp313t-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:73adaea0fff6a36b6633ad16c7da59721506c7dffead2ded2ed9ba491a394748"},
+    {file = "openslide_python-1.4.7-cp313-cp313t-win_amd64.whl", hash = "sha256:94c00c2550df969249fd6af8765da946ab2939c392557878fd577b5d062f2ec7"},
+    {file = "openslide_python-1.4.7-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:275eb8521305482bd06bdfd282b00bb9783e4bc19dd3111f83d2e5329d5905ae"},
+    {file = "openslide_python-1.4.7-cp314-cp314t-manylinux1_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:7540471bfbee1a85cfe47222ade69493f202cd4c6f75ead958b822d8c5745b03"},
+    {file = "openslide_python-1.4.7-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:d4f597499c01694c2bc7fd806066236367cb94120f384b496187b704ae8911b2"},
+    {file = "openslide_python-1.4.7-cp314-cp314t-win_amd64.whl", hash = "sha256:d8cf0dd3779f9e000fba48de645321b191fb90e5818fd0e160bb6aaa72f0923c"},
+    {file = "openslide_python-1.4.7-cp315-abi3.abi3t-macosx_10_15_universal2.whl", hash = "sha256:34f8f8fea57d001eb71a9e6662d85383d3952596d1ac522dec0eaddc2068f1de"},
+    {file = "openslide_python-1.4.7-cp315-abi3.abi3t-manylinux1_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:b294d259d6fb94f2bc7d575948977b22e11d1a3811aa0e31bf6bf9d0fc8501c8"},
+    {file = "openslide_python-1.4.7-cp315-abi3.abi3t-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:3cdb40eb788747a7887e3580b0b5c37299e8c7fbda04448f632ff44a811af12a"},
+    {file = "openslide_python-1.4.7-cp315-abi3.abi3t-win_amd64.whl", hash = "sha256:1003842a47ef41316d3091c6e008d68a6f1aea15b57b8b4f052dcfe4e009a0dc"},
+    {file = "openslide_python-1.4.7.tar.gz", hash = "sha256:730fed798de683b00c8ef4d956f3d429cc02f2c449eb0d58944e1769ba7983cc"},
 ]
 
 [package.dependencies]
@@ -1529,7 +1537,7 @@ version = "0.8.4"
 description = "A Python Parser"
 optional = false
 python-versions = ">=3.6"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "parso-0.8.4-py2.py3-none-any.whl", hash = "sha256:a418670a20291dacd2dddc80c377c5c3791378ee1e8d12bffc35420643d43f18"},
     {file = "parso-0.8.4.tar.gz", hash = "sha256:eb3a7b58240fb99099a345571deecc0f9540ea5f4dd2fe14c2a99d6b281ab92d"},
@@ -1577,7 +1585,7 @@ version = "4.9.0"
 description = "Pexpect allows easy control of interactive console applications."
 optional = false
 python-versions = "*"
-groups = ["main", "dev"]
+groups = ["dev"]
 markers = "sys_platform != \"win32\" and sys_platform != \"emscripten\""
 files = [
     {file = "pexpect-4.9.0-py2.py3-none-any.whl", hash = "sha256:7236d1e080e4936be2dc3e326cec0af72acf9212a7e1d060210e70a47e253523"},
@@ -1760,7 +1768,7 @@ version = "3.0.50"
 description = "Library for building powerful interactive command lines in Python"
 optional = false
 python-versions = ">=3.8.0"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "prompt_toolkit-3.0.50-py3-none-any.whl", hash = "sha256:9b6427eb19e479d98acff65196a307c555eb567989e6d88ebbb1b509d9779198"},
     {file = "prompt_toolkit-3.0.50.tar.gz", hash = "sha256:544748f3860a2623ca5cd6d2795e7a14f3d0e1c3c9728359013f79877fc89bab"},
@@ -1775,7 +1783,7 @@ version = "7.2.2"
 description = "Cross-platform lib for process and system monitoring."
 optional = false
 python-versions = ">=3.6"
-groups = ["main", "dev"]
+groups = ["dev"]
 markers = "sys_platform != \"emscripten\" and sys_platform != \"cygwin\" and sys_platform != \"android\""
 files = [
     {file = "psutil-7.2.2-cp313-cp313t-macosx_10_13_x86_64.whl", hash = "sha256:2edccc433cbfa046b980b0df0171cd25bcaeb3a68fe9022db0979e7aa74a826b"},
@@ -1811,7 +1819,7 @@ version = "0.7.0"
 description = "Run a subprocess in a pseudo terminal"
 optional = false
 python-versions = "*"
-groups = ["main", "dev"]
+groups = ["dev"]
 markers = "sys_platform != \"win32\" and sys_platform != \"emscripten\""
 files = [
     {file = "ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35"},
@@ -1824,7 +1832,7 @@ version = "0.2.3"
 description = "Safely evaluate AST nodes without side effects"
 optional = false
 python-versions = "*"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "pure_eval-0.2.3-py3-none-any.whl", hash = "sha256:1db8e35b67b3d218d818ae653e27f06c3aa420901fa7b081ca98cbedc874e0d0"},
     {file = "pure_eval-0.2.3.tar.gz", hash = "sha256:5f4e983f40564c576c7c8635ae88db5956bb2229d7e9237d03b3c0b0190eaf42"},
@@ -1893,6 +1901,7 @@ files = [
     {file = "pygments-2.20.0-py3-none-any.whl", hash = "sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176"},
     {file = "pygments-2.20.0.tar.gz", hash = "sha256:6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f"},
 ]
+markers = {main = "extra == \"docs\""}
 
 [package.extras]
 windows-terminal = ["colorama (>=0.4.6)"]
@@ -2677,7 +2686,7 @@ version = "0.6.3"
 description = "Extract data from python stack frames and tracebacks for informative displays"
 optional = false
 python-versions = "*"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "stack_data-0.6.3-py3-none-any.whl", hash = "sha256:d5558e0c25a4cb0853cddad3d77da9891a08cb85dd9f9f91b9f8cd66e511e695"},
     {file = "stack_data-0.6.3.tar.gz", hash = "sha256:836a778de4fec4dcd1dcd89ed8abff8a221f58308462e1c4aa2a3cf30148f0b9"},
@@ -2759,7 +2768,7 @@ version = "5.14.3"
 description = "Traitlets Python configuration system"
 optional = false
 python-versions = ">=3.8"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "traitlets-5.14.3-py3-none-any.whl", hash = "sha256:b74e89e397b1ed28cc831db7aea759ba6640cb3de13090ca145426688ff1ac4f"},
     {file = "traitlets-5.14.3.tar.gz", hash = "sha256:9ed0579d3502c94b4b3732ac120375cda96f923114522847de4b3bb98b96b6b7"},
@@ -2801,7 +2810,7 @@ version = "4.16.0"
 description = "Backported and Experimental Type Hints for Python 3.9+"
 optional = false
 python-versions = ">=3.9"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "typing_extensions-4.16.0-py3-none-any.whl", hash = "sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"},
     {file = "typing_extensions-4.16.0.tar.gz", hash = "sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"},
@@ -2851,7 +2860,7 @@ version = "0.2.13"
 description = "Measures the displayed width of unicode strings in a terminal"
 optional = false
 python-versions = "*"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "wcwidth-0.2.13-py2.py3-none-any.whl", hash = "sha256:3da69048e4540d84af32131829ff948f1e022c1c6bdb8d6102117aac784f6859"},
     {file = "wcwidth-0.2.13.tar.gz", hash = "sha256:72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5"},
@@ -2884,4 +2893,4 @@ docs = ["Sphinx", "sphinx-prompt", "sphinx-rtd-theme", "sphinxcontrib-katex", "s
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "b8c02931b48b7f897f6c7579f4545eca7098d8756f606df2f59267795ed31043"
+content-hash = "a4dea9350769b6d76e02002c0b6e41aed0b3533d1bedb5c5fb908e7d9e141283"
