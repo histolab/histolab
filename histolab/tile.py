@@ -204,7 +204,7 @@ class Tile:
         """
         np_tile = np.array(self._image)
 
-        border_thickness = 10
+        border_thickness = min(np_tile.shape) // 4
 
         np_tile_border = np.pad(
             np_tile,
