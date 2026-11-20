@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795105689212,
+  "lastUpdate": 1795168810281,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -31545,6 +31545,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.4831908778081293e-7",
             "extra": "mean: 11.94474153599549 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "52ebdd61711b2b6ea54706698e39d37a3a4a1909",
+          "message": "build(deps): bump ipython from 8.18.1 to 9.18.1\n\nBumps [ipython](https://github.com/ipython/ipython) from 8.18.1 to 9.18.1.\n- [Release notes](https://github.com/ipython/ipython/releases)\n- [Commits](https://github.com/ipython/ipython/compare/8.18.1...9.18.1)\n\n---\nupdated-dependencies:\n- dependency-name: ipython\n  dependency-version: 9.18.1\n  dependency-type: direct:production\n  update-type: version-update:semver-major\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-11-20T10:59:19+01:00",
+          "tree_id": "97d4d27cfe3e3517987561385abe5ec76dc83b56",
+          "url": "https://github.com/histolab/histolab/commit/52ebdd61711b2b6ea54706698e39d37a3a4a1909"
+        },
+        "date": 1795168809196,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 15.470100357914978,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0016138712752977334",
+            "extra": "mean: 64.6408217700003 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 720.7829077401227,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000054158916285782104",
+            "extra": "mean: 1.387380290599994 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 4713.141513538694,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000005982413691428525",
+            "extra": "mean: 212.17270840000424 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 119834.84576300961,
+            "unit": "iter/sec",
+            "range": "stddev: 3.4591504097392846e-7",
+            "extra": "mean: 8.344818184000019 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 97068.57493109863,
+            "unit": "iter/sec",
+            "range": "stddev: 2.7445569922881674e-7",
+            "extra": "mean: 10.301995272000454 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 107329.07833756178,
+            "unit": "iter/sec",
+            "range": "stddev: 2.8324031382360953e-7",
+            "extra": "mean: 9.31713954400027 usec\nrounds: 250"
           }
         ]
       }
