@@ -35,7 +35,7 @@ openslide-bin = "^4.0.0.13"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"
-pre-commit = "^4.3.0"
+pre-commit = "^4.7.0"
 pyflakes = "^3.0.1"
 pycodestyle = "^2.10.0"
 toml = "^0.10.2"
