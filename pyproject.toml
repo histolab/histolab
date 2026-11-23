@@ -58,7 +58,7 @@ pytest-xdist = "^3.8.0"
 pooch = "^1.9.0"
 coverage = "^7.17.3"
 pytest-cov = "^7.1.0"
-pytest-benchmark = "^5.2.3"
+pytest-benchmark = "^5.3.1"
 
 [tool.poetry.extras]
 docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-katex", "sphinxemoji", "sphinx-prompt"]
