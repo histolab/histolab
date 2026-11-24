@@ -25,7 +25,7 @@ scikit-image = ">=0.20.0,<0.24.1"
 numpy = ">=1.23.2,<=2.0.2"
 scipy = ">=1.5.0,<1.17.2"
 openslide-python = ">=1.4.0,<1.4.8"
-Sphinx = {version = ">=5.1.1,<8.0.0", optional = true}
+Sphinx = {version = ">=5.1.1,<10.0.0", optional = true}
 sphinx-rtd-theme = {version = ">=1,<4", optional = true}
 sphinxcontrib-katex = {version = ">=0.8.6,<0.10.0", optional = true}
 sphinxemoji = {version = ">=0.2,<0.4", optional = true}
@@ -40,7 +40,7 @@ pyflakes = "^3.0.1"
 pycodestyle = "^2.10.0"
 toml = "^0.10.2"
 twine = "^7.0.0"
-Sphinx = "^7.4.7"
+Sphinx = "^9.0.4"
 sphinx-rtd-theme = "^3.1.0"
 ipdb = "^0.13.13"
 isort = "^6.1.0"
