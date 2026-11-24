@@ -1,5 +1,5 @@
 .
-sphinx==7.4.7
+sphinx==9.0.4
 sphinx-rtd-theme
 sphinxcontrib-katex
 sphinxemoji
