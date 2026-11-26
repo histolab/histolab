@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795687003858,
+  "lastUpdate": 1795688660265,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -32007,6 +32007,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 8.357019800142077e-7",
             "extra": "mean: 25.364904591999675 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "bfe59499f6812a00031db7119b52f66436a8ad1d",
+          "message": "build(deps): update scikit-learn requirement from >=0.23.2 to >=1.9.1\n\nUpdates the requirements on [scikit-learn](https://github.com/scikit-learn/scikit-learn) to permit the latest version.\n- [Release notes](https://github.com/scikit-learn/scikit-learn/releases)\n- [Commits](https://github.com/scikit-learn/scikit-learn/compare/0.23.2...1.9.1)\n\n---\nupdated-dependencies:\n- dependency-name: scikit-learn\n  dependency-version: 1.9.1\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-11-26T11:23:07+01:00",
+          "tree_id": "bf6651f7ed736890a9e0c941c2f6eb74d430335b",
+          "url": "https://github.com/histolab/histolab/commit/bfe59499f6812a00031db7119b52f66436a8ad1d"
+        },
+        "date": 1795688658634,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 13.191228304262879,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0019124841685051153",
+            "extra": "mean: 75.8079518399996 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 649.5258592042339,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00007170626475133906",
+            "extra": "mean: 1.5395845843999951 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 3301.291804990944,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000012223755329989593",
+            "extra": "mean: 302.9117264000064 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 78890.84445968946,
+            "unit": "iter/sec",
+            "range": "stddev: 3.533998361431796e-7",
+            "extra": "mean: 12.675742119999313 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 64626.21795164749,
+            "unit": "iter/sec",
+            "range": "stddev: 3.796266386199567e-7",
+            "extra": "mean: 15.4735961920004 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 70969.36431895824,
+            "unit": "iter/sec",
+            "range": "stddev: 3.747007534956611e-7",
+            "extra": "mean: 14.090586968000594 usec\nrounds: 250"
           }
         ]
       }
