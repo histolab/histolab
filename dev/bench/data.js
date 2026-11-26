@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795688660265,
+  "lastUpdate": 1795690774477,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -32073,6 +32073,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 3.747007534956611e-7",
             "extra": "mean: 14.090586968000594 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "c2303591d88c1804454712944914d5a5ff9c0a36",
+          "message": "build(deps): update tqdm requirement from >=4.51.0 to >=4.70.1\n\nUpdates the requirements on [tqdm](https://github.com/tqdm/tqdm) to permit the latest version.\n- [Release notes](https://github.com/tqdm/tqdm/releases)\n- [Commits](https://github.com/tqdm/tqdm/compare/v4.51.0...v4.70.1)\n\n---\nupdated-dependencies:\n- dependency-name: tqdm\n  dependency-version: 4.70.1\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-11-26T11:58:14+01:00",
+          "tree_id": "a6d20fc0c42c3cfcc8be51c4c61cd4f506da37f3",
+          "url": "https://github.com/histolab/histolab/commit/c2303591d88c1804454712944914d5a5ff9c0a36"
+        },
+        "date": 1795690772896,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 11.911111941162142,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0037678015752650195",
+            "extra": "mean: 83.95521802999966 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 489.335165839768,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000673012190225578",
+            "extra": "mean: 2.043589077199999 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 2513.900402364198,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00002145693667669429",
+            "extra": "mean: 397.7882333999986 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 49317.877959438905,
+            "unit": "iter/sec",
+            "range": "stddev: 4.0617812591756234e-7",
+            "extra": "mean: 20.2766226239994 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 37359.607135578095,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000025074907312505033",
+            "extra": "mean: 26.766876759999036 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 40556.70184693437,
+            "unit": "iter/sec",
+            "range": "stddev: 5.834873212902249e-7",
+            "extra": "mean: 24.656837327998574 usec\nrounds: 250"
           }
         ]
       }
