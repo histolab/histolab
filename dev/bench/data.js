@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795515601451,
+  "lastUpdate": 1795687003858,
   "repoUrl": "https://github.com/histolab/histolab",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -31941,6 +31941,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 1.9178436097696703e-7",
             "extra": "mean: 13.081129048001458 usec\nrounds: 250"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "98marcolini@gmail.com",
+            "name": "Alessia Marcolini",
+            "username": "alessiamarcolini"
+          },
+          "distinct": true,
+          "id": "29ae89f67faa9f1c5de2d131decf1ae3b962c0c3",
+          "message": "build(deps): update pandas requirement from >=1.1.4 to >=3.1.1\n\nUpdates the requirements on [pandas](https://github.com/pandas-dev/pandas) to permit the latest version.\n- [Release notes](https://github.com/pandas-dev/pandas/releases)\n- [Commits](https://github.com/pandas-dev/pandas/compare/v1.1.4...v3.1.1)\n\n---\nupdated-dependencies:\n- dependency-name: pandas\n  dependency-version: 3.1.1\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-11-26T10:55:16+01:00",
+          "tree_id": "1854cb491be9a85cc13a91394c3021085963c0c4",
+          "url": "https://github.com/histolab/histolab/commit/29ae89f67faa9f1c5de2d131decf1ae3b962c0c3"
+        },
+        "date": 1795687002835,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_difference",
+            "value": 11.945265692675894,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001088797480082173",
+            "extra": "mean: 83.7151743400014 msec\nrounds: 100"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksFilterUtil::test_mask_percent",
+            "value": 493.88964219198664,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00004257371563680798",
+            "extra": "mean: 2.024743818399975 msec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_apply_mask_image",
+            "value": 2362.5848899905345,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00000971269767855699",
+            "extra": "mean: 423.26521439998146 usec\nrounds: 50"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image0]",
+            "value": 47679.24765510295,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000025744226037687915",
+            "extra": "mean: 20.97348530399836 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image1]",
+            "value": 37874.6667477783,
+            "unit": "iter/sec",
+            "range": "stddev: 8.880119003800203e-7",
+            "extra": "mean: 26.402872575998572 usec\nrounds: 250"
+          },
+          {
+            "name": "tests/benchmarks/test_benchmarks.py::TestDescribeBenchmarksUtil::test_np_to_pil[image2]",
+            "value": 39424.55199754266,
+            "unit": "iter/sec",
+            "range": "stddev: 8.357019800142077e-7",
+            "extra": "mean: 25.364904591999675 usec\nrounds: 250"
           }
         ]
       }
