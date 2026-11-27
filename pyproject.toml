@@ -21,7 +21,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
 Pillow = ">=9.1.0,<14.0.0"
-scikit-image = ">=0.20.0,<0.24.1"
+scikit-image = ">=0.20.0,<0.26.1"
 numpy = ">=1.23.2,<=2.0.2"
 scipy = ">=1.5.0,<1.17.2"
 openslide-python = ">=1.4.0,<1.4.8"
