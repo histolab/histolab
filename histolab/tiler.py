@@ -255,7 +255,7 @@ class Tiler(Protocol):
         """
         if self.mpp is None:
             return self.tile_size
-        return tuple(int(j * self._scale_factor(slide)) for j in self.tile_size)
+        return tuple(int(j * self._scale_factor(slide)) for j in self._base_tile_size)
 
     def _validate_level(self, slide: Slide) -> None:
         """Validate the Tiler's level according to the Slide.
@@ -337,12 +337,14 @@ class GridTiler(Tiler):
         mpp: float = None,
     ):
         self.tile_size = tile_size
+        self._base_tile_size = tile_size
         self.final_tile_size = tile_size
         self.level = level if mpp is None else 0
         self.mpp = mpp
         self.check_tissue = check_tissue
         self.tissue_percent = tissue_percent
         self.pixel_overlap = pixel_overlap
+        self._base_pixel_overlap = pixel_overlap
         self.prefix = prefix
         self.suffix = suffix
 
@@ -377,7 +379,7 @@ class GridTiler(Tiler):
         logger.setLevel(level)
         self._validate_level(slide)
         self.tile_size = self._tile_size(slide)
-        self.pixel_overlap = int(self._scale_factor(slide) * self.pixel_overlap)
+        self.pixel_overlap = int(self._scale_factor(slide) * self._base_pixel_overlap)
         self._validate_tile_size(slide)
 
         grid_tiles = self._tiles_generator(slide, extraction_mask)
@@ -660,6 +662,7 @@ class RandomTiler(Tiler):
         mpp: float = None,
     ):
         self.tile_size = tile_size
+        self._base_tile_size = tile_size
         self.final_tile_size = tile_size
         self.n_tiles = n_tiles
         self.max_iter = max_iter
@@ -932,7 +935,7 @@ class ScoreTiler(GridTiler):
         logger.setLevel(level)
         self._validate_level(slide)
         self.tile_size = self._tile_size(slide)
-        self.pixel_overlap = int(self._scale_factor(slide) * self.pixel_overlap)
+        self.pixel_overlap = int(self._scale_factor(slide) * self._base_pixel_overlap)
         self._validate_tile_size(slide)
 
         highest_score_tiles, highest_scaled_score_tiles = self._tiles_generator(
